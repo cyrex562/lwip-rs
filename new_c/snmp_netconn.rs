@@ -34,7 +34,7 @@
 
 
 
-#if LWIP_SNMP && SNMP_USE_NETCONN
+// #if LWIP_SNMP && SNMP_USE_NETCONN
 
 
 
@@ -54,13 +54,13 @@ snmp_netconn_thread(void *arg)
   LWIP_UNUSED_ARG(arg);
 
   /* Bind to SNMP port with default IP address */
-#if LWIP_IPV6
+// #if LWIP_IPV6
   conn = netconn_new(NETCONN_UDP_IPV6);
   netconn_bind(conn, IP6_ADDR_ANY, LWIP_IANA_PORT_SNMP);
 #else /* LWIP_IPV6 */
   conn = netconn_new(NETCONN_UDP);
   netconn_bind(conn, IP4_ADDR_ANY, LWIP_IANA_PORT_SNMP);
-#endif /* LWIP_IPV6 */
+// #endif /* LWIP_IPV6 */
   LWIP_ERROR("snmp_netconn: invalid conn", (conn != NULL), return;);
 
   snmp_traps_handle = conn;
@@ -69,7 +69,7 @@ snmp_netconn_thread(void *arg)
     err = netconn_recv(conn, &buf);
 
     if (err == ERR_OK) {
-      snmp_receive(conn, buf->p, &buf->addr, buf->port);
+      snmp_receive(conn,  buf.p, & buf.addr,  buf.port);
     }
 
     if (buf != NULL) {
@@ -100,7 +100,7 @@ snmp_get_local_ip_for_dst(void *handle, const ip_addr_t *dst, ip_addr_t *result)
 
   LWIP_UNUSED_ARG(conn); /* unused in case of IPV4 only configuration */
 
-  ip_route_get_local_ip(&conn->pcb.udp->local_ip, dst, dst_if, dst_ip);
+  ip_route_get_local_ip(& conn.pcb. udp.local_ip, dst, dst_if, dst_ip);
 
   if ((dst_if != NULL) && (dst_ip != NULL)) {
     ip_addr_copy(*result, *dst_ip);
@@ -114,9 +114,9 @@ snmp_get_local_ip_for_dst(void *handle, const ip_addr_t *dst, ip_addr_t *result)
  * Starts SNMP Agent.
  */
 void
-snmp_init(void)
+snmp_init()
 {
   sys_thread_new("snmp_netconn", snmp_netconn_thread, NULL, SNMP_STACK_SIZE, SNMP_THREAD_PRIO);
 }
 
-#endif /* LWIP_SNMP && SNMP_USE_NETCONN */
+// #endif /* LWIP_SNMP && SNMP_USE_NETCONN */

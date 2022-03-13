@@ -50,9 +50,9 @@ struct netif;
 #if (BRIDGEIF_MAX_PORTS < 0) || (BRIDGEIF_MAX_PORTS >= 64)
 #error BRIDGEIF_MAX_PORTS must be [1..63]
 #elif BRIDGEIF_MAX_PORTS < 8
-typedef u8_t bridgeif_portmask_t;
+typedef bridgeif_portmask_t: u8;
 #elif BRIDGEIF_MAX_PORTS < 16
-typedef u16_t bridgeif_portmask_t;
+typedef bridgeif_portmask_t: u16;
 #elif BRIDGEIF_MAX_PORTS < 32
 typedef u32_t bridgeif_portmask_t;
 #elif BRIDGEIF_MAX_PORTS < 64
@@ -71,12 +71,12 @@ typedef struct bridgeif_initdata_s {
   struct eth_addr ethaddr;
   /** Maximum number of ports in the bridge (ports are stored in an array, this
       influences memory allocated for netif->state of the bridge netif). */
-  u8_t            max_ports;
+  max_ports: u8;
   /** Maximum number of dynamic/learning entries in the bridge's forwarding database.
       In the default implementation, this controls memory consumption only. */
-  u16_t           max_fdb_dynamic_entries;
+  max_fdb_dynamic_entries: u16;
   /** Maximum number of static forwarding entries. Influences memory consumption! */
-  u16_t           max_fdb_static_entries;
+  max_fdb_static_entries: u16;
 } bridgeif_initdata_t;
 
 /** @ingroup bridgeif
@@ -100,7 +100,7 @@ void                bridgeif_fdb_update_src(void *fdb_ptr, struct eth_addr *src_
 bridgeif_portmask_t bridgeif_fdb_get_dst_ports(void *fdb_ptr, struct eth_addr *dst_addr);
 void*               bridgeif_fdb_init(u16_t max_fdb_entries);
 
-#if BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT
+// #if BRIDGEIF_PORT_NETIFS_OUTPUT_DIRECT
 
 /* define bridgeif protection to sys_arch_protect... */
 // #include "lwip/sys.h"

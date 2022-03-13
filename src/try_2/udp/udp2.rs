@@ -104,8 +104,8 @@ pub fn udp_input_local_match(pcb: &mut udp_pcb, inp: &mut NetIfc, broadcast: u8)
     //  in IPv6 only case 
     //  in IPv6 only case 
 
-    LWIP_ASSERT("udp_input_local_match: invalid pcb", pcb != None);
-    LWIP_ASSERT("udp_input_local_match: invalid netif", inp != None);
+    // LWIP_ASSERT("udp_input_local_match: invalid pcb", pcb != None);
+    // LWIP_ASSERT("udp_input_local_match: invalid netif", inp != None);
 
     //  check if PCB is bound to specific netif 
     if ((pcb.netif_idx != NETIF_NO_INDEX)
@@ -174,10 +174,10 @@ pub fn udp_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     let broadcast: u8;
     let for_us: u8 = 0;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
-    LWIP_ASSERT("udp_input: invalid pbuf", p != None);
-    LWIP_ASSERT("udp_input: invalid netif", inp != None);
+    // LWIP_ASSERT("udp_input: invalid pbuf", p != None);
+    // LWIP_ASSERT("udp_input: invalid netif", inp != None);
 
     PERF_START;
 
@@ -343,7 +343,7 @@ pub fn udp_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
 
         if (pbuf_remove_header(p, UDP_HLEN)) {
             //  Can we cope with this failing? Just assert for now 
-            LWIP_ASSERT("pbuf_remove_header failed\n", 0);
+            // LWIP_ASSERT("pbuf_remove_header failed\n", 0);
             UDP_STATS_INC(udp.drop);
             MIB2_STATS_INC(mib2.udpinerrors);
             pbuf_free(p);
@@ -688,7 +688,7 @@ pub fn udp_sendto_if_src_chksum(
     let ip_proto: u8;
     let ttl: u8;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     // LWIP_ERROR(
         "udp_sendto_if_src: invalid pcb",
@@ -762,7 +762,7 @@ pub fn udp_sendto_if_src_chksum(
         q = p;
         //    LWIP_DEBUGF(UDP_DEBUG, ("udp_send: added header in given pbuf %p\n", p));
     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "check that first pbuf can hold struct udp_hdr",
         (q.len >= sizeof(udp_hdr)),
     );
@@ -919,7 +919,7 @@ pub fn udp_bind(pcb: &mut udp_pcb, ipaddr: &mut LwipAddr, port: u16) {
 
     let zoned_ipaddr: LwipAddr;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  Don't propagate NULL pointer (IPv4 ANY) to subsequent functions 
     if (ipaddr == None) {
@@ -1017,7 +1017,7 @@ pub fn udp_bind(pcb: &mut udp_pcb, ipaddr: &mut LwipAddr, port: u16) {
  * @see udp_disconnect()
  */
 pub fn udp_bind_netif(pcb: &mut udp_pcb, netif: &mut NetIfc) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     if (netif != None) {
         pcb.netif_idx = netif_get_index(netif);
@@ -1046,7 +1046,7 @@ pub fn udp_bind_netif(pcb: &mut udp_pcb, netif: &mut NetIfc) {
 pub fn udp_connect(pcb: &mut udp_pcb, ipaddr: &mut LwipAddr, port: u16) {
     let mut ipcb: &mut udp_pcb;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     // LWIP_ERROR("udp_connect: invalid pcb", pcb != None, return ERR_ARG);
     // LWIP_ERROR(
@@ -1098,7 +1098,7 @@ pub fn udp_connect(pcb: &mut udp_pcb, ipaddr: &mut LwipAddr, port: u16) {
  * @param pcb the udp pcb to disconnect.
  */
 pub fn udp_disconnect(pcb: &mut udp_pcb) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     // LWIP_ERROR("udp_disconnect: invalid pcb", pcb != None, return);
 
@@ -1126,7 +1126,7 @@ pub fn udp_disconnect(pcb: &mut udp_pcb) {
  * @param recv_arg additional argument to pass to the callback function
  */
 pub fn udp_recv(pcb: &mut udp_pcb, recv: udp_recv_fn, recv_arg: &mut Vec<u8>) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     // LWIP_ERROR("udp_recv: invalid pcb", pcb != None, return);
 
@@ -1147,7 +1147,7 @@ pub fn udp_recv(pcb: &mut udp_pcb, recv: udp_recv_fn, recv_arg: &mut Vec<u8>) {
 pub fn udp_remove(pcb: &mut udp_pcb) {
     let mut pcb2: &mut udp_pcb;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     // LWIP_ERROR("udp_remove: invalid pcb", pcb != None, return);
 
@@ -1184,7 +1184,7 @@ pub fn udp_remove(pcb: &mut udp_pcb) {
 pub fn udp_new() -> udp_pcb {
     let mut pcb: &mut udp_pcb;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     pcb = memp_malloc(MEMP_UDP_PCB);
     //  could allocate UDP PCB? 
@@ -1218,7 +1218,7 @@ pub fn udp_new() -> udp_pcb {
 pub fn udp_new_ip_type(addr_type: u8) -> udp_pcb {
     let mut pcb: &mut udp_pcb;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     pcb = udp_new();
 

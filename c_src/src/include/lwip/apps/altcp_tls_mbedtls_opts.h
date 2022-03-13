@@ -41,7 +41,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
 /** LWIP_ALTCP_TLS_MBEDTLS==1: use mbedTLS for TLS support for altcp API
  * mbedtls include directory must be reachable via include search path

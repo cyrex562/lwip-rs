@@ -65,7 +65,7 @@ err_t         ip6_output_if(struct pbuf *p, const ip6_addr_t *src, const ip6_add
                             u8_t hl, u8_t tc, u8_t nexth, struct netif *netif);
 err_t         ip6_output_if_src(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
                             u8_t hl, u8_t tc, u8_t nexth, struct netif *netif);
-#if LWIP_NETIF_USE_HINTS
+// #if LWIP_NETIF_USE_HINTS
 err_t         ip6_output_hinted(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
                                 u8_t hl, u8_t tc, u8_t nexth, struct netif_hint *netif_hint);
  /* LWIP_NETIF_USE_HINTS */
@@ -76,7 +76,7 @@ err_t         ip6_options_add_hbh_ra(struct pbuf * p, u8_t nexth, u8_t value);
 #define ip6_netif_get_local_ip(netif, dest) (((netif) != NULL) ? \
   ip6_select_source_address(netif, dest) : NULL)
 
-#if IP6_DEBUG
+// #if IP6_DEBUG
 void ip6_debug_print(struct pbuf *p);
 #else
 #define ip6_debug_print(p)

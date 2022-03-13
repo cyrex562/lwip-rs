@@ -33,7 +33,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_SOCKET && LWIP_IGMP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SOCKET && LWIP_IGMP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/sys.h"
 // #include "lwip/sockets.h"
@@ -112,10 +112,10 @@ rtp_send_packets( int sock, struct sockaddr_in* to)
 
   /* prepare RTP packet */
   rtphdr = (struct rtp_hdr*)rtp_send_packet;
-  rtphdr->version     = RTP_VERSION;
-  rtphdr->payloadtype = 0;
-  rtphdr->ssrc        = PP_HTONL(RTP_SSRC);
-  rtphdr->timestamp   = lwip_htonl(lwip_ntohl(rtphdr->timestamp) + RTP_TIMESTAMP_INCREMENT);
+   rtphdr.version     = RTP_VERSION;
+   rtphdr.payloadtype = 0;
+   rtphdr.ssrc        = PP_HTONL(RTP_SSRC);
+   rtphdr.timestamp   = lwip_htonl(lwip_ntohl( rtphdr.timestamp) + RTP_TIMESTAMP_INCREMENT);
 
   /* send RTP stream packets */
   rtp_data_index = 0;
@@ -127,15 +127,15 @@ rtp_send_packets( int sock, struct sockaddr_in* to)
 
     /* set MARKER bit in RTP header on the last packet of an image */
     if ((rtp_data_index + rtp_payload_size) >= sizeof(rtp_data)) {
-      rtphdr->payloadtype = RTP_PAYLOADTYPE | RTP_MARKER_MASK;
+       rtphdr.payloadtype = RTP_PAYLOADTYPE | RTP_MARKER_MASK;
     } else {
-      rtphdr->payloadtype = RTP_PAYLOADTYPE;
+       rtphdr.payloadtype = RTP_PAYLOADTYPE;
     }
 
     /* send RTP stream packet */
     if (lwip_sendto(sock, rtp_send_packet, sizeof(struct rtp_hdr) + rtp_payload_size,
         0, (struct sockaddr *)to, sizeof(struct sockaddr)) >= 0) {
-      rtphdr->seqNum  = lwip_htons((u16_t)(lwip_ntohs(rtphdr->seqNum) + 1));
+       rtphdr.seqNum  = lwip_htons((u16_t)(lwip_ntohs( rtphdr.seqNum) + 1));
       rtp_data_index += rtp_payload_size;
     } else {
       LWIP_DEBUGF(RTP_DEBUG, ("rtp_sender: not sendto==%i\n", errno));
@@ -251,13 +251,13 @@ rtp_recv_thread(void *arg)
               size_t recved = (size_t)result;
               rtphdr = (struct rtp_hdr *)rtp_recv_packet;
               recvrtppackets++;
-              if ((lastrtpseq == 0) || ((lastrtpseq + 1) == lwip_ntohs(rtphdr->seqNum))) {
+              if ((lastrtpseq == 0) || ((lastrtpseq + 1) == lwip_ntohs( rtphdr.seqNum))) {
                 RTP_RECV_PROCESSING((rtp_recv_packet + sizeof(rtp_hdr)), (recved-sizeof(rtp_hdr)));
                 LWIP_UNUSED_ARG(recved); /* just in case... */
               } else {
                 lostrtppackets++;
               }
-              lastrtpseq = lwip_ntohs(rtphdr->seqNum);
+              lastrtpseq = lwip_ntohs( rtphdr.seqNum);
               if ((recvrtppackets % RTP_RECV_STATS) == 0) {
                 LWIP_DEBUGF(RTP_DEBUG, ("rtp_recv_thread: recv %6i packet(s) / lost %4i packet(s) (%.4f%%)...\n", recvrtppackets, lostrtppackets, (lostrtppackets*100.0)/recvrtppackets));
               }
@@ -282,7 +282,7 @@ rtp_recv_thread(void *arg)
 }
 
 void
-rtp_init(void)
+rtp_init()
 {
   sys_thread_new("rtp_send_thread", rtp_send_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
   sys_thread_new("rtp_recv_thread", rtp_recv_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);

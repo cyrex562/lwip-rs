@@ -23,7 +23,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && VJ_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && VJ_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -99,9 +99,9 @@ pub const TCP_PUSH_BIT: u32 = 0x10; /*
  */
 struct cstate {
   struct cstate *cs_next; /* next most recently used state (xmit only) */
-  u16_t cs_hlen;        /* size of hdr (receive only) */
-  u8_t cs_id;           /* connection # associated with this state */
-  u8_t cs_filler;
+  cs_hlen: u16;        /* size of hdr (receive only) */
+  cs_id: u8;           /* connection # associated with this state */
+  cs_filler: u8;
   union {
     char csu_hdr[MAX_HDR];
     struct ip_hdr csu_ip;     /* ip/tcp hdr from most recent packet */
@@ -127,12 +127,12 @@ struct vjstat {
  */
 struct vjcompress {
   struct cstate *last_cs;          /* most recently used tstate */
-  u8_t last_recv;                /* last rcvd conn. id */
-  u8_t last_xmit;                /* last sent conn. id */
-  u16_t flags;
-  u8_t maxSlotIndex;
-  u8_t compressSlot;             /* Flag indicating OK to compress slot ID. */
-#if LINK_STATS
+  last_recv: u8;                /* last rcvd conn. id */
+  last_xmit: u8;                /* last sent conn. id */
+  flags: u16;
+  maxSlotIndex: u8;
+  compressSlot: u8;             /* Flag indicating OK to compress slot ID. */
+// #if LINK_STATS
   struct vjstat stats;
 
 ct cstate tstate[MAX_SLOTS]; /* xmit connection states */

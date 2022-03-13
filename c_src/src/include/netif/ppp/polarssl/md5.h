@@ -34,7 +34,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if LWIP_INCLUDED_POLARSSL_MD5
+// #if LWIP_INCLUDED_POLARSSL_MD5
 
 
 

@@ -89,7 +89,7 @@ const char generated_html[] =
 
 
 void
-genfiles_ex_init(void)
+genfiles_ex_init()
 {
   /* nothing to do here yet */
 }
@@ -125,7 +125,7 @@ fs_close_custom(struct fs_file *file)
   }
 }
 
-#if LWIP_HTTPD_FS_ASYNC_READ
+// #if LWIP_HTTPD_FS_ASYNC_READ
 u8_t
 fs_canread_custom(struct fs_file *file)
 {
@@ -137,7 +137,7 @@ fs_canread_custom(struct fs_file *file)
 u8_t
 fs_wait_read_custom(struct fs_file *file, fs_wait_cb callback_fn, void *callback_arg)
 {
-  LWIP_ASSERT("not implemented in this example configuration", 0);
+  // LWIP_ASSERT("not implemented in this example configuration", 0);
   LWIP_UNUSED_ARG(file);
   LWIP_UNUSED_ARG(callback_fn);
   LWIP_UNUSED_ARG(callback_arg);
@@ -150,7 +150,7 @@ fs_wait_read_custom(struct fs_file *file, fs_wait_cb callback_fn, void *callback
 int
 fs_read_async_custom(struct fs_file *file, char *buffer, int count, fs_wait_cb callback_fn, void *callback_arg)
 {
-  LWIP_ASSERT("not implemented in this example configuration", 0);
+  // LWIP_ASSERT("not implemented in this example configuration", 0);
   LWIP_UNUSED_ARG(file);
   LWIP_UNUSED_ARG(buffer);
   LWIP_UNUSED_ARG(count);
@@ -167,7 +167,7 @@ fs_read_async_custom(struct fs_file *file, char *buffer, int count, fs_wait_cb c
 int
 fs_read_custom(struct fs_file *file, char *buffer, int count)
 {
-  LWIP_ASSERT("not implemented in this example configuration", 0);
+  // LWIP_ASSERT("not implemented in this example configuration", 0);
   LWIP_UNUSED_ARG(file);
   LWIP_UNUSED_ARG(buffer);
   LWIP_UNUSED_ARG(count);

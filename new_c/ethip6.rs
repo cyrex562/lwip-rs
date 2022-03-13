@@ -41,7 +41,7 @@
 
 
 
-#if LWIP_IPV6 && LWIP_ETHERNET
+// #if LWIP_IPV6 && LWIP_ETHERNET
 
 
 
@@ -82,7 +82,7 @@ ethip6_output(struct netif *netif, struct pbuf *q, const ip6_addr_t *ip6addr)
   const u8_t *hwaddr;
   err_t result;
 
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
 
   /* The destination IP address must be properly zoned from here on down. */
   IP6_ADDR_ZONECHECK_NETIF(ip6addr, netif);
@@ -92,13 +92,13 @@ ethip6_output(struct netif *netif, struct pbuf *q, const ip6_addr_t *ip6addr)
     /* Hash IP multicast address to MAC address.*/
     dest.addr[0] = 0x33;
     dest.addr[1] = 0x33;
-    dest.addr[2] = ((const u8_t *)(&(ip6addr->addr[3])))[0];
-    dest.addr[3] = ((const u8_t *)(&(ip6addr->addr[3])))[1];
-    dest.addr[4] = ((const u8_t *)(&(ip6addr->addr[3])))[2];
-    dest.addr[5] = ((const u8_t *)(&(ip6addr->addr[3])))[3];
+    dest.addr[2] = ((const u8_t *)(&( ip6addr.addr[3])))[0];
+    dest.addr[3] = ((const u8_t *)(&( ip6addr.addr[3])))[1];
+    dest.addr[4] = ((const u8_t *)(&( ip6addr.addr[3])))[2];
+    dest.addr[5] = ((const u8_t *)(&( ip6addr.addr[3])))[3];
 
     /* Send out. */
-    return ethernet_output(netif, q, (const struct eth_addr*)(netif->hwaddr), &dest, ETHTYPE_IPV6);
+    return ethernet_output(netif, q, (const struct eth_addr*)( netif.hwaddr), &dest, ETHTYPE_IPV6);
   }
 
   /* We have a unicast destination IP address */
@@ -117,7 +117,7 @@ ethip6_output(struct netif *netif, struct pbuf *q, const ip6_addr_t *ip6addr)
 
   /* Send out the packet using the returned hardware address. */
   SMEMCPY(dest.addr, hwaddr, 6);
-  return ethernet_output(netif, q, (const struct eth_addr*)(netif->hwaddr), &dest, ETHTYPE_IPV6);
+  return ethernet_output(netif, q, (const struct eth_addr*)( netif.hwaddr), &dest, ETHTYPE_IPV6);
 }
 
-#endif /* LWIP_IPV6 && LWIP_ETHERNET */
+// #endif /* LWIP_IPV6 && LWIP_ETHERNET */

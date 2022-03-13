@@ -40,7 +40,7 @@
  */
 
 
-#if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_MD4
+// #if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_MD4
 
 
 
@@ -57,7 +57,7 @@
         | ( (unsigned long) (b)[(i) + 2] << 16 )        \
         | ( (unsigned long) (b)[(i) + 3] << 24 );       \
 }
-#endif
+// #endif
 
 #ifndef PUT_ULONG_LE
 #define PUT_ULONG_LE(n,b,i)                             \
@@ -67,20 +67,20 @@
     (b)[(i) + 2] = (unsigned char) ( (n) >> 16 );       \
     (b)[(i) + 3] = (unsigned char) ( (n) >> 24 );       \
 }
-#endif
+// #endif
 
 /*
  * MD4 context setup
  */
 void md4_starts( md4_context *ctx )
 {
-    ctx->total[0] = 0;
-    ctx->total[1] = 0;
+     ctx.total[0] = 0;
+     ctx.total[1] = 0;
 
-    ctx->state[0] = 0x67452301;
-    ctx->state[1] = 0xEFCDAB89;
-    ctx->state[2] = 0x98BADCFE;
-    ctx->state[3] = 0x10325476;
+     ctx.state[0] = 0x67452301;
+     ctx.state[1] = 0xEFCDAB89;
+     ctx.state[2] = 0x98BADCFE;
+     ctx.state[3] = 0x10325476;
 }
 
 static void md4_process( md4_context *ctx, const unsigned char data[64] )
@@ -106,10 +106,10 @@ static void md4_process( md4_context *ctx, const unsigned char data[64] )
 
 #define S(x,n) ((x << n) | ((x & 0xFFFFFFFF) >> (32 - n)))
 
-    A = ctx->state[0];
-    B = ctx->state[1];
-    C = ctx->state[2];
-    D = ctx->state[3];
+    A =  ctx.state[0];
+    B =  ctx.state[1];
+    C =  ctx.state[2];
+    D =  ctx.state[3];
 
 #define F(x, y, z) ((x & y) | ((~x) & z))
 #define P(a,b,c,d,x,s) { a += F(b,c,d) + x; a = S(a,s); }
@@ -180,10 +180,10 @@ static void md4_process( md4_context *ctx, const unsigned char data[64] )
 #undef F
 #undef P
 
-    ctx->state[0] += A;
-    ctx->state[1] += B;
-    ctx->state[2] += C;
-    ctx->state[3] += D;
+     ctx.state[0] += A;
+     ctx.state[1] += B;
+     ctx.state[2] += C;
+     ctx.state[3] += D;
 }
 
 /*
@@ -197,20 +197,20 @@ void md4_update( md4_context *ctx, const unsigned char *input, int ilen )
     if( ilen <= 0 )
         return;
 
-    left = ctx->total[0] & 0x3F;
+    left =  ctx.total[0] & 0x3F;
     fill = 64 - left;
 
-    ctx->total[0] += ilen;
-    ctx->total[0] &= 0xFFFFFFFF;
+     ctx.total[0] += ilen;
+     ctx.total[0] &= 0xFFFFFFFF;
 
-    if( ctx->total[0] < (unsigned long) ilen )
-        ctx->total[1]++;
+    if(  ctx.total[0] < (unsigned long) ilen )
+         ctx.total[1]++;
 
     if( left && ilen >= fill )
     {
-        MEMCPY( (void *) (ctx->buffer + left),
+        MEMCPY( (void *) ( ctx.buffer + left),
                 input, fill );
-        md4_process( ctx, ctx->buffer );
+        md4_process( ctx,  ctx.buffer );
         input += fill;
         ilen  -= fill;
         left = 0;
@@ -225,7 +225,7 @@ void md4_update( md4_context *ctx, const unsigned char *input, int ilen )
 
     if( ilen > 0 )
     {
-        MEMCPY( (void *) (ctx->buffer + left),
+        MEMCPY( (void *) ( ctx.buffer + left),
                 input, ilen );
     }
 }
@@ -247,23 +247,23 @@ void md4_finish( md4_context *ctx, unsigned char output[16] )
     unsigned long high, low;
     unsigned char msglen[8];
 
-    high = ( ctx->total[0] >> 29 )
-         | ( ctx->total[1] <<  3 );
-    low  = ( ctx->total[0] <<  3 );
+    high = (  ctx.total[0] >> 29 )
+         | (  ctx.total[1] <<  3 );
+    low  = (  ctx.total[0] <<  3 );
 
     PUT_ULONG_LE( low,  msglen, 0 );
     PUT_ULONG_LE( high, msglen, 4 );
 
-    last = ctx->total[0] & 0x3F;
+    last =  ctx.total[0] & 0x3F;
     padn = ( last < 56 ) ? ( 56 - last ) : ( 120 - last );
 
     md4_update( ctx, md4_padding, padn );
     md4_update( ctx, msglen, 8 );
 
-    PUT_ULONG_LE( ctx->state[0], output,  0 );
-    PUT_ULONG_LE( ctx->state[1], output,  4 );
-    PUT_ULONG_LE( ctx->state[2], output,  8 );
-    PUT_ULONG_LE( ctx->state[3], output, 12 );
+    PUT_ULONG_LE(  ctx.state[0], output,  0 );
+    PUT_ULONG_LE(  ctx.state[1], output,  4 );
+    PUT_ULONG_LE(  ctx.state[2], output,  8 );
+    PUT_ULONG_LE(  ctx.state[3], output, 12 );
 }
 
 /*
@@ -278,4 +278,4 @@ void md4( unsigned char *input, int ilen, unsigned char output[16] )
     md4_finish( &ctx, output );
 }
 
-#endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_MD4 */
+// #endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_MD4 */

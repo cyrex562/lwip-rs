@@ -40,7 +40,7 @@
 
 
 
-#if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -56,7 +56,7 @@
 /** This string is passed in the HTTP header as "User-Agent: " */
 #ifndef ALTCP_PROXYCONNECT_CLIENT_AGENT
 #define ALTCP_PROXYCONNECT_CLIENT_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
-#endif
+// #endif
 
 #define ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED  0x01
 #define ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE   0x02
@@ -64,9 +64,9 @@
 typedef struct altcp_proxyconnect_state_s
 {
   ip_addr_t outer_addr;
-  u16_t outer_port;
+  outer_port: u16;
   struct altcp_proxyconnect_config *conf;
-  u8_t flags;
+  flags: u8;
 } altcp_proxyconnect_state_t;
 
 /* Variable prototype, the actual declaration is at the end of this file
@@ -76,7 +76,7 @@ extern const struct altcp_functions altcp_proxyconnect_functions;
 /* memory management functions: */
 
 static altcp_proxyconnect_state_t *
-altcp_proxyconnect_state_alloc(void)
+altcp_proxyconnect_state_alloc()
 {
   altcp_proxyconnect_state_t *ret = (altcp_proxyconnect_state_t *)mem_calloc(1, sizeof(altcp_proxyconnect_state_t));
   return ret;
@@ -85,7 +85,7 @@ altcp_proxyconnect_state_alloc(void)
 static void
 altcp_proxyconnect_state_free(altcp_proxyconnect_state_t *state)
 {
-  LWIP_ASSERT("state != NULL", state != NULL);
+  // LWIP_ASSERT("state != NULL", state != NULL);
   mem_free(state);
 }
 
@@ -112,22 +112,22 @@ altcp_proxyconnect_send_request(struct altcp_pcb *conn)
   int len, len2;
   mem_size_t alloc_len;
   char *buffer, *host;
-  altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *)conn->state;
+  altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *) conn.state;
 
   if (!state) {
     return ERR_VAL;
   }
   /* Use printf with zero length to get the required allocation size */
-  len = altcp_proxyconnect_format_request(NULL, 0, "", state->outer_port);
+  len = altcp_proxyconnect_format_request(NULL, 0, "",  state.outer_port);
   if (len < 0) {
     return ERR_VAL;
   }
   /* add allocation size for IP address strings */
-#if LWIP_IPV6
+// #if LWIP_IPV6
   len += 40; /* worst-case IPv6 address length */
 #else
   len += 16; /* worst-case IPv4 address length */
-#endif
+// #endif
   alloc_len = (mem_size_t)len;
   if ((len < 0) || (int)alloc_len != len) {
     /* overflow */
@@ -138,10 +138,10 @@ altcp_proxyconnect_send_request(struct altcp_pcb *conn)
   if (buffer == NULL) {
     return ERR_MEM;
   }
-  host = ipaddr_ntoa(&state->outer_addr);
-  len2 = altcp_proxyconnect_format_request(buffer, alloc_len, host, state->outer_port);
+  host = ipaddr_ntoa(& state.outer_addr);
+  len2 = altcp_proxyconnect_format_request(buffer, alloc_len, host,  state.outer_port);
   if ((len2 > 0) && (len2 <= len) && (len2 <= 0xFFFF)) {
-    err_t err = altcp_write(conn->inner_conn, buffer, (u16_t)len2, TCP_WRITE_FLAG_COPY);
+    err_t err = altcp_write( conn.inner_conn, buffer, (u16_t)len2, TCP_WRITE_FLAG_COPY);
     if (err != ERR_OK) {
       /* @todo: abort? */
       mem_free(buffer);
@@ -161,13 +161,13 @@ static err_t
 altcp_proxyconnect_lower_connected(void *arg, struct altcp_pcb *inner_conn, err_t err)
 {
   struct altcp_pcb *conn = (struct altcp_pcb *)arg;
-  if (conn && conn->state) {
-    LWIP_ASSERT("pcb mismatch", conn->inner_conn == inner_conn);
+  if (conn &&  conn.state) {
+    // LWIP_ASSERT("pcb mismatch",  conn.inner_conn == inner_conn);
     LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
     /* upper connected is called when handshake is done */
     if (err != ERR_OK) {
-      if (conn->connected) {
-        if (conn->connected(conn->arg, conn, err) == ERR_ABRT) {
+      if ( conn.connected) {
+        if ( conn.connected( conn.arg, conn, err) == ERR_ABRT) {
           return ERR_ABRT;
         }
         return ERR_OK;
@@ -189,7 +189,7 @@ altcp_proxyconnect_lower_recv(void *arg, struct altcp_pcb *inner_conn, struct pb
   altcp_proxyconnect_state_t *state;
   struct altcp_pcb *conn = (struct altcp_pcb *)arg;
 
-  LWIP_ASSERT("no err expected", err == ERR_OK);
+  // LWIP_ASSERT("no err expected", err == ERR_OK);
   LWIP_UNUSED_ARG(err);
 
   if (!conn) {
@@ -200,8 +200,8 @@ altcp_proxyconnect_lower_recv(void *arg, struct altcp_pcb *inner_conn, struct pb
     altcp_close(inner_conn);
     return ERR_CLSD;
   }
-  state = (altcp_proxyconnect_state_t *)conn->state;
-  LWIP_ASSERT("pcb mismatch", conn->inner_conn == inner_conn);
+  state = (altcp_proxyconnect_state_t *) conn.state;
+  // LWIP_ASSERT("pcb mismatch",  conn.inner_conn == inner_conn);
   if (!state) {
     /* already closed */
     if (p != NULL) {
@@ -210,10 +210,10 @@ altcp_proxyconnect_lower_recv(void *arg, struct altcp_pcb *inner_conn, struct pb
     altcp_close(inner_conn);
     return ERR_CLSD;
   }
-  if (state->flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE) {
+  if ( state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE) {
     /* application phase, just pass this through */
-    if (conn->recv) {
-      return conn->recv(conn->arg, conn, p, err);
+    if ( conn.recv) {
+      return  conn.recv( conn.arg, conn, p, err);
     }
     pbuf_free(p);
     return ERR_OK;
@@ -230,12 +230,12 @@ altcp_proxyconnect_lower_recv(void *arg, struct altcp_pcb *inner_conn, struct pb
       /* @todo: parse setup phase rx data
          for now, we just wait for the end of the header... */
       u16_t idx = pbuf_memfind(p, "\r\n\r\n", 4, 0);
-      altcp_recved(inner_conn, p->tot_len);
+      altcp_recved(inner_conn,  p.tot_len);
       pbuf_free(p);
       if (idx != 0xFFFF) {
-        state->flags |= ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE;
-        if (conn->connected) {
-          return conn->connected(conn->arg, conn, ERR_OK);
+         state.flags |= ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE;
+        if ( conn.connected) {
+          return  conn.connected( conn.arg, conn, ERR_OK);
         }
       }
       return ERR_OK;
@@ -253,16 +253,16 @@ altcp_proxyconnect_lower_sent(void *arg, struct altcp_pcb *inner_conn, u16_t len
   struct altcp_pcb *conn = (struct altcp_pcb *)arg;
   LWIP_UNUSED_ARG(len);
   if (conn) {
-    altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *)conn->state;
-    LWIP_ASSERT("pcb mismatch", conn->inner_conn == inner_conn);
+    altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *) conn.state;
+    // LWIP_ASSERT("pcb mismatch",  conn.inner_conn == inner_conn);
     LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
-    if (!state || !(state->flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
+    if (!state || !( state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
       /* @todo: do something here? */
       return ERR_OK;
     }
     /* pass this on to upper sent */
-    if (conn->sent) {
-      return conn->sent(conn->arg, conn, len);
+    if ( conn.sent) {
+      return  conn.sent( conn.arg, conn, len);
     }
   }
   return ERR_OK;
@@ -277,10 +277,10 @@ altcp_proxyconnect_lower_poll(void *arg, struct altcp_pcb *inner_conn)
 {
   struct altcp_pcb *conn = (struct altcp_pcb *)arg;
   if (conn) {
-    LWIP_ASSERT("pcb mismatch", conn->inner_conn == inner_conn);
+    // LWIP_ASSERT("pcb mismatch",  conn.inner_conn == inner_conn);
     LWIP_UNUSED_ARG(inner_conn); /* for LWIP_NOASSERT */
-    if (conn->poll) {
-      return conn->poll(conn->arg, conn);
+    if ( conn.poll) {
+      return  conn.poll( conn.arg, conn);
     }
   }
   return ERR_OK;
@@ -291,9 +291,9 @@ altcp_proxyconnect_lower_err(void *arg, err_t err)
 {
   struct altcp_pcb *conn = (struct altcp_pcb *)arg;
   if (conn) {
-    conn->inner_conn = NULL; /* already freed */
-    if (conn->err) {
-      conn->err(conn->arg, err);
+     conn.inner_conn = NULL; /* already freed */
+    if ( conn.err) {
+       conn.err( conn.arg, err);
     }
     altcp_free(conn);
   }
@@ -320,19 +320,19 @@ altcp_proxyconnect_setup(struct altcp_proxyconnect_config *config, struct altcp_
   if (!config) {
     return ERR_ARG;
   }
-  LWIP_ASSERT("invalid inner_conn", conn != inner_conn);
+  // LWIP_ASSERT("invalid inner_conn", conn != inner_conn);
 
   /* allocate proxyconnect context */
   state = altcp_proxyconnect_state_alloc();
   if (state == NULL) {
     return ERR_MEM;
   }
-  state->flags = 0;
-  state->conf = config;
+   state.flags = 0;
+   state.conf = config;
   altcp_proxyconnect_setup_callbacks(conn, inner_conn);
-  conn->inner_conn = inner_conn;
-  conn->fns = &altcp_proxyconnect_functions;
-  conn->state = state;
+   conn.inner_conn = inner_conn;
+   conn.fns = &altcp_proxyconnect_functions;
+   conn.state = state;
   return ERR_OK;
 }
 
@@ -400,7 +400,7 @@ altcp_proxyconnect_alloc(void *arg, u8_t ip_type)
 }
 
 
-#if LWIP_ALTCP_TLS
+// #if LWIP_ALTCP_TLS
 
 /** Allocator function to allocate a TLS connection through a proxy.
  *
@@ -419,22 +419,22 @@ altcp_proxyconnect_tls_alloc(void *arg, u8_t ip_type)
   struct altcp_pcb *proxy_pcb;
   struct altcp_pcb *tls_pcb;
 
-  proxy_pcb = altcp_proxyconnect_new_tcp(&cfg->proxy, ip_type);
-  tls_pcb = altcp_tls_wrap(cfg->tls_config, proxy_pcb);
+  proxy_pcb = altcp_proxyconnect_new_tcp(& cfg.proxy, ip_type);
+  tls_pcb = altcp_tls_wrap( cfg.tls_config, proxy_pcb);
 
   if (tls_pcb == NULL) {
     altcp_close(proxy_pcb);
   }
   return tls_pcb;
 }
-#endif /* LWIP_ALTCP_TLS */
+// #endif /* LWIP_ALTCP_TLS */
 
 /* "virtual" functions */
 static void
 altcp_proxyconnect_set_poll(struct altcp_pcb *conn, u8_t interval)
 {
   if (conn != NULL) {
-    altcp_poll(conn->inner_conn, altcp_proxyconnect_lower_poll, interval);
+    altcp_poll( conn.inner_conn, altcp_proxyconnect_lower_poll, interval);
   }
 }
 
@@ -445,14 +445,14 @@ altcp_proxyconnect_recved(struct altcp_pcb *conn, u16_t len)
   if (conn == NULL) {
     return;
   }
-  state = (altcp_proxyconnect_state_t *)conn->state;
+  state = (altcp_proxyconnect_state_t *) conn.state;
   if (state == NULL) {
     return;
   }
-  if (!(state->flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
+  if (!( state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
     return;
   }
-  altcp_recved(conn->inner_conn, len);
+  altcp_recved( conn.inner_conn, len);
 }
 
 static err_t
@@ -463,21 +463,21 @@ altcp_proxyconnect_connect(struct altcp_pcb *conn, const ip_addr_t *ipaddr, u16_
   if ((conn == NULL) || (ipaddr == NULL)) {
     return ERR_VAL;
   }
-  state = (altcp_proxyconnect_state_t *)conn->state;
+  state = (altcp_proxyconnect_state_t *) conn.state;
   if (state == NULL) {
     return ERR_VAL;
   }
-  if (state->flags & ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED) {
+  if ( state.flags & ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED) {
     return ERR_VAL;
   }
-  state->flags |= ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED;
+   state.flags |= ALTCP_PROXYCONNECT_FLAGS_CONNECT_STARTED;
 
-  conn->connected = connected;
+   conn.connected = connected;
   /* connect to our proxy instead, but store the requested address and port */
-  ip_addr_copy(state->outer_addr, *ipaddr);
-  state->outer_port = port;
+  ip_addr_copy( state.outer_addr, *ipaddr);
+   state.outer_port = port;
 
-  return altcp_connect(conn->inner_conn, &state->conf->proxy_addr, state->conf->proxy_port, altcp_proxyconnect_lower_connected);
+  return altcp_connect( conn.inner_conn, & state.conf->proxy_addr,  state.conf->proxy_port, altcp_proxyconnect_lower_connected);
 }
 
 static struct altcp_pcb *
@@ -494,8 +494,8 @@ static void
 altcp_proxyconnect_abort(struct altcp_pcb *conn)
 {
   if (conn != NULL) {
-    if (conn->inner_conn != NULL) {
-      altcp_abort(conn->inner_conn);
+    if ( conn.inner_conn != NULL) {
+      altcp_abort( conn.inner_conn);
     }
     altcp_free(conn);
   }
@@ -507,8 +507,8 @@ altcp_proxyconnect_close(struct altcp_pcb *conn)
   if (conn == NULL) {
     return ERR_VAL;
   }
-  if (conn->inner_conn != NULL) {
-    err_t err = altcp_close(conn->inner_conn);
+  if ( conn.inner_conn != NULL) {
+    err_t err = altcp_close( conn.inner_conn);
     if (err != ERR_OK) {
       /* closing inner conn failed, return the error */
       return err;
@@ -530,16 +530,16 @@ altcp_proxyconnect_write(struct altcp_pcb *conn, const void *dataptr, u16_t len,
     return ERR_VAL;
   }
 
-  state = (altcp_proxyconnect_state_t *)conn->state;
+  state = (altcp_proxyconnect_state_t *) conn.state;
   if (state == NULL) {
     /* @todo: which error? */
     return ERR_CLSD;
   }
-  if (!(state->flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
+  if (!( state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE)) {
     /* @todo: which error? */
     return ERR_VAL;
   }
-  return altcp_write(conn->inner_conn, dataptr, len, apiflags);
+  return altcp_write( conn.inner_conn, dataptr, len, apiflags);
 }
 
 static void
@@ -547,10 +547,10 @@ altcp_proxyconnect_dealloc(struct altcp_pcb *conn)
 {
   /* clean up and free tls state */
   if (conn) {
-    altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *)conn->state;
+    altcp_proxyconnect_state_t *state = (altcp_proxyconnect_state_t *) conn.state;
     if (state) {
       altcp_proxyconnect_state_free(state);
-      conn->state = NULL;
+       conn.state = NULL;
     }
   }
 }
@@ -578,7 +578,7 @@ const struct altcp_functions altcp_proxyconnect_functions = {
   altcp_default_get_port
 #ifdef LWIP_DEBUG
   , altcp_default_dbg_get_tcp_state
-#endif
+// #endif
 };
 
-#endif /* LWIP_ALTCP */
+// #endif /* LWIP_ALTCP */

@@ -147,7 +147,7 @@ pub fn pppapi_pppos_create(
 ) -> ppp_pcb {
     let pppos: &mut pppos_pcb;
     let mut ppp: &mut ppp_pcb;
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     pppos = LWIP_MEMPOOL_ALLOC(PPPOS_PCB);
     if (pppos == None) {
@@ -414,7 +414,7 @@ pub fn pppos_input_tcpip(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32) {
 pub fn pppos_input_sys(p: &mut PacketBuffer, inp: &mut NetIfc) {
     let ppp: &mut ppp_pcb = inp.state;
     let n: &mut PacketBuffer;
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     // for (n = p; n; n = n.next) {
     //   pppos_input(ppp, n.payload, n.len);
@@ -443,7 +443,7 @@ pub fn pppos_input(ppp: &mut ppp_pcb, s: &mut Vec<u8>, l: i32) {
     let escaped: u8;
     PPPOS_DECL_PROTECT(lev);
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     PPPDEBUG(
         LOG_DEBUG,
@@ -714,7 +714,7 @@ pub fn pppos_input_callback(arg: &mut Vec<u8>) {
 
     ppp = (pb.payload).ppp;
     if (pbuf_remove_header(pb, sizeof(pppos_input_header))) {
-        LWIP_ASSERT("pbuf_remove_header failed\n", 0);
+        // LWIP_ASSERT("pbuf_remove_header failed\n", 0);
         // goto drop;
     }
 

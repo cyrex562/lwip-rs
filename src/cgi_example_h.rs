@@ -33,6 +33,6 @@
 
 #define LWIP_HDR_HTTP_EXAMPLES_CGI_EXAMPLE
 
-void cgi_ex_init(void);
+void cgi_ex_init();
 
  /* LWIP_HDR_HTTP_EXAMPLES_CGI_EXAMPLE */

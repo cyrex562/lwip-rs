@@ -249,7 +249,7 @@ pub fn system_get_value(node: &mut snmp_scalar_array_node_def, value: &mut Vec<u
     }
 
     //  handle string values (OID 1,4,5 and 6) 
-    LWIP_ASSERT("", (value != None));
+    // LWIP_ASSERT("", (value != None));
     if (var_len == None) {
         result = strlen(var);
     } else {
@@ -338,7 +338,7 @@ pub fn system_set_value(node: &mut snmp_scalar_array_node_def, len: usize, value
     }
 
     //  no need to check size of target buffer, this was already done in set_test method 
-    LWIP_ASSERT("", var_wr != None);
+    // LWIP_ASSERT("", var_wr != None);
     MEMCPY(var_wr, value, len);
 
     if (var_wr_len == None) {

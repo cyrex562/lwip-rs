@@ -63,7 +63,7 @@
 
 
 
-#if BYTE_ORDER == LITTLE_ENDIAN
+// #if BYTE_ORDER == LITTLE_ENDIAN
 
 #if !defined(lwip_htons)
 /**
@@ -77,7 +77,7 @@ lwip_htons(u16_t n)
 {
   return PP_HTONS(n);
 }
-#endif /* lwip_htons */
+// #endif /* lwip_htons */
 
 #if !defined(lwip_htonl)
 /**
@@ -91,9 +91,9 @@ lwip_htonl(u32_t n)
 {
   return PP_HTONL(n);
 }
-#endif /* lwip_htonl */
+// #endif /* lwip_htonl */
 
-#endif /* BYTE_ORDER == LITTLE_ENDIAN */
+// #endif /* BYTE_ORDER == LITTLE_ENDIAN */
 
 #ifndef lwip_strnstr
 /**
@@ -116,7 +116,7 @@ lwip_strnstr(const char *buffer, const char *token, size_t n)
   }
   return NULL;
 }
-#endif
+// #endif
 
 #ifndef lwip_strnistr
 /**
@@ -139,7 +139,7 @@ lwip_strnistr(const char *buffer, const char *token, size_t n)
   }
   return NULL;
 }
-#endif
+// #endif
 
 #ifndef lwip_stricmp
 /**
@@ -174,7 +174,7 @@ lwip_stricmp(const char *str1, const char *str2)
   } while (c1 != 0);
   return 0;
 }
-#endif
+// #endif
 
 #ifndef lwip_strnicmp
 /**
@@ -210,7 +210,7 @@ lwip_strnicmp(const char *str1, const char *str2, size_t len)
   } while ((len != 0) && (c1 != 0));
   return 0;
 }
-#endif
+// #endif
 
 #ifndef lwip_itoa
 /**
@@ -260,4 +260,4 @@ lwip_itoa(char *result, size_t bufsize, int number)
   /* move from temporary buffer to output buffer (sign is not moved) */
   memmove(res, tmp, (size_t)((result + bufsize) - tmp));
 }
-#endif
+// #endif

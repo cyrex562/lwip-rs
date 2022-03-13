@@ -58,7 +58,7 @@
 struct ip6_addr {
   u32_t addr[4];
 _SCOPES
-  u8_t zone;
+  zone: u8;
  /* LWIP_IPV6_SCOPES */
 
 

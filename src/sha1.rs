@@ -39,7 +39,7 @@
  */
 
 
-#if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_SHA1
+// #if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_SHA1
 
 
 
@@ -56,7 +56,7 @@
         | ( (unsigned long) (b)[(i) + 2] <<  8 )        \
         | ( (unsigned long) (b)[(i) + 3]       );       \
 }
-#endif
+// #endif
 
 #ifndef PUT_ULONG_BE
 #define PUT_ULONG_BE(n,b,i)                             \
@@ -66,21 +66,21 @@
     (b)[(i) + 2] = (unsigned char) ( (n) >>  8 );       \
     (b)[(i) + 3] = (unsigned char) ( (n)       );       \
 }
-#endif
+// #endif
 
 /*
  * SHA-1 context setup
  */
 void sha1_starts( sha1_context *ctx )
 {
-    ctx->total[0] = 0;
-    ctx->total[1] = 0;
+     ctx.total[0] = 0;
+     ctx.total[1] = 0;
 
-    ctx->state[0] = 0x67452301;
-    ctx->state[1] = 0xEFCDAB89;
-    ctx->state[2] = 0x98BADCFE;
-    ctx->state[3] = 0x10325476;
-    ctx->state[4] = 0xC3D2E1F0;
+     ctx.state[0] = 0x67452301;
+     ctx.state[1] = 0xEFCDAB89;
+     ctx.state[2] = 0x98BADCFE;
+     ctx.state[3] = 0x10325476;
+     ctx.state[4] = 0xC3D2E1F0;
 }
 
 static void sha1_process( sha1_context *ctx, const unsigned char data[64] )
@@ -118,11 +118,11 @@ static void sha1_process( sha1_context *ctx, const unsigned char data[64] )
     e += S(a,5) + F(b,c,d) + K + x; b = S(b,30);        \
 }
 
-    A = ctx->state[0];
-    B = ctx->state[1];
-    C = ctx->state[2];
-    D = ctx->state[3];
-    E = ctx->state[4];
+    A =  ctx.state[0];
+    B =  ctx.state[1];
+    C =  ctx.state[2];
+    D =  ctx.state[3];
+    E =  ctx.state[4];
 
 #define F(x,y,z) (z ^ (x & (y ^ z)))
 #define K 0x5A827999
@@ -232,11 +232,11 @@ static void sha1_process( sha1_context *ctx, const unsigned char data[64] )
 #undef K
 #undef F
 
-    ctx->state[0] += A;
-    ctx->state[1] += B;
-    ctx->state[2] += C;
-    ctx->state[3] += D;
-    ctx->state[4] += E;
+     ctx.state[0] += A;
+     ctx.state[1] += B;
+     ctx.state[2] += C;
+     ctx.state[3] += D;
+     ctx.state[4] += E;
 }
 
 /*
@@ -250,20 +250,20 @@ void sha1_update( sha1_context *ctx, const unsigned char *input, int ilen )
     if( ilen <= 0 )
         return;
 
-    left = ctx->total[0] & 0x3F;
+    left =  ctx.total[0] & 0x3F;
     fill = 64 - left;
 
-    ctx->total[0] += ilen;
-    ctx->total[0] &= 0xFFFFFFFF;
+     ctx.total[0] += ilen;
+     ctx.total[0] &= 0xFFFFFFFF;
 
-    if( ctx->total[0] < (unsigned long) ilen )
-        ctx->total[1]++;
+    if(  ctx.total[0] < (unsigned long) ilen )
+         ctx.total[1]++;
 
     if( left && ilen >= fill )
     {
-        MEMCPY( (void *) (ctx->buffer + left),
+        MEMCPY( (void *) ( ctx.buffer + left),
                 input, fill );
-        sha1_process( ctx, ctx->buffer );
+        sha1_process( ctx,  ctx.buffer );
         input += fill;
         ilen  -= fill;
         left = 0;
@@ -278,7 +278,7 @@ void sha1_update( sha1_context *ctx, const unsigned char *input, int ilen )
 
     if( ilen > 0 )
     {
-        MEMCPY( (void *) (ctx->buffer + left),
+        MEMCPY( (void *) ( ctx.buffer + left),
                 input, ilen );
     }
 }
@@ -300,24 +300,24 @@ void sha1_finish( sha1_context *ctx, unsigned char output[20] )
     unsigned long high, low;
     unsigned char msglen[8];
 
-    high = ( ctx->total[0] >> 29 )
-         | ( ctx->total[1] <<  3 );
-    low  = ( ctx->total[0] <<  3 );
+    high = (  ctx.total[0] >> 29 )
+         | (  ctx.total[1] <<  3 );
+    low  = (  ctx.total[0] <<  3 );
 
     PUT_ULONG_BE( high, msglen, 0 );
     PUT_ULONG_BE( low,  msglen, 4 );
 
-    last = ctx->total[0] & 0x3F;
+    last =  ctx.total[0] & 0x3F;
     padn = ( last < 56 ) ? ( 56 - last ) : ( 120 - last );
 
     sha1_update( ctx, sha1_padding, padn );
     sha1_update( ctx, msglen, 8 );
 
-    PUT_ULONG_BE( ctx->state[0], output,  0 );
-    PUT_ULONG_BE( ctx->state[1], output,  4 );
-    PUT_ULONG_BE( ctx->state[2], output,  8 );
-    PUT_ULONG_BE( ctx->state[3], output, 12 );
-    PUT_ULONG_BE( ctx->state[4], output, 16 );
+    PUT_ULONG_BE(  ctx.state[0], output,  0 );
+    PUT_ULONG_BE(  ctx.state[1], output,  4 );
+    PUT_ULONG_BE(  ctx.state[2], output,  8 );
+    PUT_ULONG_BE(  ctx.state[3], output, 12 );
+    PUT_ULONG_BE(  ctx.state[4], output, 16 );
 }
 
 /*
@@ -332,4 +332,4 @@ void sha1( unsigned char *input, int ilen, unsigned char output[20] )
     sha1_finish( &ctx, output );
 }
 
-#endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_SHA1 */
+// #endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_SHA1 */

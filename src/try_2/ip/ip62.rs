@@ -493,7 +493,7 @@ pub fn ip6_input(p: &mut PacketBuffer, inp: &mut NetworkInterfaceCtx) {
     let check_ip_src: i32 = 1;
     let raw_status: raw_input_state_t;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     IP6_STATS_INC(ip6.recv);
 
@@ -1132,7 +1132,7 @@ pub fn ip6_output_if_src(
     let ip6hdr: &mut ip6_hdr;
     let dest_addr: ip6_addr_t;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
 
     //  Should the IPv6 header be generated or is it already included in p? 
@@ -1157,7 +1157,7 @@ pub fn ip6_output_if_src(
         }
 
         ip6hdr = p.payload;
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "check that first pbuf can hold struct ip6_hdr",
             (p.len >= sizeof(ip6_hdr)),
         );

@@ -60,20 +60,20 @@ struct mld_group {
   /** multicast address */
   ip6_addr_t         group_address;
   /** signifies we were the last person to report */
-  u8_t               last_reporter_flag;
+  last_reporter_flag: u8;
   /** current state of the group */
-  u8_t               group_state;
+  group_state: u8;
   /** timer for reporting */
-  u16_t              timer;
+  timer: u16;
   /** counter of simultaneous uses */
-  u8_t               use;
+  use: u8;
 };
 
 pub const MLD6_TMR_INTERVAL: u32 = 100; /* Milliseconds */
 
 err_t  mld6_stop(struct netif *netif);
 void   mld6_report_groups(struct netif *netif);
-void   mld6_tmr(void);
+void   mld6_tmr();
 struct mld_group *mld6_lookfor_group(struct netif *ifp, const ip6_addr_t *addr);
 void   mld6_input(struct pbuf *p, struct netif *inp);
 err_t  mld6_joingroup(const ip6_addr_t *srcaddr, const ip6_addr_t *groupaddr);

@@ -58,7 +58,7 @@
  */
 
 
-#if PPP_SUPPORT && ECP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && ECP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -67,7 +67,7 @@
 
 
 
-#if PPP_OPTIONS
+// #if PPP_OPTIONS
 static option_t ecp_option_list[] = {
     { "noecp", o_bool, &ecp_protent.enabled_flag,
       "Disable ECP negotiation" },
@@ -76,7 +76,7 @@ static option_t ecp_option_list[] = {
 
     { NULL }
 };
-#endif /* PPP_OPTIONS */
+// #endif /* PPP_OPTIONS */
 
 /*
  * Protocol entry points from main code.
@@ -90,11 +90,11 @@ static void ecp_lowerdown (int);
 static void ecp_input (int unit, u_char *pkt, int len);
 static void ecp_protrej (int unit);
 */
-#if PRINTPKT_SUPPORT
+// #if PRINTPKT_SUPPORT
 static int  ecp_printpkt (const u_char *pkt, int len,
 			      void (*printer) (void *, char *, ...),
 			      void *arg);
-#endif /* PRINTPKT_SUPPORT */
+// #endif /* PRINTPKT_SUPPORT */
 /*
 static void ecp_datainput (int unit, u_char *pkt, int len);
 */
@@ -108,24 +108,24 @@ const struct protent ecp_protent = {
     NULL, /* ecp_lowerdown, */
     NULL, /* ecp_open, */
     NULL, /* ecp_close, */
-#if PRINTPKT_SUPPORT
+// #if PRINTPKT_SUPPORT
     ecp_printpkt,
-#endif /* PRINTPKT_SUPPORT */
-#if PPP_DATAINPUT
+// #endif /* PRINTPKT_SUPPORT */
+// #if PPP_DATAINPUT
     NULL, /* ecp_datainput, */
-#endif /* PPP_DATAINPUT */
-#if PRINTPKT_SUPPORT
+// #endif /* PPP_DATAINPUT */
+// #if PRINTPKT_SUPPORT
     "ECP",
     "Encrypted",
-#endif /* PRINTPKT_SUPPORT */
-#if PPP_OPTIONS
+// #endif /* PRINTPKT_SUPPORT */
+// #if PPP_OPTIONS
     ecp_option_list,
     NULL,
-#endif /* PPP_OPTIONS */
-#if DEMAND_SUPPORT
+// #endif /* PPP_OPTIONS */
+// #if DEMAND_SUPPORT
     NULL,
     NULL
-#endif /* DEMAND_SUPPORT */
+// #endif /* DEMAND_SUPPORT */
 };
 
 fsm ecp_fsm[NUM_PPP];
@@ -161,22 +161,22 @@ ecp_init(unit)
 {
     fsm *f = &ecp_fsm[unit];
 
-    f->unit = unit;
-    f->protocol = PPP_ECP;
-    f->callbacks = &ecp_callbacks;
+     f.unit = unit;
+     f.protocol = PPP_ECP;
+     f.callbacks = &ecp_callbacks;
     fsm_init(f);
 
-#if 0 /* Not necessary, everything is cleared in ppp_new() */
+// #if 0 /* Not necessary, everything is cleared in ppp_new() */
     memset(&ecp_wantoptions[unit],  0, sizeof(ecp_options));
     memset(&ecp_gotoptions[unit],   0, sizeof(ecp_options));
     memset(&ecp_allowoptions[unit], 0, sizeof(ecp_options));
     memset(&ecp_hisoptions[unit],   0, sizeof(ecp_options));
-#endif /* 0 */
+// #endif /* 0 */
 
 }
 
 
-#if PRINTPKT_SUPPORT
+// #if PRINTPKT_SUPPORT
 static int
 ecp_printpkt(p, plen, printer, arg)
     const u_char *p;
@@ -186,6 +186,6 @@ ecp_printpkt(p, plen, printer, arg)
 {
     return 0;
 }
-#endif /* PRINTPKT_SUPPORT */
+// #endif /* PRINTPKT_SUPPORT */
 
-#endif /* PPP_SUPPORT && ECP_SUPPORT */
+// #endif /* PPP_SUPPORT && ECP_SUPPORT */

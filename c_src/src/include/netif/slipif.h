@@ -69,7 +69,7 @@ pub const SLIP_RX_FROM_ISR: u32 = 0; /** Set this to 1 (default for SLIP_RX_FROM
 
 err_t slipif_init(struct netif * netif);
 void slipif_poll(struct netif *netif);
-#if SLIP_RX_FROM_ISR
+// #if SLIP_RX_FROM_ISR
 void slipif_process_rxqueue(struct netif *netif);
 void slipif_received_byte(struct netif *netif, u8_t data);
 void slipif_received_bytes(struct netif *netif, u8_t *data, u8_t len);

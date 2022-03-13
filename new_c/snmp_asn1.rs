@@ -37,7 +37,7 @@
 
 
 
-#if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -56,41 +56,41 @@
 err_t
 snmp_ans1_enc_tlv(struct snmp_pbuf_stream *pbuf_stream, struct snmp_asn1_tlv *tlv)
 {
-  u8_t data;
-  u8_t length_bytes_required;
+  data: u8;
+  length_bytes_required: u8;
 
   /* write type */
-  if ((tlv->type & SNMP_ASN1_DATATYPE_MASK) == SNMP_ASN1_DATATYPE_EXTENDED) {
+  if (( tlv.type & SNMP_ASN1_DATATYPE_MASK) == SNMP_ASN1_DATATYPE_EXTENDED) {
     /* extended format is not used by SNMP so we do not accept those values */
     return ERR_ARG;
   }
-  if (tlv->type_len != 0) {
+  if ( tlv.type_len != 0) {
     /* any other value as auto is not accepted for type (we always use one byte because extended syntax is prohibited) */
     return ERR_ARG;
   }
 
-  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, tlv->type));
-  tlv->type_len = 1;
+  PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream,  tlv.type));
+   tlv.type_len = 1;
 
   /* write length */
-  if (tlv->value_len <= 127) {
+  if ( tlv.value_len <= 127) {
     length_bytes_required = 1;
-  } else if (tlv->value_len <= 255) {
+  } else if ( tlv.value_len <= 255) {
     length_bytes_required = 2;
   } else  {
     length_bytes_required = 3;
   }
 
   /* check for forced min length */
-  if (tlv->length_len > 0) {
-    if (tlv->length_len < length_bytes_required) {
+  if ( tlv.length_len > 0) {
+    if ( tlv.length_len < length_bytes_required) {
       /* unable to code requested length in requested number of bytes */
       return ERR_ARG;
     }
 
-    length_bytes_required = tlv->length_len;
+    length_bytes_required =  tlv.length_len;
   } else {
-    tlv->length_len = length_bytes_required;
+     tlv.length_len = length_bytes_required;
   }
 
   if (length_bytes_required > 1) {
@@ -103,7 +103,7 @@ snmp_ans1_enc_tlv(struct snmp_pbuf_stream *pbuf_stream, struct snmp_asn1_tlv *tl
     while (length_bytes_required > 1) {
       if (length_bytes_required == 2) {
         /* append high byte */
-        data = (tlv->value_len >> 8);
+        data = ( tlv.value_len >> 8);
       } else {
         /* append leading 0x00 */
         data = 0x00;
@@ -115,7 +115,7 @@ snmp_ans1_enc_tlv(struct snmp_pbuf_stream *pbuf_stream, struct snmp_asn1_tlv *tl
   }
 
   /* append low byte */
-  data = (tlv->value_len & 0xFF);
+  data = ( tlv.value_len & 0xFF);
   PBUF_OP_EXEC(snmp_pbuf_stream_write(pbuf_stream, data));
 
   return ERR_OK;
@@ -226,7 +226,7 @@ snmp_asn1_enc_oid(struct snmp_pbuf_stream *pbuf_stream, const u32_t *oid, u16_t 
     tail = 0;
     shift = 28;
     while (shift > 0) {
-      u8_t code;
+      code: u8;
 
       code = (sub_id >> shift);
       if ((code != 0) || (tail != 0)) {
@@ -355,43 +355,43 @@ snmp_asn1_enc_oid_cnt(const u32_t *oid, u16_t oid_len, u16_t *octets_needed)
 err_t
 snmp_asn1_dec_tlv(struct snmp_pbuf_stream *pbuf_stream, struct snmp_asn1_tlv *tlv)
 {
-  u8_t data;
+  data: u8;
 
   /* decode type first */
   PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
-  tlv->type = data;
+   tlv.type = data;
 
-  if ((tlv->type & SNMP_ASN1_DATATYPE_MASK) == SNMP_ASN1_DATATYPE_EXTENDED) {
+  if (( tlv.type & SNMP_ASN1_DATATYPE_MASK) == SNMP_ASN1_DATATYPE_EXTENDED) {
     /* extended format is not used by SNMP so we do not accept those values */
     return ERR_VAL;
   }
-  tlv->type_len = 1;
+   tlv.type_len = 1;
 
   /* now, decode length */
   PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
 
   if (data < 0x80) { /* short form */
-    tlv->length_len = 1;
-    tlv->value_len  = data;
+     tlv.length_len = 1;
+     tlv.value_len  = data;
   } else if (data > 0x80) { /* long form */
     u8_t length_bytes = data - 0x80;
-    if (length_bytes > pbuf_stream->length) {
+    if (length_bytes >  pbuf_stream.length) {
       return ERR_VAL;
     }
-    tlv->length_len = length_bytes + 1; /* this byte + defined number of length bytes following */
-    tlv->value_len = 0;
+     tlv.length_len = length_bytes + 1; /* this byte + defined number of length bytes following */
+     tlv.value_len = 0;
 
     while (length_bytes > 0) {
       /* we only support up to u16.maxvalue-1 (2 bytes) but have to accept leading zero bytes */
-      if (tlv->value_len > 0xFF) {
+      if ( tlv.value_len > 0xFF) {
         return ERR_VAL;
       }
       PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
-      tlv->value_len <<= 8;
-      tlv->value_len |= data;
+       tlv.value_len <<= 8;
+       tlv.value_len |= data;
 
       /* take care for special value used for indefinite length */
-      if (tlv->value_len == 0xFFFF) {
+      if ( tlv.value_len == 0xFFFF) {
         return ERR_VAL;
       }
 
@@ -420,7 +420,7 @@ snmp_asn1_dec_tlv(struct snmp_pbuf_stream *pbuf_stream, struct snmp_asn1_tlv *tl
 err_t
 snmp_asn1_dec_u32t(struct snmp_pbuf_stream *pbuf_stream, u16_t len, u32_t *value)
 {
-  u8_t data;
+  data: u8;
 
   if ((len > 0) && (len <= 5)) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
@@ -458,7 +458,7 @@ snmp_asn1_dec_u32t(struct snmp_pbuf_stream *pbuf_stream, u16_t len, u32_t *value
 err_t
 snmp_asn1_dec_s32t(struct snmp_pbuf_stream *pbuf_stream, u16_t len, s32_t *value)
 {
-  u8_t data;
+  data: u8;
 
   if ((len > 0) && (len < 5)) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
@@ -498,7 +498,7 @@ err_t
 snmp_asn1_dec_oid(struct snmp_pbuf_stream *pbuf_stream, u16_t len, u32_t *oid, u8_t *oid_len, u8_t oid_max_len)
 {
   u32_t *oid_ptr;
-  u8_t data;
+  data: u8;
 
   *oid_len = 0;
   oid_ptr = oid;
@@ -603,7 +603,7 @@ snmp_asn1_dec_raw(struct snmp_pbuf_stream *pbuf_stream, u16_t len, u8_t *buf, u1
   return ERR_OK;
 }
 
-#if LWIP_HAVE_INT64
+// #if LWIP_HAVE_INT64
 /**
  * Returns octet count for an u64_t.
  *
@@ -643,7 +643,7 @@ snmp_asn1_enc_u64t_cnt(u64_t value, u16_t *octets_needed)
 err_t
 snmp_asn1_dec_u64t(struct snmp_pbuf_stream *pbuf_stream, u16_t len, u64_t *value)
 {
-  u8_t data;
+  data: u8;
 
   if ((len > 0) && (len <= 9)) {
     PBUF_OP_EXEC(snmp_pbuf_stream_read(pbuf_stream, &data));
@@ -699,6 +699,6 @@ snmp_asn1_enc_u64t(struct snmp_pbuf_stream *pbuf_stream, u16_t octets_needed, u6
 
   return ERR_OK;
 }
-#endif
+// #endif
 
-#endif /* LWIP_SNMP */
+// #endif /* LWIP_SNMP */

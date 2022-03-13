@@ -40,7 +40,7 @@
 
 
 
-#if LWIP_SNMP && LWIP_SNMP_V3 && LWIP_SNMP_V3_MBEDTLS
+// #if LWIP_SNMP && LWIP_SNMP_V3 && LWIP_SNMP_V3_MBEDTLS
 
 
 
@@ -53,11 +53,11 @@ snmpv3_auth(struct snmp_pbuf_stream *stream, u16_t length,
             const u8_t *key, snmpv3_auth_algo_t algo, u8_t *hmac_out)
 {
   u32_t i;
-  u8_t key_len;
+  key_len: u8;
   const mbedtls_md_info_t *md_info;
   mbedtls_md_context_t ctx;
   struct snmp_pbuf_stream read_stream;
-  snmp_pbuf_stream_init(&read_stream, stream->pbuf, stream->offset, stream->length);
+  snmp_pbuf_stream_init(&read_stream,  stream.pbuf,  stream.offset,  stream.length);
 
   if (algo == SNMP_V3_AUTH_ALGO_MD5) {
     md_info = mbedtls_md_info_from_type(MBEDTLS_MD_MD5);
@@ -79,7 +79,7 @@ snmpv3_auth(struct snmp_pbuf_stream *stream, u16_t length,
   }
 
   for (i = 0; i < length; i++) {
-    u8_t byte;
+    byte: u8;
 
     if (snmp_pbuf_stream_read(&read_stream, &byte)) {
       goto free_md;
@@ -102,7 +102,7 @@ free_md:
   return ERR_ARG;
 }
 
-#if LWIP_SNMP_V3_CRYPTO
+// #if LWIP_SNMP_V3_CRYPTO
 
 err_t
 snmpv3_crypt(struct snmp_pbuf_stream *stream, u16_t length,
@@ -115,8 +115,8 @@ snmpv3_crypt(struct snmp_pbuf_stream *stream, u16_t length,
 
   struct snmp_pbuf_stream read_stream;
   struct snmp_pbuf_stream write_stream;
-  snmp_pbuf_stream_init(&read_stream, stream->pbuf, stream->offset, stream->length);
-  snmp_pbuf_stream_init(&write_stream, stream->pbuf, stream->offset, stream->length);
+  snmp_pbuf_stream_init(&read_stream,  stream.pbuf,  stream.offset,  stream.length);
+  snmp_pbuf_stream_init(&write_stream,  stream.pbuf,  stream.offset,  stream.length);
   mbedtls_cipher_init(&ctx);
 
   if (algo == SNMP_V3_PRIV_ALGO_DES) {
@@ -205,8 +205,8 @@ snmpv3_crypt(struct snmp_pbuf_stream *stream, u16_t length,
     }
 
     for (i = 0; i < length; i++) {
-      u8_t in_byte;
-      u8_t out_byte;
+      in_byte: u8;
+      out_byte: u8;
       size_t out_len = sizeof(out_byte);
 
       if (snmp_pbuf_stream_read(&read_stream, &in_byte) != ERR_OK) {
@@ -231,7 +231,7 @@ error:
   return ERR_OK;
 }
 
-#endif /* LWIP_SNMP_V3_CRYPTO */
+// #endif /* LWIP_SNMP_V3_CRYPTO */
 
 /* A.2.1. Password to Key Sample Code for MD5 */
 void
@@ -245,7 +245,7 @@ snmpv3_password_to_key_md5(
   mbedtls_md5_context MD;
   u8_t *cp, password_buf[64];
   u32_t password_index = 0;
-  u8_t i;
+  i: u8;
   u32_t count = 0;
 
   mbedtls_md5_init(&MD); /* initialize MD5 */
@@ -298,7 +298,7 @@ snmpv3_password_to_key_sha(
   mbedtls_sha1_context SH;
   u8_t *cp, password_buf[72];
   u32_t password_index = 0;
-  u8_t i;
+  i: u8;
   u32_t count = 0;
 
   mbedtls_sha1_init(&SH); /* initialize SHA */
@@ -339,4 +339,4 @@ snmpv3_password_to_key_sha(
   return;
 }
 
-#endif /* LWIP_SNMP && LWIP_SNMP_V3 && LWIP_SNMP_V3_MBEDTLS */
+// #endif /* LWIP_SNMP && LWIP_SNMP_V3 && LWIP_SNMP_V3_MBEDTLS */

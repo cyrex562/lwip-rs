@@ -32,7 +32,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && PPPOS_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && PPPOS_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -89,10 +89,10 @@ struct pppos_pcb_s {
   /* PPPoS rx */
   ext_accm in_accm;                /* Async-Ctl-Char-Map for input. */
   struct pbuf *in_head, *in_tail;  /* The input packet. */
-  u16_t in_protocol;               /* The input protocol code. */
-  u16_t in_fcs;                    /* Input Frame Check Sequence value. */
-  u8_t in_state;                   /* The input process state. */
-  u8_t in_escaped;                 /* Escape next character. */
+  in_protocol: u16;               /* The input protocol code. */
+  in_fcs: u16;                    /* Input Frame Check Sequence value. */
+  in_state: u8;                   /* The input process state. */
+  in_escaped: u8;                 /* Escape next character. */
 };
 
 /* Create a new PPPoS session. */

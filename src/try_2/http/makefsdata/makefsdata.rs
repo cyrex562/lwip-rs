@@ -413,7 +413,7 @@ pub fn process_sub(data_file: &mut FILE, struct_file: &mut FILE) -> i32 {
         let sublen: usize = strlen(curSubdir);
         let freelen: usize = sizeof(curSubdir) - sublen - 1;
         let ret: i32;
-        LWIP_ASSERT("sublen < sizeof(curSubdir)", sublen < sizeof(curSubdir));
+        // LWIP_ASSERT("sublen < sizeof(curSubdir)", sublen < sizeof(curSubdir));
 
         ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
 
@@ -524,9 +524,9 @@ pub fn get_file_data(
     fsize = rs;
     fseek(inFile, 0, SEEK_SET);
     buf = malloc(fsize);
-    LWIP_ASSERT("buf != NULL", buf != None);
+    // LWIP_ASSERT("buf != NULL", buf != None);
     r = fread(buf, 1, fsize, inFile);
-    LWIP_ASSERT("r == fsize", r == fsize);
+    // LWIP_ASSERT("r == fsize", r == fsize);
     *file_size = fsize;
     *is_compressed = 0;
 
@@ -563,10 +563,10 @@ pub fn get_file_data(
                     printf("deflate failed: %d\n", status);
                     exit(-1);
                 }
-                LWIP_ASSERT("out_bytes <= COPY_BUFSIZE", out_bytes <= OUT_BUF_SIZE);
+                // LWIP_ASSERT("out_bytes <= COPY_BUFSIZE", out_bytes <= OUT_BUF_SIZE);
                 if (out_bytes < fsize) {
                     ret_buf = malloc(out_bytes);
-                    LWIP_ASSERT("ret_buf != NULL", ret_buf != None);
+                    // LWIP_ASSERT("ret_buf != NULL", ret_buf != None);
                     memcpy(ret_buf, s_outbuf, out_bytes);
                     {
                         //  sanity-check compression be inflating and comparing to the original
@@ -587,9 +587,9 @@ pub fn get_file_data(
                             &dec_out_bytes,
                             0,
                         );
-                        LWIP_ASSERT("tinfl_decompress failed", dec_status == TINFL_STATUS_DONE);
-                        LWIP_ASSERT("tinfl_decompress size mismatch", fsize == dec_out_bytes);
-                        LWIP_ASSERT(
+                        // LWIP_ASSERT("tinfl_decompress failed", dec_status == TINFL_STATUS_DONE);
+                        // LWIP_ASSERT("tinfl_decompress size mismatch", fsize == dec_out_bytes);
+                        // LWIP_ASSERT(
                             "decompressed memcmp failed",
                             !memcmp(s_checkbuf, buf, fsize),
                         );
@@ -638,7 +638,7 @@ pub fn process_file_data(data_file: &mut FILE, file_data: &mut Vec<u8>, file_siz
     //   }
     // }
     written = fwrite(file_buffer_c, 1, off, data_file);
-    LWIP_ASSERT("written == off", written == off);
+    // LWIP_ASSERT("written == off", written == off);
 }
 
 pub fn write_checksums(
@@ -820,7 +820,7 @@ pub fn checkSsiByFilelist(filename_listfile: &mut String) -> i32 {
         //     }
         //   }
         // }
-        LWIP_ASSERT("lines array overflow", l < num_lines);
+        // LWIP_ASSERT("lines array overflow", l < num_lines);
 
         ssi_file_buffer = buf;
         ssi_file_lines = lines;
@@ -1212,7 +1212,7 @@ pub fn file_write_http_header(
 
     if (is_compressed) {
         //  tell the client about the deflate encoding
-        LWIP_ASSERT("error", deflateNonSsiFiles);
+        // LWIP_ASSERT("error", deflateNonSsiFiles);
         cur_string = "Content-Encoding: deflate\r\n";
         cur_len = strlen(cur_string);
         // fprintf(data_file, NEWLINE "//  \"%s\" (%d bytes) " NEWLINE, cur_string, cur_len);
@@ -1230,14 +1230,14 @@ pub fn file_write_http_header(
     //  ATTENTION: headers are done now (double-CRLF has been written!)
 
     if (precalcChksum) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "hdr_len + cur_len <= sizeof(hdr_buf)",
             hdr_len + cur_len <= sizeof(hdr_buf),
         );
         memcpy(&hdr_buf[hdr_len], cur_string, cur_len);
         hdr_len += cur_len;
 
-        LWIP_ASSERT("strlen(hdr_buf) == hdr_len", strlen(hdr_buf) == hdr_len);
+        // LWIP_ASSERT("strlen(hdr_buf) == hdr_len", strlen(hdr_buf) == hdr_len);
         acc = !inet_chksum(hdr_buf, hdr_len);
         *http_hdr_len = hdr_len;
         *http_hdr_chksum = acc;

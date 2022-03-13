@@ -43,7 +43,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -75,19 +75,19 @@ typedef struct fsm {
     ppp_pcb *pcb;		/* PPP Interface */
     const struct fsm_callbacks *callbacks;	/* Callback routines */
     const char *term_reason;	/* Reason for closing protocol */
-    u8_t seen_ack;		/* Have received valid Ack/Nak/Rej to Req */
+    seen_ack: u8;		/* Have received valid Ack/Nak/Rej to Req */
 				  /* -- This is our only flag, we might use u_int :1 if we have more flags */
-    u16_t protocol;		/* Data Link Layer Protocol field value */
-    u8_t state;			/* State */
-    u8_t flags;			/* Contains option bits */
-    u8_t id;			/* Current id */
-    u8_t reqid;			/* Current request id */
-    u8_t retransmits;		/* Number of retransmissions left */
-    u8_t nakloops;		/* Number of nak loops since last ack */
-    u8_t rnakloops;		/* Number of naks received */
-    u8_t maxnakloops;		/* Maximum number of nak loops tolerated
+    protocol: u16;		/* Data Link Layer Protocol field value */
+    state: u8;			/* State */
+    flags: u8;			/* Contains option bits */
+    id: u8;			/* Current id */
+    reqid: u8;			/* Current request id */
+    retransmits: u8;		/* Number of retransmissions left */
+    nakloops: u8;		/* Number of nak loops since last ack */
+    rnakloops: u8;		/* Number of naks received */
+    maxnakloops: u8;		/* Maximum number of nak loops tolerated
 				   (necessary because IPCP require a custom large max nak loops value) */
-    u8_t term_reason_len;	/* Length of term_reason */
+    term_reason_len: u8;	/* Length of term_reason */
 } fsm;
 
 
@@ -150,7 +150,7 @@ pub const OPT_SILENT: u32 = 4; /* Wait for peer to speak first */
 /*
  * Timeouts.
  */
-#if 0 /* moved to ppp_opts.h */
+// #if 0 /* moved to ppp_opts.h */
 pub const DEFTIMEOUT: u32 = 3; /* Timeout time in seconds */
 pub const DEFMAXTERMREQS: u32 = 2; /* Maximum Terminate-Request transmissions */
 pub const DEFMAXCONFREQS: u32 = 10; /* Maximum Configure-Request transmissions */

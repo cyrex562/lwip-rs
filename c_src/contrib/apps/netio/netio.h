@@ -1,6 +1,6 @@
 
 
 
-void netio_init(void);
+void netio_init();
 
  /* LWIP_NETIO_H */

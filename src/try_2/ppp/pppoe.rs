@@ -157,7 +157,7 @@ pub fn pppoe_create(
     let mut ppp: &mut PppCtx;
     let mut sc: &mut pppoe_softc;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     sc = LWIP_MEMPOOL_ALLOC(PPPOE_IF);
     if (sc == None) {
@@ -802,7 +802,7 @@ pub fn pppoe_send_padi(sc: &mut pppoe_softc) -> Result<(), LwipError> {
         len += 2 + 2 + l2;
     }
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
         sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff,
     );
@@ -812,7 +812,7 @@ pub fn pppoe_send_padi(sc: &mut pppoe_softc) -> Result<(), LwipError> {
     if (!pb) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
 
     p = pb.payload;
     //  fill in pkt 
@@ -1016,7 +1016,7 @@ pub fn pppoe_send_padr(sc: &mut pppoe_softc) -> Result<(), LwipError> {
     if (sc.sc_ac_cookie_len > 0) {
         len += 2 + 2 + sc.sc_ac_cookie_len; //  AC cookie 
     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
         sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff,
     );
@@ -1024,7 +1024,7 @@ pub fn pppoe_send_padr(sc: &mut pppoe_softc) -> Result<(), LwipError> {
     if (!pb) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
     p = pb.payload;
     PPPOE_ADD_HEADER(p, PPPOE_CODE_PADR, 0, len);
     PPPOE_ADD_16(p, PPPOE_TAG_SNAME);
@@ -1064,7 +1064,7 @@ pub fn pppoe_send_padt(
     if (!pb) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
 
     if (pbuf_add_header(pb, sizeof(eth_hdr))) {
         PPPDEBUG(
@@ -1109,7 +1109,7 @@ pub fn pppoe_send_pado(sc: &mut pppoe_softc) -> Result<(), LwipError> {
     if (!pb) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
     p = pb.payload;
     PPPOE_ADD_HEADER(p, PPPOE_CODE_PADO, 0, len);
     PPPOE_ADD_16(p, PPPOE_TAG_ACCOOKIE);
@@ -1142,7 +1142,7 @@ pub fn pppoe_send_pads(sc: &mut pppoe_softc) -> Result<(), LwipError> {
     if (!pb) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
     p = pb.payload;
     PPPOE_ADD_HEADER(p, PPPOE_CODE_PADS, sc.sc_session, len);
     PPPOE_ADD_16(p, PPPOE_TAG_SNAME);

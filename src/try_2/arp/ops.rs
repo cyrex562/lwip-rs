@@ -170,7 +170,7 @@ pub fn etharp_output_to_arp_index(
     q: &mut PacketBuffer,
     arp_idx: netif_addr_idx_t,
 ) -> Result<(), LwipError> {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "arp_table[arp_idx].state >= EtharpStateStable",
         arp_table[arp_idx].state >= ETHARP_STATE_STABLE,
     );
@@ -211,10 +211,10 @@ pub fn etharp_output(netif: &mut NetworkInterfaceCtx, q: &mut PacketBuffer, ipad
     let mut mcastaddr: MacAddress;
     let mut dst_addr: Ipv4Address = ipaddr.clone();
 
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("netif != NULL", netif != None);
-    LWIP_ASSERT("q != NULL", q != None);
-    LWIP_ASSERT("ipaddr != NULL", ipaddr != None);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("netif != NULL", netif != None);
+    // LWIP_ASSERT("q != NULL", q != None);
+    // LWIP_ASSERT("ipaddr != NULL", ipaddr != None);
 
     /* Determine on destination hardware address. Broadcasts and multicasts
      * are special, other IP addresses are looked up in the ARP table. */
@@ -338,7 +338,7 @@ pub fn etharp_query(ctx: &mut LwipContext, netif: &mut NetworkInterfaceCtx, ipad
         }
         return i_err;
     }
-    LWIP_ASSERT("type overflow", i_err < NETIF_ADDR_IDX_MAX);
+    // LWIP_ASSERT("type overflow", i_err < NETIF_ADDR_IDX_MAX);
     i = i_err;
 
     //  mark a fresh entry as pending (we just sent a request) 
@@ -350,7 +350,7 @@ pub fn etharp_query(ctx: &mut LwipContext, netif: &mut NetworkInterfaceCtx, ipad
     }
 
     //  { i is either a STABLE or (new or existing) PENDING entry } 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "arp_table[i].state == PENDING or STABLE",
         ((arp_table[i].state == ETHARP_STATE_PENDING)
             || (arp_table[i].state >= ETHARP_STATE_STABLE)),
@@ -372,7 +372,7 @@ pub fn etharp_query(ctx: &mut LwipContext, netif: &mut NetworkInterfaceCtx, ipad
     }
 
     //  packet given? 
-    LWIP_ASSERT("q != NULL", q != None);
+    // LWIP_ASSERT("q != NULL", q != None);
     //  stable entry? 
     if (arp_table[i].state >= ETHARP_STATE_STABLE) {
         //  we have a valid IP.Ethernet address mapping 
@@ -388,7 +388,7 @@ pub fn etharp_query(ctx: &mut LwipContext, netif: &mut NetworkInterfaceCtx, ipad
          * new PBUF_RAM. See the definition of PBUF_NEEDS_COPY for details. */
         p = q;
         while (p) {
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "no packet queues allowed!",
                 (p.len != p.tot_len) || (p.next == 0),
             );
@@ -491,7 +491,7 @@ pub fn etharp_raw(
     hdr = p.payload;
     hdr.op_code = lwip_htons(opcode);
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "netif.hwaddr_len must be the same as ETH_HWADDR_LEN for etharp!",
         (netif.hwaddr_len == ETH_HWADDR_LEN),
     );

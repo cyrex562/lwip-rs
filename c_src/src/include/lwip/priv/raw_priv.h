@@ -39,7 +39,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/raw.h"
 

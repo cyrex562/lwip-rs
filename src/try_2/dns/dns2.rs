@@ -272,11 +272,11 @@ pub fn dns_init() {
 
     if (dns_pcbs[0] == None) {
         dns_pcbs[0] = udp_new_ip_type(IPADDR_TYPE_ANY);
-        LWIP_ASSERT("dns_pcbs[0] != NULL", dns_pcbs[0] != None);
+        // LWIP_ASSERT("dns_pcbs[0] != NULL", dns_pcbs[0] != None);
 
         /* initialize DNS table not needed (initialized to zero since it is a
          * global variable) */
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "For implicit initialization to work, DNS_STATE_UNUSED needs to be 0",
             DNS_STATE_UNUSED == 0,
         );
@@ -484,9 +484,9 @@ pub fn dns_local_addhost(hostname: &String, addr: &mut LwipAddr) {
     let entry: &mut local_hostlist_entry;
     let namelen: usize;
     let entry_name: &mut String;
-    LWIP_ASSERT("invalid host name (NULL)", hostname != None);
+    // LWIP_ASSERT("invalid host name (NULL)", hostname != None);
     namelen = strlen(hostname);
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN",
         namelen <= DNS_LOCAL_HOSTLIST_MAX_NAMELEN,
     );
@@ -681,7 +681,7 @@ pub fn dns_send(idx: u8) -> Result<(), LwipError> {
 
     // LWIP_DEBUGF(DNS_DEBUG, ("dns_send: dns_servers[%"U16_F"] \"%s\": request\n",
     //                         (entry.server_idx), entry.name));
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "dns server out of array",
         entry.server_idx < DNS_MAX_SERVERS,
     );
@@ -865,13 +865,13 @@ pub fn dns_call_found(idx: u8, addr: &mut LwipAddr) {
     if (addr != None) {
         //  check that address type matches the request and adapt the table entry
         if (IP_IS_V6_VAL(*addr)) {
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "invalid response",
                 LWIP_DNS_ADDRTYPE_IS_IPV6(dns_table[idx].reqaddrtype),
             );
             dns_table[idx].reqaddrtype = LWIP_DNS_ADDRTYPE_IPV6;
         } else {
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "invalid response",
                 !LWIP_DNS_ADDRTYPE_IS_IPV6(dns_table[idx].reqaddrtype),
             );
@@ -963,7 +963,7 @@ pub fn dns_check_entry(i: u8) {
     let err: err_t;
     let entry: &mut dns_table_entry = &dns_table[i];
 
-    LWIP_ASSERT("array index out of bounds", i < DNS_TABLE_SIZE);
+    // LWIP_ASSERT("array index out of bounds", i < DNS_TABLE_SIZE);
 
     match (entry.state) {
         DNS_STATE_NEW => {
@@ -1030,7 +1030,7 @@ pub fn dns_check_entry(i: u8) {
         DNS_STATE_UNUSED => {}
         //  nothing to do
         _ => {
-            LWIP_ASSERT("unknown dns_table entry state:", 0);
+            // LWIP_ASSERT("unknown dns_table entry state:", 0);
         }
     }
 }

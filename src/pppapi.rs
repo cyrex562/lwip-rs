@@ -33,7 +33,7 @@
 
 
 
-#if LWIP_PPP_API /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_PPP_API /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -41,9 +41,9 @@
 
 
 
-#if LWIP_MPU_COMPATIBLE
+// #if LWIP_MPU_COMPATIBLE
 LWIP_MEMPOOL_DECLARE(PPPAPI_MSG, MEMP_NUM_PPP_API_MSG, sizeof(struct pppapi_msg), "PPPAPI_MSG")
-#endif
+// #endif
 
 #define PPPAPI_VAR_REF(name)               API_VAR_REF(name)
 #define PPPAPI_VAR_DECLARE(name)           API_VAR_DECLARE(struct pppapi_msg, name)
@@ -61,7 +61,7 @@ pppapi_do_ppp_set_default(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
   
-  ppp_set_default(msg->msg.ppp);
+  ppp_set_default( msg.msg.ppp);
   return ERR_OK;
 }
 
@@ -83,7 +83,7 @@ pppapi_set_default(ppp_pcb *pcb)
 }
 
 
-#if PPP_NOTIFY_PHASE
+// #if PPP_NOTIFY_PHASE
 /**
  * Call ppp_set_notify_phase_callback() inside the tcpip_thread context.
  */
@@ -94,7 +94,7 @@ pppapi_do_ppp_set_notify_phase_callback(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
    struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
 
-  ppp_set_notify_phase_callback(msg->msg.ppp, msg->msg.msg.setnotifyphasecb.notify_phase_cb);
+  ppp_set_notify_phase_callback( msg.msg.ppp,  msg.msg.msg.setnotifyphasecb.notify_phase_cb);
   return ERR_OK;
 }
 
@@ -115,10 +115,10 @@ pppapi_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn notify_pha
   PPPAPI_VAR_FREE(msg);
   return err;
 }
-#endif /* PPP_NOTIFY_PHASE */
+// #endif /* PPP_NOTIFY_PHASE */
 
 
-#if PPPOS_SUPPORT
+// #if PPPOS_SUPPORT
 /**
  * Call pppos_create() inside the tcpip_thread context.
  */
@@ -129,8 +129,8 @@ pppapi_do_pppos_create(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
 
-  msg->msg.ppp = pppos_create(msg->msg.msg.serialcreate.pppif, msg->msg.msg.serialcreate.output_cb,
-    msg->msg.msg.serialcreate.link_status_cb, msg->msg.msg.serialcreate.ctx_cb);
+   msg.msg.ppp = pppos_create( msg.msg.msg.serialcreate.pppif,  msg.msg.msg.serialcreate.output_cb,
+     msg.msg.msg.serialcreate.link_status_cb,  msg.msg.msg.serialcreate.ctx_cb);
   return ERR_OK;
 }
 
@@ -156,10 +156,10 @@ pppapi_pppos_create(struct netif *pppif, pppos_output_cb_fn output_cb,
   PPPAPI_VAR_FREE(msg);
   return result;
 }
-#endif /* PPPOS_SUPPORT */
+// #endif /* PPPOS_SUPPORT */
 
 
-#if PPPOE_SUPPORT
+// #if PPPOE_SUPPORT
 /**
  * Call pppoe_create() inside the tcpip_thread context.
  */
@@ -170,9 +170,9 @@ pppapi_do_pppoe_create(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
 
-  msg->msg.ppp = pppoe_create(msg->msg.msg.ethernetcreate.pppif, msg->msg.msg.ethernetcreate.ethif,
-    msg->msg.msg.ethernetcreate.service_name, msg->msg.msg.ethernetcreate.concentrator_name,
-    msg->msg.msg.ethernetcreate.link_status_cb, msg->msg.msg.ethernetcreate.ctx_cb);
+   msg.msg.ppp = pppoe_create( msg.msg.msg.ethernetcreate.pppif,  msg.msg.msg.ethernetcreate.ethif,
+     msg.msg.msg.ethernetcreate.service_name,  msg.msg.msg.ethernetcreate.concentrator_name,
+     msg.msg.msg.ethernetcreate.link_status_cb,  msg.msg.msg.ethernetcreate.ctx_cb);
   return ERR_OK;
 }
 
@@ -201,10 +201,10 @@ pppapi_pppoe_create(struct netif *pppif, struct netif *ethif, const char *servic
   PPPAPI_VAR_FREE(msg);
   return result;
 }
-#endif /* PPPOE_SUPPORT */
+// #endif /* PPPOE_SUPPORT */
 
 
-#if PPPOL2TP_SUPPORT
+// #if PPPOL2TP_SUPPORT
 /**
  * Call pppol2tp_create() inside the tcpip_thread context.
  */
@@ -215,16 +215,16 @@ pppapi_do_pppol2tp_create(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
 
-  msg->msg.ppp = pppol2tp_create(msg->msg.msg.l2tpcreate.pppif,
-    msg->msg.msg.l2tpcreate.netif, API_EXPR_REF(msg->msg.msg.l2tpcreate.ipaddr), msg->msg.msg.l2tpcreate.port,
-#if PPPOL2TP_AUTH_SUPPORT
-    msg->msg.msg.l2tpcreate.secret,
-    msg->msg.msg.l2tpcreate.secret_len,
+   msg.msg.ppp = pppol2tp_create( msg.msg.msg.l2tpcreate.pppif,
+     msg.msg.msg.l2tpcreate.netif, API_EXPR_REF( msg.msg.msg.l2tpcreate.ipaddr),  msg.msg.msg.l2tpcreate.port,
+// #if PPPOL2TP_AUTH_SUPPORT
+     msg.msg.msg.l2tpcreate.secret,
+     msg.msg.msg.l2tpcreate.secret_len,
 #else /* PPPOL2TP_AUTH_SUPPORT */
     NULL,
     0,
-#endif /* PPPOL2TP_AUTH_SUPPORT */
-    msg->msg.msg.l2tpcreate.link_status_cb, msg->msg.msg.l2tpcreate.ctx_cb);
+// #endif /* PPPOL2TP_AUTH_SUPPORT */
+     msg.msg.msg.l2tpcreate.link_status_cb,  msg.msg.msg.l2tpcreate.ctx_cb);
   return ERR_OK;
 }
 
@@ -243,17 +243,17 @@ pppapi_pppol2tp_create(struct netif *pppif, struct netif *netif, ip_addr_t *ipad
 #if !PPPOL2TP_AUTH_SUPPORT
   LWIP_UNUSED_ARG(secret);
   LWIP_UNUSED_ARG(secret_len);
-#endif /* !PPPOL2TP_AUTH_SUPPORT */
+// #endif /* !PPPOL2TP_AUTH_SUPPORT */
 
   PPPAPI_VAR_REF(msg).msg.ppp = NULL;
   PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.pppif = pppif;
   PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.netif = netif;
   PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.ipaddr = PPPAPI_VAR_REF(ipaddr);
   PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.port = port;
-#if PPPOL2TP_AUTH_SUPPORT
+// #if PPPOL2TP_AUTH_SUPPORT
   PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.secret = secret;
   PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.secret_len = secret_len;
-#endif /* PPPOL2TP_AUTH_SUPPORT */
+// #endif /* PPPOL2TP_AUTH_SUPPORT */
   PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.link_status_cb = link_status_cb;
   PPPAPI_VAR_REF(msg).msg.msg.l2tpcreate.ctx_cb = ctx_cb;
   tcpip_api_call(pppapi_do_pppol2tp_create, &PPPAPI_VAR_REF(msg).call);
@@ -261,7 +261,7 @@ pppapi_pppol2tp_create(struct netif *pppif, struct netif *netif, ip_addr_t *ipad
   PPPAPI_VAR_FREE(msg);
   return result;
 }
-#endif /* PPPOL2TP_SUPPORT */
+// #endif /* PPPOL2TP_SUPPORT */
 
 
 /**
@@ -274,7 +274,7 @@ pppapi_do_ppp_connect(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_connect(msg->msg.ppp, msg->msg.msg.connect.holdoff);
+  return ppp_connect( msg.msg.ppp,  msg.msg.msg.connect.holdoff);
 }
 
 /**
@@ -296,7 +296,7 @@ pppapi_connect(ppp_pcb *pcb, u16_t holdoff)
 }
 
 
-#if PPP_SERVER
+// #if PPP_SERVER
 /**
  * Call ppp_listen() inside the tcpip_thread context.
  */
@@ -307,7 +307,7 @@ pppapi_do_ppp_listen(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_listen(msg->msg.ppp);
+  return ppp_listen( msg.msg.ppp);
 }
 
 /**
@@ -326,7 +326,7 @@ pppapi_listen(ppp_pcb *pcb)
   PPPAPI_VAR_FREE(msg);
   return err;
 }
-#endif /* PPP_SERVER */
+// #endif /* PPP_SERVER */
 
 
 /**
@@ -339,7 +339,7 @@ pppapi_do_ppp_close(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_close(msg->msg.ppp, msg->msg.msg.close.nocarrier);
+  return ppp_close( msg.msg.ppp,  msg.msg.msg.close.nocarrier);
 }
 
 /**
@@ -371,7 +371,7 @@ pppapi_do_ppp_free(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_free(msg->msg.ppp);
+  return ppp_free( msg.msg.ppp);
 }
 
 /**
@@ -402,7 +402,7 @@ pppapi_do_ppp_ioctl(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct pppapi_msg */
   struct pppapi_msg *msg = (struct pppapi_msg *)(void*)m;
 
-  return ppp_ioctl(msg->msg.ppp, msg->msg.msg.ioctl.cmd, msg->msg.msg.ioctl.arg);
+  return ppp_ioctl( msg.msg.ppp,  msg.msg.msg.ioctl.cmd,  msg.msg.msg.ioctl.arg);
 }
 
 /**
@@ -424,4 +424,4 @@ pppapi_ioctl(ppp_pcb *pcb, u8_t cmd, void *arg)
   return err;
 }
 
-#endif /* LWIP_PPP_API */
+// #endif /* LWIP_PPP_API */

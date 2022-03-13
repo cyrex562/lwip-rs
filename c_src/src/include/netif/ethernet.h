@@ -50,7 +50,7 @@
 
 
 
-#if LWIP_ARP || LWIP_ETHERNET
+// #if LWIP_ARP || LWIP_ETHERNET
 
 /** Define this to 1 and define LWIP_ARP_FILTER_NETIF_FN(pbuf, netif, type)
  * to a filter function that returns the correct netif when using multiple

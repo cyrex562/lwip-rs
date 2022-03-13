@@ -67,7 +67,7 @@ struct netif;
 
 struct ip6_prefix {
   ip6_addr_t addr;
-  u8_t prefix_len; /* prefix length in bits at byte boundaries */
+  prefix_len: u8; /* prefix length in bits at byte boundaries */
 };
 
 struct ip6_route_entry {
@@ -82,7 +82,7 @@ void ip6_remove_route_entry(const struct ip6_prefix *ip6_prefix);
 s8_t ip6_find_route_entry(const ip6_addr_t *ip6_dest_addr);
 struct netif *ip6_static_route(const ip6_addr_t *src, const ip6_addr_t *dest);
 const ip6_addr_t *ip6_get_gateway(struct netif *netif, const ip6_addr_t *dest);
-const struct ip6_route_entry *ip6_get_route_table(void);
+const struct ip6_route_entry *ip6_get_route_table();
 
 
 

@@ -132,8 +132,8 @@ lwip_hook_tcp_isn(const ip_addr_t *local_ip, u16_t local_port,
     local_ip6  = ip_2_ip6(local_ip);
     remote_ip6 = ip_2_ip6(remote_ip);
 
-    SMEMCPY(&input[0],  &local_ip6->addr,  16);
-    SMEMCPY(&input[16], &remote_ip6->addr, 16);
+    SMEMCPY(&input[0],  & local_ip6.addr,  16);
+    SMEMCPY(&input[16], & remote_ip6.addr, 16);
   }
  /* LWIP_IPV6 */
  && LWIP_IPV6
@@ -151,11 +151,11 @@ lwip_hook_tcp_isn(const ip_addr_t *local_ip, u16_t local_port,
     memset(&input[0], 0, 10);
     input[10] = 0xff;
     input[11] = 0xff;
-    SMEMCPY(&input[12], &local_ip4->addr, 4);
+    SMEMCPY(&input[12], & local_ip4.addr, 4);
     memset(&input[16], 0, 10);
     input[26] = 0xff;
     input[27] = 0xff;
-    SMEMCPY(&input[28], &remote_ip4->addr, 4);
+    SMEMCPY(&input[28], & remote_ip4.addr, 4);
   }
  /* LWIP_IPV4 */
 

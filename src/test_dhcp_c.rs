@@ -7,8 +7,8 @@
 // #include "lwip/inet.h"
 // #include "netif/ethernet.h"
 
-#if LWIP_ACD
-#if LWIP_DHCP_DOES_ACD_CHECK
+// #if LWIP_ACD
+// #if LWIP_DHCP_DOES_ACD_CHECK
 pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 5; #else
 pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 0; #else
 pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 1; static struct netif net_test;
@@ -134,10 +134,10 @@ static int debug = 0;
 static void setdebug(int a) {debug = a;}
 
 static int tick = 0;
-static void tick_lwip(void)
+static void tick_lwip()
 {
   tick++;
-#if LWIP_DHCP_DOES_ACD_CHECK
+// #if LWIP_DHCP_DOES_ACD_CHECK
   acd_tmr();
 
   if (tick % 5 == 0) {
@@ -151,13 +151,13 @@ static void tick_lwip(void)
 static void send_pkt(struct netif *netif, const u8_t *data, size_t len)
 {
   struct pbuf *p, *q;
-  LWIP_ASSERT("pkt too big", len <= 0xFFFF);
+  // LWIP_ASSERT("pkt too big", len <= 0xFFFF);
   p = pbuf_alloc(PBUF_RAW, (u16_t)len, PBUF_POOL);
 
   if (debug) {
     /* Dump data */
     u32_t i;
-    printf("RX data (len %d)", p->tot_len);
+    printf("RX data (len %d)",  p.tot_len);
     for (i = 0; i < len; i++) {
       printf(" %02X", data[i]);
     }
@@ -165,42 +165,42 @@ static void send_pkt(struct netif *netif, const u8_t *data, size_t len)
   }
 
   fail_unless(p != NULL);
-  for(q = p; q != NULL; q = q->next) {
-    memcpy(q->payload, data, q->len);
-    data += q->len;
+  for(q = p; q != NULL; q =  q.next) {
+    memcpy( q.payload, data,  q.len);
+    data +=  q.len;
   }
-  netif->input(p, netif);
+   netif.input(p, netif);
 }
 
 static err_t lwip_tx_func(struct netif *netif, struct pbuf *p);
 
 static err_t testif_init(struct netif *netif)
 {
-  netif->name[0] = 'c';
-  netif->name[1] = 'h';
-  netif->output = etharp_output;
-  netif->linkoutput = lwip_tx_func;
-  netif->mtu = 1500;
-  netif->hwaddr_len = 6;
-  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
+   netif.name[0] = 'c';
+   netif.name[1] = 'h';
+   netif.output = etharp_output;
+   netif.linkoutput = lwip_tx_func;
+   netif.mtu = 1500;
+   netif.hwaddr_len = 6;
+   netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
 
-  netif->hwaddr[0] = 0x00;
-  netif->hwaddr[1] = 0x23;
-  netif->hwaddr[2] = 0xC1;
-  netif->hwaddr[3] = 0xDE;
-  netif->hwaddr[4] = 0xD0;
-  netif->hwaddr[5] = 0x0D;
+   netif.hwaddr[0] = 0x00;
+   netif.hwaddr[1] = 0x23;
+   netif.hwaddr[2] = 0xC1;
+   netif.hwaddr[3] = 0xDE;
+   netif.hwaddr[4] = 0xD0;
+   netif.hwaddr[5] = 0x0D;
 
   return ERR_OK;
 }
 
-static void dhcp_setup(void)
+static void dhcp_setup()
 {
   txpacket = 0;
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
-static void dhcp_teardown(void)
+static void dhcp_teardown()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
@@ -209,15 +209,15 @@ static void check_pkt(struct pbuf *p, u32_t pos, const u8_t *mem, u32_t len)
 {
   u8_t *data;
 
-  fail_if((pos + len) > p->tot_len);
-  while (pos > p->len && p->next) {
-    pos -= p->len;
-    p = p->next;
+  fail_if((pos + len) >  p.tot_len);
+  while (pos >  p.len &&  p.next) {
+    pos -=  p.len;
+    p =  p.next;
   }
   fail_if(p == NULL);
-  fail_unless(pos + len <= p->len); /* All data we seek within same pbuf */
+  fail_unless(pos + len <=  p.len); /* All data we seek within same pbuf */
 
-  data = (u8_t*)p->payload;
+  data = (u8_t*) p.payload;
   fail_if(memcmp(&data[pos], mem, len), "data at pos %d, len %d in packet %d did not match", pos, len, txpacket);
 }
 
@@ -227,17 +227,17 @@ static void check_pkt_fuzzy(struct pbuf *p, u32_t startpos, const u8_t *mem, u32
   u32_t i;
   u8_t *data;
 
-  fail_if((startpos + len) > p->tot_len);
-  while (startpos > p->len && p->next) {
-    startpos -= p->len;
-    p = p->next;
+  fail_if((startpos + len) >  p.tot_len);
+  while (startpos >  p.len &&  p.next) {
+    startpos -=  p.len;
+    p =  p.next;
   }
   fail_if(p == NULL);
-  fail_unless(startpos + len <= p->len); /* All data we seek within same pbuf */
+  fail_unless(startpos + len <=  p.len); /* All data we seek within same pbuf */
 
   found = 0;
-  data = (u8_t*)p->payload;
-  for (i = startpos; i <= (p->len - len); i++) {
+  data = (u8_t*) p.payload;
+  for (i = startpos; i <= ( p.len - len); i++) {
     if (memcmp(&data[i], mem, len) == 0) {
       found = 1;
       break;
@@ -254,16 +254,16 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
   if (debug) {
     struct pbuf *pp = p;
     /* Dump data */
-    printf("TX data (pkt %d, len %d, tick %d)", txpacket, p->tot_len, tick);
+    printf("TX data (pkt %d, len %d, tick %d)", txpacket,  p.tot_len, tick);
     do {
       int i;
-      for (i = 0; i < pp->len; i++) {
-        printf(" %02X", ((u8_t *) pp->payload)[i]);
+      for (i = 0; i <  pp.len; i++) {
+        printf(" %02X", ((u8_t *)  pp.payload)[i]);
       }
-      if (pp->next) {
-        pp = pp->next;
+      if ( pp.next) {
+        pp =  pp.next;
       }
-    } while (pp->next);
+    } while ( pp.next);
     printf("\n");
   }
 
@@ -278,7 +278,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
         const u8_t ipaddrs[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
         check_pkt(p, 0, broadcast, 6); /* eth level dest: broadcast */
-        check_pkt(p, 6, netif->hwaddr, 6); /* eth level src: unit mac */
+        check_pkt(p, 6,  netif.hwaddr, 6); /* eth level src: unit mac */
 
         check_pkt(p, 12, ipproto, sizeof(ipproto)); /* eth level proto: ip */
 
@@ -286,7 +286,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
 
         check_pkt(p, 53, ipaddrs, sizeof(ipaddrs));
 
-        check_pkt(p, 70, netif->hwaddr, 6); /* mac addr inside bootp */
+        check_pkt(p, 70,  netif.hwaddr, 6); /* mac addr inside bootp */
 
         check_pkt(p, 278, magic_cookie, sizeof(magic_cookie));
 
@@ -303,15 +303,15 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
         }
         break;
       }
-#if DHCP_TEST_NUM_ARP_FRAMES > 0
+// #if DHCP_TEST_NUM_ARP_FRAMES > 0
     case 3:
-#if DHCP_TEST_NUM_ARP_FRAMES > 1
+// #if DHCP_TEST_NUM_ARP_FRAMES > 1
     case 4:
-#if DHCP_TEST_NUM_ARP_FRAMES > 2
+// #if DHCP_TEST_NUM_ARP_FRAMES > 2
     case 5:
-#if DHCP_TEST_NUM_ARP_FRAMES > 3
+// #if DHCP_TEST_NUM_ARP_FRAMES > 3
     case 6:
-#if DHCP_TEST_NUM_ARP_FRAMES > 4
+// #if DHCP_TEST_NUM_ARP_FRAMES > 4
     case 7:
 
 
@@ -321,7 +321,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
         const u8_t arpproto[] = { 0x08, 0x06 };
 
         check_pkt(p, 0, broadcast, 6); /* eth level dest: broadcast */
-        check_pkt(p, 6, netif->hwaddr, 6); /* eth level src: unit mac */
+        check_pkt(p, 6,  netif.hwaddr, 6); /* eth level src: unit mac */
 
         check_pkt(p, 12, arpproto, sizeof(arpproto)); /* eth level proto: ip */
         break;
@@ -343,7 +343,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
 
       fail_unless(txpacket == 4);
       check_pkt(p, 0, broadcast, 6); /* eth level dest: broadcast */
-      check_pkt(p, 6, netif->hwaddr, 6); /* eth level src: unit mac */
+      check_pkt(p, 6,  netif.hwaddr, 6); /* eth level src: unit mac */
 
       check_pkt(p, 12, ipproto, sizeof(ipproto)); /* eth level proto: ip */
 
@@ -351,7 +351,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
 
       check_pkt(p, 53, ipaddrs, sizeof(ipaddrs));
 
-      check_pkt(p, 70, netif->hwaddr, 6); /* mac addr inside bootp */
+      check_pkt(p, 70,  netif.hwaddr, 6); /* mac addr inside bootp */
 
       check_pkt(p, 278, magic_cookie, sizeof(magic_cookie));
 
@@ -371,7 +371,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
         const u8_t ipaddrs[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
         check_pkt(p, 0, broadcast, 6); /* eth level dest: broadcast */
-        check_pkt(p, 6, netif->hwaddr, 6); /* eth level src: unit mac */
+        check_pkt(p, 6,  netif.hwaddr, 6); /* eth level src: unit mac */
 
         check_pkt(p, 12, ipproto, sizeof(ipproto)); /* eth level proto: ip */
 
@@ -379,7 +379,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
 
         check_pkt(p, 53, ipaddrs, sizeof(ipaddrs));
 
-        check_pkt(p, 70, netif->hwaddr, 6); /* mac addr inside bootp */
+        check_pkt(p, 70,  netif.hwaddr, 6); /* mac addr inside bootp */
 
         check_pkt(p, 278, magic_cookie, sizeof(magic_cookie));
 
@@ -397,15 +397,15 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
         break;
       }
     case 3:
-#if DHCP_TEST_NUM_ARP_FRAMES > 0
+// #if DHCP_TEST_NUM_ARP_FRAMES > 0
     case 4:
-#if DHCP_TEST_NUM_ARP_FRAMES > 1
+// #if DHCP_TEST_NUM_ARP_FRAMES > 1
     case 5:
-#if DHCP_TEST_NUM_ARP_FRAMES > 2
+// #if DHCP_TEST_NUM_ARP_FRAMES > 2
     case 6:
-#if DHCP_TEST_NUM_ARP_FRAMES > 3
+// #if DHCP_TEST_NUM_ARP_FRAMES > 3
     case 7:
-#if DHCP_TEST_NUM_ARP_FRAMES > 4
+// #if DHCP_TEST_NUM_ARP_FRAMES > 4
     case 8:
 
 
@@ -415,7 +415,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
         const u8_t arpproto[] = { 0x08, 0x06 };
 
         check_pkt(p, 0, broadcast, 6); /* eth level dest: broadcast */
-        check_pkt(p, 6, netif->hwaddr, 6); /* eth level src: unit mac */
+        check_pkt(p, 6,  netif.hwaddr, 6); /* eth level src: unit mac */
 
         check_pkt(p, 12, arpproto, sizeof(arpproto)); /* eth level proto: ip */
         break;
@@ -430,7 +430,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
         const u8_t dhcp_request_opt[] = { 0x35, 0x01, 0x03 };
 
         check_pkt(p, 0, fake_arp, 6); /* eth level dest: broadcast */
-        check_pkt(p, 6, netif->hwaddr, 6); /* eth level src: unit mac */
+        check_pkt(p, 6,  netif.hwaddr, 6); /* eth level src: unit mac */
 
         check_pkt(p, 12, ipproto, sizeof(ipproto)); /* eth level proto: ip */
 
@@ -438,7 +438,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
 
         check_pkt(p, 53, ipaddrs, sizeof(ipaddrs));
 
-        check_pkt(p, 70, netif->hwaddr, 6); /* mac addr inside bootp */
+        check_pkt(p, 70,  netif.hwaddr, 6); /* mac addr inside bootp */
 
         check_pkt(p, 278, magic_cookie, sizeof(magic_cookie));
 
@@ -915,8 +915,8 @@ START_TEST(test_dhcp_nak_no_endmarker)
   };
   u32_t xid;
   struct dhcp* dhcp;
-  u8_t tries;
-  u16_t request_timeout;
+  tries: u8;
+  request_timeout: u16;
   LWIP_UNUSED_ARG(_i);
 
   tcase = TEST_LWIP_DHCP_NAK_NO_ENDMARKER;
@@ -934,7 +934,7 @@ START_TEST(test_dhcp_nak_no_endmarker)
   dhcp = netif_dhcp_data(&net_test);
 
   fail_unless(txpacket == 1); /* DHCP discover sent */
-  xid = dhcp->xid; /* Write bad xid, not using htonl! */
+  xid =  dhcp.xid; /* Write bad xid, not using htonl! */
   memcpy(&dhcp_offer[46], &xid, 4);
   send_pkt(&net_test, dhcp_offer, sizeof(dhcp_offer));
 
@@ -944,25 +944,25 @@ START_TEST(test_dhcp_nak_no_endmarker)
   fail_if(memcmp(&gw, &net_test.gw, sizeof(ip4_addr_t)));
 
   fail_unless(txpacket == 1); /* Nothing more sent */
-  xid = htonl(dhcp->xid);
+  xid = htonl( dhcp.xid);
   memcpy(&dhcp_offer[46], &xid, 4); /* insert correct transaction id */
   send_pkt(&net_test, dhcp_offer, sizeof(dhcp_offer));
 
-  fail_unless(dhcp->state == DHCP_STATE_REQUESTING);
+  fail_unless( dhcp.state == DHCP_STATE_REQUESTING);
 
   fail_unless(txpacket == 2); /* No more sent */
-  xid = htonl(dhcp->xid); /* xid updated */
+  xid = htonl( dhcp.xid); /* xid updated */
   memcpy(&dhcp_nack_no_endmarker[46], &xid, 4); /* insert transaction id */
-  tries = dhcp->tries;
-  request_timeout = dhcp->request_timeout;
+  tries =  dhcp.tries;
+  request_timeout =  dhcp.request_timeout;
   send_pkt(&net_test, dhcp_nack_no_endmarker, sizeof(dhcp_nack_no_endmarker));
 
   /* NAK should be ignored */
-  fail_unless(dhcp->state == DHCP_STATE_REQUESTING);
+  fail_unless( dhcp.state == DHCP_STATE_REQUESTING);
   fail_unless(txpacket == 2); /* No more sent */
-  fail_unless(xid == htonl(dhcp->xid));
-  fail_unless(tries == dhcp->tries);
-  fail_unless(request_timeout == dhcp->request_timeout);
+  fail_unless(xid == htonl( dhcp.xid));
+  fail_unless(tries ==  dhcp.tries);
+  fail_unless(request_timeout ==  dhcp.request_timeout);
 
   tcase = TEST_NONE;
   dhcp_stop(&net_test);
@@ -1083,7 +1083,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-dhcp_suite(void)
+dhcp_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_dhcp),

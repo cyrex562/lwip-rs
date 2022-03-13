@@ -76,17 +76,17 @@ struct igmp_group {
   /** multicast address */
   ip4_addr_t         group_address;
   /** signifies we were the last person to report */
-  u8_t               last_reporter_flag;
+  last_reporter_flag: u8;
   /** current state of the group */
-  u8_t               group_state;
+  group_state: u8;
   /** timer for reporting, negative is OFF */
-  u16_t              timer;
+  timer: u16;
   /** counter of simultaneous uses */
-  u8_t               use;
+  use: u8;
 };
 
 /*  Prototypes */
-void   igmp_init(void);
+void   igmp_init();
 err_t  igmp_start(struct netif *netif);
 err_t  igmp_stop(struct netif *netif);
 void   igmp_report_groups(struct netif *netif);
@@ -96,7 +96,7 @@ err_t  igmp_joingroup(const ip4_addr_t *ifaddr, const ip4_addr_t *groupaddr);
 err_t  igmp_joingroup_netif(struct netif *netif, const ip4_addr_t *groupaddr);
 err_t  igmp_leavegroup(const ip4_addr_t *ifaddr, const ip4_addr_t *groupaddr);
 err_t  igmp_leavegroup_netif(struct netif *netif, const ip4_addr_t *groupaddr);
-void   igmp_tmr(void);
+void   igmp_tmr();
 
 /** @ingroup igmp
  * Get list head of IGMP groups for netif.

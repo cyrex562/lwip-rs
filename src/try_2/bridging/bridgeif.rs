@@ -122,9 +122,9 @@ pub fn bridgeif_fdb_add(bridgeif: &mut NetIfc, addr: &mut MacAddress, ports: bri
     let i: i32;
     bridgeif_private_t * br;
     BRIDGEIF_DECL_PROTECT(lev);
-    LWIP_ASSERT("invalid netif", bridgeif != None);
+    // LWIP_ASSERT("invalid netif", bridgeif != None);
     br = bridgeif.state;
-    LWIP_ASSERT("invalid state", br != None);
+    // LWIP_ASSERT("invalid state", br != None);
 
     BRIDGEIF_READ_PROTECT(lev);
     // for (i = 0; i < br.max_fdbs_entries; i+= 1) {
@@ -153,9 +153,9 @@ pub fn bridgeif_fdb_remove(bridgeif: &mut NetIfc, addr: &mut MacAddress) {
     let i: i32;
     bridgeif_private_t * br;
     BRIDGEIF_DECL_PROTECT(lev);
-    LWIP_ASSERT("invalid netif", bridgeif != None);
+    // LWIP_ASSERT("invalid netif", bridgeif != None);
     br = bridgeif.state;
-    LWIP_ASSERT("invalid state", br != None);
+    // LWIP_ASSERT("invalid state", br != None);
 
     BRIDGEIF_READ_PROTECT(lev);
     // for (i = 0; i < br.max_fdbs_entries; i+= 1) {
@@ -244,7 +244,7 @@ pub fn bridgeif_send_to_port(
             }
         }
     } else {
-        LWIP_ASSERT("invalid port index", dstport_idx == BRIDGEIF_MAX_PORTS);
+        // LWIP_ASSERT("invalid port index", dstport_idx == BRIDGEIF_MAX_PORTS);
     }
     return Ok(());
 }
@@ -315,7 +315,7 @@ pub fn bridgeif_input(p: &mut PacketBuffer, netif: &mut NetIfc) -> Result<(), Lw
         return ERR_VAL;
     }
     port = netif_get_client_data(netif, bridgeif_netif_client_id);
-    LWIP_ASSERT("port data not set", port != None);
+    // LWIP_ASSERT("port data not set", port != None);
     if (port == None || port.bridge == None) {
         return ERR_VAL;
     }
@@ -392,8 +392,8 @@ pub fn bridgeif_init(netif: &mut NetIfc) {
     let alloc_len_sizet: usize;
     let mem_alloc_len: usize;
 
-    LWIP_ASSERT("netif != NULL", (netif != None));
-    LWIP_ASSERT("bridgeif needs an input callback", (netif.input != None));
+    // LWIP_ASSERT("netif != NULL", (netif != None));
+    // LWIP_ASSERT("bridgeif needs an input callback", (netif.input != None));
 
     if (netif.input == tcpip_input) {
         //    LWIP_DEBUGF(BRIDGEIF_DEBUG | LWIP_DBG_ON, ("bridgeif does not need tcpip_input, use netif_input/ethernet_input instead"));
@@ -404,8 +404,8 @@ pub fn bridgeif_init(netif: &mut NetIfc) {
     }
 
     init_data = netif.state;
-    LWIP_ASSERT("init_data != NULL", (init_data != None));
-    LWIP_ASSERT(
+    // LWIP_ASSERT("init_data != NULL", (init_data != None));
+    // LWIP_ASSERT(
         "init_data.max_ports <= BRIDGEIF_MAX_PORTS",
         init_data.max_ports <= BRIDGEIF_MAX_PORTS,
     );
@@ -414,7 +414,7 @@ pub fn bridgeif_init(netif: &mut NetIfc) {
         + (init_data.max_ports * sizeof(bridgeif_port_t)
             + (init_data.max_fdb_static_entries * sizeof(bridgeif_fdb_static_entry_t)));
     alloc_len = alloc_len_sizet;
-    LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
+    // LWIP_ASSERT("alloc_len == alloc_len_sizet", alloc_len == alloc_len_sizet);
     //  LWIP_DEBUGF(BRIDGEIF_DEBUG, ("bridgeif_init: allocating %d bytes for private data\n", alloc_len));
     // br = mem_calloc(1, alloc_len);
     br = bridgeif_private_t::new();
@@ -503,9 +503,9 @@ pub fn bridgeif_add_port(bridgeif: &mut NetIfc, portif: &mut NetIfc) {
     bridgeif_private_t * br;
     bridgeif_port_t * port;
 
-    LWIP_ASSERT("bridgeif != NULL", bridgeif != None);
-    LWIP_ASSERT("bridgeif.state != NULL", bridgeif.state != None);
-    LWIP_ASSERT("portif != NULL", portif != None);
+    // LWIP_ASSERT("bridgeif != NULL", bridgeif != None);
+    // LWIP_ASSERT("bridgeif.state != NULL", bridgeif.state != None);
+    // LWIP_ASSERT("portif != NULL", portif != None);
 
     if (!(portif.flags & NETIF_FLAG_ETHARP) || !(portif.flags & NETIF_FLAG_ETHERNET)) {
         //  can only add ETHERNET/ETHARP interfaces 

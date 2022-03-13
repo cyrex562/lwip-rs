@@ -59,7 +59,7 @@ pub const LWIP_HTTPD_EXAMPLE_SSI_SIMPLE: u32 = 0; /** define LWIP_HTTPD_EXAMPLE_
 
 pub const LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION: u32 = 0; #if LWIP_HTTPD_EXAMPLE_SSI_SIMPLE
 
-#if LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION
+// #if LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION
 #if !LWIP_HTTPD_FILE_STATE
 #error LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION needs LWIP_HTTPD_FILE_STATE
 
@@ -71,28 +71,28 @@ pub const MAX_CGI_LEN: u32 = 16; const char * ssi_example_tags[] = {
   "HellWorl",
   "counter",
   "MultPart"
-#if LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION
+// #if LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION
   ,"CgiParam"
 
 };
 
 u16_t ssi_example_ssi_handler(
-#if LWIP_HTTPD_SSI_RAW
+// #if LWIP_HTTPD_SSI_RAW
                              const char* ssi_tag_name,
 #else /* LWIP_HTTPD_SSI_RAW */
                              int iIndex,
  /* LWIP_HTTPD_SSI_RAW */
                              char *pcInsert, int iInsertLen
-#if LWIP_HTTPD_SSI_MULTIPART
+// #if LWIP_HTTPD_SSI_MULTIPART
                              , u16_t current_tag_part, u16_t *next_tag_part
  /* LWIP_HTTPD_SSI_MULTIPART */
-#if defined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
+// #if defined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
                              , void *connection_state
  /* LWIP_HTTPD_FILE_STATE */
                              )
 {
   size_t printed;
-#if LWIP_HTTPD_SSI_RAW
+// #if LWIP_HTTPD_SSI_RAW
   /* a real application could use if(!strcmp) blocks here, but we want to keep
      the differences between configurations small, so translate string to index here */
   int iIndex;
@@ -102,7 +102,7 @@ u16_t ssi_example_ssi_handler(
     }
   }
 
-#if defined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
+// #if defined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
   LWIP_UNUSED_ARG(connection_state);
 
 
@@ -118,7 +118,7 @@ u16_t ssi_example_ssi_handler(
     }
     break;
   case 2: /* "MultPart" */
-#if LWIP_HTTPD_SSI_MULTIPART
+// #if LWIP_HTTPD_SSI_MULTIPART
     switch (current_tag_part) {
     case 0:
       printed = snprintf(pcInsert, iInsertLen, "part0");
@@ -139,7 +139,7 @@ u16_t ssi_example_ssi_handler(
     printed = snprintf(pcInsert, iInsertLen, "LWIP_HTTPD_SSI_MULTIPART disabled");
 
     break;
-#if LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION
+// #if LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION
   case 3:
     if (connection_state) {
       char *params = (char *)connection_state;
@@ -157,21 +157,21 @@ u16_t ssi_example_ssi_handler(
     printed = 0;
     break;
   }
-  LWIP_ASSERT("sane length", printed <= 0xFFFF);
+  // LWIP_ASSERT("sane length", printed <= 0xFFFF);
   return (u16_t)printed;
 }
 
 void
-ssi_ex_init(void)
+ssi_ex_init()
 {
   int i;
   for (i = 0; i < LWIP_ARRAYSIZE(ssi_example_tags); i++) {
-    LWIP_ASSERT("tag too long for LWIP_HTTPD_MAX_TAG_NAME_LEN",
+    // LWIP_ASSERT("tag too long for LWIP_HTTPD_MAX_TAG_NAME_LEN",
       strlen(ssi_example_tags[i]) <= LWIP_HTTPD_MAX_TAG_NAME_LEN);
   }
 
   http_set_ssi_handler(ssi_example_ssi_handler,
-#if LWIP_HTTPD_SSI_RAW
+// #if LWIP_HTTPD_SSI_RAW
     NULL, 0
 #else
     ssi_example_tags, LWIP_ARRAYSIZE(ssi_example_tags)
@@ -179,7 +179,7 @@ ssi_ex_init(void)
     );
 }
 
-#if LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION
+// #if LWIP_HTTPD_EXAMPLE_SSI_SIMPLE_CGI_INTEGRATION
 void *
 fs_state_init(struct fs_file *file, const char *name)
 {
@@ -205,7 +205,7 @@ fs_state_free(struct fs_file *file, void *state)
 void
 httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumParams,
                               char **pcParam, char **pcValue
-#if defined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
+// #if defined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
                                      , void *connection_state
  /* LWIP_HTTPD_FILE_STATE */
                                      )

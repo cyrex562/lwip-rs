@@ -39,7 +39,7 @@
 
 
 
-#if LWIP_SNMP && SNMP_LWIP_MIB2
+// #if LWIP_SNMP && SNMP_LWIP_MIB2
 
 #define MIB2_AUTH_TRAPS_ENABLED  1
 #define MIB2_AUTH_TRAPS_DISABLED 2
@@ -49,7 +49,7 @@ static s16_t
 snmp_get_value(const struct snmp_scalar_array_node_def *node, void *value)
 {
   u32_t *uint_ptr = (u32_t *)value;
-  switch (node->oid) {
+  switch ( node.oid) {
     case 1: /* snmpInPkts */
       *uint_ptr = snmp_stats.inpkts;
       break;
@@ -145,7 +145,7 @@ snmp_get_value(const struct snmp_scalar_array_node_def *node, void *value)
       *uint_ptr = 0; /* not supported */
       break;
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmp_get_value(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("snmp_get_value(): unknown id: %"S32_F"\n",  node.oid));
       return 0;
   }
 
@@ -158,7 +158,7 @@ snmp_set_test(const struct snmp_scalar_array_node_def *node, u16_t len, void *va
   snmp_err_t ret = SNMP_ERR_WRONGVALUE;
   LWIP_UNUSED_ARG(len);
 
-  if (node->oid == 30) {
+  if ( node.oid == 30) {
     /* snmpEnableAuthenTraps */
     s32_t *sint_ptr = (s32_t *)value;
 
@@ -175,7 +175,7 @@ snmp_set_value(const struct snmp_scalar_array_node_def *node, u16_t len, void *v
 {
   LWIP_UNUSED_ARG(len);
 
-  if (node->oid == 30) {
+  if ( node.oid == 30) {
     /* snmpEnableAuthenTraps */
     s32_t *sint_ptr = (s32_t *)value;
     if (*sint_ptr == MIB2_AUTH_TRAPS_DISABLED) {
@@ -224,4 +224,4 @@ static const struct snmp_scalar_array_node_def snmp_nodes[] = {
 
 const struct snmp_scalar_array_node snmp_mib2_snmp_root = SNMP_SCALAR_CREATE_ARRAY_NODE(11, snmp_nodes, snmp_get_value, snmp_set_test, snmp_set_value);
 
-#endif /* LWIP_SNMP && SNMP_LWIP_MIB2 */
+// #endif /* LWIP_SNMP && SNMP_LWIP_MIB2 */

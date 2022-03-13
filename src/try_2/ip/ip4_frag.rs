@@ -158,9 +158,9 @@ pub fn ip_reass_free_complete_datagram(
     let p: &mut PacketBuffer;
     let iprh: &mut Ipv4ReassemblyHelper;
 
-    LWIP_ASSERT("prev != ipr", prev != ipr);
+    // LWIP_ASSERT("prev != ipr", prev != ipr);
     if prev != None {
-        LWIP_ASSERT("prev.next == ipr", prev.next == ipr);
+        // LWIP_ASSERT("prev.next == ipr", prev.next == ipr);
     }
 
     MIB2_STATS_INC(mib2.ipreasmfails);
@@ -175,7 +175,7 @@ pub fn ip_reass_free_complete_datagram(
         SMEMCPY(p.payload, &ipr.iphdr, IP_HLEN);
         icmp_time_exceeded(p, ICMP_TE_FRAG);
         clen = pbuf_clen(p);
-        LWIP_ASSERT("pbufs_freed + clen <= 0xffff", pbufs_freed + clen <= 0xffff);
+        // LWIP_ASSERT("pbufs_freed + clen <= 0xffff", pbufs_freed + clen <= 0xffff);
         pbufs_freed = (pbufs_freed + clen);
         pbuf_free(p);
     }
@@ -190,13 +190,13 @@ pub fn ip_reass_free_complete_datagram(
         //  get the next pointer before freeing 
         p = iprh.next_pbuf;
         clen = pbuf_clen(pcur);
-        LWIP_ASSERT("pbufs_freed + clen <= 0xffff", pbufs_freed + clen <= 0xffff);
+        // LWIP_ASSERT("pbufs_freed + clen <= 0xffff", pbufs_freed + clen <= 0xffff);
         pbufs_freed = (pbufs_freed + clen);
         pbuf_free(pcur);
     }
     //  Then, unchain the struct ip_reassdata from the list and free it. 
     ip_reass_dequeue_datagram(ipr, prev);
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "ip_reass_pbufcount >= pbufs_freed",
         ip_reass_pbufcount >= pbufs_freed,
     );
@@ -308,7 +308,7 @@ pub fn ip_reass_dequeue_datagram(ipr: &mut Ip4ReassemblyData, prev: &mut Ip4Reas
         reassdatagrams = ipr.next;
     } else {
         //  it wasn't the first, so it must have a valid 'prev' 
-        LWIP_ASSERT("sanity check linked list", prev != None);
+        // LWIP_ASSERT("sanity check linked list", prev != None);
         prev.next = ipr.next;
     }
 
@@ -355,7 +355,7 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
     /* overwrite the fragment's ip header from the pbuf with our helper struct,
      * and setup the embedded helper structure. */
     //  make sure the struct ip_reass_helper fits into the IP header 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "sizeof(ip_reass_helper) <= IP_HLEN",
         sizeof(ip_reass_helper) <= IP_HLEN,
     );
@@ -427,14 +427,14 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
             /* this is (for now), the fragment with the highest offset:
              * chain it to the last fragment */
 
-            LWIP_ASSERT("check fragments don't overlap", iprh_prev.end <= iprh.start);
+            // LWIP_ASSERT("check fragments don't overlap", iprh_prev.end <= iprh.start);
 
             iprh_prev.next_pbuf = new_p;
             if (iprh_prev.end != iprh.start) {
                 valid = 0;
             }
         } else {
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "no previous fragment, this must be the first fragment!",
                 ipr.p == None,
             );
@@ -469,9 +469,9 @@ pub fn ip_reass_chain_frag_into_datagram_and_validate(
                 /* if still valid, all fragments are received
                  * (because to the MF==0 already arrived */
                 if (valid) {
-                    LWIP_ASSERT("sanity check", ipr.p != None);
-                    LWIP_ASSERT("sanity check", (ipr.p.payload) != iprh);
-                    LWIP_ASSERT("validate_datagram:next_pbuf!=NULL", iprh.next_pbuf == None);
+                    // LWIP_ASSERT("sanity check", ipr.p != None);
+                    // LWIP_ASSERT("sanity check", (ipr.p.payload) != iprh);
+                    // LWIP_ASSERT("validate_datagram:next_pbuf!=NULL", iprh.next_pbuf == None);
                 }
             }
         }
@@ -656,7 +656,7 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
 
         //  and adjust the number of pbufs currently queued for reassembly. 
         clen = pbuf_clen(p);
-        LWIP_ASSERT("ip_reass_pbufcount >= clen", ip_reass_pbufcount >= clen);
+        // LWIP_ASSERT("ip_reass_pbufcount >= clen", ip_reass_pbufcount >= clen);
         ip_reass_pbufcount = (ip_reass_pbufcount - clen);
 
         MIB2_STATS_INC(mib2.ipreasmoks);
@@ -669,10 +669,10 @@ pub fn ip4_reass(p: &mut PacketBuffer) -> PacketBuffer {
     return None;
 
     // nullreturn_ipr:
-    LWIP_ASSERT("ipr != NULL", ipr != None);
+    // LWIP_ASSERT("ipr != NULL", ipr != None);
     if (ipr.p == None) {
         //  dropped pbuf after creating a new datagram entry: remove the entry, too 
-        LWIP_ASSERT("not firstalthough just enqueued", ipr == reassdatagrams);
+        // LWIP_ASSERT("not firstalthough just enqueued", ipr == reassdatagrams);
         ip_reass_dequeue_datagram(ipr, None);
     }
 
@@ -690,7 +690,7 @@ pub fn ip_frag_alloc_pbuf_custom_ref() -> PacketBuffer_custom_ref {
 
 //  Free a struct pbuf_custom_ref 
 pub fn ip_frag_free_pbuf_custom_ref(p: &mut PacketBuffer_custom_ref) {
-    LWIP_ASSERT("p != NULL", p != None);
+    // LWIP_ASSERT("p != NULL", p != None);
     memp_free(MEMP_FRAG_PBUF, p);
 }
 
@@ -698,8 +698,8 @@ pub fn ip_frag_free_pbuf_custom_ref(p: &mut PacketBuffer_custom_ref) {
  * pbuf_free. */
 pub fn ipfrag_free_pbuf_custom(p: &mut PacketBuffer) {
     let pcr: &mut PacketBuffer_custom_ref = p;
-    LWIP_ASSERT("pcr != NULL", pcr != None);
-    LWIP_ASSERT("pcr == p", pcr == p);
+    // LWIP_ASSERT("pcr != NULL", pcr != None);
+    // LWIP_ASSERT("pcr == p", pcr == p);
     if (pcr.original != None) {
         pbuf_free(pcr.original);
     }
@@ -762,7 +762,7 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx, dest: &mu
         if (rambuf == None) {
             // goto memerr;
         }
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "this needs a pbuf in one piece!",
             (rambuf.len == rambuf.tot_len) && (rambuf.next == None),
         );
@@ -785,7 +785,7 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx, dest: &mu
         if (rambuf == None) {
             // goto memerr;
         }
-        LWIP_ASSERT("this needs a pbuf in one piece!", (rambuf.len >= (IP_HLEN)));
+        // LWIP_ASSERT("this needs a pbuf in one piece!", (rambuf.len >= (IP_HLEN)));
         SMEMCPY(rambuf.payload, original_iphdr, IP_HLEN);
         iphdr = rambuf.payload;
 
@@ -793,7 +793,7 @@ pub fn ip4_frag(p: &mut PacketBuffer, netif: &mut NetworkInterfaceCtx, dest: &mu
         while (left_to_copy) {
             let pcr: &mut PacketBuffer_custom_ref;
             let plen: u16 = (p.len - poff);
-            LWIP_ASSERT("p.len >= poff", p.len >= poff);
+            // LWIP_ASSERT("p.len >= poff", p.len >= poff);
             newpbuflen = LWIP_MIN(left_to_copy, plen);
             //  Is this pbuf already empty? 
             if (!newpbuflen) {

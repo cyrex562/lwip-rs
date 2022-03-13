@@ -53,15 +53,15 @@ struct mqtt_request_t
   mqtt_request_cb_t cb;
   void *arg;
   /** MQTT packet identifier */
-  u16_t pkt_id;
+  pkt_id: u16;
   /** Expire time relative to element before this  */
-  u16_t timeout_diff;
+  timeout_diff: u16;
 };
 
 /** Ring buffer */
 struct mqtt_ringbuf_t {
-  u16_t put;
-  u16_t get;
+  put: u16;
+  get: u16;
   u8_t buf[MQTT_OUTPUT_RINGBUF_SIZE];
 };
 
@@ -69,15 +69,15 @@ struct mqtt_ringbuf_t {
 struct mqtt_client_s
 {
   /** Timers and timeouts */
-  u16_t cyclic_tick;
-  u16_t keep_alive;
-  u16_t server_watchdog;
+  cyclic_tick: u16;
+  keep_alive: u16;
+  server_watchdog: u16;
   /** Packet identifier generator*/
-  u16_t pkt_id_seq;
+  pkt_id_seq: u16;
   /** Packet identifier of pending incoming publish */
-  u16_t inpub_pkt_id;
+  inpub_pkt_id: u16;
   /** Connection state */
-  u8_t conn_state;
+  conn_state: u8;
   struct altcp_pcb *conn;
   /** Connection callback */
   void *connect_arg;

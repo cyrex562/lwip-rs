@@ -14,7 +14,7 @@ APIs are:
 
 5) ip6_addr_t *ip6_get_gateway(netif: &mut netif, ip6_addr_t *dest);
 
-6) ip6_get_route_table: &mut ip6_route_entry(void);
+6) ip6_get_route_table: &mut ip6_route_entry();
 
 For route lookup from the table, The LWIP_HOOK_IP6_ROUTE hook in ip6_route(..) of ip6.c
 could be assigned to the ip6_static_route() API of this implementation to return the 

@@ -213,9 +213,9 @@
  * snmp_set_mibs(my_snmp_mibs, LWIP_ARRAYSIZE(my_snmp_mibs));
  */
 pub fn snmp_set_mibs(mibs: &mut Vec<snmp_mib>, num_mibs: u8) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mibs pointer must be != NULL", (mibs != None));
-    LWIP_ASSERT("num_mibs pointer must be != 0", (num_mibs != 0));
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mibs pointer must be != NULL", (mibs != None));
+    // LWIP_ASSERT("num_mibs pointer must be != 0", (num_mibs != 0));
     snmp_mibs = mibs;
     snmp_num_mibs = num_mibs;
 }
@@ -235,7 +235,7 @@ pub fn snmp_set_mibs(mibs: &mut Vec<snmp_mib>, num_mibs: u8) {
  * for more details see description of 'sysObjectID' field in RFC1213-MIB
  */
 pub fn snmp_set_device_enterprise_oid(device_enterprise_oid: &mut snmp_obj_id) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (device_enterprise_oid == None) {
         snmp_device_enterprise_oid = &snmp_device_enterprise_oid_default;
     } else {
@@ -248,7 +248,7 @@ pub fn snmp_set_device_enterprise_oid(device_enterprise_oid: &mut snmp_obj_id) {
  * Get 'device enterprise oid'
  */
 pub fn snmp_get_device_enterprise_oid() -> snmp_obj_id {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     return snmp_device_enterprise_oid;
 }
 
@@ -494,7 +494,7 @@ pub fn snmp_oid_to_ip_port(oid: &mut u32, oid_len: u8, ip: &mut LwipAddr, port: 
  * @param oid_len OID length
  */
 pub fn snmp_oid_assign(target: &mut snmp_obj_id, oid: &mut u32, oid_len: u8) {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "oid_len <= SNMP_MAX_OBJ_ID_LEN",
         oid_len <= SNMP_MAX_OBJ_ID_LEN,
     );
@@ -513,7 +513,7 @@ pub fn snmp_oid_assign(target: &mut snmp_obj_id, oid: &mut u32, oid_len: u8) {
  * @param oid_len OID length
  */
 pub fn snmp_oid_prefix(target: &mut snmp_obj_id, oid: &mut u32, oid_len: u8) {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "target.len + oid_len <= SNMP_MAX_OBJ_ID_LEN",
         (target.len + oid_len) <= SNMP_MAX_OBJ_ID_LEN,
     );
@@ -556,7 +556,7 @@ pub fn snmp_oid_combine(
  * @param oid_len OID length
  */
 pub fn snmp_oid_append(target: &mut snmp_obj_id, oid: &mut u32, oid_len: u8) {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "offset + oid_len <= SNMP_MAX_OBJ_ID_LEN",
         (target.len + oid_len) <= SNMP_MAX_OBJ_ID_LEN,
     );
@@ -577,11 +577,11 @@ pub fn snmp_oid_append(target: &mut snmp_obj_id, oid: &mut u32, oid_len: u8) {
  */
 pub fn snmp_oid_compare(oid1: &mut u32, oid1_len: u8, oid2: &mut u32, oid2_len: u8) -> i8 {
     let level: u8 = 0;
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "'oid1' param must not be NULL or 'oid1_len' param be 0!",
         (oid1 != None) || (oid1_len == 0),
     );
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "'oid2' param must not be NULL or 'oid2_len' param be 0!",
         (oid2 != None) || (oid2_len == 0),
     );
@@ -641,7 +641,7 @@ pub fn snmp_get_mib_from_oid(oid: &mut u32, oid_len: u8) -> snmp_mib {
     let max_match_len: u8 = 0;
     let matched_mib: &mut snmp_mib = None;
 
-    LWIP_ASSERT("'oid' param must not be NULL!", (oid != None));
+    // LWIP_ASSERT("'oid' param must not be NULL!", (oid != None));
 
     if (oid_len == 0) {
         return None;
@@ -680,7 +680,7 @@ pub fn snmp_get_next_mib(oid: &mut u32, oid_len: u8) -> snmp_mib {
     let i: u8;
     let next_mib: &mut snmp_mib = None;
 
-    LWIP_ASSERT("'oid' param must not be NULL!", (oid != None));
+    // LWIP_ASSERT("'oid' param must not be NULL!", (oid != None));
 
     if (oid_len == 0) {
         return None;
@@ -710,8 +710,8 @@ pub fn snmp_get_mib_between(
 ) -> snmp_mib {
     let next_mib: &mut snmp_mib = snmp_get_next_mib(oid1, oid1_len);
 
-    LWIP_ASSERT("'oid2' param must not be NULL!", (oid2 != None));
-    LWIP_ASSERT("'oid2_len' param must be greater than 0!", (oid2_len > 0));
+    // LWIP_ASSERT("'oid2' param must not be NULL!", (oid2 != None));
+    // LWIP_ASSERT("'oid2_len' param must be greater than 0!", (oid2_len > 0));
 
     if (next_mib != None) {
         if (snmp_oid_compare(next_mib.base_oid, next_mib.base_oid_len, oid2, oid2_len) < 0) {

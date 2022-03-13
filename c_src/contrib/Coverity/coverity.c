@@ -90,7 +90,7 @@ u8_t pbuf_get_at(struct pbuf* p, u16_t offset)
   __coverity_tainted_data_return__();
 }
 
-void abort(void)
+void abort()
 {
   __coverity_panic__();
 }

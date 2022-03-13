@@ -21,7 +21,7 @@ static int output_ctr, linkoutput_ctr;
 
 /* Helper functions */
 static void
-udp_remove_all(void)
+udp_remove_all()
 {
   struct udp_pcb *pcb = udp_pcbs;
   struct udp_pcb *pcb2;
@@ -66,11 +66,11 @@ default_netif_init(struct netif *netif)
 }
 
 static void
-default_netif_add(void)
+default_netif_add()
 {
   struct netif *n;
 
-#if LWIP_HAVE_LOOPIF
+// #if LWIP_HAVE_LOOPIF
   fail_unless(netif_list != NULL); /* the loopif */
   fail_unless(netif_list->next == NULL);
 #else
@@ -98,13 +98,13 @@ default_netif_add(void)
 }
 
 static void
-default_netif_remove(void)
+default_netif_remove()
 {
   fail_unless(netif_default == &test_netif1);
   netif_remove(&test_netif1);
   netif_remove(&test_netif2);
   fail_unless(netif_default == NULL);
-#if LWIP_HAVE_LOOPIF
+// #if LWIP_HAVE_LOOPIF
   fail_unless(netif_list != NULL); /* the loopif */
   fail_unless(netif_list->next == NULL);
 #else
@@ -114,7 +114,7 @@ default_netif_remove(void)
 /* Setups/teardown functions */
 
 static void
-udp_setup(void)
+udp_setup()
 {
   udp_remove_all();
   default_netif_add();
@@ -122,7 +122,7 @@ udp_setup(void)
 }
 
 static void
-udp_teardown(void)
+udp_teardown()
 {
   udp_remove_all();
   default_netif_remove();
@@ -172,7 +172,7 @@ static struct pbuf *
 test_udp_create_test_packet(u16_t length, u16_t port, u32_t dst_addr)
 {
   err_t err;
-  u8_t ret;
+  ret: u8;
   struct udp_hdr *uh;
   struct ip_hdr *ih;
   struct pbuf *p;
@@ -216,7 +216,7 @@ START_TEST(test_udp_broadcast_rx_with_2_netifs)
   const u16_t port = 12345;
   struct test_udp_rxdata ctr1, ctr2;
   struct pbuf *p;
-#if SO_REUSE
+// #if SO_REUSE
   struct udp_pcb *pcb_any;
   struct test_udp_rxdata ctr_any;
 
@@ -227,7 +227,7 @@ START_TEST(test_udp_broadcast_rx_with_2_netifs)
   pcb2 = udp_new();
   fail_unless(pcb2 != NULL);
 
-#if SO_REUSE
+// #if SO_REUSE
   pcb_any = udp_new();
   fail_unless(pcb_any != NULL);
 
@@ -263,7 +263,7 @@ START_TEST(test_udp_broadcast_rx_with_2_netifs)
   fail_unless(ctr1.rx_cnt == 1);
   fail_unless(ctr1.rx_bytes == 16);
   fail_unless(ctr2.rx_cnt == 0);
-#if SO_REUSE
+// #if SO_REUSE
   fail_unless(ctr_any.rx_cnt == 0);
 
   ctr1.rx_cnt = ctr1.rx_bytes = 0;
@@ -276,7 +276,7 @@ START_TEST(test_udp_broadcast_rx_with_2_netifs)
   fail_unless(ctr2.rx_cnt == 1);
   fail_unless(ctr2.rx_bytes == 16);
   fail_unless(ctr1.rx_cnt == 0);
-#if SO_REUSE
+// #if SO_REUSE
   fail_unless(ctr_any.rx_cnt == 0);
 
   ctr2.rx_cnt = ctr2.rx_bytes = 0;
@@ -289,7 +289,7 @@ START_TEST(test_udp_broadcast_rx_with_2_netifs)
   fail_unless(ctr1.rx_cnt == 1);
   fail_unless(ctr1.rx_bytes == 16);
   fail_unless(ctr2.rx_cnt == 0);
-#if SO_REUSE
+// #if SO_REUSE
   fail_unless(ctr_any.rx_cnt == 0);
 
   ctr1.rx_cnt = ctr1.rx_bytes = 0;
@@ -302,7 +302,7 @@ START_TEST(test_udp_broadcast_rx_with_2_netifs)
   fail_unless(ctr2.rx_cnt == 1);
   fail_unless(ctr2.rx_bytes == 16);
   fail_unless(ctr1.rx_cnt == 0);
-#if SO_REUSE
+// #if SO_REUSE
   fail_unless(ctr_any.rx_cnt == 0);
 
   ctr2.rx_cnt = ctr2.rx_bytes = 0;
@@ -315,7 +315,7 @@ START_TEST(test_udp_broadcast_rx_with_2_netifs)
   fail_unless(ctr1.rx_cnt == 1);
   fail_unless(ctr1.rx_bytes == 16);
   fail_unless(ctr2.rx_cnt == 0);
-#if SO_REUSE
+// #if SO_REUSE
   fail_unless(ctr_any.rx_cnt == 0);
 
   ctr1.rx_cnt = ctr1.rx_bytes = 0;
@@ -328,7 +328,7 @@ START_TEST(test_udp_broadcast_rx_with_2_netifs)
   fail_unless(ctr2.rx_cnt == 1);
   fail_unless(ctr2.rx_bytes == 16);
   fail_unless(ctr1.rx_cnt == 0);
-#if SO_REUSE
+// #if SO_REUSE
   fail_unless(ctr_any.rx_cnt == 0);
 
   ctr2.rx_cnt = ctr2.rx_bytes = 0;
@@ -461,7 +461,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-udp_suite(void)
+udp_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_udp_new_remove),

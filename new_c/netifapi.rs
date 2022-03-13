@@ -40,14 +40,14 @@
 
 
 
-#if LWIP_NETIF_API /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_NETIF_API /* don't build if not configured for use in lwipopts.h */
 
 
 
 
 
 
-#include <string.h> /* strncpy */
+
 
 #define NETIFAPI_VAR_REF(name)      API_VAR_REF(name)
 #define NETIFAPI_VAR_DECLARE(name)  API_VAR_DECLARE(struct netifapi_msg, name)
@@ -64,22 +64,22 @@ netifapi_do_netif_add(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct netifapi_msg */
   struct netifapi_msg *msg = (struct netifapi_msg *)(void *)m;
 
-  if (!netif_add( msg->netif,
-#if LWIP_IPV4
-                  API_EXPR_REF(msg->msg.add.ipaddr),
-                  API_EXPR_REF(msg->msg.add.netmask),
-                  API_EXPR_REF(msg->msg.add.gw),
-#endif /* LWIP_IPV4 */
-                  msg->msg.add.state,
-                  msg->msg.add.init,
-                  msg->msg.add.input)) {
+  if (!netif_add(  msg.netif,
+// #if LWIP_IPV4
+                  API_EXPR_REF( msg.msg.add.ipaddr),
+                  API_EXPR_REF( msg.msg.add.netmask),
+                  API_EXPR_REF( msg.msg.add.gw),
+// #endif /* LWIP_IPV4 */
+                   msg.msg.add.state,
+                   msg.msg.add.init,
+                   msg.msg.add.input)) {
     return ERR_IF;
   } else {
     return ERR_OK;
   }
 }
 
-#if LWIP_IPV4
+// #if LWIP_IPV4
 /**
  * Call netif_set_addr() inside the tcpip_thread context.
  */
@@ -90,13 +90,13 @@ netifapi_do_netif_set_addr(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct netifapi_msg */
   struct netifapi_msg *msg = (struct netifapi_msg *)(void *)m;
 
-  netif_set_addr( msg->netif,
-                  API_EXPR_REF(msg->msg.add.ipaddr),
-                  API_EXPR_REF(msg->msg.add.netmask),
-                  API_EXPR_REF(msg->msg.add.gw));
+  netif_set_addr(  msg.netif,
+                  API_EXPR_REF( msg.msg.add.ipaddr),
+                  API_EXPR_REF( msg.msg.add.netmask),
+                  API_EXPR_REF( msg.msg.add.gw));
   return ERR_OK;
 }
-#endif /* LWIP_IPV4 */
+// #endif /* LWIP_IPV4 */
 
 /**
 * Call netif_name_to_index() inside the tcpip_thread context.
@@ -108,7 +108,7 @@ netifapi_do_name_to_index(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct netifapi_msg */
   struct netifapi_msg *msg = (struct netifapi_msg *)(void *)m;
 
-  msg->msg.ifs.index = netif_name_to_index(msg->msg.ifs.name);
+   msg.msg.ifs.index = netif_name_to_index( msg.msg.ifs.name);
   return ERR_OK;
 }
 
@@ -122,9 +122,9 @@ netifapi_do_index_to_name(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct netifapi_msg */
   struct netifapi_msg *msg = (struct netifapi_msg *)(void *)m;
 
-  if (!netif_index_to_name(msg->msg.ifs.index, msg->msg.ifs.name)) {
+  if (!netif_index_to_name( msg.msg.ifs.index,  msg.msg.ifs.name)) {
     /* return failure via empty name */
-    msg->msg.ifs.name[0] = '\0';
+     msg.msg.ifs.name[0] = '\0';
   }
   return ERR_OK;
 }
@@ -140,15 +140,15 @@ netifapi_do_netif_common(struct tcpip_api_call_data *m)
    * We know it works because the structs have been instantiated as struct netifapi_msg */
   struct netifapi_msg *msg = (struct netifapi_msg *)(void *)m;
 
-  if (msg->msg.common.errtfunc != NULL) {
-    return msg->msg.common.errtfunc(msg->netif);
+  if ( msg.msg.common.errtfunc != NULL) {
+    return  msg.msg.common.errtfunc( msg.netif);
   } else {
-    msg->msg.common.voidfunc(msg->netif);
+     msg.msg.common.voidfunc( msg.netif);
     return ERR_OK;
   }
 }
 
-#if LWIP_ARP && LWIP_IPV4
+// #if LWIP_ARP && LWIP_IPV4
 /**
  * @ingroup netifapi_arp
  * Add or update an entry in the ARP cache.
@@ -167,7 +167,7 @@ netifapi_arp_add(const ip4_addr_t *ipaddr, struct eth_addr *ethaddr, enum netifa
   /* We only support permanent entries currently */
   LWIP_UNUSED_ARG(type);
 
-#if ETHARP_SUPPORT_STATIC_ENTRIES && LWIP_TCPIP_CORE_LOCKING
+// #if ETHARP_SUPPORT_STATIC_ENTRIES && LWIP_TCPIP_CORE_LOCKING
   LOCK_TCPIP_CORE();
   err = etharp_add_static_entry(ipaddr, ethaddr);
   UNLOCK_TCPIP_CORE();
@@ -176,7 +176,7 @@ netifapi_arp_add(const ip4_addr_t *ipaddr, struct eth_addr *ethaddr, enum netifa
   LWIP_UNUSED_ARG(ipaddr);
   LWIP_UNUSED_ARG(ethaddr);
   err = ERR_VAL;
-#endif /* ETHARP_SUPPORT_STATIC_ENTRIES && LWIP_TCPIP_CORE_LOCKING */
+// #endif /* ETHARP_SUPPORT_STATIC_ENTRIES && LWIP_TCPIP_CORE_LOCKING */
 
   return err;
 }
@@ -197,7 +197,7 @@ netifapi_arp_remove(const ip4_addr_t *ipaddr, enum netifapi_arp_entry type)
   /* We only support permanent entries currently */
   LWIP_UNUSED_ARG(type);
 
-#if ETHARP_SUPPORT_STATIC_ENTRIES && LWIP_TCPIP_CORE_LOCKING
+// #if ETHARP_SUPPORT_STATIC_ENTRIES && LWIP_TCPIP_CORE_LOCKING
   LOCK_TCPIP_CORE();
   err = etharp_remove_static_entry(ipaddr);
   UNLOCK_TCPIP_CORE();
@@ -205,11 +205,11 @@ netifapi_arp_remove(const ip4_addr_t *ipaddr, enum netifapi_arp_entry type)
   /* @todo add new vars to struct netifapi_msg and create a 'do' func */
   LWIP_UNUSED_ARG(ipaddr);
   err = ERR_VAL;
-#endif /* ETHARP_SUPPORT_STATIC_ENTRIES && LWIP_TCPIP_CORE_LOCKING */
+// #endif /* ETHARP_SUPPORT_STATIC_ENTRIES && LWIP_TCPIP_CORE_LOCKING */
 
   return err;
 }
-#endif /* LWIP_ARP && LWIP_IPV4 */
+// #endif /* LWIP_ARP && LWIP_IPV4 */
 
 /**
  * @ingroup netifapi_netif
@@ -220,16 +220,16 @@ netifapi_arp_remove(const ip4_addr_t *ipaddr, enum netifapi_arp_entry type)
  */
 err_t
 netifapi_netif_add(struct netif *netif,
-#if LWIP_IPV4
+// #if LWIP_IPV4
                    const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw,
-#endif /* LWIP_IPV4 */
+// #endif /* LWIP_IPV4 */
                    void *state, netif_init_fn init, netif_input_fn input)
 {
   err_t err;
   NETIFAPI_VAR_DECLARE(msg);
   NETIFAPI_VAR_ALLOC(msg);
 
-#if LWIP_IPV4
+// #if LWIP_IPV4
   if (ipaddr == NULL) {
     ipaddr = IP4_ADDR_ANY4;
   }
@@ -239,14 +239,14 @@ netifapi_netif_add(struct netif *netif,
   if (gw == NULL) {
     gw = IP4_ADDR_ANY4;
   }
-#endif /* LWIP_IPV4 */
+// #endif /* LWIP_IPV4 */
 
   NETIFAPI_VAR_REF(msg).netif = netif;
-#if LWIP_IPV4
+// #if LWIP_IPV4
   NETIFAPI_VAR_REF(msg).msg.add.ipaddr  = NETIFAPI_VAR_REF(ipaddr);
   NETIFAPI_VAR_REF(msg).msg.add.netmask = NETIFAPI_VAR_REF(netmask);
   NETIFAPI_VAR_REF(msg).msg.add.gw      = NETIFAPI_VAR_REF(gw);
-#endif /* LWIP_IPV4 */
+// #endif /* LWIP_IPV4 */
   NETIFAPI_VAR_REF(msg).msg.add.state   = state;
   NETIFAPI_VAR_REF(msg).msg.add.init    = init;
   NETIFAPI_VAR_REF(msg).msg.add.input   = input;
@@ -255,7 +255,7 @@ netifapi_netif_add(struct netif *netif,
   return err;
 }
 
-#if LWIP_IPV4
+// #if LWIP_IPV4
 /**
  * @ingroup netifapi_netif
  * Call netif_set_addr() in a thread-safe way by running that function inside the
@@ -291,7 +291,7 @@ netifapi_netif_set_addr(struct netif *netif,
   NETIFAPI_VAR_FREE(msg);
   return err;
 }
-#endif /* LWIP_IPV4 */
+// #endif /* LWIP_IPV4 */
 
 /**
  * call the "errtfunc" (or the "voidfunc" if "errtfunc" is NULL) in a thread-safe
@@ -332,12 +332,12 @@ netifapi_netif_name_to_index(const char *name, u8_t *idx)
 
   *idx = 0;
 
-#if LWIP_MPU_COMPATIBLE
+// #if LWIP_MPU_COMPATIBLE
   strncpy(NETIFAPI_VAR_REF(msg).msg.ifs.name, name, NETIF_NAMESIZE - 1);
   NETIFAPI_VAR_REF(msg).msg.ifs.name[NETIF_NAMESIZE - 1] = '\0';
 #else
   NETIFAPI_VAR_REF(msg).msg.ifs.name = LWIP_CONST_CAST(char *, name);
-#endif /* LWIP_MPU_COMPATIBLE */
+// #endif /* LWIP_MPU_COMPATIBLE */
   err = tcpip_api_call(netifapi_do_name_to_index, &API_VAR_REF(msg).call);
   if (!err) {
     *idx = NETIFAPI_VAR_REF(msg).msg.ifs.index;
@@ -365,16 +365,16 @@ netifapi_netif_index_to_name(u8_t idx, char *name)
   NETIFAPI_VAR_REF(msg).msg.ifs.index = idx;
 #if !LWIP_MPU_COMPATIBLE
   NETIFAPI_VAR_REF(msg).msg.ifs.name = name;
-#endif /* LWIP_MPU_COMPATIBLE */
+// #endif /* LWIP_MPU_COMPATIBLE */
   err = tcpip_api_call(netifapi_do_index_to_name, &API_VAR_REF(msg).call);
-#if LWIP_MPU_COMPATIBLE
+// #if LWIP_MPU_COMPATIBLE
   if (!err) {
     strncpy(name, NETIFAPI_VAR_REF(msg).msg.ifs.name, NETIF_NAMESIZE - 1);
     name[NETIF_NAMESIZE - 1] = '\0';
   }
-#endif /* LWIP_MPU_COMPATIBLE */
+// #endif /* LWIP_MPU_COMPATIBLE */
   NETIFAPI_VAR_FREE(msg);
   return err;
 }
 
-#endif /* LWIP_NETIF_API */
+// #endif /* LWIP_NETIF_API */

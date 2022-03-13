@@ -24,7 +24,7 @@ default_netif_linkoutput(struct netif *netif, struct pbuf *p)
   fail_unless(netif == &test_netif6);
   fail_unless(p != NULL);
   linkoutput_ctr++;
-  linkoutput_byte_ctr += p->tot_len;
+  linkoutput_byte_ctr +=  p.tot_len;
   return ERR_OK;
 }
 
@@ -32,16 +32,16 @@ static err_t
 default_netif_init(struct netif *netif)
 {
   fail_unless(netif != NULL);
-  netif->linkoutput = default_netif_linkoutput;
-  netif->output_ip6 = ethip6_output;
-  netif->mtu = 1500;
-  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHERNET | NETIF_FLAG_MLD6;
-  netif->hwaddr_len = ETH_HWADDR_LEN;
+   netif.linkoutput = default_netif_linkoutput;
+   netif.output_ip6 = ethip6_output;
+   netif.mtu = 1500;
+   netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHERNET | NETIF_FLAG_MLD6;
+   netif.hwaddr_len = ETH_HWADDR_LEN;
   return ERR_OK;
 }
 
 static void
-default_netif_add(void)
+default_netif_add()
 {
   struct netif *n;
   fail_unless(netif_default == NULL);
@@ -51,7 +51,7 @@ default_netif_add(void)
 }
 
 static void
-default_netif_remove(void)
+default_netif_remove()
 {
   fail_unless(netif_default == &test_netif6);
   netif_remove(&test_netif6);
@@ -69,20 +69,20 @@ ip6_test_handle_timers(int count)
 /* Setups/teardown functions */
 
 static void
-ip6_setup(void)
+ip6_setup()
 {
   default_netif_add();
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-ip6_teardown(void)
+ip6_teardown()
 {
-  if (netif_list->loop_first != NULL) {
-    pbuf_free(netif_list->loop_first);
-    netif_list->loop_first = NULL;
+  if ( netif_list.loop_first != NULL) {
+    pbuf_free( netif_list.loop_first);
+     netif_list.loop_first = NULL;
   }
-  netif_list->loop_last = NULL;
+   netif_list.loop_last = NULL;
   /* poll until all memory is released... */
   tcpip_thread_poll_one();
   default_netif_remove();
@@ -324,9 +324,9 @@ START_TEST(test_ip6_dest_unreachable_chained_pbuf)
   LWIP_UNUSED_ARG(_i);
 
   fail_unless(header);
-  header->payload = udp_hdr;
+   header.payload = udp_hdr;
   fail_unless(data);
-  data->payload = udp_payload;
+   data.payload = udp_payload;
   pbuf_cat(header, data);
   data = NULL;
 
@@ -342,15 +342,15 @@ START_TEST(test_ip6_dest_unreachable_chained_pbuf)
 
   /* Verify ICMP reply packet contents */
   fail_unless(cloned_pbuf);
-  fail_unless(cloned_pbuf->len == IP6_HLEN + ICMP6_HLEN + sizeof(udp_hdr) + sizeof(udp_payload));
-  outhdr = (struct ip6_hdr*) cloned_pbuf->payload;
-  fail_unless(ip6_addr_packed_eq(ip_2_ip6(&my_addr), &outhdr->src, IP6_NO_ZONE));
-  fail_unless(ip6_addr_packed_eq(ip_2_ip6(&peer_addr), &outhdr->dest, IP6_NO_ZONE));
-  icmpptr = &((u8_t*)cloned_pbuf->payload)[IP6_HLEN];
+  fail_unless( cloned_pbuf.len == IP6_HLEN + ICMP6_HLEN + sizeof(udp_hdr) + sizeof(udp_payload));
+  outhdr = (struct ip6_hdr*)  cloned_pbuf.payload;
+  fail_unless(ip6_addr_packed_eq(ip_2_ip6(&my_addr), & outhdr.src, IP6_NO_ZONE));
+  fail_unless(ip6_addr_packed_eq(ip_2_ip6(&peer_addr), & outhdr.dest, IP6_NO_ZONE));
+  icmpptr = &((u8_t*) cloned_pbuf.payload)[IP6_HLEN];
   icmp6hdr = (struct icmp6_hdr*) icmpptr;
-  fail_unless(icmp6hdr->type == ICMP6_TYPE_DUR);
-  fail_unless(icmp6hdr->code == ICMP6_DUR_PORT);
-  fail_unless(icmp6hdr->data == lwip_htonl(0));
+  fail_unless( icmp6hdr.type == ICMP6_TYPE_DUR);
+  fail_unless( icmp6hdr.code == ICMP6_DUR_PORT);
+  fail_unless( icmp6hdr.data == lwip_htonl(0));
   icmpptr += ICMP6_HLEN;
   fail_unless(memcmp(icmpptr, udp_hdr, sizeof(udp_hdr)) == 0, "mismatch in copied ip6/udp header");
   icmpptr += sizeof(udp_hdr);
@@ -399,7 +399,7 @@ END_TEST
 
 static err_t direct_output(struct netif *netif, struct pbuf *p, const ip6_addr_t *addr) {
   LWIP_UNUSED_ARG(addr);
-  return netif->linkoutput(netif, p);
+  return  netif.linkoutput(netif, p);
 }
 
 START_TEST(test_ip6_frag)
@@ -434,7 +434,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-ip6_suite(void)
+ip6_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_ip6_ll_addr),
@@ -459,7 +459,7 @@ START_TEST(test_ip6_dummy)
 END_TEST
 
 Suite *
-ip6_suite(void)
+ip6_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_ip6_dummy),

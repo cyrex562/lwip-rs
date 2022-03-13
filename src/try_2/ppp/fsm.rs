@@ -778,7 +778,7 @@ pub fn fsm_sconfreq(f: &mut fsm, retransmit: i32) {
     PUTSHORT(cilen + HEADERLEN, outp);
     if (cilen != 0) {
         (*f.callbacks.addci)(f, outp, &cilen);
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "cilen == p.len - HEADERLEN - PPP_HDRLEN",
             cilen == p.len - HEADERLEN - PPP_HDRLEN,
         );

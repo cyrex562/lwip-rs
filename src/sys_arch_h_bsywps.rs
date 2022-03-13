@@ -67,24 +67,24 @@ pub const SYS_MBOX_NULL: u32 = NULL;32 = NULL;
 /* DWORD (thread id) is used for sys_thread_t but we won't include windows.h */
 typedef u32_t sys_thread_t;
 
-sys_sem_t* sys_arch_netconn_sem_get(void);
-void sys_arch_netconn_sem_alloc(void);
-void sys_arch_netconn_sem_free(void);
+sys_sem_t* sys_arch_netconn_sem_get();
+void sys_arch_netconn_sem_alloc();
+void sys_arch_netconn_sem_free();
 #define LWIP_NETCONN_THREAD_SEM_GET()   sys_arch_netconn_sem_get()
 #define LWIP_NETCONN_THREAD_SEM_ALLOC() sys_arch_netconn_sem_alloc()
 #define LWIP_NETCONN_THREAD_SEM_FREE()  sys_arch_netconn_sem_free()
 
 #define LWIP_EXAMPLE_APP_ABORT() lwip_win32_keypressed()
-int lwip_win32_keypressed(void);
+int lwip_win32_keypressed();
 
 /* Threading options */
-void sys_mark_tcpip_thread(void);
+void sys_mark_tcpip_thread();
 #define LWIP_MARK_TCPIP_THREAD()   sys_mark_tcpip_thread()
 
-#if LWIP_TCPIP_CORE_LOCKING
-void sys_lock_tcpip_core(void);
+// #if LWIP_TCPIP_CORE_LOCKING
+void sys_lock_tcpip_core();
 #define LOCK_TCPIP_CORE()          sys_lock_tcpip_core()
-void sys_unlock_tcpip_core(void);
+void sys_unlock_tcpip_core();
 #define UNLOCK_TCPIP_CORE()        sys_unlock_tcpip_core()
 
 

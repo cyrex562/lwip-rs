@@ -18,7 +18,7 @@ static struct netif test_netif;
 static ip4_addr_t test_ipaddr, test_netmask, test_gw;
 static int linkoutput_ctr;
 static int linkoutput_byte_ctr;
-static u16_t linkoutput_pkt_len;
+static linkoutput_pkt_len: u16;
 static u8_t linkoutput_pkt[100];
 
 /* reference internal lwip variable in netif.c */
@@ -48,7 +48,7 @@ test_netif_init(struct netif *netif)
 }
 
 static void
-test_netif_add(void)
+test_netif_add()
 {
   IP4_ADDR(&test_gw, 192,168,0,1);
   IP4_ADDR(&test_ipaddr, 192,168,0,1);
@@ -62,7 +62,7 @@ test_netif_add(void)
 }
 
 static void
-test_netif_remove(void)
+test_netif_remove()
 {
   if (netif_default == &test_netif) {
     netif_remove(&test_netif);
@@ -118,13 +118,13 @@ static err_t arpless_output(struct netif *netif, struct pbuf *p,
 /* Setups/teardown functions */
 
 static void
-ip4_setup(void)
+ip4_setup()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-ip4_teardown(void)
+ip4_teardown()
 {
   if (netif_list->loop_first != NULL) {
     pbuf_free(netif_list->loop_first);
@@ -328,7 +328,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-ip4_suite(void)
+ip4_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_ip4_frag),

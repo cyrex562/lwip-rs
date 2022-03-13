@@ -60,7 +60,7 @@
 
 
 
-#if LWIP_SOCKET && LWIP_IPV4 /* this uses IPv4 loopback sockets, currently */
+// #if LWIP_SOCKET && LWIP_IPV4 /* this uses IPv4 loopback sockets, currently */
 
 
 #define TEST_SOCKETS_STRESS   LWIP_DBG_OFF
@@ -92,8 +92,8 @@ fill_test_data(void *buf, size_t buf_len_bytes)
   u8_t *p = (u8_t*)buf;
   u16_t i, chk;
 
-  LWIP_ASSERT("buffer too short", buf_len_bytes >= 4);
-  LWIP_ASSERT("buffer too big", buf_len_bytes <= 0xFFFF);
+  // LWIP_ASSERT("buffer too short", buf_len_bytes >= 4);
+  // LWIP_ASSERT("buffer too big", buf_len_bytes <= 0xFFFF);
   /* store the total number of bytes */
   p[0] = (buf_len_bytes >> 8);
   p[1] = buf_len_bytes;
@@ -116,9 +116,9 @@ check_test_data(const void *buf, size_t buf_len_bytes)
   u8_t *p = (u8_t*)buf;
   u16_t i, chk, chk_rx, len_rx;
 
-  LWIP_ASSERT("buffer too short", buf_len_bytes >= 4);
+  // LWIP_ASSERT("buffer too short", buf_len_bytes >= 4);
   len_rx = (((u16_t)p[0]) << 8) | p[1];
-  LWIP_ASSERT("len too short", len_rx >= 4);
+  // LWIP_ASSERT("len too short", len_rx >= 4);
   if (len_rx > buf_len_bytes) {
     /* not all data received in this segment */
     LWIP_DEBUGF(TEST_SOCKETS_STRESS | LWIP_DBG_TRACE, ("check-\n"));
@@ -130,7 +130,7 @@ check_test_data(const void *buf, size_t buf_len_bytes)
   for (i = 4; i < len_rx; i++) {
     chk += p[i];
   }
-  LWIP_ASSERT("invalid checksum", chk == chk_rx);
+  // LWIP_ASSERT("invalid checksum", chk == chk_rx);
   if (len_rx < buf_len_bytes) {
     size_t data_left = buf_len_bytes - len_rx;
     memmove(p, &p[len_rx], data_left);
@@ -160,13 +160,13 @@ recv_and_check_data_return_offset(int s, char *rxbuf, size_t rxbufsize, size_t r
       *closed = 1;
       return 0;
     }
-    LWIP_ASSERT("err == 0", err == 0);
+    // LWIP_ASSERT("err == 0", err == 0);
   }
-  LWIP_ASSERT("ret > 0", ret > 0);
+  // LWIP_ASSERT("ret > 0", ret > 0);
   return check_test_data(rxbuf, rxoff + ret);
 }
 
-#if LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET_SELECT
 static int
 sockets_stresstest_wait_readable_select(int s, int timeout_ms)
 {
@@ -186,7 +186,7 @@ sockets_stresstest_wait_readable_select(int s, int timeout_ms)
   tv.tv_sec = timeout_ms / 1000;
   tv.tv_usec = (timeout_ms - (tv.tv_sec * 1000)) * 1000;
   ret = lwip_select(s + 1, &fs_r, &fs_w, &fs_e, &tv);
-  LWIP_ASSERT("select error", ret >= 0);
+  // LWIP_ASSERT("select error", ret >= 0);
   if (ret) {
     /* convert poll flags to our flags */
     ret = 0;
@@ -205,7 +205,7 @@ sockets_stresstest_wait_readable_select(int s, int timeout_ms)
 }
 
 
-#if LWIP_SOCKET_POLL
+// #if LWIP_SOCKET_POLL
 static int
 sockets_stresstest_wait_readable_poll(int s, int timeout_ms)
 {
@@ -235,13 +235,13 @@ sockets_stresstest_wait_readable_poll(int s, int timeout_ms)
 }
 
 
-#if LWIP_SO_RCVTIMEO
+// #if LWIP_SO_RCVTIMEO
 static int
 sockets_stresstest_wait_readable_recvtimeo(int s, int timeout_ms)
 {
   int ret;
   char buf;
-#if LWIP_SO_SNDRCVTIMEO_NONSTANDARD
+// #if LWIP_SO_SNDRCVTIMEO_NONSTANDARD
   int opt_on = timeout_ms;
   int opt_off = 0;
 #else
@@ -254,14 +254,14 @@ sockets_stresstest_wait_readable_recvtimeo(int s, int timeout_ms)
 
   /* enable receive timeout */
   ret = lwip_setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &opt_on, sizeof(opt_on));
-  LWIP_ASSERT("setsockopt error", ret == 0);
+  // LWIP_ASSERT("setsockopt error", ret == 0);
 
   /* peek for one byte with timeout */
   ret = lwip_recv(s, &buf, 1, MSG_PEEK);
 
   /* disable receive timeout */
   ret = lwip_setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &opt_off, sizeof(opt_off));
-  LWIP_ASSERT("setsockopt error", ret == 0);
+  // LWIP_ASSERT("setsockopt error", ret == 0);
 
   if (ret == 1) {
     return TEST_SOCK_READABLE;
@@ -272,7 +272,7 @@ sockets_stresstest_wait_readable_recvtimeo(int s, int timeout_ms)
   if (ret == -1) {
     return TEST_SOCK_ERR;
   }
-  LWIP_ASSERT("invalid return value", 0);
+  // LWIP_ASSERT("invalid return value", 0);
   return TEST_SOCK_ERR;
 }
 
@@ -297,7 +297,7 @@ sockets_stresstest_wait_readable_wait_peek(int s, int timeout_ms)
   if (ret == -1) {
     return TEST_SOCK_ERR;
   }
-  LWIP_ASSERT("invalid return value", 0);
+  // LWIP_ASSERT("invalid return value", 0);
   return TEST_SOCK_ERR;
 }
 
@@ -330,12 +330,12 @@ sockets_stresstest_wait_readable_nonblock(int s, int timeout_ms)
 static int sockets_stresstest_rand_mode(int allow_wait, int allow_rx)
 {
   u32_t random_value = LWIP_RAND();
-#if LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET_SELECT
   if (random_value & TEST_MODE_SELECT) {
     return TEST_MODE_SELECT;
   }
 
-#if LWIP_SOCKET_POLL
+// #if LWIP_SOCKET_POLL
   if (random_value & TEST_MODE_POLL) {
     return TEST_MODE_POLL;
   }
@@ -343,7 +343,7 @@ static int sockets_stresstest_rand_mode(int allow_wait, int allow_rx)
   if (!allow_rx) {
     return TEST_MODE_SLEEP;
   }
-#if LWIP_SO_RCVTIMEO
+// #if LWIP_SO_RCVTIMEO
   if (random_value & TEST_MODE_RECVTIMEO) {
     return TEST_MODE_RECVTIMEO;
   }
@@ -361,15 +361,15 @@ sockets_stresstest_wait_readable(int mode, int s, int timeout_ms)
 {
   switch(mode)
   {
-#if LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET_SELECT
   case TEST_MODE_SELECT:
     return sockets_stresstest_wait_readable_select(s, timeout_ms);
 
-#if LWIP_SOCKET_POLL
+// #if LWIP_SOCKET_POLL
   case TEST_MODE_POLL:
     return sockets_stresstest_wait_readable_poll(s, timeout_ms);
 
-#if LWIP_SO_RCVTIMEO
+// #if LWIP_SO_RCVTIMEO
   case TEST_MODE_RECVTIMEO:
     return sockets_stresstest_wait_readable_recvtimeo(s, timeout_ms);
 
@@ -383,28 +383,28 @@ sockets_stresstest_wait_readable(int mode, int s, int timeout_ms)
       return 1;
     }
   default:
-    LWIP_ASSERT("invalid mode", 0);
+    // LWIP_ASSERT("invalid mode", 0);
     break;
   }
   return 0;
 }
 
-#if LWIP_NETCONN_FULLDUPLEX
+// #if LWIP_NETCONN_FULLDUPLEX
 static void
 sockets_stresstest_conn_client_r(void *arg)
 {
   struct sockets_stresstest_fullduplex *fd = (struct sockets_stresstest_fullduplex *)arg;
-  int s = fd->s;
+  int s =  fd.s;
   size_t rxoff = 0;
   char rxbuf[TEST_TXRX_BUFSIZE];
 
   while (1) {
     int closed;
-    if (fd->closed) {
+    if ( fd.closed) {
       break;
     }
     rxoff = recv_and_check_data_return_offset(s, rxbuf, sizeof(rxbuf), rxoff, &closed, "cli");
-    if (fd->closed) {
+    if ( fd.closed) {
       break;
     }
     if (closed) {
@@ -414,7 +414,7 @@ sockets_stresstest_conn_client_r(void *arg)
   }
 
   SYS_ARCH_DEC(sockets_stresstest_numthreads, 1);
-  LWIP_ASSERT("", sockets_stresstest_numthreads >= 0);
+  // LWIP_ASSERT("", sockets_stresstest_numthreads >= 0);
 }
 
 
@@ -432,34 +432,34 @@ sockets_stresstest_conn_client(void *arg)
   struct sockets_stresstest_fullduplex *data = NULL;
 
   memcpy(&addr, arg, sizeof(addr));
-  LWIP_ASSERT("", addr.ss_family == AF_INET);
+  // LWIP_ASSERT("", addr.ss_family == AF_INET);
   addr_in = (struct sockaddr_in *)&addr;
-  addr_in->sin_addr.s_addr = inet_addr("127.0.0.1");
+   addr_in.sin_addr.s_addr = inet_addr("127.0.0.1");
 
   /* sleep a random time between 1 and 2 seconds */
   sys_msleep(1000 + (LWIP_RAND() % 1000));
 
   /* connect to the server */
   s = lwip_socket(addr.ss_family, SOCK_STREAM, 0);
-  LWIP_ASSERT("s >= 0", s >= 0);
+  // LWIP_ASSERT("s >= 0", s >= 0);
 
-#if LWIP_NETCONN_FULLDUPLEX
+// #if LWIP_NETCONN_FULLDUPLEX
   if (LWIP_RAND() & 1) {
     sys_thread_t t;
     data = (struct sockets_stresstest_fullduplex*)mem_malloc(sizeof(struct sockets_stresstest_fullduplex));
-    LWIP_ASSERT("data != NULL", data != 0);
+    // LWIP_ASSERT("data != NULL", data != 0);
     SYS_ARCH_INC(sockets_stresstest_numthreads, 1);
-    data->s = s;
-    data->closed = 0;
+     data.s = s;
+     data.closed = 0;
     t = sys_thread_new("sockets_stresstest_conn_client_r", sockets_stresstest_conn_client_r, data, 0, 0);
-    LWIP_ASSERT("thread != NULL", t != 0);
+    // LWIP_ASSERT("thread != NULL", t != 0);
     do_rx = 0;
   }
 
 
   /* @todo: nonblocking connect? */
   ret = lwip_connect(s, (struct sockaddr *)&addr, sizeof(struct sockaddr_storage));
-  LWIP_ASSERT("ret == 0", ret == 0);
+  // LWIP_ASSERT("ret == 0", ret == 0);
 
   while (sys_now() < max_time) {
     int closed;
@@ -469,9 +469,9 @@ sockets_stresstest_conn_client(void *arg)
     if (ret) {
       if (do_rx) {
         /* read some */
-        LWIP_ASSERT("readable", ret == TEST_SOCK_READABLE);
+        // LWIP_ASSERT("readable", ret == TEST_SOCK_READABLE);
         rxoff = recv_and_check_data_return_offset(s, rxbuf, sizeof(rxbuf), rxoff, &closed, "cli");
-        LWIP_ASSERT("client got closed", !closed);
+        // LWIP_ASSERT("client got closed", !closed);
       }
     } else {
       /* timeout, send some */
@@ -482,19 +482,19 @@ sockets_stresstest_conn_client(void *arg)
       if (ret == -1) {
         /* TODO: for this to work, 'errno' has to support multithreading... */
         int err = errno;
-        LWIP_ASSERT("err == 0", err == 0);
+        // LWIP_ASSERT("err == 0", err == 0);
       }
-      LWIP_ASSERT("ret == send_len", ret == (int)send_len);
+      // LWIP_ASSERT("ret == send_len", ret == (int)send_len);
     }
   }
   if (data) {
-    data->closed = 1;
+     data.closed = 1;
   }
   ret = lwip_close(s);
-  LWIP_ASSERT("ret == 0", ret == 0);
+  // LWIP_ASSERT("ret == 0", ret == 0);
 
   SYS_ARCH_DEC(sockets_stresstest_numthreads, 1);
-  LWIP_ASSERT("", sockets_stresstest_numthreads >= 0);
+  // LWIP_ASSERT("", sockets_stresstest_numthreads >= 0);
 }
 
 static void
@@ -518,7 +518,7 @@ sockets_stresstest_conn_server(void *arg)
         break;
       }
       /* read some */
-      LWIP_ASSERT("readable", ret == TEST_SOCK_READABLE);
+      // LWIP_ASSERT("readable", ret == TEST_SOCK_READABLE);
       rxoff = recv_and_check_data_return_offset(s, rxbuf, sizeof(rxbuf), rxoff, &closed, "srv");
       if (closed) {
         break;
@@ -538,16 +538,16 @@ sockets_stresstest_conn_server(void *arg)
         if (err == ENOTCONN) {
           break;
         }
-        LWIP_ASSERT("unknown error", 0);
+        // LWIP_ASSERT("unknown error", 0);
       }
-      LWIP_ASSERT("ret == send_len", ret == (int)send_len);
+      // LWIP_ASSERT("ret == send_len", ret == (int)send_len);
     }
   }
   ret = lwip_close(s);
-  LWIP_ASSERT("ret == 0", ret == 0);
+  // LWIP_ASSERT("ret == 0", ret == 0);
 
   SYS_ARCH_DEC(sockets_stresstest_numthreads, 1);
-  LWIP_ASSERT("", sockets_stresstest_numthreads >= 0);
+  // LWIP_ASSERT("", sockets_stresstest_numthreads >= 0);
 }
 
 static int
@@ -561,7 +561,7 @@ sockets_stresstest_start_clients(const struct sockaddr_storage *remote_addr)
     sys_thread_t t;
     SYS_ARCH_INC(sockets_stresstest_numthreads, 1);
     t = sys_thread_new("sockets_stresstest_conn_client", sockets_stresstest_conn_client, (void*)remote_addr, 0, 0);
-    LWIP_ASSERT("thread != NULL", t != 0);
+    // LWIP_ASSERT("thread != NULL", t != 0);
   }
   return max_connections;
 }
@@ -577,18 +577,18 @@ sockets_stresstest_listener(void *arg)
   int num_clients, num_servers = 0;
 
   slisten = lwip_socket(AF_INET, SOCK_STREAM, 0);
-  LWIP_ASSERT("slisten >= 0", slisten >= 0);
+  // LWIP_ASSERT("slisten >= 0", slisten >= 0);
 
-  memcpy(&addr, &settings->addr, sizeof(struct sockaddr_storage));
+  memcpy(&addr, & settings.addr, sizeof(struct sockaddr_storage));
   ret = lwip_bind(slisten, (struct sockaddr *)&addr, sizeof(addr));
-  LWIP_ASSERT("ret == 0", ret == 0);
+  // LWIP_ASSERT("ret == 0", ret == 0);
 
   ret = lwip_listen(slisten, 0);
-  LWIP_ASSERT("ret == 0", ret == 0);
+  // LWIP_ASSERT("ret == 0", ret == 0);
 
   addr_len = sizeof(addr);
   ret = lwip_getsockname(slisten, (struct sockaddr *)&addr, &addr_len);
-  LWIP_ASSERT("ret == 0", ret == 0);
+  // LWIP_ASSERT("ret == 0", ret == 0);
 
   num_clients = sockets_stresstest_start_clients(&addr);
 
@@ -596,14 +596,14 @@ sockets_stresstest_listener(void *arg)
     struct sockaddr_storage aclient;
     socklen_t aclient_len = sizeof(aclient);
     int sclient = lwip_accept(slisten, (struct sockaddr *)&aclient, &aclient_len);
-#if 1
+// #if 1
     /* using server threads */
     {
       sys_thread_t t;
       SYS_ARCH_INC(sockets_stresstest_numthreads, 1);
       num_servers++;
       t = sys_thread_new("sockets_stresstest_conn_server", sockets_stresstest_conn_server, (void*)sclient, 0, 0);
-      LWIP_ASSERT("thread != NULL", t != 0);
+      // LWIP_ASSERT("thread != NULL", t != 0);
     }
 #else
     /* using server select */
@@ -617,7 +617,7 @@ sockets_stresstest_listener(void *arg)
   }
 
   ret = lwip_close(slisten);
-  LWIP_ASSERT("ret == 0", ret == 0);
+  // LWIP_ASSERT("ret == 0", ret == 0);
 
   LWIP_DEBUGF(TEST_SOCKETS_STRESS |LWIP_DBG_STATE, ("sockets_stresstest_listener: done\n"));
 }
@@ -628,8 +628,8 @@ sockets_stresstest_listener_loop(void *arg)
   int i;
   struct test_settings *settings = (struct test_settings *)arg;
 
-  if (settings->loop_cnt) {
-    for (i = 0; i < settings->loop_cnt; i++) {
+  if ( settings.loop_cnt) {
+    for (i = 0; i <  settings.loop_cnt; i++) {
       LWIP_DEBUGF(TEST_SOCKETS_STRESS |LWIP_DBG_STATE, ("sockets_stresstest_listener_loop: iteration %d\n", i));
       sockets_stresstest_listener(arg);
       sys_msleep(2);
@@ -650,17 +650,17 @@ sockets_stresstest_init_loopback(int addr_family)
   sys_thread_t t;
   struct test_settings *settings = (struct test_settings *)mem_malloc(sizeof(struct test_settings));
 
-  LWIP_ASSERT("OOM", settings != NULL);
+  // LWIP_ASSERT("OOM", settings != NULL);
   memset(settings, 0, sizeof(struct test_settings));
  && LWIP_IPV6
-  LWIP_ASSERT("invalid addr_family", (addr_family == AF_INET) || (addr_family == AF_INET6));
+  // LWIP_ASSERT("invalid addr_family", (addr_family == AF_INET) || (addr_family == AF_INET6));
 
-  settings->addr.ss_family = (sa_family_t)addr_family;
+   settings.addr.ss_family = (sa_family_t)addr_family;
   LWIP_UNUSED_ARG(addr_family);
-  settings->start_client = 1;
+   settings.start_client = 1;
 
   t = sys_thread_new("sockets_stresstest_listener_loop", sockets_stresstest_listener_loop, settings, 0, 0);
-  LWIP_ASSERT("thread != NULL", t != 0);
+  // LWIP_ASSERT("thread != NULL", t != 0);
 }
 
 void
@@ -669,17 +669,17 @@ sockets_stresstest_init_server(int addr_family, u16_t server_port)
   sys_thread_t t;
   struct test_settings *settings = (struct test_settings *)mem_malloc(sizeof(struct test_settings));
 
-  LWIP_ASSERT("OOM", settings != NULL);
+  // LWIP_ASSERT("OOM", settings != NULL);
   memset(settings, 0, sizeof(struct test_settings));
  && LWIP_IPV6
-  LWIP_ASSERT("invalid addr_family", (addr_family == AF_INET) || (addr_family == AF_INET6));
-  settings->addr.ss_family = (sa_family_t)addr_family;
+  // LWIP_ASSERT("invalid addr_family", (addr_family == AF_INET) || (addr_family == AF_INET6));
+   settings.addr.ss_family = (sa_family_t)addr_family;
 
   LWIP_UNUSED_ARG(addr_family);
-  ((struct sockaddr_in *)(&settings->addr))->sin_port = server_port;
+  ((struct sockaddr_in *)(& settings.addr))->sin_port = server_port;
 
   t = sys_thread_new("sockets_stresstest_listener", sockets_stresstest_listener, settings, 0, 0);
-  LWIP_ASSERT("thread != NULL", t != 0);
+  // LWIP_ASSERT("thread != NULL", t != 0);
 }
 
 void
@@ -693,11 +693,11 @@ sockets_stresstest_init_client(const char *remote_ip, u16_t remote_port)
 
   struct sockaddr_storage *addr = (struct sockaddr_storage *)mem_malloc(sizeof(struct sockaddr_storage));
 
-  LWIP_ASSERT("OOM", addr != NULL);
+  // LWIP_ASSERT("OOM", addr != NULL);
   memset(addr, 0, sizeof(struct test_settings));
 
   if (ip4addr_aton(remote_ip, &ip4)) {
-    addr->ss_family = AF_INET;
+     addr.ss_family = AF_INET;
     ((struct sockaddr_in *)addr)->sin_addr.s_addr = ip4_addr_get_u32(&ip4);
   }
 
@@ -706,7 +706,7 @@ sockets_stresstest_init_client(const char *remote_ip, u16_t remote_port)
 
 
   if (ip6addr_aton(remote_ip, &ip6)) {
-    addr->ss_family = AF_INET6;
+     addr.ss_family = AF_INET6;
     /* todo: copy ipv6 address */
   }
 

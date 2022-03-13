@@ -71,7 +71,7 @@ pub const LWIP_RC_DEVELOPMENT: u32 = 0;
 /* Some helper defines to get a version string */
 #define LWIP_VERSTR2(x) #x
 #define LWIP_VERSTR(x) LWIP_VERSTR2(x)
-#if LWIP_VERSION_IS_RELEASE
+// #if LWIP_VERSION_IS_RELEASE
 #define LWIP_VERSION_STRING_SUFFIX ""
 #elif LWIP_VERSION_IS_DEVELOPMENT
 #define LWIP_VERSION_STRING_SUFFIX "d"
@@ -90,7 +90,7 @@ pub const LWIP_VERSION_STRING: u32 = LWIP_VERSTR;(LWIP_VERSION_MAJOR) "." LWIP_V
  */
 
 /* Modules initialization */
-void lwip_init(void);
+void lwip_init();
 
 
 

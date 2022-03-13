@@ -45,19 +45,19 @@
 u32_t lwip_sys_now;
 
 u32_t
-sys_jiffies(void)
+sys_jiffies()
 {
   return lwip_sys_now;
 }
 
 u32_t
-sys_now(void)
+sys_now()
 {
   return lwip_sys_now;
 }
 
 void
-sys_init(void)
+sys_init()
 {
 }
 
@@ -74,7 +74,7 @@ test_sys_arch_wait_callback(test_sys_arch_waiting_fn waiting_fn)
 err_t
 sys_sem_new(sys_sem_t *sem, u8_t count)
 {
-  LWIP_ASSERT("sem != NULL", sem != NULL);
+  // LWIP_ASSERT("sem != NULL", sem != NULL);
   *sem = count + 1;
   return ERR_OK;
 }
@@ -82,14 +82,14 @@ sys_sem_new(sys_sem_t *sem, u8_t count)
 void
 sys_sem_free(sys_sem_t *sem)
 {
-  LWIP_ASSERT("sem != NULL", sem != NULL);
+  // LWIP_ASSERT("sem != NULL", sem != NULL);
   *sem = 0;
 }
 
 void
 sys_sem_set_invalid(sys_sem_t *sem)
 {
-  LWIP_ASSERT("sem != NULL", sem != NULL);
+  // LWIP_ASSERT("sem != NULL", sem != NULL);
   *sem = 0;
 }
 
@@ -98,18 +98,18 @@ u32_t
 sys_arch_sem_wait(sys_sem_t *sem, u32_t timeout)
 {
   u32_t ret = 0;
-  LWIP_ASSERT("sem != NULL", sem != NULL);
-  LWIP_ASSERT("*sem > 0", *sem > 0);
+  // LWIP_ASSERT("sem != NULL", sem != NULL);
+  // LWIP_ASSERT("*sem > 0", *sem > 0);
   if (*sem == 1) {
     /* need to wait */
     if(!timeout)
     {
       /* wait infinite */
-      LWIP_ASSERT("cannot wait without waiting callback", the_waiting_fn != NULL);
+      // LWIP_ASSERT("cannot wait without waiting callback", the_waiting_fn != NULL);
       do {
         int expectSomething = the_waiting_fn(sem, NULL);
-        LWIP_ASSERT("*sem > 0", *sem > 0);
-        LWIP_ASSERT("expecting a semaphore count but it's 0", !expectSomething || (*sem > 1));
+        // LWIP_ASSERT("*sem > 0", *sem > 0);
+        // LWIP_ASSERT("expecting a semaphore count but it's 0", !expectSomething || (*sem > 1));
         ret++;
         if (ret == SYS_ARCH_TIMEOUT) {
           ret--;
@@ -120,18 +120,18 @@ sys_arch_sem_wait(sys_sem_t *sem, u32_t timeout)
     {
       if (the_waiting_fn) {
         int expectSomething = the_waiting_fn(sem, NULL);
-        LWIP_ASSERT("expecting a semaphore count but it's 0", !expectSomething || (*sem > 1));
+        // LWIP_ASSERT("expecting a semaphore count but it's 0", !expectSomething || (*sem > 1));
       }
-      LWIP_ASSERT("*sem > 0", *sem > 0);
+      // LWIP_ASSERT("*sem > 0", *sem > 0);
       if (*sem == 1) {
         return SYS_ARCH_TIMEOUT;
       }
       ret = 1;
     }
   }
-  LWIP_ASSERT("*sem > 0", *sem > 0);
+  // LWIP_ASSERT("*sem > 0", *sem > 0);
   (*sem)--;
-  LWIP_ASSERT("*sem > 0", *sem > 0);
+  // LWIP_ASSERT("*sem > 0", *sem > 0);
   /* return the time we waited for the sem */
   return ret;
 }
@@ -139,16 +139,16 @@ sys_arch_sem_wait(sys_sem_t *sem, u32_t timeout)
 void
 sys_sem_signal(sys_sem_t *sem)
 {
-  LWIP_ASSERT("sem != NULL", sem != NULL);
-  LWIP_ASSERT("*sem > 0", *sem > 0);
+  // LWIP_ASSERT("sem != NULL", sem != NULL);
+  // LWIP_ASSERT("*sem > 0", *sem > 0);
   (*sem)++;
-  LWIP_ASSERT("*sem > 0", *sem > 0);
+  // LWIP_ASSERT("*sem > 0", *sem > 0);
 }
 
 err_t
 sys_mutex_new(sys_mutex_t *mutex)
 {
-  LWIP_ASSERT("mutex != NULL", mutex != NULL);
+  // LWIP_ASSERT("mutex != NULL", mutex != NULL);
   *mutex = 1; /* 1 allocated */
   return ERR_OK;
 }
@@ -157,15 +157,15 @@ void
 sys_mutex_free(sys_mutex_t *mutex)
 {
   /* parameter check */
-  LWIP_ASSERT("mutex != NULL", mutex != NULL);
-  LWIP_ASSERT("*mutex >= 1", *mutex >= 1);
+  // LWIP_ASSERT("mutex != NULL", mutex != NULL);
+  // LWIP_ASSERT("*mutex >= 1", *mutex >= 1);
   *mutex = 0;
 }
 
 void
 sys_mutex_set_invalid(sys_mutex_t *mutex)
 {
-  LWIP_ASSERT("mutex != NULL", mutex != NULL);
+  // LWIP_ASSERT("mutex != NULL", mutex != NULL);
   *mutex = 0;
 }
 
@@ -173,23 +173,23 @@ void
 sys_mutex_lock(sys_mutex_t *mutex)
 {
   /* nothing to do, no multithreading supported */
-  LWIP_ASSERT("mutex != NULL", mutex != NULL);
+  // LWIP_ASSERT("mutex != NULL", mutex != NULL);
   /* check that the mutext is valid and unlocked (no nested locking) */
-  LWIP_ASSERT("*mutex >= 1", *mutex == 1);
+  // LWIP_ASSERT("*mutex >= 1", *mutex == 1);
   /* we count up just to check the correct pairing of lock/unlock */
   (*mutex)++;
-  LWIP_ASSERT("*mutex >= 1", *mutex >= 1);
+  // LWIP_ASSERT("*mutex >= 1", *mutex >= 1);
 }
 
 void
 sys_mutex_unlock(sys_mutex_t *mutex)
 {
   /* nothing to do, no multithreading supported */
-  LWIP_ASSERT("mutex != NULL", mutex != NULL);
-  LWIP_ASSERT("*mutex >= 1", *mutex >= 1);
+  // LWIP_ASSERT("mutex != NULL", mutex != NULL);
+  // LWIP_ASSERT("*mutex >= 1", *mutex >= 1);
   /* we count down just to check the correct pairing of lock/unlock */
   (*mutex)--;
-  LWIP_ASSERT("*mutex >= 1", *mutex >= 1);
+  // LWIP_ASSERT("*mutex >= 1", *mutex >= 1);
 }
 
 
@@ -209,18 +209,18 @@ err_t
 sys_mbox_new(sys_mbox_t *mbox, int size)
 {
   int mboxsize = size;
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("size >= 0", size >= 0);
+  // LWIP_ASSERT("mbox != NULL", mbox != NULL);
+  // LWIP_ASSERT("size >= 0", size >= 0);
   if (size == 0) {
     mboxsize = 1024;
   }
-  mbox->head = mbox->tail = 0;
-  mbox->sem = mbox; /* just point to something for sys_mbox_valid() */
-  mbox->q_mem = (void**)malloc(sizeof(void*)*mboxsize);
-  mbox->size = mboxsize;
-  mbox->used = 0;
+   mbox.head =  mbox.tail = 0;
+   mbox.sem = mbox; /* just point to something for sys_mbox_valid() */
+   mbox.q_mem = (void**)malloc(sizeof(void*)*mboxsize);
+   mbox.size = mboxsize;
+   mbox.used = 0;
 
-  memset(mbox->q_mem, 0, sizeof(void*)*mboxsize);
+  memset( mbox.q_mem, 0, sizeof(void*)*mboxsize);
   return ERR_OK;
 }
 
@@ -228,55 +228,55 @@ void
 sys_mbox_free(sys_mbox_t *mbox)
 {
   /* parameter check */
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox->sem != NULL", mbox->sem != NULL);
-  LWIP_ASSERT("mbox->sem == mbox", mbox->sem == mbox);
-  LWIP_ASSERT("mbox->q_mem != NULL", mbox->q_mem != NULL);
-  mbox->sem = NULL;
-  free(mbox->q_mem);
-  mbox->q_mem = NULL;
+  // LWIP_ASSERT("mbox != NULL", mbox != NULL);
+  // LWIP_ASSERT(" mbox.sem != NULL",  mbox.sem != NULL);
+  // LWIP_ASSERT(" mbox.sem == mbox",  mbox.sem == mbox);
+  // LWIP_ASSERT(" mbox.q_mem != NULL",  mbox.q_mem != NULL);
+   mbox.sem = NULL;
+  free( mbox.q_mem);
+   mbox.q_mem = NULL;
 }
 
 void
 sys_mbox_set_invalid(sys_mbox_t *mbox)
 {
-  LWIP_ASSERT("mbox != NULL", mbox != NULL);
-  LWIP_ASSERT("mbox->q_mem == NULL", mbox->q_mem == NULL);
-  mbox->sem = NULL;
-  mbox->q_mem = NULL;
+  // LWIP_ASSERT("mbox != NULL", mbox != NULL);
+  // LWIP_ASSERT(" mbox.q_mem == NULL",  mbox.q_mem == NULL);
+   mbox.sem = NULL;
+   mbox.q_mem = NULL;
 }
 
 void
 sys_mbox_post(sys_mbox_t *q, void *msg)
 {
-  LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_NULL);
-  LWIP_ASSERT("q->sem == q", q->sem == q);
-  LWIP_ASSERT("q->q_mem != NULL", q->q_mem != NULL);
-  LWIP_ASSERT("q->used >= 0", q->used >= 0);
-  LWIP_ASSERT("q->size > 0", q->size > 0);
+  // LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_NULL);
+  // LWIP_ASSERT(" q.sem == q",  q.sem == q);
+  // LWIP_ASSERT(" q.q_mem != NULL",  q.q_mem != NULL);
+  // LWIP_ASSERT(" q.used >= 0",  q.used >= 0);
+  // LWIP_ASSERT(" q.size > 0",  q.size > 0);
 
-  LWIP_ASSERT("mbox already full", q->used < q->size);
+  // LWIP_ASSERT("mbox already full",  q.used <  q.size);
 
-  q->q_mem[q->head] = msg;
-  q->head++;
-  if (q->head >= (unsigned int)q->size) {
-    q->head = 0;
+   q.q_mem[ q.head] = msg;
+   q.head++;
+  if ( q.head >= (unsigned int) q.size) {
+     q.head = 0;
   }
-  LWIP_ASSERT("mbox is full!", q->head != q->tail);
-  q->used++;
+  // LWIP_ASSERT("mbox is full!",  q.head !=  q.tail);
+   q.used++;
 }
 
 err_t
 sys_mbox_trypost(sys_mbox_t *q, void *msg)
 {
-  LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_NULL);
-  LWIP_ASSERT("q->sem == q", q->sem == q);
-  LWIP_ASSERT("q->q_mem != NULL", q->q_mem != NULL);
-  LWIP_ASSERT("q->used >= 0", q->used >= 0);
-  LWIP_ASSERT("q->size > 0", q->size > 0);
-  LWIP_ASSERT("q->used <= q->size", q->used <= q->size);
+  // LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_NULL);
+  // LWIP_ASSERT(" q.sem == q",  q.sem == q);
+  // LWIP_ASSERT(" q.q_mem != NULL",  q.q_mem != NULL);
+  // LWIP_ASSERT(" q.used >= 0",  q.used >= 0);
+  // LWIP_ASSERT(" q.size > 0",  q.size > 0);
+  // LWIP_ASSERT(" q.used <=  q.size",  q.used <=  q.size);
 
-  if (q->used == q->size) {
+  if ( q.used ==  q.size) {
     return ERR_MEM;
   }
   sys_mbox_post(q, msg);
@@ -294,37 +294,37 @@ sys_arch_mbox_fetch(sys_mbox_t *q, void **msg, u32_t timeout)
 {
   u32_t ret = 0;
   u32_t ret2;
-  LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_NULL);
-  LWIP_ASSERT("q->sem == q", q->sem == q);
-  LWIP_ASSERT("q->q_mem != NULL", q->q_mem != NULL);
-  LWIP_ASSERT("q->used >= 0", q->used >= 0);
-  LWIP_ASSERT("q->size > 0", q->size > 0);
+  // LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_NULL);
+  // LWIP_ASSERT(" q.sem == q",  q.sem == q);
+  // LWIP_ASSERT(" q.q_mem != NULL",  q.q_mem != NULL);
+  // LWIP_ASSERT(" q.used >= 0",  q.used >= 0);
+  // LWIP_ASSERT(" q.size > 0",  q.size > 0);
 
-  if (q->used == 0) {
+  if ( q.used == 0) {
     /* need to wait */
     /* need to wait */
     if(!timeout)
     {
       /* wait infinite */
-      LWIP_ASSERT("cannot wait without waiting callback", the_waiting_fn != NULL);
+      // LWIP_ASSERT("cannot wait without waiting callback", the_waiting_fn != NULL);
       do {
         int expectSomething = the_waiting_fn(NULL, q);
-        LWIP_ASSERT("q->used >= 0", q->used >= 0);
-        LWIP_ASSERT("expecting item available but it's 0", !expectSomething || (q->used > 0));
+        // LWIP_ASSERT(" q.used >= 0",  q.used >= 0);
+        // LWIP_ASSERT("expecting item available but it's 0", !expectSomething || ( q.used > 0));
         ret++;
         if (ret == SYS_ARCH_TIMEOUT) {
           ret--;
         }
-      } while(q->used == 0);
+      } while( q.used == 0);
     }
     else
     {
       if (the_waiting_fn) {
         int expectSomething = the_waiting_fn(NULL, q);
-        LWIP_ASSERT("expecting item available count but it's 0", !expectSomething || (q->used > 0));
+        // LWIP_ASSERT("expecting item available count but it's 0", !expectSomething || ( q.used > 0));
       }
-      LWIP_ASSERT("q->used >= 0", q->used >= 0);
-      if (q->used == 0) {
+      // LWIP_ASSERT(" q.used >= 0",  q.used >= 0);
+      if ( q.used == 0) {
         if(msg) {
           *msg = NULL;
         }
@@ -333,52 +333,52 @@ sys_arch_mbox_fetch(sys_mbox_t *q, void **msg, u32_t timeout)
       ret = 1;
     }
   }
-  LWIP_ASSERT("q->used > 0", q->used > 0);
+  // LWIP_ASSERT(" q.used > 0",  q.used > 0);
   ret2 = sys_arch_mbox_tryfetch(q, msg);
-  LWIP_ASSERT("got no message", ret2 == 0);
+  // LWIP_ASSERT("got no message", ret2 == 0);
   return ret;
 }
 
 u32_t
 sys_arch_mbox_tryfetch(sys_mbox_t *q, void **msg)
 {
-  LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_NULL);
-  LWIP_ASSERT("q->sem == q", q->sem == q);
-  LWIP_ASSERT("q->q_mem != NULL", q->q_mem != NULL);
-  LWIP_ASSERT("q->used >= 0", q->used >= 0);
-  LWIP_ASSERT("q->size > 0", q->size > 0);
+  // LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_NULL);
+  // LWIP_ASSERT(" q.sem == q",  q.sem == q);
+  // LWIP_ASSERT(" q.q_mem != NULL",  q.q_mem != NULL);
+  // LWIP_ASSERT(" q.used >= 0",  q.used >= 0);
+  // LWIP_ASSERT(" q.size > 0",  q.size > 0);
 
-  if (!q->used) {
+  if (! q.used) {
     return SYS_ARCH_TIMEOUT;
   }
   if(msg) {
-    *msg = q->q_mem[q->tail];
+    *msg =  q.q_mem[ q.tail];
   }
 
-  q->tail++;
-  if (q->tail >= (unsigned int)q->size) {
-    q->tail = 0;
+   q.tail++;
+  if ( q.tail >= (unsigned int) q.size) {
+     q.tail = 0;
   }
-  q->used--;
-  LWIP_ASSERT("q->used >= 0", q->used >= 0);
+   q.used--;
+  // LWIP_ASSERT(" q.used >= 0",  q.used >= 0);
   return 0;
 }
 
-#if LWIP_NETCONN_SEM_PER_THREAD
+// #if LWIP_NETCONN_SEM_PER_THREAD
 /* Simple implementation of this: unit tests only support one thread */
 static sys_sem_t global_netconn_sem;
 
-sys_sem_t* sys_arch_netconn_sem_get(void)
+sys_sem_t* sys_arch_netconn_sem_get()
 {
   return &global_netconn_sem;
 }
 
-void sys_arch_netconn_sem_alloc(void)
+void sys_arch_netconn_sem_alloc()
 {
   sys_sem_new(&global_netconn_sem, 0);
 }
 
-void sys_arch_netconn_sem_free(void)
+void sys_arch_netconn_sem_free()
 {
   sys_sem_free(&global_netconn_sem);
 }

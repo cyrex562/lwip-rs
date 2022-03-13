@@ -31,7 +31,7 @@
  */
 
 
-#if PPP_SUPPORT && MSCHAP_SUPPORT /* don't build if not necessary */
+// #if PPP_SUPPORT && MSCHAP_SUPPORT /* don't build if not necessary */
 
 
 
@@ -63,4 +63,4 @@ void pppcrypt_56_to_64_bit_key(u_char *key, u_char * des_key) {
 	des_key[7] = pppcrypt_get_7bits(key, 49);
 }
 
-#endif /* PPP_SUPPORT && MSCHAP_SUPPORT */
+// #endif /* PPP_SUPPORT && MSCHAP_SUPPORT */

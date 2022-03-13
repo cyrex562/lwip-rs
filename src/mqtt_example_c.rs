@@ -30,7 +30,7 @@
 // #include "lwip/apps/mqtt.h"
 // #include "mqtt_example.h"
 
-#if LWIP_TCP
+// #if LWIP_TCP
 
 /** Define this to a compile-time IP address initialization
  * to connect anything else than IPv4 loopback
@@ -56,7 +56,7 @@ static const struct mqtt_connect_client_info_t mqtt_client_info =
   NULL, /* will_msg */
   0,    /* will_qos */
   0     /* will_retain */
-#if LWIP_ALTCP && LWIP_ALTCP_TLS
+// #if LWIP_ALTCP && LWIP_ALTCP_TLS
   , NULL
 
 };
@@ -67,7 +67,7 @@ mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t flags)
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
   LWIP_UNUSED_ARG(data);
 
-  LWIP_PLATFORM_DIAG(("MQTT client \"%s\" data cb: len %d, flags %d\n", client_info->client_id,
+  LWIP_PLATFORM_DIAG(("MQTT client \"%s\" data cb: len %d, flags %d\n",  client_info.client_id,
           (int)len, (int)flags));
 }
 
@@ -76,7 +76,7 @@ mqtt_incoming_publish_cb(void *arg, const char *topic, u32_t tot_len)
 {
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
 
-  LWIP_PLATFORM_DIAG(("MQTT client \"%s\" publish cb: topic %s, len %d\n", client_info->client_id,
+  LWIP_PLATFORM_DIAG(("MQTT client \"%s\" publish cb: topic %s, len %d\n",  client_info.client_id,
           topic, (int)tot_len));
 }
 
@@ -85,7 +85,7 @@ mqtt_request_cb(void *arg, err_t err)
 {
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
 
-  LWIP_PLATFORM_DIAG(("MQTT client \"%s\" request cb: err %d\n", client_info->client_id, (int)err));
+  LWIP_PLATFORM_DIAG(("MQTT client \"%s\" request cb: err %d\n",  client_info.client_id, (int)err));
 }
 
 static void
@@ -94,7 +94,7 @@ mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t st
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
   LWIP_UNUSED_ARG(client);
 
-  LWIP_PLATFORM_DIAG(("MQTT client \"%s\" connection cb: status %d\n", client_info->client_id, (int)status));
+  LWIP_PLATFORM_DIAG(("MQTT client \"%s\" connection cb: status %d\n",  client_info.client_id, (int)status));
 
   if (status == MQTT_CONNECT_ACCEPTED) {
     mqtt_sub_unsub(client,
@@ -110,9 +110,9 @@ mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t st
  /* LWIP_TCP */
 
 void
-mqtt_example_init(void)
+mqtt_example_init()
 {
-#if LWIP_TCP
+// #if LWIP_TCP
   mqtt_client = mqtt_client_new();
 
   mqtt_set_inpub_callback(mqtt_client,

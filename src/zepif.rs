@@ -49,7 +49,7 @@
 
 
 
-#if LWIP_IPV6 && LWIP_UDP
+// #if LWIP_IPV6 && LWIP_UDP
 
 
 
@@ -59,13 +59,13 @@
 /** Define this to 1 to loop back TX packets for testing */
 #ifndef ZEPIF_LOOPBACK
 #define ZEPIF_LOOPBACK    0
-#endif
+// #endif
 
 #define ZEP_MAX_DATA_LEN  127
 
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
-#endif
+// #endif
 PACK_STRUCT_BEGIN
 struct zep_hdr {
   PACK_STRUCT_FLD_8(u8_t prot_id[2]);
@@ -83,7 +83,7 @@ struct zep_hdr {
 PACK_STRUCT_END
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
-#endif
+// #endif
 
 struct zepif_state {
   struct zepif_init init;
@@ -91,7 +91,7 @@ struct zepif_state {
   u32_t seqno;
 };
 
-static u8_t zep_lowpan_timer_running;
+static zep_lowpan_timer_running: u8;
 
 /* Helper function that calls the 6LoWPAN timer and reschedules itself */
 static void
@@ -112,8 +112,8 @@ zepif_udp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p,
   struct netif *netif_lowpan6 = (struct netif *)arg;
   struct zep_hdr *zep;
 
-  LWIP_ASSERT("arg != NULL", arg != NULL);
-  LWIP_ASSERT("pcb != NULL", pcb != NULL);
+  // LWIP_ASSERT("arg != NULL", arg != NULL);
+  // LWIP_ASSERT("pcb != NULL", pcb != NULL);
   LWIP_UNUSED_ARG(pcb); /* for LWIP_NOASSERT */
   LWIP_UNUSED_ARG(addr);
   LWIP_UNUSED_ARG(port);
@@ -122,28 +122,28 @@ zepif_udp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p,
   }
 
   /* Parse and hide the ZEP header */
-  if (p->len < sizeof(struct zep_hdr)) {
+  if ( p.len < sizeof(struct zep_hdr)) {
     /* need the zep_hdr in one piece */
     goto err_return;
   }
-  zep = (struct zep_hdr *)p->payload;
-  if (zep->prot_id[0] != 'E') {
+  zep = (struct zep_hdr *) p.payload;
+  if ( zep.prot_id[0] != 'E') {
     goto err_return;
   }
-  if (zep->prot_id[1] != 'X') {
+  if ( zep.prot_id[1] != 'X') {
     goto err_return;
   }
-  if (zep->prot_version != 2) {
+  if ( zep.prot_version != 2) {
     /* we only support this version for now */
     goto err_return;
   }
-  if (zep->type != 1) {
+  if ( zep.type != 1) {
     goto err_return;
   }
-  if (zep->crc_mode != 1) {
+  if ( zep.crc_mode != 1) {
     goto err_return;
   }
-  if (zep->len != p->tot_len - sizeof(struct zep_hdr)) {
+  if ( zep.len !=  p.tot_len - sizeof(struct zep_hdr)) {
     goto err_return;
   }
   /* everything seems to be OK, hide the ZEP header */
@@ -152,10 +152,10 @@ zepif_udp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p,
   }
   /* TODO Check CRC? */
   /* remove CRC trailer */
-  pbuf_realloc(p, p->tot_len - 2);
+  pbuf_realloc(p,  p.tot_len - 2);
 
   /* Call into 6LoWPAN code. */
-  err = netif_lowpan6->input(p, netif_lowpan6);
+  err =  netif_lowpan6.input(p, netif_lowpan6);
   if (err == ERR_OK) {
     return;
   }
@@ -172,41 +172,41 @@ zepif_linkoutput(struct netif *netif, struct pbuf *p)
   struct zep_hdr *zep;
   struct zepif_state *state;
 
-  LWIP_ASSERT("invalid netif", netif != NULL);
-  LWIP_ASSERT("invalid pbuf", p != NULL);
+  // LWIP_ASSERT("invalid netif", netif != NULL);
+  // LWIP_ASSERT("invalid pbuf", p != NULL);
 
-  if (p->tot_len > ZEP_MAX_DATA_LEN) {
+  if ( p.tot_len > ZEP_MAX_DATA_LEN) {
     return ERR_VAL;
   }
-  LWIP_ASSERT("TODO: support chained pbufs", p->next == NULL);
+  // LWIP_ASSERT("TODO: support chained pbufs",  p.next == NULL);
 
-  state = (struct zepif_state *)netif->state;
-  LWIP_ASSERT("state->pcb != NULL", state->pcb != NULL);
+  state = (struct zepif_state *) netif.state;
+  // LWIP_ASSERT(" state.pcb != NULL",  state.pcb != NULL);
 
-  q = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct zep_hdr) + p->tot_len, PBUF_RAM);
+  q = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct zep_hdr) +  p.tot_len, PBUF_RAM);
   if (q == NULL) {
     return ERR_MEM;
   }
-  zep = (struct zep_hdr *)q->payload;
+  zep = (struct zep_hdr *) q.payload;
   memset(zep, 0, sizeof(struct zep_hdr));
-  zep->prot_id[0] = 'E';
-  zep->prot_id[1] = 'X';
-  zep->prot_version = 2;
-  zep->type = 1; /* Data */
-  zep->channel_id = 0; /* whatever */
-  zep->device_id = lwip_htons(1); /* whatever */
-  zep->crc_mode = 1;
-  zep->unknown_1 = 0xff;
-  zep->seq_num = lwip_htonl(state->seqno);
-  state->seqno++;
-  zep->len = p->tot_len;
+   zep.prot_id[0] = 'E';
+   zep.prot_id[1] = 'X';
+   zep.prot_version = 2;
+   zep.type = 1; /* Data */
+   zep.channel_id = 0; /* whatever */
+   zep.device_id = lwip_htons(1); /* whatever */
+   zep.crc_mode = 1;
+   zep.unknown_1 = 0xff;
+   zep.seq_num = lwip_htonl( state.seqno);
+   state.seqno++;
+   zep.len =  p.tot_len;
 
-  err = pbuf_copy_partial_pbuf(q, p, p->tot_len, sizeof(struct zep_hdr));
+  err = pbuf_copy_partial_pbuf(q, p,  p.tot_len, sizeof(struct zep_hdr));
   if (err == ERR_OK) {
-#if ZEPIF_LOOPBACK
-    zepif_udp_recv(netif, state->pcb, pbuf_clone(PBUF_RAW, PBUF_RAM, q), NULL, 0);
-#endif
-    err = udp_sendto(state->pcb, q, state->init.zep_dst_ip_addr, state->init.zep_dst_udp_port);
+// #if ZEPIF_LOOPBACK
+    zepif_udp_recv(netif,  state.pcb, pbuf_clone(PBUF_RAW, PBUF_RAM, q), NULL, 0);
+// #endif
+    err = udp_sendto( state.pcb, q,  state.init.zep_dst_ip_addr,  state.init.zep_dst_udp_port);
   }
   pbuf_free(q);
 
@@ -222,64 +222,64 @@ err_t
 zepif_init(struct netif *netif)
 {
   err_t err;
-  struct zepif_init *init_state = (struct zepif_init *)netif->state;
+  struct zepif_init *init_state = (struct zepif_init *) netif.state;
   struct zepif_state *state = (struct zepif_state *)mem_malloc(sizeof(struct zepif_state));
 
-  LWIP_ASSERT("zepif needs an input callback", netif->input != NULL);
+  // LWIP_ASSERT("zepif needs an input callback",  netif.input != NULL);
 
   if (state == NULL) {
     return ERR_MEM;
   }
   memset(state, 0, sizeof(struct zepif_state));
   if (init_state != NULL) {
-    memcpy(&state->init, init_state, sizeof(struct zepif_init));
+    memcpy(& state.init, init_state, sizeof(struct zepif_init));
   }
-  if (state->init.zep_src_udp_port == 0) {
-    state->init.zep_src_udp_port = ZEPIF_DEFAULT_UDP_PORT;
+  if ( state.init.zep_src_udp_port == 0) {
+     state.init.zep_src_udp_port = ZEPIF_DEFAULT_UDP_PORT;
   }
-  if (state->init.zep_dst_udp_port == 0) {
-    state->init.zep_dst_udp_port = ZEPIF_DEFAULT_UDP_PORT;
+  if ( state.init.zep_dst_udp_port == 0) {
+     state.init.zep_dst_udp_port = ZEPIF_DEFAULT_UDP_PORT;
   }
-#if LWIP_IPV4
-  if (state->init.zep_dst_ip_addr == NULL) {
+// #if LWIP_IPV4
+  if ( state.init.zep_dst_ip_addr == NULL) {
     /* With IPv4 enabled, default to broadcasting packets if no address is set */
-    state->init.zep_dst_ip_addr = IP_ADDR_BROADCAST;
+     state.init.zep_dst_ip_addr = IP_ADDR_BROADCAST;
   }
-#endif /* LWIP_IPV4 */
+// #endif /* LWIP_IPV4 */
 
-  netif->state = NULL;
+   netif.state = NULL;
 
-  state->pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-  if (state->pcb == NULL) {
+   state.pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
+  if ( state.pcb == NULL) {
     err = ERR_MEM;
     goto err_ret;
   }
-  err = udp_bind(state->pcb, state->init.zep_src_ip_addr, state->init.zep_src_udp_port);
+  err = udp_bind( state.pcb,  state.init.zep_src_ip_addr,  state.init.zep_src_udp_port);
   if (err != ERR_OK) {
     goto err_ret;
   }
-  if (state->init.zep_netif != NULL) {
-    udp_bind_netif(state->pcb, state->init.zep_netif);
+  if ( state.init.zep_netif != NULL) {
+    udp_bind_netif( state.pcb,  state.init.zep_netif);
   }
-  LWIP_ASSERT("udp_bind(lowpan6_broadcast_pcb) failed", err == ERR_OK);
-  ip_set_option(state->pcb, SOF_BROADCAST);
-  udp_recv(state->pcb, zepif_udp_recv, netif);
+  // LWIP_ASSERT("udp_bind(lowpan6_broadcast_pcb) failed", err == ERR_OK);
+  ip_set_option( state.pcb, SOF_BROADCAST);
+  udp_recv( state.pcb, zepif_udp_recv, netif);
 
   err = lowpan6_if_init(netif);
-  LWIP_ASSERT("lowpan6_if_init set a state", netif->state == NULL);
+  // LWIP_ASSERT("lowpan6_if_init set a state",  netif.state == NULL);
   if (err == ERR_OK) {
-    netif->state = state;
-    netif->hwaddr_len = 6;
+     netif.state = state;
+     netif.hwaddr_len = 6;
     if (init_state != NULL) {
-      memcpy(netif->hwaddr, init_state->addr, 6);
+      memcpy( netif.hwaddr,  init_state.addr, 6);
     } else {
-      u8_t i;
+      i: u8;
       for (i = 0; i < 6; i++) {
-        netif->hwaddr[i] = i;
+         netif.hwaddr[i] = i;
       }
-      netif->hwaddr[0] &= 0xfc;
+       netif.hwaddr[0] &= 0xfc;
     }
-    netif->linkoutput = zepif_linkoutput;
+     netif.linkoutput = zepif_linkoutput;
 
     if (!zep_lowpan_timer_running) {
       sys_timeout(LOWPAN6_TMR_INTERVAL, zep_lowpan_timer, NULL);
@@ -290,11 +290,11 @@ zepif_init(struct netif *netif)
   }
 
 err_ret:
-  if (state->pcb != NULL) {
-    udp_remove(state->pcb);
+  if ( state.pcb != NULL) {
+    udp_remove( state.pcb);
   }
   mem_free(state);
   return err;
 }
 
-#endif /* LWIP_IPV6 && LWIP_UDP */
+// #endif /* LWIP_IPV6 && LWIP_UDP */

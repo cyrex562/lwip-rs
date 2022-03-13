@@ -188,7 +188,7 @@ pub fn raw_input(p: &mut PacketBuffer, inp: &mut NetIfc) -> raw_input_state_t
           return RAW_INPUT_EATEN;
         } else {
           //  sanity-check that the receive callback did not alter the pbuf 
-          LWIP_ASSERT("raw pcb recv callback altered pbuf payload pointer without eating packet",
+          // LWIP_ASSERT("raw pcb recv callback altered pbuf payload pointer without eating packet",
                       p.payload == old_payload);
         }
       }
@@ -219,7 +219,7 @@ pub fn raw_input(p: &mut PacketBuffer, inp: &mut NetIfc) -> raw_input_state_t
 pub fn 
 raw_bind(pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if ((pcb == None) || (ipaddr == None)) {
     return ERR_VAL;
   }
@@ -251,7 +251,7 @@ raw_bind(pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr)
 pub fn 
 raw_bind_netif(pcb: &mut raw_pcb,  netif: &mut NetIfc)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (netif != None) {
     pcb.netif_idx = netif_get_index(netif);
   } else {
@@ -276,7 +276,7 @@ raw_bind_netif(pcb: &mut raw_pcb,  netif: &mut NetIfc)
 pub fn 
 raw_connect(pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if ((pcb == None) || (ipaddr == None)) {
     return ERR_VAL;
   }
@@ -302,7 +302,7 @@ raw_connect(pcb: &mut raw_pcb,  ipaddr: &mut LwipAddr)
 pub fn 
 raw_disconnect(pcb: &mut raw_pcb)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   //  reset remote address association 
 
   if (IP_IS_ANY_TYPE_VAL(pcb.local_ip)) {
@@ -332,7 +332,7 @@ raw_disconnect(pcb: &mut raw_pcb)
 pub fn 
 raw_recv(pcb: &mut raw_pcb, recv: raw_recv_fn, recv_arg: &mut Vec<u8>)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   //  remember recv() callback and user data 
   pcb.recv = recv;
   pcb.recv_arg = recv_arg;
@@ -424,7 +424,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAdd
   let header_size: u16;
   let ttl: u8;
 
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
 
   if ((pcb == None) || (dst_ip == None) || (netif == None) || (src_ip == None) ||
       !IP_ADDR_PCB_VERSION_MATCH(pcb, src_ip) || !IP_ADDR_PCB_VERSION_MATCH(pcb, dst_ip)) {
@@ -478,7 +478,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAdd
     //  first pbuf q equals given pbuf 
     q = p;
     if (pbuf_remove_header(q, header_size)) {
-      LWIP_ASSERT("Can't restore header we just removed!", 0);
+      // LWIP_ASSERT("Can't restore header we just removed!", 0);
       return ERR_MEM;
     }
   }
@@ -509,7 +509,7 @@ raw_sendto_if_src(pcb: &mut raw_pcb, p: &mut PacketBuffer,  dst_ip: &mut LwipAdd
      compute the checksum and update the checksum in the payload. */
   if (IP_IS_V6(dst_ip) && pcb.chksum_reqd) {
     let chksum: u16 = ip6_chksum_pseudo(p, pcb.protocol, p.tot_len, ip_2_ip6(src_ip), ip_2_ip6(dst_ip));
-    LWIP_ASSERT("Checksum must fit into first pbuf", p.len >= (pcb.chksum_offset + 2));
+    // LWIP_ASSERT("Checksum must fit into first pbuf", p.len >= (pcb.chksum_offset + 2));
     SMEMCPY((p.payload) + pcb.chksum_offset, &chksum, sizeof);
   }
 
@@ -560,7 +560,7 @@ pub fn
 raw_remove(pcb: &mut raw_pcb)
 {
   let mut pcb2: &mut raw_pcb;
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   //  pcb to be removed is first in list? 
   if (raw_pcbs == pcb) {
     //  make list start at 2nd pcb 
@@ -595,7 +595,7 @@ pub fn raw_new(proto: u8) ->  RawPcb
   let mut pcb: &mut raw_pcb;
 
 //  LWIP_DEBUGF(RAW_DEBUG | LWIP_DBG_TRACE, ("raw_new\n"));
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
 
   pcb = memp_malloc(MEMP_RAW_PCB);
   //  could allocate RAW PCB? 
@@ -631,7 +631,7 @@ pub fn raw_new(proto: u8) ->  RawPcb
 pub fn raw_new_ip_type(ip_type: u8, proto: u8) -> RawPcb
 {
   let mut pcb: &mut raw_pcb;
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   pcb = raw_new(proto);
 
   if (pcb != None) {

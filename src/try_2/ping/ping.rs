@@ -133,7 +133,7 @@ pub fn ping_send(s: i32,  addr: &mut LwipAddr) -> Result<(), LwipError>
   let mut iecho: &mut icmp_echo_hdr;
   let to: sockaddr_storage;
   let ping_size: usize = sizeof(icmp_echo_hdr) + PING_DATA_SIZE;
-  LWIP_ASSERT("ping_size is too big", ping_size <= 0xffff);
+  // LWIP_ASSERT("ping_size is too big", ping_size <= 0xffff);
 
 
   if(IP_IS_V6(addr) && !ip6_addr_isipv4mappedipv6(ip_2_ip6(addr))) {
@@ -266,7 +266,7 @@ ping_thread(arg: &mut Vec<u8>)
   }
 
   ret = lwip_setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
-  LWIP_ASSERT("setting receive timeout failed", ret == 0);
+  // LWIP_ASSERT("setting receive timeout failed", ret == 0);
   
 
   loop {
@@ -297,7 +297,7 @@ pub fn ping_recv(arg: &mut Vec<u8>, pcb: &mut raw_pcb, p: &mut PacketBuffer,  ad
   
   
   
-  LWIP_ASSERT("p != NULL", p != None);
+  // LWIP_ASSERT("p != NULL", p != None);
 
   if ((p.tot_len >= (PBUF_IP_HLEN + sizeof(icmp_echo_hdr))) &&
       pbuf_remove_header(p, PBUF_IP_HLEN) == 0) {
@@ -330,7 +330,7 @@ ping_send(raw: &mut raw_pcb,  addr: &mut LwipAddr)
 //  LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
   ip_addr_debug_print(PING_DEBUG, addr);
 //  LWIP_DEBUGF( PING_DEBUG, ("\n"));
-  LWIP_ASSERT("ping_size <= 0xffff", ping_size <= 0xffff);
+  // LWIP_ASSERT("ping_size <= 0xffff", ping_size <= 0xffff);
 
   p = pbuf_alloc(PBUF_IP, ping_size, PBUF_RAM);
   if (!p) {
@@ -354,7 +354,7 @@ ping_timeout(arg: &mut Vec<u8>)
 {
   let pcb: &mut raw_pcb = arg;
 
-  LWIP_ASSERT("ping_timeout: no pcb given!", pcb != None);
+  // LWIP_ASSERT("ping_timeout: no pcb given!", pcb != None);
 
   ping_send(pcb, ping_target);
 
@@ -365,7 +365,7 @@ pub fn
 ping_raw_init()
 {
   ping_pcb = raw_new(IP_PROTO_ICMP);
-  LWIP_ASSERT("ping_pcb != NULL", ping_pcb != None);
+  // LWIP_ASSERT("ping_pcb != NULL", ping_pcb != None);
 
   raw_recv(ping_pcb, ping_recv, None);
   raw_bind(ping_pcb, IP_ADDR_ANY);
@@ -375,7 +375,7 @@ ping_raw_init()
 pub fn 
 ping_send_now()
 {
-  LWIP_ASSERT("ping_pcb != NULL", ping_pcb != None);
+  // LWIP_ASSERT("ping_pcb != NULL", ping_pcb != None);
   ping_send(ping_pcb, ping_target);
 }
 

@@ -36,7 +36,7 @@
 
 err_t tapif_init(struct netif *netif);
 void tapif_poll(struct netif *netif);
-#if NO_SYS
+// #if NO_SYS
 int tapif_select(struct netif *netif);
  /* NO_SYS */
 

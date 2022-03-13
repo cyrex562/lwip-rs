@@ -32,6 +32,6 @@
 
 
 
-void udpecho_init(void);
+void udpecho_init();
 
  /* LWIP_UDPECHO_H */

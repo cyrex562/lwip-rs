@@ -44,14 +44,14 @@
 
 
 
-#if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
 /** basic scalar node */
 struct snmp_scalar_node
 {
   /** inherited "base class" members */
   struct snmp_leaf_node node;
-  u8_t asn1_type;
+  asn1_type: u8;
   snmp_access_t access;
   node_instance_get_value_method get_value;
   node_instance_set_test_method set_test;
@@ -74,7 +74,7 @@ snmp_err_t snmp_scalar_get_next_instance(const u32_t *root_oid, u8_t root_oid_le
 struct snmp_scalar_array_node_def
 {
   u32_t         oid;
-  u8_t          asn1_type;
+  asn1_type: u8;
   snmp_access_t access;
 };
 
@@ -87,7 +87,7 @@ struct snmp_scalar_array_node
 {
   /** inherited "base class" members */
   struct snmp_leaf_node node;
-  u16_t array_node_count;
+  array_node_count: u16;
   const struct snmp_scalar_array_node_def* array_nodes;
   snmp_scalar_array_get_value_method get_value;
   snmp_scalar_array_set_test_method set_test;

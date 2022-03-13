@@ -34,7 +34,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && MPPE_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && MPPE_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -152,13 +152,13 @@ typedef struct ppp_mppe_state {
 	lwip_arc4_context arc4;
 	u8_t master_key[MPPE_MAX_KEY_LEN];
 	u8_t session_key[MPPE_MAX_KEY_LEN];
-	u8_t keylen;                /* key length in bytes */
+	keylen: u8;                /* key length in bytes */
 	/* NB: 128-bit == 16, 40-bit == 8!
 	 * If we want to support 56-bit, the unit has to change to bits
 	 */
-	u8_t bits;                  /* MPPE control bits */
-	u16_t ccount;               /* 12-bit coherency count (seqno)  */
-	u16_t sanity_errors;        /* take down LCP if too many */
+	bits: u8;                  /* MPPE control bits */
+	ccount: u16;               /* 12-bit coherency count (seqno)  */
+	sanity_errors: u16;        /* take down LCP if too many */
 	unsigned int stateful  :1;  /* stateful mode flag */
 	unsigned int discard   :1;  /* stateful mode packet loss flag */
 } ppp_mppe_state;

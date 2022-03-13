@@ -82,7 +82,7 @@ const u8_t pcap_file_header[24] = {
 static FILE* fpcap;
 static u32_t pcap_packet;
 
-static void pcap_dump_init(void)
+static void pcap_dump_init()
 {
   fpcap = fopen(FUZZ_DUMP_PCAP_FILE, "wb");
   if (fpcap != NULL) {
@@ -95,8 +95,8 @@ static void pcap_dump_init(void)
  * in order to produce correct pcap results on crash.
  * Define this global so that for a test, we can call this from anywhere...
  */
-void pcap_dump_stop(void);
-void pcap_dump_stop(void)
+void pcap_dump_stop();
+void pcap_dump_stop()
 {
   if (fpcap != NULL) {
     fclose(fpcap);
@@ -189,9 +189,9 @@ static void input_pkt(struct netif *netif, const u8_t *data, size_t len)
   struct pbuf *p, *q;
   err_t err;
 
-  LWIP_ASSERT("pkt too big", len <= 0xFFFF);
+  // LWIP_ASSERT("pkt too big", len <= 0xFFFF);
   p = pbuf_alloc(PBUF_RAW, (u16_t)len, PBUF_POOL);
-  LWIP_ASSERT("alloc failed", p);
+  // LWIP_ASSERT("alloc failed", p);
   for(q = p; q != NULL; q = q->next) {
     MEMCPY(q->payload, data, q->len);
     data += q->len;
@@ -217,7 +217,7 @@ static void input_pkts(enum lwip_fuzz_type type, struct netif *netif, const u8_t
     const size_t minlen = sizeof(u16_t) + (type == LWIP_FUZZ_MULTIPACKET_TIME ? sizeof(u32_t) : 0);
 
     while (remfuzz_len > minlen) {
-      u16_t frame_len;
+      frame_len: u16;
 #ifdef LWIP_FUZZ_SYS_NOW
       u32_t external_delay = 0;
 
@@ -255,11 +255,11 @@ static void input_pkts(enum lwip_fuzz_type type, struct netif *netif, const u8_t
   }
 }
 
-#if LWIP_TCP
+// #if LWIP_TCP
 static struct altcp_pcb *tcp_client_pcb;  /* a pcb for the TCP client */
 static struct altcp_pcb *tcp_server_pcb;  /* a pcb for the TCP server */
-static u16_t            tcp_remote_port;  /* a TCP port number of the destionation */
-static u16_t            tcp_local_port;   /* a TCP port number of the local server */
+static tcp_remote_port: u16;  /* a TCP port number of the destionation */
+static tcp_local_port: u16;   /* a TCP port number of the local server */
 
 /**
  * tcp_app_fuzz_input
@@ -275,7 +275,7 @@ tcp_app_fuzz_input(struct altcp_pcb *pcb)
      * = 65495
      */
     const u16_t max_data_size = 65495;
-    u16_t data_len;
+    data_len: u16;
 
     memcpy(&data_len, remfuzz_ptr, sizeof(u16_t));
     remfuzz_ptr += sizeof(u16_t);
@@ -458,11 +458,11 @@ tcp_server_accept(void *arg, struct altcp_pcb *pcb, err_t err)
 }
  /* LWIP_TCP */
 
-#if LWIP_UDP
+// #if LWIP_UDP
 static struct udp_pcb   *udp_client_pcb;  /* a pcb for the UDP client */
 static struct udp_pcb   *udp_server_pcb;  /* a pcb for the UDP server */
-static u16_t            udp_remote_port;  /* a UDP port number of the destination */
-static u16_t            udp_local_port;   /* a UDP port number of the local server*/
+static udp_remote_port: u16;  /* a UDP port number of the destination */
+static udp_local_port: u16;   /* a UDP port number of the local server*/
 
 /**
  * udp_app_fuzz_input
@@ -478,7 +478,7 @@ udp_app_fuzz_input(struct udp_pcb *pcb, const ip_addr_t *addr, u16_t port)
      * = 65507
      */
     const u16_t max_data_size = 65507;
-    u16_t data_len;
+    data_len: u16;
 
     memcpy(&data_len, remfuzz_ptr, sizeof(u16_t));
     remfuzz_ptr += sizeof(u16_t);
@@ -494,7 +494,7 @@ udp_app_fuzz_input(struct udp_pcb *pcb, const ip_addr_t *addr, u16_t port)
       struct pbuf *p, *q;
 
       p = pbuf_alloc(PBUF_RAW, (u16_t)data_len, PBUF_POOL);
-      LWIP_ASSERT("alloc failed", p);
+      // LWIP_ASSERT("alloc failed", p);
 
       for (q = p; q != NULL; q = q->next) {
         MEMCPY(q->payload, remfuzz_ptr, q->len);
@@ -609,10 +609,10 @@ int lwip_fuzztest(int argc, char** argv, enum lwip_fuzz_type type, u32_t test_ap
   }
   if (test_apps & LWIP_FUZZ_TCP_CLIENT) {
     tcp_client_pcb = altcp_tcp_new_ip_type(IPADDR_TYPE_ANY);
-    LWIP_ASSERT("Error: altcp_new() failed", tcp_client_pcb != NULL);
+    // LWIP_ASSERT("Error: altcp_new() failed", tcp_client_pcb != NULL);
     tcp_remote_port = 80;
     err = altcp_connect(tcp_client_pcb, &remote_addr, tcp_remote_port, tcp_client_connected);
-    LWIP_ASSERT("Error: altcp_connect() failed", err == ERR_OK);
+    // LWIP_ASSERT("Error: altcp_connect() failed", err == ERR_OK);
     altcp_recv(tcp_client_pcb, tcp_client_recv);
     altcp_err(tcp_client_pcb, tcp_client_err);
     altcp_poll(tcp_client_pcb, tcp_client_poll, 10);
@@ -620,13 +620,13 @@ int lwip_fuzztest(int argc, char** argv, enum lwip_fuzz_type type, u32_t test_ap
   }
   if (test_apps & LWIP_FUZZ_TCP_SERVER) {
     tcp_server_pcb = altcp_tcp_new_ip_type(IPADDR_TYPE_ANY);
-    LWIP_ASSERT("Error: altcp_new() failed", tcp_server_pcb != NULL);
+    // LWIP_ASSERT("Error: altcp_new() failed", tcp_server_pcb != NULL);
     altcp_setprio(tcp_server_pcb, TCP_PRIO_MIN);
     tcp_local_port = 80;
     err = altcp_bind(tcp_server_pcb, IP_ANY_TYPE, tcp_local_port);
-    LWIP_ASSERT("Error: altcp_bind() failed", err == ERR_OK);
+    // LWIP_ASSERT("Error: altcp_bind() failed", err == ERR_OK);
     tcp_server_pcb = altcp_listen(tcp_server_pcb);
-    LWIP_ASSERT("Error: altcp_listen() failed", err == ERR_OK);
+    // LWIP_ASSERT("Error: altcp_listen() failed", err == ERR_OK);
     altcp_accept(tcp_server_pcb, tcp_server_accept);
   }
   if (test_apps & LWIP_FUZZ_UDP_CLIENT) {
@@ -650,9 +650,9 @@ int lwip_fuzztest(int argc, char** argv, enum lwip_fuzz_type type, u32_t test_ap
     printf("reading input from file... ");
     fflush(stdout);
     filename = argv[1];
-    LWIP_ASSERT("invalid filename", filename != NULL);
+    // LWIP_ASSERT("invalid filename", filename != NULL);
     f = fopen(filename, "rb");
-    LWIP_ASSERT("open failed", f != NULL);
+    // LWIP_ASSERT("open failed", f != NULL);
     len = fread(pktbuf, 1, sizeof(pktbuf), f);
     fclose(f);
     printf("testing file: \"%s\"...\r\n", filename);
@@ -666,7 +666,7 @@ int lwip_fuzztest(int argc, char** argv, enum lwip_fuzz_type type, u32_t test_ap
 }
 
 #ifdef LWIP_RAND_FOR_FUZZ
-u32_t lwip_fuzz_rand(void)
+u32_t lwip_fuzz_rand()
 {
 #ifdef LWIP_RAND_FOR_FUZZ_SIMULATE_GLIBC
   /* this is what glibc rand() returns (first 20 numbers) */

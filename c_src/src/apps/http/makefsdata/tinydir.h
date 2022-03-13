@@ -65,7 +65,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* types */
 
 /* Windows UNICODE wide character support */
-#if defined _MSC_VER || defined __MINGW32__
+// #if defined _MSC_VER || defined __MINGW32__
 # define _tinydir_char_t TCHAR
 # define TINYDIR_STRING(s) _TEXT(s)
 # define _tinydir_strlen _tcslen
@@ -125,7 +125,7 @@ pub const _TINYDIR_DRIVE_MAX: u32 = 3; #ifdef _MSC_VER
 
 /* readdir_r is a POSIX-only function, and may not be available under various
  * environments/settings, e.g. MinGW. Use readdir fallback */
-#if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE ||\
+// #if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _BSD_SOURCE || _SVID_SOURCE ||\
 	_POSIX_SOURCE
 # define _TINYDIR_HAS_READDIR_R
 
@@ -789,12 +789,12 @@ size_t _tinydir_dirent_buf_size(_TINYDIR_DIR *dirp)
 	long name_max;
 	size_t name_end;
 	/* parameter may be unused */
-	(void)dirp;
+	()dirp;
 
-#if defined _TINYDIR_USE_FPATHCONF
+// #if defined _TINYDIR_USE_FPATHCONF
 	name_max = fpathconf(dirfd(dirp), _PC_NAME_MAX);
 	if (name_max == -1)
-#if defined(NAME_MAX)
+// #if defined(NAME_MAX)
 		name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
 #else
 		return (size_t)(-1);

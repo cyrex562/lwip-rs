@@ -13,13 +13,13 @@
 /* Setups/teardown functions */
 
 static void
-pbuf_setup(void)
+pbuf_setup()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-pbuf_teardown(void)
+pbuf_teardown()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
@@ -316,7 +316,7 @@ START_TEST(test_pbuf_get_put_at_edge)
 {
   u8_t *out;
   u8_t testdata = 0x01;
-  u8_t getdata;
+  getdata: u8;
   struct pbuf *p = pbuf_alloc(PBUF_RAW, 1024, PBUF_POOL);
   struct pbuf *q = p->next;
   LWIP_UNUSED_ARG(_i);
@@ -341,7 +341,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-pbuf_suite(void)
+pbuf_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_pbuf_alloc_zero_pbufs),

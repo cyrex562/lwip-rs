@@ -21,7 +21,7 @@ pub const TRUE: u32 = 1; #define FALSE 0
 
 u8_t fifoGet(fifo_t * fifo)
 {
-	u8_t c;
+	c: u8;
 
 	sys_sem_wait(&fifo->sem);      /* enter critical section */
 
@@ -47,7 +47,7 @@ u8_t fifoGet(fifo_t * fifo)
 
 s16_t fifoGetNonBlock(fifo_t * fifo)
 {
-	u16_t c;
+	c: u16;
 
 	sys_sem_wait(&fifo->sem);      /* enter critical section */
 
@@ -127,10 +127,10 @@ void fifoInit(fifo_t * fifo)
   fifo->emptyslot = 0;
   fifo->len       = 0;
   if(sys_sem_new(&fifo->sem, 1) != ERR_OK) {  /* critical section 1=free to enter */
-    LWIP_ASSERT("Failed to create semaphore", 0);
+    // LWIP_ASSERT("Failed to create semaphore", 0);
   }
   if(sys_sem_new(&fifo->getSem, 0) != ERR_OK) {  /* 0 = no one waiting */
-    LWIP_ASSERT("Failed to create semaphore", 0);
+    // LWIP_ASSERT("Failed to create semaphore", 0);
   }
   fifo->getWaiting = FALSE;
 }

@@ -21,7 +21,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && EAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && EAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -79,7 +79,7 @@ pub const EAP_MIN_MAX_POWER_OF_TWO_CHALLENGE_LENGTH: u32 = 3; /* 2^3-1 = 7, 17+7
 	"SRP1", "SRP2", "SRP3", "MD5Chall", "Open", "SRP4", "BadAuth"
 
 #define	eap_client_active(pcb)	((pcb)->eap.es_client.ea_state == eapListen)
-#if PPP_SERVER
+// #if PPP_SERVER
 #define	eap_server_active(pcb)	\
 	((pcb)->eap.es_server.ea_state >= eapIdentify && \
 	 (pcb)->eap.es_server.ea_state <= eapMD5Chall)
@@ -121,13 +121,13 @@ struct eap_auth {
 
 pub const EAP_MAX_CHALLENGE_LENGTH: u32 = 24; typedef struct eap_state {
 	struct eap_auth es_client;	/* Client (authenticatee) data */
-#if PPP_SERVER
+// #if PPP_SERVER
 	struct eap_auth es_server;	/* Server (authenticator) data */
  /* PPP_SERVER */
 	int es_savedtime;		/* Saved timeout */
 	int es_rechallenge;		/* EAP rechallenge interval */
 	int es_lwrechallenge;		/* SRP lightweight rechallenge inter */
-	u8_t es_usepseudo;		/* Use SRP Pseudonym if offered one */
+	es_usepseudo: u8;		/* Use SRP Pseudonym if offered one */
 	int es_usedpseudo;		/* Set if we already sent PN */
 	int es_challen;			/* Length of challenge string */
 	u_char es_challenge[EAP_MAX_CHALLENGE_LENGTH];
@@ -136,7 +136,7 @@ pub const EAP_MAX_CHALLENGE_LENGTH: u32 = 24; typedef struct eap_state {
 /*
  * Timeouts.
  */
-#if 0 /* moved to ppp_opts.h */
+// #if 0 /* moved to ppp_opts.h */
 pub const EAP_DEFTIMEOUT: u32 = 3; /* Timeout (seconds) for rexmit */
 pub const EAP_DEFTRANSMITS: u32 = 10; /* max # times to transmit */
 pub const EAP_DEFREQTIME: u32 = 20; /* Time to wait for peer request */

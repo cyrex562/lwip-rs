@@ -40,7 +40,7 @@
 // #include "lwip/def.h"
 // #include "lwip/timeouts.h"
 
-#if LWIP_SNMP && LWIP_SNMP_V3
+// #if LWIP_SNMP && LWIP_SNMP_V3
 
 struct user_table_entry {
   char               username[32];
@@ -57,7 +57,7 @@ static struct user_table_entry user_table[] = {
 };
 
 static char snmpv3_engineid[32];
-static u8_t snmpv3_engineid_len;
+static snmpv3_engineid_len: u8;
 
 static u32_t enginetime = 0;
 
@@ -90,7 +90,7 @@ get_user(const char *username)
 }
 
 u8_t
-snmpv3_get_amount_of_users(void)
+snmpv3_get_amount_of_users()
 {
   return LWIP_ARRAYSIZE(user_table);
 }
@@ -146,7 +146,7 @@ snmpv3_set_user_auth_algo(const char *username, snmpv3_auth_algo_t algo)
         p->auth_algo = algo;
         return ERR_OK;
       }
-#if LWIP_SNMP_V3_CRYPTO
+// #if LWIP_SNMP_V3_CRYPTO
     case SNMP_V3_AUTH_ALGO_MD5:
     case SNMP_V3_AUTH_ALGO_SHA:
 
@@ -167,7 +167,7 @@ snmpv3_set_user_priv_algo(const char *username, snmpv3_priv_algo_t algo)
 
   if (p) {
     switch (algo) {
-#if LWIP_SNMP_V3_CRYPTO
+// #if LWIP_SNMP_V3_CRYPTO
     case SNMP_V3_PRIV_ALGO_AES:
     case SNMP_V3_PRIV_ALGO_DES:
       if (p->auth_algo == SNMP_V3_AUTH_ALGO_INVAL) {
@@ -194,7 +194,7 @@ snmpv3_set_user_auth_key(const char *username, const char *password)
 {
   struct user_table_entry *p = get_user(username);
   const char *engineid;
-  u8_t engineid_len;
+  engineid_len: u8;
 
   if (p) {
     /* password should be at least 8 characters long */
@@ -204,7 +204,7 @@ snmpv3_set_user_auth_key(const char *username, const char *password)
       switch (p->auth_algo) {
       case SNMP_V3_AUTH_ALGO_INVAL:
         return ERR_OK;
-#if LWIP_SNMP_V3_CRYPTO
+// #if LWIP_SNMP_V3_CRYPTO
       case SNMP_V3_AUTH_ALGO_MD5:
         snmpv3_password_to_key_md5((const u8_t*)password, strlen(password), (const u8_t*)engineid, engineid_len, p->auth_key);
         return ERR_OK;
@@ -226,7 +226,7 @@ snmpv3_set_user_priv_key(const char *username, const char *password)
 {
   struct user_table_entry *p = get_user(username);
   const char *engineid;
-  u8_t engineid_len;
+  engineid_len: u8;
 
   if (p) {
     /* password should be at least 8 characters long */
@@ -236,7 +236,7 @@ snmpv3_set_user_priv_key(const char *username, const char *password)
       switch (p->auth_algo) {
       case SNMP_V3_AUTH_ALGO_INVAL:
         return ERR_OK;
-#if LWIP_SNMP_V3_CRYPTO
+// #if LWIP_SNMP_V3_CRYPTO
       case SNMP_V3_AUTH_ALGO_MD5:
         snmpv3_password_to_key_md5((const u8_t*)password, strlen(password), (const u8_t*)engineid, engineid_len, p->priv_key);
         return ERR_OK;
@@ -340,7 +340,7 @@ snmpv3_set_engine_id(const char *id, u8_t len)
  * Get engine boots from persistence. Must be increased on each boot.
  */
 u32_t
-snmpv3_get_engine_boots(void)
+snmpv3_get_engine_boots()
 {
   return engineboots;
 }
@@ -360,7 +360,7 @@ snmpv3_set_engine_boots(u32_t boots)
  * engine boot ups get incremented.
  */
 u32_t
-snmpv3_get_engine_time(void)
+snmpv3_get_engine_time()
 {
   return enginetime;
 }
@@ -369,7 +369,7 @@ snmpv3_get_engine_time(void)
  * Reset current engine time to 0
  */
 void
-snmpv3_reset_engine_time(void)
+snmpv3_reset_engine_time()
 {
   enginetime = 0;
 }
@@ -378,7 +378,7 @@ snmpv3_reset_engine_time(void)
  * Initialize dummy SNMPv3 implementation
  */
 void
-snmpv3_dummy_init(void)
+snmpv3_dummy_init()
 {
   snmpv3_set_engine_id("FOO", 3);
 

@@ -43,7 +43,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/altcp.h"
 // #include "lwip/ip_addr.h"
@@ -51,7 +51,7 @@
 
 
 
-struct altcp_pcb *altcp_alloc(void);
+struct altcp_pcb *altcp_alloc();
 void altcp_free(struct altcp_pcb *conn);
 
 /* Function prototypes for application layers */
@@ -84,7 +84,7 @@ typedef err_t (*altcp_get_tcp_addrinfo_fn)(struct altcp_pcb *conn, int local, ip
 typedef ip_addr_t *(*altcp_get_ip_fn)(struct altcp_pcb *conn, int local);
 typedef u16_t (*altcp_get_port_fn)(struct altcp_pcb *conn, int local);
 
-#if LWIP_TCP_KEEPALIVE
+// #if LWIP_TCP_KEEPALIVE
 typedef void  (*altcp_keepalive_disable_fn)(struct altcp_pcb *conn);
 typedef void  (*altcp_keepalive_enable_fn)(struct altcp_pcb *conn, u32_t idle, u32_t intvl, u32_t count);
 
@@ -115,7 +115,7 @@ struct altcp_functions {
   altcp_get_tcp_addrinfo_fn   addrinfo;
   altcp_get_ip_fn             getip;
   altcp_get_port_fn           getport;
-#if LWIP_TCP_KEEPALIVE
+// #if LWIP_TCP_KEEPALIVE
   altcp_keepalive_disable_fn  keepalive_disable;
   altcp_keepalive_enable_fn   keepalive_enable;
 
@@ -141,7 +141,7 @@ void  altcp_default_dealloc(struct altcp_pcb *conn);
 err_t altcp_default_get_tcp_addrinfo(struct altcp_pcb *conn, int local, ip_addr_t *addr, u16_t *port);
 ip_addr_t *altcp_default_get_ip(struct altcp_pcb *conn, int local);
 u16_t altcp_default_get_port(struct altcp_pcb *conn, int local);
-#if LWIP_TCP_KEEPALIVE
+// #if LWIP_TCP_KEEPALIVE
 void  altcp_default_keepalive_disable(struct altcp_pcb *conn);
 void  altcp_default_keepalive_enable(struct altcp_pcb *conn, u32_t idle, u32_t intvl, u32_t count);
 

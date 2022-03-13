@@ -12,7 +12,7 @@
 
 
 static int
-test_sockets_get_used_count(void)
+test_sockets_get_used_count()
 {
   int used = 0;
   int i;
@@ -20,7 +20,7 @@ test_sockets_get_used_count(void)
   for (i = 0; i < NUM_SOCKETS; i++) {
     struct lwip_sock* s = lwip_socket_dbg_get_socket(i);
     if (s != NULL) {
-      if (s->fd_used) {
+      if ( s.fd_used) {
         used++;
       }
     }
@@ -32,14 +32,14 @@ test_sockets_get_used_count(void)
 /* Setups/teardown functions */
 
 static void
-sockets_setup(void)
+sockets_setup()
 {
   /* expect full free heap */
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-sockets_teardown(void)
+sockets_teardown()
 {
   fail_unless(test_sockets_get_used_count() == 0);
   /* poll until all memory is released... */
@@ -57,7 +57,7 @@ sockets_teardown(void)
 #define NUM_SOCKETS MEMP_NUM_NETCONN
 
 
-#if LWIP_SOCKET
+// #if LWIP_SOCKET
 static int
 test_sockets_alloc_socket_nonblocking(int domain, int type)
 {
@@ -127,13 +127,13 @@ static void test_sockets_allfunctions_basic_domain(int domain)
   if (domain == AF_INET) {
 
     struct sockaddr_in *addr4 = (struct sockaddr_in *)&addr;
-    addr4->sin_addr.s_addr = PP_HTONL(INADDR_LOOPBACK);
+     addr4.sin_addr.s_addr = PP_HTONL(INADDR_LOOPBACK);
 
   } else {
 
     struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)&addr;
     struct in6_addr lo6 = IN6ADDR_LOOPBACK_INIT;
-    addr6->sin6_addr = lo6;
+     addr6.sin6_addr = lo6;
 
   }
   ret = lwip_connect(s2, (struct sockaddr*)&addr, addrlen);
@@ -224,9 +224,9 @@ static void test_sockets_init_loopback_addr(int domain, struct sockaddr_storage 
     case AF_INET6: {
       struct sockaddr_in6 *addr = (struct sockaddr_in6*)addr_st;
       struct in6_addr lo6 = IN6ADDR_LOOPBACK_INIT;
-      addr->sin6_family = AF_INET6;
-      addr->sin6_port = 0; /* use ephemeral port */
-      addr->sin6_addr = lo6;
+       addr.sin6_family = AF_INET6;
+       addr.sin6_port = 0; /* use ephemeral port */
+       addr.sin6_addr = lo6;
       *sz = sizeof(*addr);
    }
       break;
@@ -234,9 +234,9 @@ static void test_sockets_init_loopback_addr(int domain, struct sockaddr_storage 
 
     case AF_INET: {
       struct sockaddr_in *addr = (struct sockaddr_in*)addr_st;
-      addr->sin_family = AF_INET;
-      addr->sin_port = 0; /* use ephemeral port */
-      addr->sin_addr.s_addr = PP_HTONL(INADDR_LOOPBACK);
+       addr.sin_family = AF_INET;
+       addr.sin_port = 0; /* use ephemeral port */
+       addr.sin_addr.s_addr = PP_HTONL(INADDR_LOOPBACK);
       *sz = sizeof(*addr);
     }
       break;
@@ -253,26 +253,26 @@ static void test_sockets_msgapi_update_iovs(struct msghdr *msg, size_t bytes)
   msg_iovlen_t i;
 
   /* note: this modifies the underyling iov_base and iov_len for a partial
-     read for an individual vector. This updates the msg->msg_iov pointer
+     read for an individual vector. This updates the  msg.msg_iov pointer
      to skip fully consumed vectors */
   
   /* process fully consumed vectors */
-  for (i = 0; i < msg->msg_iovlen; i++) {
-    if (msg->msg_iov[i].iov_len <= bytes) {
+  for (i = 0; i <  msg.msg_iovlen; i++) {
+    if ( msg.msg_iov[i].iov_len <= bytes) {
       /* reduce bytes by amount of this vector */
-      bytes -= msg->msg_iov[i].iov_len;
+      bytes -=  msg.msg_iov[i].iov_len;
     } else {
       break; /* iov not fully consumed */
     }
   }
 
   /* slide down over fully consumed vectors */
-  msg->msg_iov = &msg->msg_iov[i];
-  msg->msg_iovlen -= i;
+   msg.msg_iov = & msg.msg_iov[i];
+   msg.msg_iovlen -= i;
 
   /* update new first vector with any remaining amount */
-  msg->msg_iov[0].iov_base = ((u8_t *)msg->msg_iov[0].iov_base + bytes);
-  msg->msg_iov[0].iov_len -= bytes;
+   msg.msg_iov[0].iov_base = ((u8_t *) msg.msg_iov[0].iov_base + bytes);
+   msg.msg_iov[0].iov_len -= bytes;
 }
 
 static void test_sockets_msgapi_tcp(int domain)
@@ -293,7 +293,7 @@ static void test_sockets_msgapi_tcp(int domain)
   u8_t * rcv_buf;
   int    rcv_off;
   int    rcv_trailer = 0;
-  u8_t val;
+  val: u8;
 
   test_sockets_init_loopback_addr(domain, &addr_storage, &addr_size);
 
@@ -364,7 +364,7 @@ static void test_sockets_msgapi_tcp(int domain)
     riovs[i].iov_len = BUF_SZ/4;
   }
   /* handling trailing bytes if buffer doesn't evenly divide by 4 */
-#if NEED_TRAILER
+// #if NEED_TRAILER
   if ((BUF_SZ % 4) != 0) {
     riovs[5].iov_base = &rcv_buf[4*(BUF_SZ/4)];
     riovs[5].iov_len = BUF_SZ - (4*(BUF_SZ/4));
@@ -457,16 +457,16 @@ static void test_sockets_msgapi_udp_send_recv_loop(int s, struct msghdr *smsg, s
     fail_unless(ret == 4);
 
     /* verify data */
-    fail_unless(*((u8_t*)rmsg->msg_iov[0].iov_base) == 0xDE);
-    fail_unless(*((u8_t*)rmsg->msg_iov[1].iov_base) == 0xAD);
-    fail_unless(*((u8_t*)rmsg->msg_iov[2].iov_base) == 0xBE);
-    fail_unless(*((u8_t*)rmsg->msg_iov[3].iov_base) == 0xEF);
+    fail_unless(*((u8_t*) rmsg.msg_iov[0].iov_base) == 0xDE);
+    fail_unless(*((u8_t*) rmsg.msg_iov[1].iov_base) == 0xAD);
+    fail_unless(*((u8_t*) rmsg.msg_iov[2].iov_base) == 0xBE);
+    fail_unless(*((u8_t*) rmsg.msg_iov[3].iov_base) == 0xEF);
 
     /* clear rcv_buf to ensure no data is being skipped */
-    *((u8_t*)rmsg->msg_iov[0].iov_base) = 0x00;
-    *((u8_t*)rmsg->msg_iov[1].iov_base) = 0x00;
-    *((u8_t*)rmsg->msg_iov[2].iov_base) = 0x00;
-    *((u8_t*)rmsg->msg_iov[3].iov_base) = 0x00;
+    *((u8_t*) rmsg.msg_iov[0].iov_base) = 0x00;
+    *((u8_t*) rmsg.msg_iov[1].iov_base) = 0x00;
+    *((u8_t*) rmsg.msg_iov[2].iov_base) = 0x00;
+    *((u8_t*) rmsg.msg_iov[3].iov_base) = 0x00;
   }
 }
 
@@ -598,15 +598,15 @@ static void test_sockets_msgapi_cmsg(int domain)
   /* Verify message header */
   cmsg = CMSG_FIRSTHDR(&msg);
   fail_unless(cmsg != NULL);
-  fail_unless(cmsg->cmsg_len > 0);
-  fail_unless(cmsg->cmsg_level == IPPROTO_IP);
-  fail_unless(cmsg->cmsg_type == IP_PKTINFO);
+  fail_unless( cmsg.cmsg_len > 0);
+  fail_unless( cmsg.cmsg_level == IPPROTO_IP);
+  fail_unless( cmsg.cmsg_type == IP_PKTINFO);
 
   /* Verify message data */
   pktinfo = (struct in_pktinfo*)CMSG_DATA(cmsg);
   /* We only have loopback interface enabled */
-  fail_unless(pktinfo->ipi_ifindex == 1);
-  fail_unless(pktinfo->ipi_addr.s_addr == PP_HTONL(INADDR_LOOPBACK));
+  fail_unless( pktinfo.ipi_ifindex == 1);
+  fail_unless( pktinfo.ipi_addr.s_addr == PP_HTONL(INADDR_LOOPBACK));
 
   /* Verify there are no additional messages */
   cmsg = CMSG_NXTHDR(&msg, cmsg);
@@ -651,7 +651,7 @@ END_TEST
 
 START_TEST(test_sockets_select)
 {
-#if LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET_SELECT
   int s;
   int ret;
   fd_set readset;
@@ -772,14 +772,14 @@ START_TEST(test_sockets_recv_after_rst)
   sact_sock = lwip_socket_dbg_get_socket(sact);
   fail_unless(sact_sock != NULL);
   if (sact_sock != NULL) {
-    struct netconn *sact_conn = sact_sock->conn;
+    struct netconn *sact_conn =  sact_sock.conn;
     fail_unless(sact_conn != NULL);
     if (sact_conn != NULL) {
-      struct tcp_pcb *pcb = sact_conn->pcb.tcp;
+      struct tcp_pcb *pcb =  sact_conn.pcb.tcp;
       fail_unless(pcb != NULL);
       if (pcb != NULL) {
-        tcp_rst(pcb, pcb->snd_nxt, pcb->rcv_nxt, &pcb->local_ip, &pcb->remote_ip,
-                     pcb->local_port, pcb->remote_port);
+        tcp_rst(pcb,  pcb.snd_nxt,  pcb.rcv_nxt, & pcb.local_ip, & pcb.remote_ip,
+                      pcb.local_port,  pcb.remote_port);
       }
     }
   }
@@ -830,7 +830,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-sockets_suite(void)
+sockets_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_sockets_basics),
@@ -845,7 +845,7 @@ sockets_suite(void)
 #else /* LWIP_SOCKET */
 
 Suite *
-sockets_suite(void)
+sockets_suite()
 {
   return create_suite("SOCKETS", NULL, 0, NULL, NULL);
 }

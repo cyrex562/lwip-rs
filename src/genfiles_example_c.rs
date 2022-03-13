@@ -89,7 +89,7 @@ const char generated_html[] =
 
 
 void
-genfiles_ex_init(void)
+genfiles_ex_init()
 {
   /* nothing to do here yet */
 }
@@ -101,15 +101,15 @@ fs_open_custom(struct fs_file *file, const char *name)
   if (!strcmp(name, "/generated.html")) {
     /* initialize fs_file correctly */
     memset(file, 0, sizeof(struct fs_file));
-    file->pextension = mem_malloc(sizeof(generated_html));
-    if (file->pextension != NULL) {
+     file.pextension = mem_malloc(sizeof(generated_html));
+    if ( file.pextension != NULL) {
       /* instead of doing memcpy, you would generate e.g. a JSON here */
-      memcpy(file->pextension, generated_html, sizeof(generated_html));
-      file->data = (const char *)file->pextension;
-      file->len = sizeof(generated_html) - 1; /* don't send the trailing 0 */
-      file->index = file->len;
+      memcpy( file.pextension, generated_html, sizeof(generated_html));
+       file.data = (const char *) file.pextension;
+       file.len = sizeof(generated_html) - 1; /* don't send the trailing 0 */
+       file.index =  file.len;
       /* allow persisteng connections */
-      file->flags = FS_FILE_FLAGS_HEADER_PERSISTENT;
+       file.flags = FS_FILE_FLAGS_HEADER_PERSISTENT;
       return 1;
     }
   }
@@ -119,13 +119,13 @@ fs_open_custom(struct fs_file *file, const char *name)
 void
 fs_close_custom(struct fs_file *file)
 {
-  if (file && file->pextension) {
-    mem_free(file->pextension);
-    file->pextension = NULL;
+  if (file &&  file.pextension) {
+    mem_free( file.pextension);
+     file.pextension = NULL;
   }
 }
 
-#if LWIP_HTTPD_FS_ASYNC_READ
+// #if LWIP_HTTPD_FS_ASYNC_READ
 u8_t
 fs_canread_custom(struct fs_file *file)
 {
@@ -137,7 +137,7 @@ fs_canread_custom(struct fs_file *file)
 u8_t
 fs_wait_read_custom(struct fs_file *file, fs_wait_cb callback_fn, void *callback_arg)
 {
-  LWIP_ASSERT("not implemented in this example configuration", 0);
+  // LWIP_ASSERT("not implemented in this example configuration", 0);
   LWIP_UNUSED_ARG(file);
   LWIP_UNUSED_ARG(callback_fn);
   LWIP_UNUSED_ARG(callback_arg);
@@ -150,7 +150,7 @@ fs_wait_read_custom(struct fs_file *file, fs_wait_cb callback_fn, void *callback
 int
 fs_read_async_custom(struct fs_file *file, char *buffer, int count, fs_wait_cb callback_fn, void *callback_arg)
 {
-  LWIP_ASSERT("not implemented in this example configuration", 0);
+  // LWIP_ASSERT("not implemented in this example configuration", 0);
   LWIP_UNUSED_ARG(file);
   LWIP_UNUSED_ARG(buffer);
   LWIP_UNUSED_ARG(count);
@@ -167,7 +167,7 @@ fs_read_async_custom(struct fs_file *file, char *buffer, int count, fs_wait_cb c
 int
 fs_read_custom(struct fs_file *file, char *buffer, int count)
 {
-  LWIP_ASSERT("not implemented in this example configuration", 0);
+  // LWIP_ASSERT("not implemented in this example configuration", 0);
   LWIP_UNUSED_ARG(file);
   LWIP_UNUSED_ARG(buffer);
   LWIP_UNUSED_ARG(count);

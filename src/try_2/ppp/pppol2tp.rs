@@ -932,7 +932,7 @@ pub fn pppol2tp_send_sccrq(l2tp: &mut pppol2tp_pcb) -> Result<(), LwipError> {
     if (pb == None) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
 
     p = pb.payload;
     //  fill in pkt 
@@ -1030,7 +1030,7 @@ pub fn pppol2tp_send_scccn(l2tp: &mut pppol2tp_pcb, ns: u16) -> Result<(), LwipE
     if (pb == None) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
 
     p = pb.payload;
     //  fill in pkt 
@@ -1078,7 +1078,7 @@ pub fn pppol2tp_send_icrq(l2tp: &mut pppol2tp_pcb, ns: u16) -> Result<(), LwipEr
     if (pb == None) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
 
     p = pb.payload;
     //  fill in pkt 
@@ -1126,7 +1126,7 @@ pub fn pppol2tp_send_iccn(l2tp: &mut pppol2tp_pcb, ns: u16) {
     if (pb == None) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
 
     p = pb.payload;
     //  fill in pkt 
@@ -1173,7 +1173,7 @@ pub fn pppol2tp_send_zlb(l2tp: &mut pppol2tp_pcb, ns: u16, nr: u16) -> Result<()
     if (pb == None) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
 
     p = pb.payload;
     //  fill in pkt 
@@ -1202,7 +1202,7 @@ pub fn pppol2tp_send_stopccn(l2tp: &mut pppol2tp_pcb, ns: u16) -> Result<(), Lwi
     if (pb == None) {
         return ERR_MEM;
     }
-    LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
+    // LWIP_ASSERT("pb.tot_len == pb.len", pb.tot_len == pb.len);
 
     p = pb.payload;
     //  fill in pkt 

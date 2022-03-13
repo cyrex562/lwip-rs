@@ -50,7 +50,7 @@
 
 
 
-#if LWIP_ICMP6 && LWIP_IPV6 /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ICMP6 && LWIP_IPV6 /* don't build if not configured for use in lwipopts.h */
 
 void icmp6_input(struct pbuf *p, struct netif *inp);
 void icmp6_dest_unreach(struct pbuf *p, enum icmp6_dur_code c);

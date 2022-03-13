@@ -41,7 +41,7 @@
 
 
 
-#if LWIP_IPV6 && LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_IPV6 && LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -50,4 +50,4 @@
  */
 const struct in6_addr in6addr_any = IN6ADDR_ANY_INIT;
 
-#endif /* LWIP_IPV6 */
+// #endif /* LWIP_IPV6 */

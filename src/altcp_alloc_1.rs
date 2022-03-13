@@ -43,7 +43,7 @@
 
 
 
-#if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -53,7 +53,7 @@
 
 
 
-#if LWIP_ALTCP_TLS
+// #if LWIP_ALTCP_TLS
 
 /** This standard allocator function creates an altcp pcb for
  * TLS over TCP */
@@ -82,6 +82,6 @@ altcp_tls_alloc(void *arg, u8_t ip_type)
   return altcp_tls_new((struct altcp_tls_config *)arg, ip_type);
 }
 
-#endif /* LWIP_ALTCP_TLS */
+// #endif /* LWIP_ALTCP_TLS */
 
-#endif /* LWIP_ALTCP */
+// #endif /* LWIP_ALTCP */

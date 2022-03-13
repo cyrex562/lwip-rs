@@ -125,7 +125,7 @@ pub fn dhcp6_set_option(dhcp6: dhcp6, idx: usize, start: usize, len: usize) {
 //  Ensure DHCP PCB is allocated and bound
 pub fn dhcp6_inc_pcb_refcount() -> Result<(), LwipError> {
     if (dhcp6_pcb_refcount == 0) {
-        LWIP_ASSERT("dhcp6_inc_pcb_refcount(): memory leak", dhcp6_pcb == None);
+        // LWIP_ASSERT("dhcp6_inc_pcb_refcount(): memory leak", dhcp6_pcb == None);
 
         //  allocate UDP PCB
         dhcp6_pcb = udp_new_ip6();
@@ -148,7 +148,7 @@ pub fn dhcp6_inc_pcb_refcount() -> Result<(), LwipError> {
 
 //  Free DHCP PCB if the last netif stops using it
 pub fn dhcp6_dec_pcb_refcount() {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "dhcp6_pcb_refcount(): refcount error",
         (dhcp6_pcb_refcount > 0),
     );
@@ -169,9 +169,9 @@ pub fn dhcp6_dec_pcb_refcount() {
  * @param dhcp6 (uninitialised) dhcp6 struct allocated by the application
  */
 pub fn dhcp6_set_struct(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
-    LWIP_ASSERT("netif != NULL", netif != None);
-    LWIP_ASSERT("dhcp6 != NULL", dhcp6 != None);
-    LWIP_ASSERT(
+    // LWIP_ASSERT("netif != NULL", netif != None);
+    // LWIP_ASSERT("dhcp6 != NULL", dhcp6 != None);
+    // LWIP_ASSERT(
         "netif already has a struct dhcp6 set",
         netif_dhcp6_data(netif) == None,
     );
@@ -192,7 +192,7 @@ pub fn dhcp6_set_struct(netif: &mut NetIfc, dhcp6: &mut dhcp6) {
  * @param netif the netif from which to remove the struct dhcp
  */
 pub fn dhcp6_cleanup(netif: &mut NetIfc) {
-    LWIP_ASSERT("netif != NULL", netif != None);
+    // LWIP_ASSERT("netif != NULL", netif != None);
 
     if (netif_dhcp6_data(netif) != None) {
         mem_free(netif_dhcp6_data(netif));
@@ -394,7 +394,7 @@ pub fn dhcp6_create_msg(
         );*/
         return None;
     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "dhcp6_create_msg: check that first pbuf can hold dhcp6_msg",
         (p_out.len >= sizeof(dhcp6_msg) + opt_len_alloc),
     );
@@ -609,7 +609,7 @@ pub fn dhcp6_handle_config_reply(netif: &mut NetIfc, p_msg_in: &mut PacketBuffer
 pub fn dhcp6_nd6_ra_trigger(netif: &mut NetIfc, managed_addr_config: u8, other_config: u8) {
     let dhcp6: &mut dhcp6;
 
-    LWIP_ASSERT("netif != NULL", netif != None);
+    // LWIP_ASSERT("netif != NULL", netif != None);
     dhcp6 = netif_dhcp6_data(netif);
 
     if (dhcp6 != None) {

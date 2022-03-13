@@ -111,7 +111,7 @@ pub fn ip4_route_src(src: &mut LwipAddr, dest: &mut LwipAddr) -> NetIfc {
 pub fn ip4_route(dest: &mut LwipAddr) -> NetIfc {
     let netif: &mut NetIfc;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  Use administratively selected interface for multicast by default
     if (ip4_addr_ismulticast(dest) && ip4_default_multicast_netif) {
@@ -364,7 +364,7 @@ pub fn ip4_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
     let check_ip_src: i32 = 1;
     let raw_status: raw_input_state_t;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     IP_STATS_INC(ip.recv);
     MIB2_STATS_INC(mib2.ipinreceives);
@@ -755,7 +755,7 @@ pub fn ip4_output_if_opt_src(
     let mut if_addr: LwipAddr;
     let chk_sum: u32 = 0;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
 
     MIB2_STATS_INC(mib2.ipoutrequests);

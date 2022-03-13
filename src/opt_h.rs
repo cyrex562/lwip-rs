@@ -388,7 +388,7 @@ pub const MEMP_NUM_REASSDATA: u32 = 5; /**
  * MEMP_NUM_FRAG_PBUF: the number of IP fragments simultaneously sent
  * (fragments, not whole packets!).
  * This is only used with LWIP_NETIF_TX_SINGLE_PBUF==0 and only has to be > 1
- * with DMA-enabled MACs where the packet is not yet sent when netif->output
+ * with DMA-enabled MACs where the packet is not yet sent when  netif.output
  * returns.
  */
 #if !defined MEMP_NUM_FRAG_PBUF || defined __DOXYGEN__
@@ -1118,7 +1118,7 @@ pub const TCP_OOSEQ_MAX_BYTES: u32 = 0; /**
  * Use this to override TCP_OOSEQ_MAX_BYTES to a dynamic value per pcb.
  */
 #if !defined TCP_OOSEQ_BYTES_LIMIT
-#if TCP_OOSEQ_MAX_BYTES
+// #if TCP_OOSEQ_MAX_BYTES
 #define TCP_OOSEQ_BYTES_LIMIT(pcb)      TCP_OOSEQ_MAX_BYTES
 #elif defined __DOXYGEN__
 #define TCP_OOSEQ_BYTES_LIMIT(pcb)
@@ -1138,7 +1138,7 @@ pub const TCP_OOSEQ_MAX_PBUFS: u32 = 0; /**
  * Use this to override TCP_OOSEQ_MAX_PBUFS to a dynamic value per pcb.
  */
 #if !defined TCP_OOSEQ_PBUFS_LIMIT
-#if TCP_OOSEQ_MAX_PBUFS
+// #if TCP_OOSEQ_MAX_PBUFS
 #define TCP_OOSEQ_PBUFS_LIMIT(pcb)      TCP_OOSEQ_MAX_PBUFS
 #elif defined __DOXYGEN__
 #define TCP_OOSEQ_PBUFS_LIMIT(pcb)
@@ -1363,7 +1363,7 @@ pub const LWIP_NETIF_HWADDRHINT: u32 = 0; /**
  * ATTENTION: a driver should *NOT* rely on getting single pbufs but check TX
  * pbufs for being in one piece. If not, @ref pbuf_clone can be used to get
  * a single pbuf:
- *   if (p->next != NULL) {
+ *   if ( p.next != NULL) {
  *     struct pbuf *q = pbuf_clone(PBUF_RAW, PBUF_RAM, p);
  *     if (q == NULL) {
  *       return ERR_MEM;
@@ -1423,7 +1423,7 @@ pub const LWIP_LOOPBACK_MAX_PBUFS: u32 = 0; /**
  * Setting this is needed to avoid reentering non-reentrant functions like
  * tcp_input().
  *    LWIP_NETIF_LOOPBACK_MULTITHREADING==1: Indicates that the user is using a
- *       multithreaded environment like tcpip.c. In this case, netif->input()
+ *       multithreaded environment like tcpip.c. In this case,  netif.input()
  *       is called directly.
  *    LWIP_NETIF_LOOPBACK_MULTITHREADING==0: Indicates a polling (or NO_SYS) setup.
  *       The packets are put on a list and netif_poll() must be called in
@@ -2252,7 +2252,7 @@ pub const LWIP_DHCP6_MAX_NTP_SERVERS: u32 = 1; /**
  * \endcode
  * Arguments:
  * - pcb: tcp_pcb selected for input of this packet (ATTENTION: this may be
- *        struct tcp_pcb_listen if pcb->state == LISTEN)
+ *        struct tcp_pcb_listen if  pcb.state == LISTEN)
  * - hdr: pointer to tcp header (ATTENTION: tcp options may not be in one piece!)
  * - optlen: tcp option length
  * - opt1len: tcp option length 1st part
@@ -2260,7 +2260,7 @@ pub const LWIP_DHCP6_MAX_NTP_SERVERS: u32 = 1; /**
  *         options start at right after the tcp header ('(u8_t*)(hdr + 1)') for
  *         the first 'opt1len' bytes and the rest starts at 'opt2'. opt2len can
  *         be simply calculated: 'opt2len = optlen - opt1len;'
- * - p: input packet, p->payload points to application data (that's why tcp hdr
+ * - p: input packet,  p.payload points to application data (that's why tcp hdr
  *      and options are passed in separately)
  * Return value:
  * - ERR_OK: continue input of this packet as normal
@@ -2283,7 +2283,7 @@ pub const LWIP_DHCP6_MAX_NTP_SERVERS: u32 = 1; /**
  * \endcode
  * Arguments:
  * - pcb: tcp_pcb that transmits (ATTENTION: this may be NULL or
- *        struct tcp_pcb_listen if pcb->state == LISTEN)
+ *        struct tcp_pcb_listen if  pcb.state == LISTEN)
  * - internal_option_length: tcp option length used by the stack internally
  * Return value:
  * - a number of bytes to allocate for tcp options (internal_option_length <= ret <= 40)
@@ -2303,10 +2303,10 @@ pub const LWIP_DHCP6_MAX_NTP_SERVERS: u32 = 1; /**
  * u32_t *my_hook_tcp_out_add_tcpopts(struct pbuf *p, struct tcp_hdr *hdr, const struct tcp_pcb *pcb, u32_t *opts);
  * \endcode
  * Arguments:
- * - p: output packet, p->payload pointing to tcp header, data follows
+ * - p: output packet,  p.payload pointing to tcp header, data follows
  * - hdr: tcp header
  * - pcb: tcp_pcb that transmits (ATTENTION: this may be NULL or
- *        struct tcp_pcb_listen if pcb->state == LISTEN)
+ *        struct tcp_pcb_listen if  pcb.state == LISTEN)
  * - opts: pointer where to add the custom options (there may already be options
  *         between the header and these)
  * Return value:
@@ -2564,9 +2564,9 @@ pub const LWIP_DHCP6_MAX_NTP_SERVERS: u32 = 1; /**
  *
  * Options need to appended like this:
  *   LWIP_ASSERT("dhcp option overflow", *options_len_ptr + option_len + 2 <= DHCP_OPTIONS_LEN);
- *   msg->options[(*options_len_ptr)++] = &lt;option_number&gt;;
- *   msg->options[(*options_len_ptr)++] = &lt;option_len&gt;;
- *   msg->options[(*options_len_ptr)++] = &lt;option_bytes&gt;;
+ *    msg.options[(*options_len_ptr)++] = &lt;option_number&gt;;
+ *    msg.options[(*options_len_ptr)++] = &lt;option_len&gt;;
+ *    msg.options[(*options_len_ptr)++] = &lt;option_bytes&gt;;
  *   [...]
  */
 #ifdef __DOXYGEN__

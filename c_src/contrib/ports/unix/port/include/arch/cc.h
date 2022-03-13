@@ -33,7 +33,7 @@
 
 
 /* see https://sourceforge.net/p/predef/wiki/OperatingSystems/ */
-#if defined __ANDROID__
+// #if defined __ANDROID__
 #define LWIP_UNIX_ANDROID
 #elif defined __linux__
 #define LWIP_UNIX_LINUX
@@ -54,11 +54,11 @@ pub const LWIP_TIMEVAL_PRIVATE: u32 = 0;
 
 #define LWIP_ERRNO_INCLUDE <errno.h>
 
-#if defined(LWIP_UNIX_LINUX) || defined(LWIP_UNIX_HURD) || defined(LWIP_UNIX_KFREEBSD)
+// #if defined(LWIP_UNIX_LINUX) || defined(LWIP_UNIX_HURD) || defined(LWIP_UNIX_KFREEBSD)
 pub const LWIP_ERRNO_STDINCLUDE: u32 = 1;
 
 
-extern unsigned int lwip_port_rand(void);
+extern unsigned int lwip_port_rand();
 #define LWIP_RAND() (lwip_port_rand())
 
 /* different handling for unit test, normally not needed */
@@ -67,11 +67,11 @@ extern unsigned int lwip_port_rand(void);
   handler;}} while(0)
 
 
-#if defined(LWIP_UNIX_ANDROID) && defined(FD_SET)
+// #if defined(LWIP_UNIX_ANDROID) && defined(FD_SET)
 typedef __kernel_fd_set fd_set;
 
 
-#if defined(LWIP_UNIX_MACH)
+// #if defined(LWIP_UNIX_MACH)
 /* sys/types.h and signal.h bring in Darwin byte order macros. pull the
    header here and disable LwIP's version so that apps still can get
    the macros via LwIP headers and use system headers */

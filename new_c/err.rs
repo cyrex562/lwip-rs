@@ -73,7 +73,7 @@ err_to_errno(err_t err)
   }
   return err_to_errno_table[-err];
 }
-#endif /* !NO_SYS */
+// #endif /* !NO_SYS */
 
 #ifdef LWIP_DEBUG
 
@@ -112,4 +112,4 @@ lwip_strerr(err_t err)
   return err_strerr[-err];
 }
 
-#endif /* LWIP_DEBUG */
+// #endif /* LWIP_DEBUG */

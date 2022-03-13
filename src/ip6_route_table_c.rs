@@ -78,16 +78,16 @@ ip6_add_route_entry(const struct ip6_prefix *ip6_prefix, struct netif *netif, co
   s8_t i = -1;
   err_t retval = ERR_OK;
 
-  if (!ip6_prefix_valid(ip6_prefix->prefix_len) || (netif == NULL)) {
+  if (!ip6_prefix_valid( ip6_prefix.prefix_len) || (netif == NULL)) {
     retval = ERR_ARG;
     goto exit;
   }
 
   /* Check if an entry already exists with matching prefix; If so, replace it. */
   for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i++) {
-    if ((ip6_prefix->prefix_len == static_route_table[i].prefix.prefix_len) &&
-        memcmp(&ip6_prefix->addr, &static_route_table[i].prefix.addr,
-               ip6_prefix->prefix_len / 8) == 0) {
+    if (( ip6_prefix.prefix_len == static_route_table[i].prefix.prefix_len) &&
+        memcmp(& ip6_prefix.addr, &static_route_table[i].prefix.addr,
+                ip6_prefix.prefix_len / 8) == 0) {
       /* Prefix matches; replace the netif with the one being added. */
       goto insert;
     }
@@ -101,7 +101,7 @@ ip6_add_route_entry(const struct ip6_prefix *ip6_prefix, struct netif *netif, co
 
   /* Shift all entries down the table until slot is found */
   for (i = LWIP_IPV6_NUM_ROUTE_ENTRIES - 1;
-       i > 0 && (ip6_prefix->prefix_len > static_route_table[i - 1].prefix.prefix_len); i--) {
+       i > 0 && ( ip6_prefix.prefix_len > static_route_table[i - 1].prefix.prefix_len); i--) {
     SMEMCPY(&static_route_table[i], &static_route_table[i - 1], sizeof(struct ip6_route_entry));
   }
 
@@ -133,9 +133,9 @@ ip6_remove_route_entry(const struct ip6_prefix *ip6_prefix)
 
   for (i = 0; i < LWIP_IPV6_NUM_ROUTE_ENTRIES; i++) {
     /* compare prefix to find position to delete */
-    if (ip6_prefix->prefix_len == static_route_table[i].prefix.prefix_len &&
-        memcmp(&ip6_prefix->addr, &static_route_table[i].prefix.addr,
-               ip6_prefix->prefix_len / 8) == 0) {
+    if ( ip6_prefix.prefix_len == static_route_table[i].prefix.prefix_len &&
+        memcmp(& ip6_prefix.addr, &static_route_table[i].prefix.addr,
+                ip6_prefix.prefix_len / 8) == 0) {
       pos = i;
       break;
     }
@@ -240,7 +240,7 @@ ip6_get_gateway(struct netif *netif, const ip6_addr_t *dest)
  * @return the top of the route table.
  */
 const struct ip6_route_entry *
-ip6_get_route_table(void)
+ip6_get_route_table()
 {
     return static_route_table;
 }

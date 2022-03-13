@@ -50,12 +50,12 @@
 
 
 
-#if LWIP_NETCONN || LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_NETCONN || LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
 
-#if LWIP_MPU_COMPATIBLE
-#if LWIP_NETCONN_SEM_PER_THREAD
+// #if LWIP_MPU_COMPATIBLE
+// #if LWIP_NETCONN_SEM_PER_THREAD
 #define API_MSG_M_DEF_SEM(m)  *m
 #else
 #define API_MSG_M_DEF_SEM(m)  API_MSG_M_DEF(m)
@@ -86,34 +86,34 @@ struct api_msg {
     struct netbuf *b;
     /** used for lwip_netconn_do_newconn */
     struct {
-      u8_t proto;
+      proto: u8;
     } n;
     /** used for lwip_netconn_do_bind and lwip_netconn_do_connect */
     struct {
       API_MSG_M_DEF_C(ip_addr_t, ipaddr);
-      u16_t port;
-      u8_t if_idx;
+      port: u16;
+      if_idx: u8;
     } bc;
     /** used for lwip_netconn_do_getaddr */
     struct {
       ip_addr_t API_MSG_M_DEF(ipaddr);
       u16_t API_MSG_M_DEF(port);
-      u8_t local;
+      local: u8;
     } ad;
     /** used for lwip_netconn_do_write */
     struct {
       /** current vector to write */
       const struct netvector *vector;
       /** number of unwritten vectors */
-      u16_t vector_cnt;
+      vector_cnt: u16;
       /** offset into current vector */
       size_t vector_off;
       /** total length across vectors */
       size_t len;
       /** offset into total length/output of bytes written when err == ERR_OK */
       size_t offset;
-      u8_t apiflags;
-#if LWIP_SO_SNDTIMEO
+      apiflags: u8;
+// #if LWIP_SO_SNDTIMEO
       u32_t time_started;
  /* LWIP_SO_SNDTIMEO */
 w;
@@ -121,14 +121,14 @@ w;
     struct {
       size_t len;
     } r;
-#if LWIP_TCP
+// #if LWIP_TCP
     /** used for lwip_netconn_do_close (/shutdown) */
     struct {
-      u8_t shut;
-#if LWIP_SO_SNDTIMEO || LWIP_SO_LINGER
+      shut: u8;
+// #if LWIP_SO_SNDTIMEO || LWIP_SO_LINGER
       u32_t time_started;
 #else /* LWIP_SO_SNDTIMEO || LWIP_SO_LINGER */
-      u8_t polls_left;
+      polls_left: u8;
  /* LWIP_SO_SNDTIMEO || LWIP_SO_LINGER */
 sd;
  /* LWIP_TCP */
@@ -137,36 +137,36 @@ IP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD)
     struct {
       API_MSG_M_DEF_C(ip_addr_t, multiaddr);
       API_MSG_M_DEF_C(ip_addr_t, netif_addr);
-      u8_t if_idx;
+      if_idx: u8;
       enum netconn_igmp join_or_leave;
     } jl;
  /* LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD) */
 P_LISTEN_BACKLOG
     struct {
-      u8_t backlog;
+      backlog: u8;
     } lb;
  /* TCP_LISTEN_BACKLOG */
 g;
-#if LWIP_NETCONN_SEM_PER_THREAD
+// #if LWIP_NETCONN_SEM_PER_THREAD
   sys_sem_t* op_completed_sem;
  /* LWIP_NETCONN_SEM_PER_THREAD */
 
 
-#if LWIP_NETCONN_SEM_PER_THREAD
+// #if LWIP_NETCONN_SEM_PER_THREAD
 #define LWIP_API_MSG_SEM(msg)          ((msg)->op_completed_sem)
 #else /* LWIP_NETCONN_SEM_PER_THREAD */
-#define LWIP_API_MSG_SEM(msg)          (&(msg)->conn->op_completed)
+#define LWIP_API_MSG_SEM(msg)          (&(msg)-> conn.op_completed)
  /* LWIP_NETCONN_SEM_PER_THREAD */
 
 
-#if LWIP_DNS
+// #if LWIP_DNS
 /** As lwip_netconn_do_gethostbyname requires more arguments but doesn't require a netconn,
     it has its own struct (to avoid struct api_msg getting bigger than necessary).
     lwip_netconn_do_gethostbyname must be called using tcpip_callback instead of tcpip_apimsg
     (see netconn_gethostbyname). */
 struct dns_api_msg {
   /** Hostname to query or dotted IP address string */
-#if LWIP_MPU_COMPATIBLE
+// #if LWIP_MPU_COMPATIBLE
   char name[DNS_MAX_NAME_LENGTH];
 #else /* LWIP_MPU_COMPATIBLE */
   const char *name;
@@ -175,7 +175,7 @@ The resolved address is stored here */
   ip_addr_t API_MSG_M_DEF(addr);
  && LWIP_IPV6
   /** Type of resolve call */
-  u8_t dns_addrtype;
+  dns_addrtype: u8;
  /* LWIP_IPV4 && LWIP_IPV6 */
 This semaphore is posted when the name is resolved, the application thread
       should wait on it. */
@@ -185,7 +185,7 @@ This semaphore is posted when the name is resolved, the application thread
 };
  /* LWIP_DNS */
 
-#if LWIP_NETCONN_FULLDUPLEX
+// #if LWIP_NETCONN_FULLDUPLEX
 int lwip_netconn_is_deallocated_msg(void *msg);
 
 ip_netconn_is_err_msg(void *msg, err_t *err);
@@ -198,19 +198,19 @@ void lwip_netconn_do_disconnect      (void *m);
 void lwip_netconn_do_listen          (void *m);
 void lwip_netconn_do_send            (void *m);
 void lwip_netconn_do_recv            (void *m);
-#if TCP_LISTEN_BACKLOG
+// #if TCP_LISTEN_BACKLOG
 void lwip_netconn_do_accepted        (void *m);
  /* TCP_LISTEN_BACKLOG */
 wip_netconn_do_write           (void *m);
 void lwip_netconn_do_getaddr         (void *m);
 void lwip_netconn_do_close           (void *m);
 void lwip_netconn_do_shutdown        (void *m);
-#if LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD)
+// #if LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD)
 void lwip_netconn_do_join_leave_group(void *m);
 void lwip_netconn_do_join_leave_group_netif(void *m);
  /* LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD) */
 
-#if LWIP_DNS
+// #if LWIP_DNS
 void lwip_netconn_do_gethostbyname(void *arg);
  /* LWIP_DNS */
 
@@ -219,11 +219,11 @@ void netconn_free(struct netconn *conn);
 
  /* LWIP_NETCONN || LWIP_SOCKET */
 
-#if LWIP_NETIF_API /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_NETIF_API /* don't build if not configured for use in lwipopts.h */
 
 /* netifapi related lwIP internal definitions */
 
-#if LWIP_MPU_COMPATIBLE
+// #if LWIP_MPU_COMPATIBLE
 #define NETIFAPI_IPADDR_DEF(type, m)  type m
 #else /* LWIP_MPU_COMPATIBLE */
 #define NETIFAPI_IPADDR_DEF(type, m)  const type * m
@@ -251,12 +251,12 @@ void *state;
       netifapi_errt_fn errtfunc;
     } common;
     struct {
-#if LWIP_MPU_COMPATIBLE
+// #if LWIP_MPU_COMPATIBLE
       char name[NETIF_NAMESIZE];
 #else /* LWIP_MPU_COMPATIBLE */
       char *name;
  /* LWIP_MPU_COMPATIBLE */
-u8_t index;
+index: u8;
     } ifs;
   } msg;
 };

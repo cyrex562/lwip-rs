@@ -180,7 +180,7 @@ pub fn mqtt_ringbuf_get_ptr(rb: &mut mqtt_ringbuf_t) -> Vec<u8> {
 }
 
 pub fn mqtt_ringbuf_advance_get_idx(rb: &mut mqtt_ringbuf_t, len: usize) {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "mqtt_ringbuf_advance_get_idx: len < MQTT_OUTPUT_RINGBUF_SIZE",
         len < MQTT_OUTPUT_RINGBUF_SIZE,
     );
@@ -221,7 +221,7 @@ pub fn mqtt_output_send(rb: &mut mqtt_ringbuf_t, tpcb: &mut AlTcpPcb) {
     let wrap: u8 = 0;
     let ringbuf_lin_len: u16 = mqtt_ringbuf_linear_read_length(rb);
     let send_len: u16 = altcp_sndbuf(tpcb);
-    LWIP_ASSERT("mqtt_output_send: tpcb != NULL", tpcb != None);
+    // LWIP_ASSERT("mqtt_output_send: tpcb != NULL", tpcb != None);
 
     if (send_len == 0 || ringbuf_lin_len == 0) {
         return;
@@ -278,7 +278,7 @@ pub fn mqtt_create_request(
 ) -> MqttRequest {
     let r: &mut MqttRequest = None;
     let n: u8;
-    LWIP_ASSERT("mqtt_create_request: r_objs != NULL", r_objs != None);
+    // LWIP_ASSERT("mqtt_create_request: r_objs != NULL", r_objs != None);
     // for (n = 0; n < r_objs_len; n+= 1) {
     //   //  Item poto: i32 itself if not in use 
     //   if (r_objs[n].next == &r_objs[n]) {
@@ -303,7 +303,7 @@ pub fn mqtt_append_request(tail: &mut MqttRequest, r: &mut MqttRequest) {
     let time_before = 0;
     let iter: &mut MqttRequest;
 
-    LWIP_ASSERT("mqtt_append_request: tail != NULL", tail != None);
+    // LWIP_ASSERT("mqtt_append_request: tail != NULL", tail != None);
 
     //  Iterate trough queue to find head, and count total timeout time 
     // for (iter = *tail; iter != None; iter = iter.next) {
@@ -311,7 +311,7 @@ pub fn mqtt_append_request(tail: &mut MqttRequest, r: &mut MqttRequest) {
     //   head = iter;
     // }
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "mqtt_append_request: time_before <= MQTT_REQ_TIMEOUT",
         time_before <= MQTT_REQ_TIMEOUT,
     );
@@ -342,7 +342,7 @@ pub fn mqtt_delete_request(r: &mut MqttRequest) {
 pub fn mqtt_take_request(tail: &mut MqttRequest, pkt_id: u16) -> MqttRequest {
     let iter: &mut MqttRequest = None;
     let prev: &mut MqttRequest = None;
-    LWIP_ASSERT("mqtt_take_request: tail != NULL", tail != None);
+    // LWIP_ASSERT("mqtt_take_request: tail != NULL", tail != None);
     //  Search all request for pkt_id 
     // for (iter = *tail; iter != None; iter = iter.next) {
     //   if (iter.pkt_id == pkt_id) {
@@ -375,7 +375,7 @@ pub fn mqtt_take_request(tail: &mut MqttRequest, pkt_id: u16) -> MqttRequest {
  */
 pub fn mqtt_request_time_elapsed(tail: &mut MqttRequest, t: u8) {
     let r: &mut MqttRequest;
-    LWIP_ASSERT("mqtt_request_time_elapsed: tail != NULL", tail != None);
+    // LWIP_ASSERT("mqtt_request_time_elapsed: tail != NULL", tail != None);
     r = tail;
     while (t > 0 && r != None) {
         if (t >= r.timeout_diff) {
@@ -403,7 +403,7 @@ pub fn mqtt_request_time_elapsed(tail: &mut MqttRequest, t: u8) {
 pub fn mqtt_clear_requests(tail: &mut MqttRequest) {
     let iter: &mut MqttRequest;
     let next: &mut MqttRequest;
-    LWIP_ASSERT("mqtt_clear_requests: tail != NULL", tail != None);
+    // LWIP_ASSERT("mqtt_clear_requests: tail != NULL", tail != None);
     // for (iter = *tail; iter != None; iter = next) {
     //   next = iter.next;
     //   mqtt_delete_request(iter);
@@ -417,7 +417,7 @@ pub fn mqtt_clear_requests(tail: &mut MqttRequest) {
  */
 pub fn mqtt_init_requests(r_objs: &mut MqttRequest, r_objs_len: usize) {
     let n: u8;
-    LWIP_ASSERT("mqtt_init_requests: r_objs != NULL", r_objs != None);
+    // LWIP_ASSERT("mqtt_init_requests: r_objs != NULL", r_objs != None);
     // for (n = 0; n < r_objs_len; n+= 1) {
     //   //  Item pointing to itself indicates unused 
     //   r_objs[n].next = &r_objs[n];
@@ -495,7 +495,7 @@ pub fn mqtt_output_check_space(rb: &mut mqtt_ringbuf_t, r_length: u16) {
     //  Start with length of type byte + remaining length 
     let total_len: u16 = 1 + r_length;
 
-    LWIP_ASSERT("mqtt_output_check_space: rb != NULL", rb != None);
+    // LWIP_ASSERT("mqtt_output_check_space: rb != NULL", rb != None);
 
     //  Calculate number of required bytes to contain the remaining bytes field and add to total
     loop {
@@ -515,7 +515,7 @@ pub fn mqtt_output_check_space(rb: &mut mqtt_ringbuf_t, r_length: u16) {
  * @param reason Reason for disconnection
  */
 pub fn mqtt_close(client: &mut MqttClient, reason: mqtt_connection_status_t) {
-    LWIP_ASSERT("mqtt_close: client != NULL", client != None);
+    // LWIP_ASSERT("mqtt_close: client != NULL", client != None);
 
     //  Bring down TCP connection if not already done 
     if (client.conn != None) {
@@ -552,7 +552,7 @@ pub fn mqtt_close(client: &mut MqttClient, reason: mqtt_connection_status_t) {
 pub fn mqtt_cyclic_timer(arg: &mut Vec<u8>) {
     let restart_timer: u8 = 1;
     let client: &mut mqtt_client_t = arg;
-    LWIP_ASSERT("mqtt_cyclic_timer: client != NULL", client != None);
+    // LWIP_ASSERT("mqtt_cyclic_timer: client != NULL", client != None);
 
     if (client.conn_state == MQTT_CONNECTING) {
         client.cyclic_tick += 1;
@@ -664,11 +664,11 @@ pub fn mqtt_message_received(
     let pkt_type: u8 = MQTT_CTL_PACKET_TYPE(client.rx_buffer[0]);
     let pkt_id: u16 = 0;
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "client.msg_idx < MQTT_VAR_HEADER_BUFFER_LEN",
         client.msg_idx < MQTT_VAR_HEADER_BUFFER_LEN,
     );
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "fixed_hdr_idx <= client.msg_idx",
         fixed_hdr_idx <= client.msg_idx,
     );
@@ -933,8 +933,8 @@ pub fn mqtt_tcp_recv_cb(
     err: err_t,
 ) -> Result<(), LwipError> {
     let client: &mut mqtt_client_t = arg;
-    LWIP_ASSERT("mqtt_tcp_recv_cb: client != NULL", client != None);
-    LWIP_ASSERT("mqtt_tcp_recv_cb: client.conn == pcb", client.conn == pcb);
+    // LWIP_ASSERT("mqtt_tcp_recv_cb: client != NULL", client != None);
+    // LWIP_ASSERT("mqtt_tcp_recv_cb: client.conn == pcb", client.conn == pcb);
 
     if (p == None) {
         //    LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_tcp_recv_cb: Recv pbuf=NULL, remote has closed connection\n"));
@@ -1006,7 +1006,7 @@ pub fn mqtt_tcp_err_cb(arg: &mut Vec<u8>, err: err_t) {
     let client: &mut mqtt_client_t = arg;
     //  only used for debug output 
     //  LWIP_DEBUGF(MQTT_DEBUG_TRACE, ("mqtt_tcp_err_cb: TCP error callback: error %d, arg: %p\n", err, arg));
-    LWIP_ASSERT("mqtt_tcp_err_cb: client != NULL", client != None);
+    // LWIP_ASSERT("mqtt_tcp_err_cb: client != NULL", client != None);
     //  Set conn to null before calling close as pcb is already deallocated
     client.conn = 0;
     mqtt_close(client, MQTT_CONNECT_DISCONNECTED);
@@ -1102,9 +1102,9 @@ pub fn mqtt_publish(
     let topic_len: u16;
     let remaining_length: u16;
 
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mqtt_publish: client != NULL", client);
-    LWIP_ASSERT("mqtt_publish: topic != NULL", topic);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mqtt_publish: client != NULL", client);
+    // LWIP_ASSERT("mqtt_publish: topic != NULL", topic);
     // LWIP_ERROR(
         "mqtt_publish: TCP disconnected",
         (client.conn_state != TCP_DISCONNECTED),
@@ -1206,9 +1206,9 @@ pub fn mqtt_sub_unsub(
     let pkt_id: u16;
     let r: MqttRequest;
 
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mqtt_sub_unsub: client != NULL", client);
-    LWIP_ASSERT("mqtt_sub_unsub: topic != NULL", topic);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mqtt_sub_unsub: client != NULL", client);
+    // LWIP_ASSERT("mqtt_sub_unsub: topic != NULL", topic);
 
     topic_strlen = strlen(topic);
     // LWIP_ERROR(
@@ -1226,7 +1226,7 @@ pub fn mqtt_sub_unsub(
     );
     remaining_length = total_len;
 
-    LWIP_ASSERT("mqtt_sub_unsub: qos < 3", qos < 3);
+    // LWIP_ASSERT("mqtt_sub_unsub: qos < 3", qos < 3);
     if (client.conn_state == TCP_DISCONNECTED) {
         //    LWIP_DEBUGF(MQTT_DEBUG_WARN, ("mqtt_sub_unsub: Can not (un)subscribe in disconnected state\n"));
         return ERR_CONN;
@@ -1280,8 +1280,8 @@ pub fn mqtt_set_inpub_callback(
     data_cb: mqtt_incoming_data_cb_t,
     arg: &mut Vec<u8>,
 ) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mqtt_set_inpub_callback: client != NULL", client != None);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mqtt_set_inpub_callback: client != NULL", client != None);
     client.data_cb = data_cb;
     client.pub_cb = pub_cb;
     client.inpub_arg = arg;
@@ -1293,7 +1293,7 @@ pub fn mqtt_set_inpub_callback(
  * @return Pointer to instance on success, NULL otherwise
  */
 pub fn mqtt_client_new() -> mqtt_client_t {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     // return mem_calloc(1, sizeof(mqtt_client_t));
     return mqtt_client_t::new();
 }
@@ -1339,14 +1339,14 @@ pub fn mqtt_client_connect(
     let client_user_len: u16 = 0;
     let client_pass_len = 0;
 
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mqtt_client_connect: client != NULL", client != None);
-    LWIP_ASSERT("mqtt_client_connect: ip_addr != NULL", ip_addr != None);
-    LWIP_ASSERT(
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mqtt_client_connect: client != NULL", client != None);
+    // LWIP_ASSERT("mqtt_client_connect: ip_addr != NULL", ip_addr != None);
+    // LWIP_ASSERT(
         "mqtt_client_connect: client_info != NULL",
         client_info != None,
     );
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "mqtt_client_connect: client_info.client_id != NULL",
         client_info.client_id != None,
     );
@@ -1539,8 +1539,8 @@ pub fn mqtt_client_connect(
  * @param client MQTT client
  */
 pub fn mqtt_disconnect(client: &mut mqtt_client_t) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mqtt_disconnect: client != NULL", client);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mqtt_disconnect: client != NULL", client);
     //  If connection in not already closed 
     if (client.conn_state != TCP_DISCONNECTED) {
         //  Set conn_state before calling mqtt_close to prevent callback from being called 
@@ -1556,7 +1556,7 @@ pub fn mqtt_disconnect(client: &mut mqtt_client_t) {
  * @return 1 if connected to server, 0 otherwise
  */
 pub fn mqtt_client_is_connected(client: &mut mqtt_client_t) -> u8 {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mqtt_client_is_connected: client != NULL", client);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mqtt_client_is_connected: client != NULL", client);
     return client.conn_state == MQTT_CONNECTED;
 }

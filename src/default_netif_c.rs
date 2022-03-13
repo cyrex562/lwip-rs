@@ -46,10 +46,10 @@ static struct netif netif;
 void init_default_netif(const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw)
 #else
 #define NETIF_ADDRS
-void init_default_netif(void)
+void init_default_netif()
 
 {
-#if NO_SYS
+// #if NO_SYS
   netif_add(&netif, NETIF_ADDRS NULL, pcapif_init, netif_input);
 #else  /* NO_SYS */
   netif_add(&netif, NETIF_ADDRS NULL, pcapif_init, tcpip_input);
@@ -58,7 +58,7 @@ void init_default_netif(void)
 }
 
 void
-default_netif_poll(void)
+default_netif_poll()
 {
 #if !PCAPIF_RX_USE_THREAD
   /* check for packets and link status*/
@@ -73,7 +73,7 @@ default_netif_poll(void)
 }
 
 void
-default_netif_shutdown(void)
+default_netif_shutdown()
 {
   /* release the pcap library... */
   pcapif_shutdown(&netif);

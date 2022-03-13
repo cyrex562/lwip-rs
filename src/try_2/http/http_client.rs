@@ -437,7 +437,7 @@ pub fn httpc_get_internal_addr(
     ipaddr: &mut LwipAddr,
 ) -> Result<(), LwipError> {
     let err: err_t;
-    LWIP_ASSERT("req != NULL", req != None);
+    // LWIP_ASSERT("req != NULL", req != None);
 
     if (&req.remote_addr != ipaddr) {
         //  fill in remote addr if called externally 
@@ -486,7 +486,7 @@ pub fn httpc_get_internal_dns(
     server_name: &mut String,
 ) -> Result<(), LwipError> {
     let err: err_t;
-    LWIP_ASSERT("req != NULL", req != None);
+    // LWIP_ASSERT("req != NULL", req != None);
 
     err = dns_gethostbyname(server_name, &req.remote_addr, httpc_dns_found, req);
 
@@ -511,7 +511,7 @@ pub fn httpc_create_request_string(
     buffer_size: usize,
 ) {
     if (settings.use_proxy) {
-        LWIP_ASSERT("server_name != NULL", server_name != None);
+        // LWIP_ASSERT("server_name != NULL", server_name != None);
         if (server_port != HTTP_DEFAULT_PORT) {
             return snprintf(
                 buffer,
@@ -526,7 +526,7 @@ pub fn httpc_create_request_string(
             );
         }
     } else if (use_host) {
-        LWIP_ASSERT("server_name != NULL", server_name != None);
+        // LWIP_ASSERT("server_name != NULL", server_name != None);
         return snprintf(
             buffer,
             buffer_size,
@@ -558,7 +558,7 @@ pub fn httpc_init_connection_common(
     let server_name_len: usize;
     let uri_len: usize;
 
-    LWIP_ASSERT("uri != NULL", uri != None);
+    // LWIP_ASSERT("uri != NULL", uri != None);
 
     //  get request len 
     req_len =
@@ -906,7 +906,7 @@ pub fn httpc_fs_tcp_recv(
     let filestate: &mut httpc_filestate_t = arg;
     let q: &mut PacketBuffer;
 
-    LWIP_ASSERT("p != NULL", p != None);
+    // LWIP_ASSERT("p != NULL", p != None);
 
     // for (q = p; q != None; q = q.next) {
     //   fwrite(q.payload, 1, q.len, filestate.file);

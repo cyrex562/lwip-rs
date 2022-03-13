@@ -41,7 +41,7 @@ static struct netif *old_netif_list;
 static struct netif *old_netif_default;
 
 static void
-mqtt_setup(void)
+mqtt_setup()
 {
   old_netif_list = netif_list;
   old_netif_default = netif_default;
@@ -51,7 +51,7 @@ mqtt_setup(void)
 }
 
 static void
-mqtt_teardown(void)
+mqtt_teardown()
 {
   netif_list = NULL;
   netif_default = NULL;
@@ -106,7 +106,7 @@ START_TEST(basic_connect)
 }
 END_TEST
 
-Suite* mqtt_suite(void)
+Suite* mqtt_suite()
 {
   testfunc tests[] = {
     TESTFUNC(basic_connect),

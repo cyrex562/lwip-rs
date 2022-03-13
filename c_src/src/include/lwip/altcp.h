@@ -42,7 +42,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/tcpbase.h"
 // #include "lwip/err.h"
@@ -76,7 +76,7 @@ struct altcp_pcb {
   altcp_sent_fn       sent;
   altcp_poll_fn       poll;
   altcp_err_fn        err;
-  u8_t pollinterval;
+  pollinterval: u8;
 };
 
 /** @ingroup altcp
@@ -129,7 +129,7 @@ err_t altcp_get_tcp_addrinfo(struct altcp_pcb *conn, int local, ip_addr_t *addr,
 ip_addr_t *altcp_get_ip(struct altcp_pcb *conn, int local);
 u16_t altcp_get_port(struct altcp_pcb *conn, int local);
 
-#if LWIP_TCP_KEEPALIVE
+// #if LWIP_TCP_KEEPALIVE
 void  altcp_keepalive_disable(struct altcp_pcb *conn);
 void  altcp_keepalive_enable(struct altcp_pcb *conn, u32_t idle, u32_t intvl, u32_t count);
 

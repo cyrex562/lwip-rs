@@ -45,10 +45,10 @@ static struct netif netif;
 void init_default_netif(const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw)
 #else
 #define NETIF_ADDRS
-void init_default_netif(void)
+void init_default_netif()
 
 {
-#if NO_SYS
+// #if NO_SYS
 netif_add(&netif, NETIF_ADDRS NULL, tapif_init, netif_input);
 #else
   netif_add(&netif, NETIF_ADDRS NULL, tapif_init, tcpip_input);
@@ -57,12 +57,12 @@ netif_add(&netif, NETIF_ADDRS NULL, tapif_init, netif_input);
 }
 
 void
-default_netif_poll(void)
+default_netif_poll()
 {
   tapif_poll(&netif);
 }
 
 void
-default_netif_shutdown(void)
+default_netif_shutdown()
 {
 }

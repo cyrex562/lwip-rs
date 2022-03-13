@@ -41,10 +41,10 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 
-#if LWIP_SOCKET_EXTERNAL_HEADERS
-#include LWIP_SOCKET_EXTERNAL_HEADER_SOCKETS_H
+// #if LWIP_SOCKET_EXTERNAL_HEADERS
+
 #else /* LWIP_SOCKET_EXTERNAL_HEADERS */
 
 // #include "lwip/ip_addr.h"
@@ -62,18 +62,18 @@
 pub const LWIP_SOCKET_HAVE_SA_LEN: u32 = 1; /* If your port already typedef's sa_family_t, define SA_FAMILY_T_DEFINED
    to prevent this code from redefining it. */
 #if !defined(sa_family_t) && !defined(SA_FAMILY_T_DEFINED)
-typedef u8_t sa_family_t;
+typedef sa_family_t: u8;
 
 your port already typedef's in_port_t, define IN_PORT_T_DEFINED
    to prevent this code from redefining it. */
 #if !defined(in_port_t) && !defined(IN_PORT_T_DEFINED)
-typedef u16_t in_port_t;
+typedef in_port_t: u16;
 
 
 
 /* members are in network byte order */
 struct sockaddr_in {
-  u8_t            sin_len;
+  sin_len: u8;
   sa_family_t     sin_family;
   in_port_t       sin_port;
   struct in_addr  sin_addr;
@@ -83,7 +83,7 @@ pub const SIN_ZERO_LEN: u32 = 8; char            sin_zero[SIN_ZERO_LEN];
 
 
 struct sockaddr_in6 {
-  u8_t            sin6_len;      /* length of this structure    */
+  sin6_len: u8;      /* length of this structure    */
   sa_family_t     sin6_family;   /* AF_INET6                    */
   in_port_t       sin6_port;     /* Transport layer port #      */
   u32_t           sin6_flowinfo; /* IPv6 flow information       */
@@ -93,13 +93,13 @@ struct sockaddr_in6 {
  /* LWIP_IPV6 */
 
 struct sockaddr {
-  u8_t        sa_len;
+  sa_len: u8;
   sa_family_t sa_family;
   char        sa_data[14];
 };
 
 struct sockaddr_storage {
-  u8_t        s2_len;
+  s2_len: u8;
   sa_family_t ss_family;
   char        s2_data1[2];
   u32_t       s2_data2[3];
@@ -281,7 +281,7 @@ pub const IPV6_CHECKSUM: u32 = 7; /* RFC3542: calculate and insert the ICMPv6 ch
 pub const IPV6_V6ONLY: u32 = 27; /* RFC3493: boolean control to restrict AF_INET6 sockets to IPv6 communications only. */
  /* LWIP_IPV6 */
 
-#if LWIP_UDP && LWIP_UDPLITE
+// #if LWIP_UDP && LWIP_UDPLITE
 /*
  * Options for level IPPROTO_UDPLITE
  */
@@ -290,14 +290,14 @@ pub const UDPLITE_RECV_CSCOV: u32 = 0x02; /* minimal receiver checksum coverage 
  /* LWIP_UDP && LWIP_UDPLITE*/
 
 
-#if LWIP_MULTICAST_TX_OPTIONS
+// #if LWIP_MULTICAST_TX_OPTIONS
 /*
  * Options and types for UDP multicast traffic handling
  */
 pub const IP_MULTICAST_TTL: u32 = 5; #define IP_MULTICAST_IF    6
 pub const IP_MULTICAST_LOOP: u32 = 7; /* LWIP_MULTICAST_TX_OPTIONS */
 
-#if LWIP_IGMP
+// #if LWIP_IGMP
 /*
  * Options and types related to multicast membership
  */
@@ -497,10 +497,10 @@ struct timeval {
 
 
 e lwip_socket_init() /* Compatibility define, no init needed. */
-void lwip_socket_thread_init(void); /* LWIP_NETCONN_SEM_PER_THREAD==1: initialize thread-local semaphore */
-void lwip_socket_thread_cleanup(void); /* LWIP_NETCONN_SEM_PER_THREAD==1: destroy thread-local semaphore */
+void lwip_socket_thread_init(); /* LWIP_NETCONN_SEM_PER_THREAD==1: initialize thread-local semaphore */
+void lwip_socket_thread_cleanup(); /* LWIP_NETCONN_SEM_PER_THREAD==1: destroy thread-local semaphore */
 
-#if LWIP_COMPAT_SOCKETS == 2
+// #if LWIP_COMPAT_SOCKETS == 2
 /* This helps code parsers/code completion by not having the COMPAT functions as defines */
 #define lwip_accept       accept
 #define lwip_bind         bind
@@ -519,17 +519,17 @@ void lwip_socket_thread_cleanup(void); /* LWIP_NETCONN_SEM_PER_THREAD==1: destro
 #define lwip_sendmsg      sendmsg
 #define lwip_sendto       sendto
 #define lwip_socket       socket
-#if LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET_SELECT
 #define lwip_select       select
 
-#if LWIP_SOCKET_POLL
+// #if LWIP_SOCKET_POLL
 e lwip_poll         poll
 
 #define lwip_ioctl        ioctlsocket
 e lwip_inet_ntop    inet_ntop
 #define lwip_inet_pton    inet_pton
 
-#if LWIP_POSIX_SOCKETS_IO_NAMES
+// #if LWIP_POSIX_SOCKETS_IO_NAMES
 #define lwip_read         read
 #define lwip_readv        readv
 #define lwip_write        write
@@ -567,11 +567,11 @@ ssize_t lwip_sendto(int s, const void *dataptr, size_t size, int flags,
 int lwip_socket(int domain, int type, int protocol);
 ssize_t lwip_write(int s, const void *dataptr, size_t size);
 ssize_t lwip_writev(int s, const struct iovec *iov, int iovcnt);
-#if LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET_SELECT
 int lwip_select(int maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset,
                 struct timeval *timeout);
 
-#if LWIP_SOCKET_POLL
+// #if LWIP_SOCKET_POLL
 ip_poll(struct pollfd *fds, nfds_t nfds, int timeout);
 
 int lwip_ioctl(int s, long cmd, void *argp);
@@ -579,8 +579,8 @@ ip_fcntl(int s, int cmd, int val);
 const char *lwip_inet_ntop(int af, const void *src, char *dst, socklen_t size);
 int lwip_inet_pton(int af, const char *src, void *dst);
 
-#if LWIP_COMPAT_SOCKETS
-#if LWIP_COMPAT_SOCKETS != 2
+// #if LWIP_COMPAT_SOCKETS
+// #if LWIP_COMPAT_SOCKETS != 2
 /** @ingroup socket */
 #define accept(s,addr,addrlen)                    lwip_accept(s,addr,addrlen)
 /** @ingroup socket */
@@ -615,11 +615,11 @@ int lwip_inet_pton(int af, const char *src, void *dst);
 #define sendto(s,dataptr,size,flags,to,tolen)     lwip_sendto(s,dataptr,size,flags,to,tolen)
 /** @ingroup socket */
 #define socket(domain,type,protocol)              lwip_socket(domain,type,protocol)
-#if LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET_SELECT
 /** @ingroup socket */
 #define select(maxfdp1,readset,writeset,exceptset,timeout)     lwip_select(maxfdp1,readset,writeset,exceptset,timeout)
 
-#if LWIP_SOCKET_POLL
+// #if LWIP_SOCKET_POLL
 ngroup socket */
 #define poll(fds,nfds,timeout)                    lwip_poll(fds,nfds,timeout)
 
@@ -630,7 +630,7 @@ e ioctlsocket(s,cmd,argp)                   lwip_ioctl(s,cmd,argp)
 /** @ingroup socket */
 #define inet_pton(af,src,dst)                     lwip_inet_pton(af,src,dst)
 
-#if LWIP_POSIX_SOCKETS_IO_NAMES
+// #if LWIP_POSIX_SOCKETS_IO_NAMES
 /** @ingroup socket */
 #define read(s,mem,len)                           lwip_read(s,mem,len)
 /** @ingroup socket */

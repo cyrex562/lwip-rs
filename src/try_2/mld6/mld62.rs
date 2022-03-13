@@ -292,7 +292,7 @@ pub fn mld6_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
 pub fn mld6_joingroup(srcaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) -> Result<(), LwipErr> {
     let netif: &mut NetIfc;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  loop through netif's 
     // NETIF_FOREACH(netif) {
@@ -332,7 +332,7 @@ pub fn mld6_joingroup_netif(netif: &mut NetIfc, groupaddr: &mut ip6_addr_t) {
     }
     IP6_ADDR_ZONECHECK_NETIF(groupaddr, netif);
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  find group or create a new one if not found 
     group = mld6_lookfor_group(netif, groupaddr);
@@ -378,7 +378,7 @@ pub fn mld6_leavegroup(
 ) -> Result<(), LwipError> {
     let netif: &mut NetIfc;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  loop through netif's 
     // NETIF_FOREACH(netif) {
@@ -416,7 +416,7 @@ pub fn mld6_leavegroup_netif(netif: &mut NetIfc, groupaddr: &mut ip6_addr_t) {
     }
     IP6_ADDR_ZONECHECK_NETIF(groupaddr, netif);
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  find group 
     group = mld6_lookfor_group(netif, groupaddr);

@@ -98,14 +98,14 @@ int ppp_vslprintf(char *buf, int buflen, const char *fmt, va_list args) {
     char *str, *buf0;
     const unsigned char *p;
     char num[32];
-#if 0 /* need port */
+// #if 0 /* need port */
     time_t t;
-#endif /* need port */
+// #endif /* need port */
     u32_t ip;
     static char hexchars[] = "0123456789abcdef";
-#if PRINTPKT_SUPPORT
+// #if PRINTPKT_SUPPORT
     struct buffer_info bufinfo;
-#endif /* PRINTPKT_SUPPORT */
+// #endif /* PRINTPKT_SUPPORT */
 
     buf0 = buf;
     --buflen;
@@ -202,13 +202,13 @@ int ppp_vslprintf(char *buf, int buflen, const char *fmt, va_list args) {
 	    val = va_arg(args, unsigned int);
 	    base = 16;
 	    break;
-#if 0 /* unused (and wrong on LLP64 systems) */
+// #if 0 /* unused (and wrong on LLP64 systems) */
 	case 'p':
 	    val = (unsigned long) va_arg(args, void *);
 	    base = 16;
 	    neg = 2;
 	    break;
-#endif /* unused (and wrong on LLP64 systems) */
+// #endif /* unused (and wrong on LLP64 systems) */
 	case 's':
 	    str = va_arg(args, char *);
 	    break;
@@ -217,11 +217,11 @@ int ppp_vslprintf(char *buf, int buflen, const char *fmt, va_list args) {
 	    num[1] = 0;
 	    str = num;
 	    break;
-#if 0 /* do we always have strerror() in embedded ? */
+// #if 0 /* do we always have strerror() in embedded ? */
 	case 'm':
 	    str = strerror(errno);
 	    break;
-#endif /* do we always have strerror() in embedded ? */
+// #endif /* do we always have strerror() in embedded ? */
 	case 'I':
 	    ip = va_arg(args, u32_t);
 	    ip = lwip_ntohl(ip);
@@ -229,14 +229,14 @@ int ppp_vslprintf(char *buf, int buflen, const char *fmt, va_list args) {
 		     (ip >> 16) & 0xff, (ip >> 8) & 0xff, ip & 0xff);
 	    str = num;
 	    break;
-#if 0 /* need port */
+// #if 0 /* need port */
 	case 't':
 	    time(&t);
 	    str = ctime(&t);
 	    str += 4;		/* chop off the day name */
 	    str[15] = 0;	/* chop off year and newline */
 	    break;
-#endif /* need port */
+// #endif /* need port */
 	case 'v':		/* "visible" string */
 	case 'q':		/* quoted string */
 	    quoted = c == 'q';
@@ -285,7 +285,7 @@ int ppp_vslprintf(char *buf, int buflen, const char *fmt, va_list args) {
 		    OUTCHAR(c);
 	    }
 	    continue;
-#if PRINTPKT_SUPPORT
+// #if PRINTPKT_SUPPORT
 	case 'P':		/* print PPP packet */
 	    bufinfo.ptr = buf;
 	    bufinfo.len = buflen + 1;
@@ -295,7 +295,7 @@ int ppp_vslprintf(char *buf, int buflen, const char *fmt, va_list args) {
 	    buf = bufinfo.ptr;
 	    buflen = bufinfo.len - 1;
 	    continue;
-#endif /* PRINTPKT_SUPPORT */
+// #endif /* PRINTPKT_SUPPORT */
 	case 'B':
 	    p = va_arg(args, unsigned char *);
 	    for (n = prec; n > 0; --n) {
@@ -358,7 +358,7 @@ int ppp_vslprintf(char *buf, int buflen, const char *fmt, va_list args) {
     return buf - buf0;
 }
 
-#if PRINTPKT_SUPPORT
+// #if PRINTPKT_SUPPORT
 /*
  * vslp_printer - used in processing a %P format
  */
@@ -369,15 +369,15 @@ static void ppp_vslp_printer(void *arg, const char *fmt, ...) {
 
     va_start(pvar, fmt);
     bi = (struct buffer_info *) arg;
-    n = ppp_vslprintf(bi->ptr, bi->len, fmt, pvar);
+    n = ppp_vslprintf( bi.ptr,  bi.len, fmt, pvar);
     va_end(pvar);
 
-    bi->ptr += n;
-    bi->len -= n;
+     bi.ptr += n;
+     bi.len -= n;
 }
-#endif /* PRINTPKT_SUPPORT */
+// #endif /* PRINTPKT_SUPPORT */
 
-#if 0 /* UNUSED */
+// #if 0 /* UNUSED */
 /*
  * log_packet - format a packet and log it.
  */
@@ -393,9 +393,9 @@ log_packet(p, len, prefix, level)
 	ppp_format_packet(p, len, pr_log, &level);
 	end_pr_log();
 }
-#endif /* UNUSED */
+// #endif /* UNUSED */
 
-#if PRINTPKT_SUPPORT
+// #if PRINTPKT_SUPPORT
 /*
  * ppp_format_packet - make a readable representation of a packet,
  * calling `printer(arg, format, ...)' to output it.
@@ -410,20 +410,20 @@ static void ppp_format_packet(const u_char *p, int len,
 	GETSHORT(proto, p);
 	len -= 2;
 	for (i = 0; (protp = protocols[i]) != NULL; ++i)
-	    if (proto == protp->protocol)
+	    if (proto ==  protp.protocol)
 		break;
 	if (protp != NULL) {
-	    printer(arg, "[%s", protp->name);
-	    n = (*protp->printpkt)(p, len, printer, arg);
+	    printer(arg, "[%s",  protp.name);
+	    n = (* protp.printpkt)(p, len, printer, arg);
 	    printer(arg, "]");
 	    p += n;
 	    len -= n;
 	} else {
 	    for (i = 0; (protp = protocols[i]) != NULL; ++i)
-		if (proto == (protp->protocol & ~0x8000))
+		if (proto == ( protp.protocol & ~0x8000))
 		    break;
-	    if (protp != 0 && protp->data_name != 0) {
-		printer(arg, "[%s data]", protp->data_name);
+	    if (protp != 0 &&  protp.data_name != 0) {
+		printer(arg, "[%s data]",  protp.data_name);
 		if (len > 8)
 		    printer(arg, "%.8B ...", p);
 		else
@@ -439,9 +439,9 @@ static void ppp_format_packet(const u_char *p, int len,
     else
 	printer(arg, "%.*B", len, p);
 }
-#endif /* PRINTPKT_SUPPORT */
+// #endif /* PRINTPKT_SUPPORT */
 
-#if 0 /* UNUSED */
+// #if 0 /* UNUSED */
 /*
  * init_pr_log, end_pr_log - initialize and finish use of pr_log.
  */
@@ -520,7 +520,7 @@ pr_log (void *arg, const char *fmt, ...)
 		linep = line + l;
 	}
 }
-#endif /* UNUSED */
+// #endif /* UNUSED */
 
 /*
  * ppp_print_string - print a readable representation of a string using
@@ -570,7 +570,7 @@ static void ppp_log_write(int level, char *buf) {
     LWIP_UNUSED_ARG(level); /* necessary if PPPDEBUG is defined to an empty function */
     LWIP_UNUSED_ARG(buf);
     PPPDEBUG(level, ("%s\n", buf) );
-#if 0
+// #if 0
     if (log_to_fd >= 0 && (level != LOG_DEBUG || debug)) {
 	int n = strlen(buf);
 
@@ -580,7 +580,7 @@ static void ppp_log_write(int level, char *buf) {
 	    || write(log_to_fd, "\n", 1) != 1)
 	    log_to_fd = -1;
     }
-#endif
+// #endif
 }
 
 /*
@@ -593,7 +593,7 @@ void ppp_fatal_impl(const char *fmt, ...) {
     ppp_logit(LOG_ERR, fmt, pvar);
     va_end(pvar);
 
-    LWIP_ASSERT("ppp_fatal", 0);   /* as promised */
+    // LWIP_ASSERT("ppp_fatal", 0);   /* as promised */
 }
 
 /*
@@ -605,9 +605,9 @@ void ppp_error_impl(const char *fmt, ...) {
     va_start(pvar, fmt);
     ppp_logit(LOG_ERR, fmt, pvar);
     va_end(pvar);
-#if 0 /* UNUSED */
+// #if 0 /* UNUSED */
     ++error_count;
-#endif /* UNUSED */
+// #endif /* UNUSED */
 }
 
 /*
@@ -654,7 +654,7 @@ void ppp_dbglog_impl(const char *fmt, ...) {
     va_end(pvar);
 }
 
-#if PRINTPKT_SUPPORT
+// #if PRINTPKT_SUPPORT
 /*
  * ppp_dump_packet - print out a packet in readable form if it is interesting.
  * Assumes len >= PPP_HDRLEN.
@@ -672,7 +672,7 @@ void ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, int len) {
     /*
      * don't print valid LCP echo request/reply packets if the link is up.
      */
-    if (proto == PPP_LCP && pcb->phase == PPP_PHASE_RUNNING && len >= 2 + HEADERLEN) {
+    if (proto == PPP_LCP &&  pcb.phase == PPP_PHASE_RUNNING && len >= 2 + HEADERLEN) {
 	unsigned char *lcp = p + 2;
 	int l = (lcp[2] << 8) + lcp[3];
 
@@ -683,9 +683,9 @@ void ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, int len) {
 
     ppp_dbglog(("%s %P", tag, p, len));
 }
-#endif /* PRINTPKT_SUPPORT */
+// #endif /* PRINTPKT_SUPPORT */
 
-#if 0 /* Unused */
+// #if 0 /* Unused */
 
 /*
  * complete_read - read a full `count' bytes from fd,
@@ -722,9 +722,9 @@ complete_read(int fd, void *buf, size_t count)
 #define LOCK_DIR	"/var/spool/locks"
 #else
 #define LOCK_DIR	"/var/spool/lock"
-#endif
-#endif
-#endif /* LOCK_DIR */
+// #endif
+// #endif
+// #endif /* LOCK_DIR */
 
 static char lock_file[MAXPATHLEN];
 
@@ -786,7 +786,7 @@ lock(dev)
 	    dev = p + 1;
 
     ppp_slprintf(lock_file, sizeof(lock_file), "%s/LCK..%s", LOCK_DIR, dev);
-#endif
+// #endif
 
     while ((fd = open(lock_file, O_EXCL | O_CREAT | O_RDWR, 0644)) < 0) {
 	if (errno != EEXIST) {
@@ -806,7 +806,7 @@ lock(dev)
 	n = read(fd, lock_buffer, 11);
 #else
 	n = read(fd, &pid, sizeof(pid));
-#endif /* LOCK_BINARY */
+// #endif /* LOCK_BINARY */
 	close(fd);
 	fd = -1;
 	if (n <= 0) {
@@ -818,7 +818,7 @@ lock(dev)
 #ifndef LOCK_BINARY
 	lock_buffer[n] = 0;
 	pid = atoi(lock_buffer);
-#endif /* LOCK_BINARY */
+// #endif /* LOCK_BINARY */
 	if (pid == getpid())
 	    return 1;		/* somebody else locked it for us */
 	if (pid == 0
@@ -844,11 +844,11 @@ lock(dev)
     write (fd, lock_buffer, 11);
 #else
     write(fd, &pid, sizeof (pid));
-#endif
+// #endif
     close(fd);
     return 0;
 
-#endif
+// #endif
 }
 
 /*
@@ -886,11 +886,11 @@ relock(pid)
     write (fd, lock_buffer, 11);
 #else
     write(fd, &pid, sizeof(pid));
-#endif /* LOCK_BINARY */
+// #endif /* LOCK_BINARY */
     close(fd);
     return 0;
 
-#endif /* LOCKLIB */
+// #endif /* LOCKLIB */
 }
 
 /*
@@ -901,14 +901,14 @@ unlock()
 {
     if (lock_file[0]) {
 #ifdef LOCKLIB
-	(void) rmlock(lock_file, (void *) 0);
+	() rmlock(lock_file, (void *) 0);
 #else
 	unlink(lock_file);
-#endif
+// #endif
 	lock_file[0] = 0;
     }
 }
 
-#endif /* Unused */
+// #endif /* Unused */
 
-#endif /* PPP_SUPPORT */
+// #endif /* PPP_SUPPORT */

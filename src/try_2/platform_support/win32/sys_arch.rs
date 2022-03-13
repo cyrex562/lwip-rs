@@ -84,7 +84,7 @@ sys_win_rand: u32()
   if (CryptGenRandom(hcrypt, sizeof(ret), &ret)) {
     return ret;
   }
-  LWIP_ASSERT("CryptGenRandom failed", 0);
+  // LWIP_ASSERT("CryptGenRandom failed", 0);
   return 0;
 }
 
@@ -99,7 +99,7 @@ sys_win_rand_init()
       err = GetLastError();
       snprintf(errbuf, sizeof(errbuf), "CryptAcquireContext failed with error %d", err);
       
-      LWIP_ASSERT(errbuf, 0);
+      // LWIP_ASSERT(errbuf, 0);
     }
   }
 }
@@ -118,7 +118,7 @@ pub fn sys_get_ms_longlong()
 
   if (!SYS_INITIALIZED()) {
     sys_init();
-    LWIP_ASSERT("initialization failed", SYS_INITIALIZED());
+    // LWIP_ASSERT("initialization failed", SYS_INITIALIZED());
   }
 
   QueryPerformanceCounter(&now);
@@ -153,12 +153,12 @@ sys_arch_protect()
 
   if (!SYS_INITIALIZED()) {
     sys_init();
-    LWIP_ASSERT("initialization failed", SYS_INITIALIZED());
+    // LWIP_ASSERT("initialization failed", SYS_INITIALIZED());
   }
 
   EnterCriticalSection(&critSec);
 
-  LWIP_ASSERT("nested SYS_ARCH_PROTECT", protection_depth == 0);
+  // LWIP_ASSERT("nested SYS_ARCH_PROTECT", protection_depth == 0);
 
 
   protection_depth+= 1;
@@ -171,9 +171,9 @@ sys_arch_unprotect(pval: sys_prot_t)
 {
   
 
-  LWIP_ASSERT("missing SYS_ARCH_PROTECT", protection_depth == 1);
+  // LWIP_ASSERT("missing SYS_ARCH_PROTECT", protection_depth == 1);
 
-  LWIP_ASSERT("missing SYS_ARCH_PROTECT", protection_depth > 0);
+  // LWIP_ASSERT("missing SYS_ARCH_PROTECT", protection_depth > 0);
 
 
   protection_depth -= 1;
@@ -189,7 +189,7 @@ pub fn
 sys_arch_check_not_protected()
 {
   sys_arch_protect();
-  LWIP_ASSERT("SYS_ARCH_PROTECT before scheduling", protection_depth == 1);
+  // LWIP_ASSERT("SYS_ARCH_PROTECT before scheduling", protection_depth == 1);
   sys_arch_unprotect(0);
 }
 
@@ -203,7 +203,7 @@ msvc_sys_init()
   sys_init_timing();
   InitSysArchProtect();
   netconn_sem_tls_index = TlsAlloc();
-  LWIP_ASSERT("TlsAlloc failed", netconn_sem_tls_index != TLS_OUT_OF_INDEXES);
+  // LWIP_ASSERT("TlsAlloc failed", netconn_sem_tls_index != TLS_OUT_OF_INDEXES);
 }
 
 pub fn 
@@ -228,10 +228,10 @@ sys_sem_new(sys_sem_t *sem, count: u8)
 {
   HANDLE new_sem = None;
 
-  LWIP_ASSERT("sem != NULL", sem != None);
+  // LWIP_ASSERT("sem != NULL", sem != None);
 
   new_sem = CreateSemaphore(0, count, 100000, 0);
-  LWIP_ASSERT("Error creating semaphore", new_sem != None);
+  // LWIP_ASSERT("Error creating semaphore", new_sem != None);
   if(new_sem != None) {
     if (SYS_INITIALIZED()) {
       SYS_ARCH_LOCKED(SYS_STATS_INC_USED(sem));
@@ -239,7 +239,7 @@ sys_sem_new(sys_sem_t *sem, count: u8)
       SYS_STATS_INC_USED(sem);
     }
 
-    LWIP_ASSERT("sys_sem_new() counter overflow", lwip_stats.sys.sem.used != 0);
+    // LWIP_ASSERT("sys_sem_new() counter overflow", lwip_stats.sys.sem.used != 0);
 
     sem.sem = new_sem;
    return Ok(());
@@ -259,14 +259,14 @@ pub fn
 sys_sem_free(sys_sem_t *sem)
 {
   //  parameter check 
-  LWIP_ASSERT("sem != NULL", sem != None);
-  LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
-  LWIP_ASSERT("sem.sem != INVALID_HANDLE_VALUE", sem.sem != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("sem != NULL", sem != None);
+  // LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
+  // LWIP_ASSERT("sem.sem != INVALID_HANDLE_VALUE", sem.sem != INVALID_HANDLE_VALUE);
   CloseHandle(sem.sem);
 
   SYS_ARCH_LOCKED(SYS_STATS_DEC(sem.used));
 
-  LWIP_ASSERT("sys_sem_free() closed more than created", lwip_stats.sys.sem.used != -1);
+  // LWIP_ASSERT("sys_sem_free() closed more than created", lwip_stats.sys.sem.used != -1);
 
   sem.sem = None;
 }
@@ -275,21 +275,21 @@ sys_arch_sem_wait: u32(sys_sem_t *sem, timeout: u32)
 {
   DWORD ret;
   LONGLONG starttime, endtime;
-  LWIP_ASSERT("sem != NULL", sem != None);
-  LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
-  LWIP_ASSERT("sem.sem != INVALID_HANDLE_VALUE", sem.sem != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("sem != NULL", sem != None);
+  // LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
+  // LWIP_ASSERT("sem.sem != INVALID_HANDLE_VALUE", sem.sem != INVALID_HANDLE_VALUE);
   if (!timeout) {
     //  wait infinite 
     starttime = sys_get_ms_longlong();
     ret = WaitForSingleObject(sem.sem, INFINITE);
-    LWIP_ASSERT("Error waiting for semaphore", ret == WAIT_OBJECT_0);
+    // LWIP_ASSERT("Error waiting for semaphore", ret == WAIT_OBJECT_0);
     endtime = sys_get_ms_longlong();
     //  return the time we waited for the sem 
     return (endtime - starttime);
   } else {
     starttime = sys_get_ms_longlong();
     ret = WaitForSingleObject(sem.sem, timeout);
-    LWIP_ASSERT("Error waiting for semaphore", (ret == WAIT_OBJECT_0) || (ret == WAIT_TIMEOUT));
+    // LWIP_ASSERT("Error waiting for semaphore", (ret == WAIT_OBJECT_0) || (ret == WAIT_TIMEOUT));
     if (ret == WAIT_OBJECT_0) {
       endtime = sys_get_ms_longlong();
       //  return the time we waited for the sem 
@@ -306,11 +306,11 @@ sys_sem_signal(sys_sem_t *sem)
 {
   BOOL ret;
   sys_arch_check_not_protected();
-  LWIP_ASSERT("sem != NULL", sem != None);
-  LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
-  LWIP_ASSERT("sem.sem != INVALID_HANDLE_VALUE", sem.sem != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("sem != NULL", sem != None);
+  // LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
+  // LWIP_ASSERT("sem.sem != INVALID_HANDLE_VALUE", sem.sem != INVALID_HANDLE_VALUE);
   ret = ReleaseSemaphore(sem.sem, 1, None);
-  LWIP_ASSERT("Error releasing semaphore", ret != 0);
+  // LWIP_ASSERT("Error releasing semaphore", ret != 0);
   
 }
 
@@ -319,14 +319,14 @@ sys_mutex_new(sys_mutex_t *mutex)
 {
   HANDLE new_mut = None;
 
-  LWIP_ASSERT("mutex != NULL", mutex != None);
+  // LWIP_ASSERT("mutex != NULL", mutex != None);
 
   new_mut = CreateMutex(None, FALSE, None);
-  LWIP_ASSERT("Error creating mutex", new_mut != None);
+  // LWIP_ASSERT("Error creating mutex", new_mut != None);
   if (new_mut != None) {
     SYS_ARCH_LOCKED(SYS_STATS_INC_USED(mutex));
 
-    LWIP_ASSERT("sys_mutex_new() counter overflow", lwip_stats.sys.mutex.used != 0);
+    // LWIP_ASSERT("sys_mutex_new() counter overflow", lwip_stats.sys.mutex.used != 0);
 
     mutex.mut = new_mut;
    return Ok(());
@@ -342,14 +342,14 @@ pub fn
 sys_mutex_free(sys_mutex_t *mutex)
 {
   //  parameter check 
-  LWIP_ASSERT("mutex != NULL", mutex != None);
-  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
-  LWIP_ASSERT("mutex.mut != INVALID_HANDLE_VALUE", mutex.mut != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("mutex != NULL", mutex != None);
+  // LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
+  // LWIP_ASSERT("mutex.mut != INVALID_HANDLE_VALUE", mutex.mut != INVALID_HANDLE_VALUE);
   CloseHandle(mutex.mut);
 
   SYS_ARCH_LOCKED(SYS_STATS_DEC(mutex.used));
 
-  LWIP_ASSERT("sys_mutex_free() closed more than created", lwip_stats.sys.mutex.used != -1);
+  // LWIP_ASSERT("sys_mutex_free() closed more than created", lwip_stats.sys.mutex.used != -1);
 
   mutex.mut = None;
 }
@@ -357,12 +357,12 @@ sys_mutex_free(sys_mutex_t *mutex)
 pub fn  sys_mutex_lock(sys_mutex_t *mutex)
 {
   DWORD ret;
-  LWIP_ASSERT("mutex != NULL", mutex != None);
-  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
-  LWIP_ASSERT("mutex.mut != INVALID_HANDLE_VALUE", mutex.mut != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("mutex != NULL", mutex != None);
+  // LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
+  // LWIP_ASSERT("mutex.mut != INVALID_HANDLE_VALUE", mutex.mut != INVALID_HANDLE_VALUE);
   //  wait infinite 
   ret = WaitForSingleObject(mutex.mut, INFINITE);
-  LWIP_ASSERT("Error waiting for mutex", ret == WAIT_OBJECT_0);
+  // LWIP_ASSERT("Error waiting for mutex", ret == WAIT_OBJECT_0);
   
 }
 
@@ -370,12 +370,12 @@ pub fn
 sys_mutex_unlock(sys_mutex_t *mutex)
 {
   sys_arch_check_not_protected();
-  LWIP_ASSERT("mutex != NULL", mutex != None);
-  LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
-  LWIP_ASSERT("mutex.mut != INVALID_HANDLE_VALUE", mutex.mut != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("mutex != NULL", mutex != None);
+  // LWIP_ASSERT("mutex.mut != NULL", mutex.mut != None);
+  // LWIP_ASSERT("mutex.mut != INVALID_HANDLE_VALUE", mutex.mut != INVALID_HANDLE_VALUE);
   //  wait infinite 
   if (!ReleaseMutex(mutex.mut)) {
-    LWIP_ASSERT("Error releasing mutex", 0);
+    // LWIP_ASSERT("Error releasing mutex", 0);
   }
 }
 
@@ -441,7 +441,7 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
   
 
   new_thread = (struct threadlist*)malloc(sizeof(threadlist));
-  LWIP_ASSERT("new_thread != NULL", new_thread != None);
+  // LWIP_ASSERT("new_thread != NULL", new_thread != None);
   if (new_thread != None) {
     new_thread.function = function;
     new_thread.arg = arg;
@@ -450,8 +450,8 @@ sys_thread_new(name: &String, lwip_thread_fn function, arg: &mut Vec<u8>, stacks
     lwip_win32_threads = new_thread;
 
     h = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)sys_thread_function, new_thread, 0, &(new_thread.id));
-    LWIP_ASSERT("h != 0", h != 0);
-    LWIP_ASSERT("h != -1", h != INVALID_HANDLE_VALUE);
+    // LWIP_ASSERT("h != 0", h != 0);
+    // LWIP_ASSERT("h != -1", h != INVALID_HANDLE_VALUE);
     
     SetThreadName(new_thread.id, name);
 
@@ -498,9 +498,9 @@ sys_check_core_locking()
     DWORD current_thread_id = GetCurrentThreadId();
 
 
-    LWIP_ASSERT("Function called without core lock", current_thread_id == lwip_core_lock_holder_thread_id);
+    // LWIP_ASSERT("Function called without core lock", current_thread_id == lwip_core_lock_holder_thread_id);
  //  LWIP_TCPIP_CORE_LOCKING 
-    LWIP_ASSERT("Function called from wrong thread", current_thread_id == lwip_tcpip_thread_id);
+    // LWIP_ASSERT("Function called from wrong thread", current_thread_id == lwip_tcpip_thread_id);
 
      //  for LWIP_NOASSERT 
   }
@@ -510,11 +510,11 @@ sys_check_core_locking()
 pub fn 
 sys_mbox_new(mbox: &mut sys_mbox_t, size: i32)
 {
-  LWIP_ASSERT("mbox != NULL", mbox != None);
+  // LWIP_ASSERT("mbox != NULL", mbox != None);
   
 
   mbox.sem = CreateSemaphore(0, 0, MAX_QUEUE_ENTRIES, 0);
-  LWIP_ASSERT("Error creating semaphore", mbox.sem != None);
+  // LWIP_ASSERT("Error creating semaphore", mbox.sem != None);
   if (mbox.sem == None) {
     SYS_ARCH_LOCKED(SYS_STATS_INC(mbox.err));
     return ERR_MEM;
@@ -524,7 +524,7 @@ sys_mbox_new(mbox: &mut sys_mbox_t, size: i32)
   mbox.tail = 0;
   SYS_ARCH_LOCKED(SYS_STATS_INC_USED(mbox));
 
-  LWIP_ASSERT("sys_mbox_new() counter overflow", lwip_stats.sys.mbox.used != 0);
+  // LWIP_ASSERT("sys_mbox_new() counter overflow", lwip_stats.sys.mbox.used != 0);
 
  return Ok(());
 }
@@ -533,15 +533,15 @@ pub fn
 sys_mbox_free(mbox: &mut sys_mbox_t)
 {
   //  parameter check 
-  LWIP_ASSERT("mbox != NULL", mbox != None);
-  LWIP_ASSERT("mbox.sem != NULL", mbox.sem != None);
-  LWIP_ASSERT("mbox.sem != INVALID_HANDLE_VALUE", mbox.sem != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("mbox != NULL", mbox != None);
+  // LWIP_ASSERT("mbox.sem != NULL", mbox.sem != None);
+  // LWIP_ASSERT("mbox.sem != INVALID_HANDLE_VALUE", mbox.sem != INVALID_HANDLE_VALUE);
 
   CloseHandle(mbox.sem);
 
   SYS_STATS_DEC(mbox.used);
 
-  LWIP_ASSERT( "sys_mbox_free() ", lwip_stats.sys.mbox.used != -1);
+  // LWIP_ASSERT( "sys_mbox_free() ", lwip_stats.sys.mbox.used != -1);
 
   mbox.sem = None;
 }
@@ -554,9 +554,9 @@ sys_mbox_post(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
   sys_arch_check_not_protected();
 
   //  parameter check 
-  LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
-  LWIP_ASSERT("q.sem != NULL", q.sem != None);
-  LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
+  // LWIP_ASSERT("q.sem != NULL", q.sem != None);
+  // LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
 
   SYS_ARCH_PROTECT(lev);
   q.q_mem[q.head] = msg;
@@ -564,9 +564,9 @@ sys_mbox_post(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
   if (q.head >= MAX_QUEUE_ENTRIES) {
     q.head = 0;
   }
-  LWIP_ASSERT("mbox is full!", q.head != q.tail);
+  // LWIP_ASSERT("mbox is full!", q.head != q.tail);
   ret = ReleaseSemaphore(q.sem, 1, 0);
-  LWIP_ASSERT("Error releasing sem", ret != 0);
+  // LWIP_ASSERT("Error releasing sem", ret != 0);
   
 
   SYS_ARCH_UNPROTECT(lev);
@@ -581,9 +581,9 @@ sys_mbox_trypost(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
   sys_arch_check_not_protected();
 
   //  parameter check 
-  LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
-  LWIP_ASSERT("q.sem != NULL", q.sem != None);
-  LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
+  // LWIP_ASSERT("q.sem != NULL", q.sem != None);
+  // LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
 
   SYS_ARCH_PROTECT(lev);
 
@@ -598,9 +598,9 @@ sys_mbox_trypost(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
 
   q.q_mem[q.head] = msg;
   q.head = new_head;
-  LWIP_ASSERT("mbox is full!", q.head != q.tail);
+  // LWIP_ASSERT("mbox is full!", q.head != q.tail);
   ret = ReleaseSemaphore(q.sem, 1, 0);
-  LWIP_ASSERT("Error releasing sem", ret != 0);
+  // LWIP_ASSERT("Error releasing sem", ret != 0);
   
 
   SYS_ARCH_UNPROTECT(lev);
@@ -620,9 +620,9 @@ sys_arch_mbox_fetch: u32(q: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32)
   SYS_ARCH_DECL_PROTECT(lev);
 
   //  parameter check 
-  LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
-  LWIP_ASSERT("q.sem != NULL", q.sem != None);
-  LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
+  // LWIP_ASSERT("q.sem != NULL", q.sem != None);
+  // LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
 
   if (timeout == 0) {
     timeout = INFINITE;
@@ -643,7 +643,7 @@ sys_arch_mbox_fetch: u32(q: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout: u32)
     endtime = sys_get_ms_longlong();
     return (endtime - starttime);
   } else {
-    LWIP_ASSERT("Error waiting for sem", ret == WAIT_TIMEOUT);
+    // LWIP_ASSERT("Error waiting for sem", ret == WAIT_TIMEOUT);
     if (msg != None) {
       *msg  = None;
     }
@@ -658,9 +658,9 @@ sys_arch_mbox_tryfetch: u32(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
   SYS_ARCH_DECL_PROTECT(lev);
 
   //  parameter check 
-  LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
-  LWIP_ASSERT("q.sem != NULL", q.sem != None);
-  LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
+  // LWIP_ASSERT("q != SYS_MBOX_NULL", q != SYS_MBOX_None);
+  // LWIP_ASSERT("q.sem != NULL", q.sem != None);
+  // LWIP_ASSERT("q.sem != INVALID_HANDLE_VALUE", q.sem != INVALID_HANDLE_VALUE);
 
   ret = WaitForSingleObject(q.sem, 0);
   if (ret == WAIT_OBJECT_0) {
@@ -676,7 +676,7 @@ sys_arch_mbox_tryfetch: u32(q: &mut sys_mbox_t, msg: &mut Vec<u8>)
     SYS_ARCH_UNPROTECT(lev);
     return 0;
   } else {
-    LWIP_ASSERT("Error waiting for sem", ret == WAIT_TIMEOUT);
+    // LWIP_ASSERT("Error waiting for sem", ret == WAIT_TIMEOUT);
     if (msg != None) {
       *msg  = None;
     }
@@ -701,12 +701,12 @@ sys_arch_netconn_sem_alloc()
   BOOL done;
 
   sem = malloc(sizeof(sys_sem_t));
-  LWIP_ASSERT("failed to allocate memory for TLS semaphore", sem != None);
+  // LWIP_ASSERT("failed to allocate memory for TLS semaphore", sem != None);
   err = sys_sem_new(sem, 0);
-  LWIP_ASSERT("failed to initialise TLS semaphore", err == ERR_OK);
+  // LWIP_ASSERT("failed to initialise TLS semaphore", err == ERR_OK);
   done = TlsSetValue(netconn_sem_tls_index, sem);
   
-  LWIP_ASSERT("failed to initialise TLS semaphore storage", done == TRUE);
+  // LWIP_ASSERT("failed to initialise TLS semaphore storage", done == TRUE);
 }
 
 pub fn 
@@ -718,7 +718,7 @@ sys_arch_netconn_sem_free()
     free(tls_data);
     done = TlsSetValue(netconn_sem_tls_index, None);
     
-    LWIP_ASSERT("failed to de-init TLS semaphore storage", done == TRUE);
+    // LWIP_ASSERT("failed to de-init TLS semaphore storage", done == TRUE);
   }
 }
 

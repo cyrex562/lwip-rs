@@ -3,7 +3,7 @@
 
 // #include "lwip/apps/httpd.h"
 
-#if LWIP_HTTPD_DYNAMIC_HEADERS
+// #if LWIP_HTTPD_DYNAMIC_HEADERS
 /** This struct is used for a list of HTTP header strings for various
  * filename extensions. */
 typedef struct {
@@ -28,7 +28,7 @@ static const char *const g_psHTTPHeaderStrings[] = {
   "Connection: keep-alive\r\nContent-Length: ",
   "Server: "HTTPD_SERVER_AGENT"\r\n",
   "\r\n<html><body><h2>404: The requested file cannot be found.</h2></body></html>\r\n"
-#if LWIP_HTTPD_SUPPORT_11_KEEPALIVE
+// #if LWIP_HTTPD_SUPPORT_11_KEEPALIVE
   , "Connection: keep-alive\r\nContent-Length: 77\r\n\r\n<html><body><h2>404: The requested file cannot be found.</h2></body></html>\r\n"
 
 };
@@ -48,7 +48,7 @@ pub const HTTP_HDR_CONN_KEEPALIVE: u32 = 10; /* Connection: keep-alive (HTTP 1.1
 pub const HTTP_HDR_KEEPALIVE_LEN: u32 = 11; /* Connection: keep-alive + Content-Length: (HTTP 1.1)*/
 pub const HTTP_HDR_SERVER: u32 = 12; /* Server: HTTPD_SERVER_AGENT */
 pub const DEFAULT_404_HTML: u32 = 13; /* default 404 body */
-#if LWIP_HTTPD_SUPPORT_11_KEEPALIVE
+// #if LWIP_HTTPD_SUPPORT_11_KEEPALIVE
 pub const DEFAULT_404_HTML_PERSISTENT: u32 = 14; /* default 404 body, but including Connection: keep-alive */
 
 
@@ -113,7 +113,7 @@ static const tHTTPHeader g_psHTTPHeaders[] = {
 
  /* LWIP_HTTPD_DYNAMIC_HEADERS */
 
-#if LWIP_HTTPD_SSI && LWIP_HTTPD_SSI_BY_FILE_EXTENSION
+// #if LWIP_HTTPD_SSI && LWIP_HTTPD_SSI_BY_FILE_EXTENSION
 static const char *const g_pcSSIExtensions[] = {
   LWIP_HTTPD_SSI_EXTENSIONS
 };

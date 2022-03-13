@@ -65,7 +65,7 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
  */
 #define LWIP_MEMPOOL_PROTOTYPE(name) extern const struct memp_desc memp_ ## name
 
-#if MEMP_MEM_MALLOC
+// #if MEMP_MEM_MALLOC
 
 #define LWIP_MEMPOOL_DECLARE(name,num,size,desc) \
   LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(memp_stats_ ## name) \
@@ -125,21 +125,21 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
  */
 #define LWIP_MEMPOOL_FREE(name, x) memp_free_pool(&memp_ ## name, (x))
 
-#if MEM_USE_POOLS
+// #if MEM_USE_POOLS
 /** This structure is used to save the pool one element came from.
  * This has to be defined here as it is required for pool size calculation. */
 struct memp_malloc_helper
 {
    memp_t poolnr;
-#if MEMP_OVERFLOW_CHECK || (LWIP_STATS && MEM_STATS)
-   u16_t size;
+// #if MEMP_OVERFLOW_CHECK || (LWIP_STATS && MEM_STATS)
+   size: u16;
  /* MEMP_OVERFLOW_CHECK || (LWIP_STATS && MEM_STATS) */
 
  /* MEM_USE_POOLS */
 
-void  memp_init(void);
+void  memp_init();
 
-#if MEMP_OVERFLOW_CHECK
+// #if MEMP_OVERFLOW_CHECK
 void *memp_malloc_fn(memp_t type, const char* file, const int line);
 #define memp_malloc(t) memp_malloc_fn((t), __FILE__, __LINE__)
 #else

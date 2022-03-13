@@ -10,13 +10,13 @@
 /* Setups/teardown functions */
 
 static void
-mem_setup(void)
+mem_setup()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-mem_teardown(void)
+mem_teardown()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
@@ -58,7 +58,7 @@ static void malloc_keep_x(int x, int num, int size, int freestep)
 {
    int i;
    void* p[16];
-   LWIP_ASSERT("invalid size", size >= 0 && size < (mem_size_t)-1);
+   // LWIP_ASSERT("invalid size", size >= 0 && size < (mem_size_t)-1);
    memset(p, 0, sizeof(p));
    for(i = 0; i < num && i < 16; i++) {
       p[i] = mem_malloc((mem_size_t)size);
@@ -205,7 +205,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-mem_suite(void)
+mem_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_mem_one),

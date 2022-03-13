@@ -13,7 +13,7 @@ pub const PING_USE_SOCKETS: u32 = LWIP_SOCKET;
 void ping_init(const ip_addr_t* ping_addr);
 
 #if !PING_USE_SOCKETS
-void ping_send_now(void);
+void ping_send_now();
  /* !PING_USE_SOCKETS */
 
  /* LWIP_PING_H */

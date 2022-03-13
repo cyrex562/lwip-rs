@@ -24,7 +24,7 @@
 
 /* This function is used for LWIP_RAND by some ports... */
 unsigned int
-lwip_port_rand(void)
+lwip_port_rand()
 {
   return (unsigned int)rand();
 }
@@ -64,9 +64,9 @@ void lwip_check_ensure_no_alloc(unsigned int skip)
 }
 
 #ifdef LWIP_UNITTESTS_LIB
-int lwip_unittests_run(void)
+int lwip_unittests_run()
 #else
-int main(void)
+int main()
 
 {
   int number_failed;
@@ -91,9 +91,9 @@ int main(void)
     sockets_suite
   };
   size_t num = sizeof(suites)/sizeof(void*);
-  LWIP_ASSERT("No suites defined", num > 0);
+  // LWIP_ASSERT("No suites defined", num > 0);
 
-#if NO_SYS
+// #if NO_SYS
   lwip_init();
 #else
   tcpip_init(NULL, NULL);

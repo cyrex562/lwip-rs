@@ -18,7 +18,7 @@ static struct netif test_netif;
 static ip4_addr_t test_ipaddr, test_netmask, test_gw;
 static int linkoutput_ctr;
 static int linkoutput_byte_ctr;
-static u16_t linkoutput_pkt_len;
+static linkoutput_pkt_len: u16;
 static u8_t linkoutput_pkt[100];
 
 /* reference internal lwip variable in netif.c */
@@ -29,7 +29,7 @@ test_netif_linkoutput(struct netif *netif, struct pbuf *p)
   fail_unless(netif == &test_netif);
   fail_unless(p != NULL);
   linkoutput_ctr++;
-  linkoutput_byte_ctr += p->tot_len;
+  linkoutput_byte_ctr +=  p.tot_len;
   /* Copy start of packet into buffer */
   linkoutput_pkt_len = pbuf_copy_partial(p, linkoutput_pkt, sizeof(linkoutput_pkt), 0);
   return ERR_OK;
@@ -39,16 +39,16 @@ static err_t
 test_netif_init(struct netif *netif)
 {
   fail_unless(netif != NULL);
-  netif->linkoutput = test_netif_linkoutput;
-  netif->output = etharp_output;
-  netif->mtu = 1500;
-  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
-  netif->hwaddr_len = ETHARP_HWADDR_LEN;
+   netif.linkoutput = test_netif_linkoutput;
+   netif.output = etharp_output;
+   netif.mtu = 1500;
+   netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
+   netif.hwaddr_len = ETHARP_HWADDR_LEN;
   return ERR_OK;
 }
 
 static void
-test_netif_add(void)
+test_netif_add()
 {
   IP4_ADDR(&test_gw, 192,168,0,1);
   IP4_ADDR(&test_ipaddr, 192,168,0,1);
@@ -62,7 +62,7 @@ test_netif_add(void)
 }
 
 static void
-test_netif_remove(void)
+test_netif_remove()
 {
   if (netif_default == &test_netif) {
     netif_remove(&test_netif);
@@ -83,10 +83,10 @@ create_ip4_input_fragment(u16_t ip_id, u16_t start, u16_t len, int last)
   fail_unless(p != NULL);
   if (p != NULL) {
     err_t err;
-    struct ip_hdr *iphdr = (struct ip_hdr *)p->payload;
+    struct ip_hdr *iphdr = (struct ip_hdr *) p.payload;
     IPH_VHL_SET(iphdr, 4, sizeof(struct ip_hdr) / 4);
     IPH_TOS_SET(iphdr, 0);
-    IPH_LEN_SET(iphdr, lwip_htons(p->tot_len));
+    IPH_LEN_SET(iphdr, lwip_htons( p.tot_len));
     IPH_ID_SET(iphdr, lwip_htons(ip_id));
     if (last) {
       IPH_OFFSET_SET(iphdr, lwip_htons(start / 8));
@@ -96,9 +96,9 @@ create_ip4_input_fragment(u16_t ip_id, u16_t start, u16_t len, int last)
     IPH_TTL_SET(iphdr, 5);
     IPH_PROTO_SET(iphdr, IP_PROTO_UDP);
     IPH_CHKSUM_SET(iphdr, 0);
-    ip4_addr_copy(iphdr->src, *netif_ip4_addr(input_netif));
-    iphdr->src.addr = lwip_htonl(lwip_htonl(iphdr->src.addr) + 1);
-    ip4_addr_copy(iphdr->dest, *netif_ip4_addr(input_netif));
+    ip4_addr_copy( iphdr.src, *netif_ip4_addr(input_netif));
+     iphdr.src.addr = lwip_htonl(lwip_htonl( iphdr.src.addr) + 1);
+    ip4_addr_copy( iphdr.dest, *netif_ip4_addr(input_netif));
     IPH_CHKSUM_SET(iphdr, inet_chksum(iphdr, sizeof(struct ip_hdr)));
 
     err = ip4_input(p, input_netif);
@@ -112,25 +112,25 @@ create_ip4_input_fragment(u16_t ip_id, u16_t start, u16_t len, int last)
 static err_t arpless_output(struct netif *netif, struct pbuf *p,
                             const ip4_addr_t *ipaddr) {
   LWIP_UNUSED_ARG(ipaddr);
-  return netif->linkoutput(netif, p);
+  return  netif.linkoutput(netif, p);
 }
 
 /* Setups/teardown functions */
 
 static void
-ip4_setup(void)
+ip4_setup()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-ip4_teardown(void)
+ip4_teardown()
 {
-  if (netif_list->loop_first != NULL) {
-    pbuf_free(netif_list->loop_first);
-    netif_list->loop_first = NULL;
+  if ( netif_list.loop_first != NULL) {
+    pbuf_free( netif_list.loop_first);
+     netif_list.loop_first = NULL;
   }
-  netif_list->loop_last = NULL;
+   netif_list.loop_last = NULL;
   /* poll until all memory is released... */
   tcpip_thread_poll_one();
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
@@ -328,7 +328,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-ip4_suite(void)
+ip4_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_ip4_frag),

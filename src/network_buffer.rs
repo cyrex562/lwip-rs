@@ -61,7 +61,7 @@ pub struct NetworkBuffer {
     // struct pbuf *p, *ptr;
     addr: IpAddress,
     // ip_addr_t addr;
-    // u16_t port;
+    // port: u16;
     port: u16,
     // #if LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY
     flags: u8,
@@ -77,7 +77,7 @@ impl NetworkBuffer {
         Self::default()
     }
 
-    // #define netbuf_len(buf)              ((buf)->p->tot_len)
+    // #define netbuf_len(buf)              ((buf)-> p.tot_len)
     pub fn len(&self, ctx: &GlobalContext) -> usize {
         unimplemented!()
     }
@@ -135,7 +135,7 @@ impl NetworkBuffer {
 }
 
 /* Network buffer functions: */
-// struct netbuf *   netbuf_new      (void);
+// struct netbuf *   netbuf_new      ();
 // void              netbuf_delete   (struct netbuf *buf);
 // void *            netbuf_alloc    (struct netbuf *buf, u16_t size);
 // void              netbuf_free     (struct netbuf *buf);

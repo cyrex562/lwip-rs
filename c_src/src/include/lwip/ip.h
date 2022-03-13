@@ -62,7 +62,7 @@
 #define LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p) LWIP_ASSERT("p->ref == 1", (p)->ref == 1)
 
 
-#if LWIP_NETIF_USE_HINTS
+// #if LWIP_NETIF_USE_HINTS
 #define IP_PCB_NETIFHINT ;struct netif_hint netif_hints
 #else /* LWIP_NETIF_USE_HINTS */
 #define IP_PCB_NETIFHINT
@@ -77,11 +77,11 @@
   ip_addr_t local_ip;                      \
   ip_addr_t remote_ip;                     \
   /* Bound netif index */                  \
-  u8_t netif_idx;                          \
+  netif_idx: u8;                          \
   /* Socket options */                     \
-  u8_t so_options;                         \
+  so_options: u8;                         \
   /* Type Of Service */                    \
-  u8_t tos;                                \
+  tos: u8;                                \
   /* Time To Live */                       \
   u8_t ttl                                 \
   /* link layer address resolution hint */ \
@@ -118,7 +118,7 @@ IP_IPV6
   struct ip6_hdr *current_ip6_header;
  /* LWIP_IPV6 */
 Total header length of current_ip4/6_header (i.e. after this, the UDP/TCP header starts) */
-  u16_t current_ip_header_tot_len;
+  current_ip_header_tot_len: u16;
   /** Source IP address of current_header */
   ip_addr_t current_iphdr_src;
   /** Destination IP address of current_header */

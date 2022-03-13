@@ -37,17 +37,17 @@
 
 
 
-#if LWIP_SNMP && LWIP_SNMP_V3
+// #if LWIP_SNMP && LWIP_SNMP_V3
 
 #ifdef LWIP_SNMPV3_INCLUDE_ENGINE
-#include LWIP_SNMPV3_INCLUDE_ENGINE
-#endif
+
+// #endif
 
 #define SNMP_MAX_TIME_BOOT 2147483647UL
 
 /** Call this if engine has been changed. Has to reset boots, see below */
 void
-snmpv3_engine_id_changed(void)
+snmpv3_engine_id_changed()
 {
   snmpv3_set_engine_boots(0);
 }
@@ -59,7 +59,7 @@ snmpv3_engine_id_changed(void)
  * was last configured.
  */
 s32_t
-snmpv3_get_engine_boots_internal(void)
+snmpv3_get_engine_boots_internal()
 {
   if (snmpv3_get_engine_boots() == 0 ||
       snmpv3_get_engine_boots() < SNMP_MAX_TIME_BOOT) {
@@ -76,7 +76,7 @@ snmpv3_get_engine_boots_internal(void)
  * engine boot ups get incremented.
  */
 s32_t
-snmpv3_get_engine_time_internal(void)
+snmpv3_get_engine_time_internal()
 {
   if (snmpv3_get_engine_time() >= SNMP_MAX_TIME_BOOT) {
     snmpv3_reset_engine_time();
@@ -91,7 +91,7 @@ snmpv3_get_engine_time_internal(void)
   return snmpv3_get_engine_time();
 }
 
-#if LWIP_SNMP_V3_CRYPTO
+// #if LWIP_SNMP_V3_CRYPTO
 
 /* This function ignores the byte order suggestion in RFC3414
  * since it simply doesn't influence the effectiveness of an IV.
@@ -104,7 +104,7 @@ err_t
 snmpv3_build_priv_param(u8_t *priv_param)
 {
 #ifdef LWIP_RAND /* Based on RFC3826 */
-  static u8_t init;
+  static init: u8;
   static u32_t priv1, priv2;
 
   /* Lazy initialisation */
@@ -128,9 +128,9 @@ snmpv3_build_priv_param(u8_t *priv_param)
   SMEMCPY(&priv_param[0], &boots, 4);
   SMEMCPY(&priv_param[4], &ctr, 4);
   ctr++;
-#endif
+// #endif
   return ERR_OK;
 }
-#endif /* LWIP_SNMP_V3_CRYPTO */
+// #endif /* LWIP_SNMP_V3_CRYPTO */
 
-#endif
+// #endif

@@ -35,7 +35,7 @@
 */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -52,7 +52,7 @@
 #define LOG_DETAIL    (PPP_DEBUG)
 #define LOG_DEBUG     (PPP_DEBUG)
 
-#if PPP_DEBUG
+// #if PPP_DEBUG
 
 #define MAINDEBUG(a)    LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, a)
 #define SYSDEBUG(a)     LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, a)

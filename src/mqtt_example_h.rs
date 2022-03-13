@@ -33,7 +33,7 @@
 
 
 
-void mqtt_example_init(void);
+void mqtt_example_init();
 
 
 

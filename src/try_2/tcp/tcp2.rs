@@ -223,7 +223,7 @@ pub fn tcp_init() {
 
 //  Free a tcp pcb 
 pub fn tcp_free(pcb: &mut TcpContext) {
-    LWIP_ASSERT("tcp_free: LISTEN", pcb.state != LISTEN);
+    // LWIP_ASSERT("tcp_free: LISTEN", pcb.state != LISTEN);
 
     tcp_ext_arg_invoke_callbacks_destroyed(pcb.ext_args);
 
@@ -232,7 +232,7 @@ pub fn tcp_free(pcb: &mut TcpContext) {
 
 //  Free a tcp listen pcb 
 pub fn tcp_free_listen(pcb: &mut TcpContext) {
-    LWIP_ASSERT("tcp_free_listen: !LISTEN", pcb.state != LISTEN);
+    // LWIP_ASSERT("tcp_free_listen: !LISTEN", pcb.state != LISTEN);
 
     tcp_ext_arg_invoke_callbacks_destroyed(pcb.ext_args);
 
@@ -260,7 +260,7 @@ pub fn tcp_timer_handler() {
 pub fn tcp_remove_listener(list: &mut TcpContext, lpcb: &mut TcpListenContext) {
     let mut pcb: &mut TcpContext;
 
-    LWIP_ASSERT("tcp_remove_listener: invalid listener", lpcb != None);
+    // LWIP_ASSERT("tcp_remove_listener: invalid listener", lpcb != None);
 
     // for (pcb = list; pcb != None; pcb = pcb.next) {
     //   if (pcb.listener == lpcb) {
@@ -275,8 +275,8 @@ pub fn tcp_remove_listener(list: &mut TcpContext, lpcb: &mut TcpListenContext) {
  */
 pub fn tcp_listen_closed(pcb: &mut TcpContext) {
     let i: usize;
-    LWIP_ASSERT("pcb != NULL", pcb != None);
-    LWIP_ASSERT("pcb.state == LISTEN", pcb.state == LISTEN);
+    // LWIP_ASSERT("pcb != NULL", pcb != None);
+    // LWIP_ASSERT("pcb.state == LISTEN", pcb.state == LISTEN);
     // for (i = 1; i < LWIP_ARRAYSIZE(tcp_pcb_lists); i+= 1) {
     //   tcp_remove_listener(*tcp_pcb_lists[i], pcb);
     // }
@@ -294,12 +294,12 @@ pub fn tcp_listen_closed(pcb: &mut TcpContext) {
  * @param pcb the connection pcb which is not fully accepted yet
  */
 pub fn tcp_backlog_delayed(pcb: &mut TcpContext) {
-    LWIP_ASSERT("pcb != NULL", pcb != None);
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT("pcb != NULL", pcb != None);
+    // LWIP_ASSERT_CORE_LOCKED()
     if ((pcb.flags & TF_BACKLOGPEND) == 0) {
         if (pcb.listener != None) {
             pcb.listener.accepts_pending += 1;
-            LWIP_ASSERT("accepts_pending != 0", pcb.listener.accepts_pending != 0);
+            // LWIP_ASSERT("accepts_pending != 0", pcb.listener.accepts_pending != 0);
             tcp_set_flags(pcb, TF_BACKLOGPEND);
         }
     }
@@ -315,11 +315,11 @@ pub fn tcp_backlog_delayed(pcb: &mut TcpContext) {
  * @param pcb the connection pcb which is now fully accepted (or closed/aborted)
  */
 pub fn tcp_backlog_accepted(pcb: &mut TcpContext) {
-    LWIP_ASSERT("pcb != NULL", pcb != None);
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT("pcb != NULL", pcb != None);
+    // LWIP_ASSERT_CORE_LOCKED()
     if ((pcb.flags & TF_BACKLOGPEND) != 0) {
         if (pcb.listener != None) {
-            LWIP_ASSERT("accepts_pending != 0", pcb.listener.accepts_pending != 0);
+            // LWIP_ASSERT("accepts_pending != 0", pcb.listener.accepts_pending != 0);
             pcb.listener.accepts_pending -= 1;
             tcp_clear_flags(pcb, TF_BACKLOGPEND);
         }
@@ -350,7 +350,7 @@ pub fn tcp_close_shutdown(pcb: &mut TcpContext, rst_on_unacked_data: bool) -> Re
         if (pcb.refused_data != None) || (pcb.rcv_wnd != TCP_WND_MAX(pcb)) {
             /* Not all data received by application, send RST to tell the remote
                side about this. */
-            LWIP_ASSERT("pcb.flags & TF_RXCLOSED", pcb.flags & TF_RXCLOSED);
+            // LWIP_ASSERT("pcb.flags & TF_RXCLOSED", pcb.flags & TF_RXCLOSED);
 
             /* don't call tcp_abort here: we must not deallocate the pcb since
                that might not be expected when calling tcp_close */
@@ -400,7 +400,7 @@ pub fn tcp_close_shutdown(pcb: &mut TcpContext, rst_on_unacked_data: bool) -> Re
 
 pub fn tcp_close_shutdown_fin(pcb: &mut TcpContext) -> Result<(), LwipError> {
     let err: err_t;
-    LWIP_ASSERT("pcb != NULL", pcb != None);
+    // LWIP_ASSERT("pcb != NULL", pcb != None);
 
     match pcb.state {
         SYN_RCVD => {
@@ -709,7 +709,7 @@ pub fn tcp_bind(tcp_ctx_coll: &mut Vec<TcpContext>, tcp_ctx: &mut TcpContext, ip
  * @param netif the netif to bind to. Can be NULL.
  */
 pub fn tcp_bind_netif(pcb: &mut TcpContext, netif: &mut NetworkInterfaceCtx) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (netif != None) {
         pcb.netif_idx = netif_get_index(netif);
     } else {
@@ -722,7 +722,7 @@ pub fn tcp_bind_netif(pcb: &mut TcpContext, netif: &mut NetworkInterfaceCtx) {
  * Default accept callback if no accept callback is specified by the user.
  */
 pub fn tcp_accept_None(arg: &mut Vec<u8>, pcb: &mut TcpContext, err: err_t) -> Result<(), LwipError> {
-    LWIP_ASSERT("tcp_accept_null: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_accept_null: invalid pcb", pcb != None);
 
     tcp_abort(pcb);
 
@@ -764,7 +764,7 @@ pub fn tcp_accept_None(arg: &mut Vec<u8>, pcb: &mut TcpContext, err: err_t) -> R
  *             tpcb = tcp_listen_with_backlog(tpcb, backlog);
  */
 pub fn tcp_listen_with_backlog(pcb: &mut TcpContext, backlog: u8) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     return tcp_listen_with_backlog_and_err(pcb, backlog, None);
 }
 
@@ -861,7 +861,7 @@ pub fn tcp_listen_with_backlog_and_err(
 pub fn tcp_update_rcv_ann_wnd(pcb: &mut TcpContext) -> u32 {
     let new_right_edge: u32;
 
-    LWIP_ASSERT("tcp_update_rcv_ann_wnd: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_update_rcv_ann_wnd: invalid pcb", pcb != None);
     new_right_edge = pcb.rcv_nxt + pcb.rcv_wnd;
 
     if (TCP_SEQ_GEQ(new_right_edge, pcb.rcv_ann_right_edge + LWIP_MIN((TCP_WND / 2), pcb.mss))) {
@@ -877,7 +877,7 @@ pub fn tcp_update_rcv_ann_wnd(pcb: &mut TcpContext) -> u32 {
             //  keep the right edge of window constant 
             let new_rcv_ann_wnd: u32 = pcb.rcv_ann_right_edge - pcb.rcv_nxt;
 
-            LWIP_ASSERT("new_rcv_ann_wnd <= 0xffff", new_rcv_ann_wnd <= 0xffff);
+            // LWIP_ASSERT("new_rcv_ann_wnd <= 0xffff", new_rcv_ann_wnd <= 0xffff);
 
             pcb.rcv_ann_wnd = new_rcv_ann_wnd;
         }
@@ -988,7 +988,7 @@ pub fn tcp_connect(pcb: &mut TcpContext, ipaddr: &mut LwipAddr, port: u16,
     let iss: u32;
     let old_local_port: u16;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     // LWIP_ERROR("tcp_connect: invalid pcb", pcb != None, return ERR_ARG; );
     // LWIP_ERROR("tcp_connect: invalid ipaddr", ipaddr != None, return ERR_ARG; );
@@ -1123,9 +1123,9 @@ pub fn tcp_slowtmr() {
     }
     while (pcb != None) {
 //    LWIP_DEBUGF(TCP_DEBUG, ("tcp_slowtmr: processing active pcb\n"));
-        LWIP_ASSERT("tcp_slowtmr: active pcb.state != CLOSED\n", pcb.state != CLOSED);
-        LWIP_ASSERT("tcp_slowtmr: active pcb.state != LISTEN\n", pcb.state != LISTEN);
-        LWIP_ASSERT("tcp_slowtmr: active pcb.state != TIME-WAIT\n", pcb.state != TIME_WAIT);
+        // LWIP_ASSERT("tcp_slowtmr: active pcb.state != CLOSED\n", pcb.state != CLOSED);
+        // LWIP_ASSERT("tcp_slowtmr: active pcb.state != LISTEN\n", pcb.state != LISTEN);
+        // LWIP_ASSERT("tcp_slowtmr: active pcb.state != TIME-WAIT\n", pcb.state != TIME_WAIT);
         if (pcb.last_timer == tcp_timer_ctr) {
             //  skip this pcb, we have already processed it 
             prev = pcb;
@@ -1145,8 +1145,8 @@ pub fn tcp_slowtmr() {
 //      LWIP_DEBUGF(TCP_DEBUG, ("tcp_slowtmr: max DATA retries reached\n"));
         } else {
             if (pcb.persist_backoff > 0) {
-                LWIP_ASSERT("tcp_slowtimr: persist ticking with in-flight data", pcb.unacked == None);
-                LWIP_ASSERT("tcp_slowtimr: persist ticking with empty send buffer", pcb.unsent != None);
+                // LWIP_ASSERT("tcp_slowtimr: persist ticking with in-flight data", pcb.unacked == None);
+                // LWIP_ASSERT("tcp_slowtimr: persist ticking with empty send buffer", pcb.unsent != None);
                 if (pcb.persist_probe >= TCP_MAXRTX) {
                     pcb_remove += 1; //  max probes reached 
                 } else {
@@ -1290,11 +1290,11 @@ pub fn tcp_slowtmr() {
             tcp_pcb_purge(pcb);
             //  Remove PCB from tcp_active_pcbs list. 
             if (prev != None) {
-                LWIP_ASSERT("tcp_slowtmr: middle tcp != tcp_active_pcbs", pcb != tcp_active_pcbs);
+                // LWIP_ASSERT("tcp_slowtmr: middle tcp != tcp_active_pcbs", pcb != tcp_active_pcbs);
                 prev.next = pcb.next;
             } else {
                 //  This PCB was the first. 
-                LWIP_ASSERT("tcp_slowtmr: first pcb == tcp_active_pcbs", tcp_active_pcbs == pcb);
+                // LWIP_ASSERT("tcp_slowtmr: first pcb == tcp_active_pcbs", tcp_active_pcbs == pcb);
                 tcp_active_pcbs = pcb.next;
             }
 
@@ -1342,7 +1342,7 @@ pub fn tcp_slowtmr() {
     prev = None;
     pcb = tcp_tw_pcbs;
     while (pcb != None) {
-        LWIP_ASSERT("tcp_slowtmr: TIME-WAIT pcb.state == TIME-WAIT", pcb.state == TIME_WAIT);
+        // LWIP_ASSERT("tcp_slowtmr: TIME-WAIT pcb.state == TIME-WAIT", pcb.state == TIME_WAIT);
         pcb_remove = 0;
 
         //  Check if this PCB has stayed long enough in TIME-WAIT 
@@ -1356,11 +1356,11 @@ pub fn tcp_slowtmr() {
             tcp_pcb_purge(pcb);
             //  Remove PCB from tcp_tw_pcbs list. 
             if (prev != None) {
-                LWIP_ASSERT("tcp_slowtmr: middle tcp != tcp_tw_pcbs", pcb != tcp_tw_pcbs);
+                // LWIP_ASSERT("tcp_slowtmr: middle tcp != tcp_tw_pcbs", pcb != tcp_tw_pcbs);
                 prev.next = pcb.next;
             } else {
                 //  This PCB was the first. 
-                LWIP_ASSERT("tcp_slowtmr: first pcb == tcp_tw_pcbs", tcp_tw_pcbs == pcb);
+                // LWIP_ASSERT("tcp_slowtmr: first pcb == tcp_tw_pcbs", tcp_tw_pcbs == pcb);
                 tcp_tw_pcbs = pcb.next;
             }
             pcb2 = pcb;
@@ -1546,7 +1546,7 @@ pub fn tcp_setprio(pcb: &mut TcpContext, prio: u8) -> Result<(), LwipError> {
 pub fn tcp_seg_copy(seg: &mut tcp_seg) -> tcp_seg {
     let mut cseg: &mut tcp_seg;
 
-    LWIP_ASSERT("tcp_seg_copy: invalid seg", seg != None);
+    // LWIP_ASSERT("tcp_seg_copy: invalid seg", seg != None);
 
     cseg = memp_malloc(MEMP_TCP_SEG);
     if (cseg == None) {
@@ -1705,7 +1705,7 @@ pub fn tcp_handle_closepend() {
 pub fn tcp_alloc(prio: u8) -> tcp_pcb {
     let mut pcb: &mut TcpContext;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     pcb = memp_malloc(MEMP_TCP_PCB);
     if (pcb == None) {
@@ -1848,7 +1848,7 @@ pub fn tcp_new_ip_type(ip_type: u8) -> tcp_pcb {
  * @param arg void pointer argument to pass to callback functions
  */
 pub fn tcp_arg(pcb: &mut TcpContext, arg: &mut Vec<u8>) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     /* This function is allowed to be called for both listen pcbs and
        connection pcbs. */
     if (pcb != None) {
@@ -1869,8 +1869,8 @@ pub fn tcp_arg(pcb: &mut TcpContext, arg: &mut Vec<u8>) {
  * @param recv callback function to call for this pcb when data is received
  */
 pub fn tcp_recv(tcp_ctx: &mut TcpContext, recv: TcpDataReceivedFunc) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("invalid socket state for recv callback", tcp_ctx.state != LISTEN);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("invalid socket state for recv callback", tcp_ctx.state != LISTEN);
     tcp_ctx.recv = recv;
 }
 
@@ -1885,9 +1885,9 @@ pub fn tcp_recv(tcp_ctx: &mut TcpContext, recv: TcpDataReceivedFunc) {
  * @param sent callback function to call for this pcb when data is successfully sent
  */
 pub fn tcp_sent(pcb: &mut TcpContext, sent: tcp_sent_fn) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (pcb != None) {
-        LWIP_ASSERT("invalid socket state for sent callback", pcb.state != LISTEN);
+        // LWIP_ASSERT("invalid socket state for sent callback", pcb.state != LISTEN);
         pcb.sent = sent;
     }
 }
@@ -1909,9 +1909,9 @@ pub fn tcp_sent(pcb: &mut TcpContext, sent: tcp_sent_fn) {
  *        has occurred on the connection
  */
 pub fn tcp_err(pcb: &mut TcpContext, err: tcp_err_fn) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (pcb != None) {
-        LWIP_ASSERT("invalid socket state for err callback", pcb.state != LISTEN);
+        // LWIP_ASSERT("invalid socket state for err callback", pcb.state != LISTEN);
         pcb.errf = err;
     }
 }
@@ -2019,16 +2019,16 @@ pub fn tcp_pcb_remove(ctx_coll: &mut Vec<TcpContext>, ctx: &mut TcpContext) {
     }
 
     if ctx.state != LISTEN {
-        LWIP_ASSERT("unsent segments leaking", ctx.unsent == None);
-        LWIP_ASSERT("unacked segments leaking", ctx.unacked == None);
-        LWIP_ASSERT("ooseq segments leaking", ctx.ooseq == None);
+        // LWIP_ASSERT("unsent segments leaking", ctx.unsent == None);
+        // LWIP_ASSERT("unacked segments leaking", ctx.unacked == None);
+        // LWIP_ASSERT("ooseq segments leaking", ctx.ooseq == None);
     }
 
     ctx.state = TcpState::CLOSED;
     //  reset the local port to prevent the pcb from being 'bound' 
     ctx.local_port = 0;
 
-    LWIP_ASSERT("tcp_pcb_remove: tcp_pcbs_sane()", tcp_pcbs_sane());
+    // LWIP_ASSERT("tcp_pcb_remove: tcp_pcbs_sane()", tcp_pcbs_sane());
 }
 
 /*
@@ -2037,12 +2037,12 @@ pub fn tcp_pcb_remove(ctx_coll: &mut Vec<TcpContext>, ctx: &mut TcpContext) {
  * @return u32 pseudo random sequence number
  */
 pub fn tcp_next_iss(pcb: &mut TcpContext) -> u32 {
-    LWIP_ASSERT("tcp_next_iss: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_next_iss: invalid pcb", pcb != None);
     return LWIP_HOOK_TCP_ISN(&pcb.local_ip, pcb.local_port, &pcb.remote_ip, pcb.remote_port);
     //  LWIP_HOOK_TCP_ISN 
     static iss: u32 = 6510;
 
-    LWIP_ASSERT("tcp_next_iss: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_next_iss: invalid pcb", pcb != None);
 
 
     iss += tcp_ticks;       //  XXX 
@@ -2061,7 +2061,7 @@ pub fn tcp_eff_send_mss_netif(sendmss: u16, outif: &mut NetworkInterfaceCtx, des
 
     //  in case IPv6 is disabled 
 
-    LWIP_ASSERT("tcp_eff_send_mss_netif: invalid dst_ip", dest != None);
+    // LWIP_ASSERT("tcp_eff_send_mss_netif: invalid dst_ip", dest != None);
 
 
     if (IP_IS_V6(dest))
@@ -2105,7 +2105,7 @@ pub fn tcp_netif_ip_addr_changed_pcblist(old_addr: &mut LwipAddr, pcb_list: &mut
     let mut pcb: &mut TcpContext;
     pcb = pcb_list;
 
-    LWIP_ASSERT("tcp_netif_ip_addr_changed_pcblist: invalid old_addr", old_addr != None);
+    // LWIP_ASSERT("tcp_netif_ip_addr_changed_pcblist: invalid old_addr", old_addr != None);
 
     while (pcb != None) {
         //  PCB bound to current local interface address? 
@@ -2352,12 +2352,12 @@ pub fn tcp_ext_arg_alloc_id() -> u8 {
     let result: u8 = tcp_ext_arg_id;
     tcp_ext_arg_id += 1;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
 
 // #error LWIP_TCP_PCB_NUM_EXT_ARGS
 
-    LWIP_ASSERT("Increase LWIP_TCP_PCB_NUM_EXT_ARGS in lwipopts.h", result < LWIP_TCP_PCB_NUM_EXT_ARGS);
+    // LWIP_ASSERT("Increase LWIP_TCP_PCB_NUM_EXT_ARGS in lwipopts.h", result < LWIP_TCP_PCB_NUM_EXT_ARGS);
     return result;
 }
 
@@ -2370,11 +2370,11 @@ pub fn tcp_ext_arg_alloc_id() -> u8 {
  * @param callbacks callback table ( since it is referenced, not copied!)
  */
 pub fn tcp_ext_arg_set_callbacks(pcb: &mut TcpContext, id: u8, callbacks: &mut Vec<tcp_ext_arg_callbacks>) {
-    LWIP_ASSERT("pcb != NULL", pcb != None);
-    LWIP_ASSERT("id < LWIP_TCP_PCB_NUM_EXT_ARGS", id < LWIP_TCP_PCB_NUM_EXT_ARGS);
-    LWIP_ASSERT("callbacks != NULL", callbacks != None);
+    // LWIP_ASSERT("pcb != NULL", pcb != None);
+    // LWIP_ASSERT("id < LWIP_TCP_PCB_NUM_EXT_ARGS", id < LWIP_TCP_PCB_NUM_EXT_ARGS);
+    // LWIP_ASSERT("callbacks != NULL", callbacks != None);
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     pcb.ext_args[id].callbacks = callbacks;
 }
@@ -2388,10 +2388,10 @@ pub fn tcp_ext_arg_set_callbacks(pcb: &mut TcpContext, id: u8, callbacks: &mut V
  * @param arg data pointer to set
  */
 pub fn tcp_ext_arg_set(pcb: &mut TcpContext, id: u8, arg: &mut Vec<u8>) {
-    LWIP_ASSERT("pcb != NULL", pcb != None);
-    LWIP_ASSERT("id < LWIP_TCP_PCB_NUM_EXT_ARGS", id < LWIP_TCP_PCB_NUM_EXT_ARGS);
+    // LWIP_ASSERT("pcb != NULL", pcb != None);
+    // LWIP_ASSERT("id < LWIP_TCP_PCB_NUM_EXT_ARGS", id < LWIP_TCP_PCB_NUM_EXT_ARGS);
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     pcb.ext_args[id].data = arg;
 }
@@ -2405,10 +2405,10 @@ pub fn tcp_ext_arg_set(pcb: &mut TcpContext, id: u8, arg: &mut Vec<u8>) {
  * @return data pointer at the given index
  */
 pub fn tcp_ext_arg_get(pcb: &mut TcpContext, id: u8) {
-    LWIP_ASSERT("pcb != NULL", pcb != None);
-    LWIP_ASSERT("id < LWIP_TCP_PCB_NUM_EXT_ARGS", id < LWIP_TCP_PCB_NUM_EXT_ARGS);
+    // LWIP_ASSERT("pcb != NULL", pcb != None);
+    // LWIP_ASSERT("id < LWIP_TCP_PCB_NUM_EXT_ARGS", id < LWIP_TCP_PCB_NUM_EXT_ARGS);
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     return pcb.ext_args[id].data;
 }
@@ -2418,7 +2418,7 @@ pub fn tcp_ext_arg_get(pcb: &mut TcpContext, id: u8) {
  */
 pub fn tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut TcpContext_ext_args) {
     let i: i32;
-    LWIP_ASSERT("ext_args != NULL", ext_args != None);
+    // LWIP_ASSERT("ext_args != NULL", ext_args != None);
 
     // for (i = 0; i < LWIP_TCP_PCB_NUM_EXT_ARGS; i+= 1) {
     //   if (ext_args[i].callbacks != None) {
@@ -2437,8 +2437,8 @@ pub fn tcp_ext_arg_invoke_callbacks_destroyed(ext_args: &mut TcpContext_ext_args
  */
 pub fn tcp_ext_arg_invoke_callbacks_passive_open(lpcb: &mut TcpListenContext, cpcb: &mut TcpContext) {
     let i: i32;
-    LWIP_ASSERT("lpcb != NULL", lpcb != None);
-    LWIP_ASSERT("cpcb != NULL", cpcb != None);
+    // LWIP_ASSERT("lpcb != NULL", lpcb != None);
+    // LWIP_ASSERT("cpcb != NULL", cpcb != None);
 
     // for (i = 0; i < LWIP_TCP_PCB_NUM_EXT_ARGS; i+= 1) {
     //   if (lpcb.ext_args[i].callbacks != None) {

@@ -48,7 +48,7 @@
 
 
 
-#if LWIP_HTTPD_CGI
+// #if LWIP_HTTPD_CGI
 
 /**
  * @ingroup httpd
@@ -99,21 +99,21 @@ void http_set_cgi_handlers(const tCGI *pCGIs, int iNumHandlers);
 
  /* LWIP_HTTPD_CGI */
 
-#if LWIP_HTTPD_CGI || LWIP_HTTPD_CGI_SSI
+// #if LWIP_HTTPD_CGI || LWIP_HTTPD_CGI_SSI
 
-#if LWIP_HTTPD_CGI_SSI
+// #if LWIP_HTTPD_CGI_SSI
 /* we have to prototype this struct here to make it available for the handler */
 struct fs_file;
 
 /** Define this generic CGI handler in your application.
  * It is called once for every URI with parameters.
  * The parameters can be stored to the object passed as connection_state, which
- * is allocated to file->state via fs_state_init() from fs_open() or fs_open_custom().
+ * is allocated to  file.state via fs_state_init() from fs_open() or fs_open_custom().
  * Content creation via SSI or complete dynamic files can retrieve the CGI params from there.
  */
 extern void httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumParams,
                               char **pcParam, char **pcValue
-#if defined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
+// #if defined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
                                      , void *connection_state
  /* LWIP_HTTPD_FILE_STATE */
                                );
@@ -121,7 +121,7 @@ extern void httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumPar
 
  /* LWIP_HTTPD_CGI || LWIP_HTTPD_CGI_SSI */
 
-#if LWIP_HTTPD_SSI
+// #if LWIP_HTTPD_SSI
 
 /**
  * @ingroup httpd
@@ -154,13 +154,13 @@ extern void httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumPar
  * style block comments in the form / * # name * / (without the spaces).
  */
 typedef u16_t (*tSSIHandler)(
-#if LWIP_HTTPD_SSI_RAW
+// #if LWIP_HTTPD_SSI_RAW
                              const char* ssi_tag_name,
 #else /* LWIP_HTTPD_SSI_RAW */
                              int iIndex,
  /* LWIP_HTTPD_SSI_RAW */
                        char *pcInsert, int iInsertLen
-#if LWIP_HTTPD_SSI_MULTIPART
+// #if LWIP_HTTPD_SSI_MULTIPART
                              , u16_t current_tag_part, u16_t *next_tag_part
  /* LWIP_HTTPD_SSI_MULTIPART */
 fined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
@@ -182,7 +182,7 @@ pub const HTTPD_SSI_TAG_UNKNOWN: u32 = 0xFFFF;
 
  /* LWIP_HTTPD_SSI */
 
-#if LWIP_HTTPD_SUPPORT_POST
+// #if LWIP_HTTPD_SUPPORT_POST
 
 /* These functions must be implemented by the application */
 
@@ -235,15 +235,15 @@ err_t httpd_post_receive_data(void *connection, struct pbuf *p);
  */
 void httpd_post_finished(void *connection, char *response_uri, u16_t response_uri_len);
 
-#if LWIP_HTTPD_POST_MANUAL_WND
+// #if LWIP_HTTPD_POST_MANUAL_WND
 void httpd_post_data_recved(void *connection, u16_t recved_len);
  /* LWIP_HTTPD_POST_MANUAL_WND */
 
  /* LWIP_HTTPD_SUPPORT_POST */
 
-void httpd_init(void);
+void httpd_init();
 
-#if HTTPD_ENABLE_HTTPS
+// #if HTTPD_ENABLE_HTTPS
 struct altcp_tls_config;
 void httpd_inits(struct altcp_tls_config *conf);
 

@@ -33,6 +33,6 @@
 
 #define LWIP_HDR_HTTP_EXAMPLES_GENFILES_EXAMPLE
 
-void genfiles_ex_init(void);
+void genfiles_ex_init();
 
  /* LWIP_HDR_HTTP_EXAMPLES_GENFILES_EXAMPLE */

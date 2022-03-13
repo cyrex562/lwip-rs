@@ -75,17 +75,9 @@
  */
 
 
-#if PPP_SUPPORT && MSCHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && MSCHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
-#if 0 /* UNUSED */
-
-
-
-
-
-
-
-#endif /* UNUSED */
+// #if 0 /* UNUSED */
 
 
 
@@ -93,9 +85,17 @@
 
 
 
-#if MPPE_SUPPORT
-#include "netif/ppp/mppe.h" /* For mppe_sha1_pad*, mppe_set_key() */
-#endif /* MPPE_SUPPORT */
+// #endif /* UNUSED */
+
+
+
+
+
+
+
+// #if MPPE_SUPPORT
+
+// #endif /* MPPE_SUPPORT */
 
 #define SHA1_SIGNATURE_SIZE	20
 #define MD4_SIGNATURE_SIZE	16	/* 16 bytes in a MD4 message digest */
@@ -133,8 +133,8 @@
 #define MS_CHAP2_NTRESP_LEN	24
 #define MS_CHAP2_FLAGS		48
 
-#if MPPE_SUPPORT
-#if 0 /* UNUSED */
+// #if MPPE_SUPPORT
+// #if 0 /* UNUSED */
 /* These values are the RADIUS attribute values--see RFC 2548. */
 #define MPPE_ENC_POL_ENC_ALLOWED 1
 #define MPPE_ENC_POL_ENC_REQUIRED 2
@@ -143,8 +143,8 @@
 
 /* used by plugins (using above values) */
 extern void set_mppe_enc_types(int, int);
-#endif /* UNUSED */
-#endif /* MPPE_SUPPORT */
+// #endif /* UNUSED */
+// #endif /* MPPE_SUPPORT */
 
 /* Are we the authenticator or authenticatee?  For MS-CHAPv2 key derivation. */
 #define MS_CHAP2_AUTHENTICATEE 0
@@ -162,17 +162,17 @@ static void	GenerateAuthenticatorResponsePlain
 			     const char *, u_char[41]);
 #ifdef MSLANMAN
 static void	ChapMS_LANMan (u_char *, char *, int, u_char *);
-#endif
+// #endif
 
 static void GenerateAuthenticatorResponse(const u_char PasswordHashHash[MD4_SIGNATURE_SIZE],
 			u_char NTResponse[24], const u_char PeerChallenge[16],
 			const u_char *rchallenge, const char *username,
 			u_char authResponse[MS_AUTH_RESPONSE_LENGTH+1]);
 
-#if MPPE_SUPPORT
+// #if MPPE_SUPPORT
 static void	Set_Start_Key (ppp_pcb *pcb, const u_char *, const char *, int);
 static void	SetMasterKeys (ppp_pcb *pcb, const char *, int, u_char[24], int);
-#endif /* MPPE_SUPPORT */
+// #endif /* MPPE_SUPPORT */
 
 static void ChapMS (ppp_pcb *pcb, const u_char *, const char *, int, u_char *);
 static void ChapMS2 (ppp_pcb *pcb, const u_char *, const u_char *, const char *, const char *, int,
@@ -181,22 +181,22 @@ static void ChapMS2 (ppp_pcb *pcb, const u_char *, const u_char *, const char *,
 #ifdef MSLANMAN
 bool	ms_lanman = 0;    	/* Use LanMan password instead of NT */
 			  	/* Has meaning only with MS-CHAP challenges */
-#endif
+// #endif
 
-#if MPPE_SUPPORT
+// #if MPPE_SUPPORT
 #ifdef DEBUGMPPEKEY
 /* For MPPE debug */
 /* Use "[]|}{?/><,`!2&&(" (sans quotes) for RFC 3079 MS-CHAPv2 test value */
 static char *mschap_challenge = NULL;
 /* Use "!@\#$%^&*()_+:3|~" (sans quotes, backslash is to escape #) for ... */
 static char *mschap2_peer_challenge = NULL;
-#endif
+// #endif
 
-#include "netif/ppp/fsm.h"		/* Need to poke MPPE options */
 
-#endif /* MPPE_SUPPORT */
 
-#if PPP_OPTIONS
+// #endif /* MPPE_SUPPORT */
+
+// #if PPP_OPTIONS
 /*
  * Command-line options.
  */
@@ -204,18 +204,18 @@ static option_t chapms_option_list[] = {
 #ifdef MSLANMAN
 	{ "ms-lanman", o_bool, &ms_lanman,
 	  "Use LanMan passwd when using MS-CHAP", 1 },
-#endif
+// #endif
 #ifdef DEBUGMPPEKEY
 	{ "mschap-challenge", o_string, &mschap_challenge,
 	  "specify CHAP challenge" },
 	{ "mschap2-peer-challenge", o_string, &mschap2_peer_challenge,
 	  "specify CHAP peer challenge" },
-#endif
+// #endif
 	{ NULL }
 };
-#endif /* PPP_OPTIONS */
+// #endif /* PPP_OPTIONS */
 
-#if PPP_SERVER
+// #if PPP_SERVER
 /*
  * chapms_generate_challenge - generate a challenge for MS-CHAP.
  * For MS-CHAP the challenge length is fixed at 8 bytes.
@@ -230,7 +230,7 @@ static void chapms_generate_challenge(ppp_pcb *pcb, unsigned char *challenge) {
 	if (mschap_challenge && strlen(mschap_challenge) == 8)
 		memcpy(challenge, mschap_challenge, 8);
 	else
-#endif
+// #endif
 		magic_random_bytes(challenge, 8);
 }
 
@@ -242,7 +242,7 @@ static void chapms2_generate_challenge(ppp_pcb *pcb, unsigned char *challenge) {
 	if (mschap_challenge && strlen(mschap_challenge) == 16)
 		memcpy(challenge, mschap_challenge, 16);
 	else
-#endif
+// #endif
 		magic_random_bytes(challenge, 16);
 }
 
@@ -267,7 +267,7 @@ static int chapms_verify_response(ppp_pcb *pcb, int id, const char *name,
 		ppp_notice(("Peer request for LANMAN auth not supported"));
 		goto bad;
 	}
-#endif
+// #endif
 
 	/* Generate the expected response. */
 	ChapMS(pcb, (const u_char *)challenge, (const char *)secret, secret_len, md);
@@ -278,7 +278,7 @@ static int chapms_verify_response(ppp_pcb *pcb, int id, const char *name,
 		diff = memcmp(&response[MS_CHAP_LANMANRESP],
 			      &md[MS_CHAP_LANMANRESP], MS_CHAP_LANMANRESP_LEN);
 	else
-#endif
+// #endif
 		diff = memcmp(&response[MS_CHAP_NTRESP], &md[MS_CHAP_NTRESP],
 			      MS_CHAP_NTRESP_LEN);
 
@@ -369,7 +369,7 @@ static int chapms2_verify_response(ppp_pcb *pcb, int id, const char *name,
 		 challenge_len, challenge, "Access denied");
 	return 0;
 }
-#endif /* PPP_SERVER */
+// #endif /* PPP_SERVER */
 
 static void chapms_make_response(ppp_pcb *pcb, unsigned char *response, int id, const char *our_name,
 		     const unsigned char *challenge, const char *secret, int secret_len,
@@ -393,7 +393,7 @@ static void chapms2_make_response(ppp_pcb *pcb, unsigned char *response, int id,
 		mschap2_peer_challenge,
 #else
 		NULL,
-#endif
+// #endif
 		our_name, secret, secret_len, response, private_,
 		MS_CHAP2_AUTHENTICATEE);
 }
@@ -503,10 +503,10 @@ static void ChallengeResponse(const u_char *challenge,
     BZERO(ZPasswordHash, sizeof(ZPasswordHash));
     MEMCPY(ZPasswordHash, PasswordHash, MD4_SIGNATURE_SIZE);
 
-#if 0
+// #if 0
     dbglog("ChallengeResponse - ZPasswordHash %.*B",
 	   sizeof(ZPasswordHash), ZPasswordHash);
-#endif
+// #endif
 
     pppcrypt_56_to_64_bit_key(ZPasswordHash + 0, des_key);
     lwip_des_init(&des);
@@ -526,9 +526,9 @@ static void ChallengeResponse(const u_char *challenge,
     lwip_des_crypt_ecb(&des, challenge, response +16);
     lwip_des_free(&des);
 
-#if 0
+// #if 0
     dbglog("ChallengeResponse - response %.24B", response);
-#endif
+// #endif
 }
 
 static void ChallengeHash(const u_char PeerChallenge[16], const u_char *rchallenge,
@@ -636,7 +636,7 @@ static void ChapMS_LANMan(u_char *rchallenge, char *secret, int secret_len,
 
     ChallengeResponse(rchallenge, PasswordHash, &response[MS_CHAP_LANMANRESP]);
 }
-#endif
+// #endif
 
 
 static void GenerateAuthenticatorResponse(const u_char PasswordHashHash[MD4_SIGNATURE_SIZE],
@@ -707,7 +707,7 @@ static void GenerateAuthenticatorResponsePlain(
 }
 
 
-#if MPPE_SUPPORT
+// #if MPPE_SUPPORT
 /*
  * Set mppe_xxxx_key from MS-CHAP credentials. (see RFC 3079)
  */
@@ -732,10 +732,10 @@ static void Set_Start_Key(ppp_pcb *pcb, const u_char *rchallenge, const char *se
     lwip_sha1_free(&sha1Context);
 
     /* Same key in both directions. */
-    mppe_set_key(pcb, &pcb->mppe_comp, Digest);
-    mppe_set_key(pcb, &pcb->mppe_decomp, Digest);
+    mppe_set_key(pcb, & pcb.mppe_comp, Digest);
+    mppe_set_key(pcb, & pcb.mppe_decomp, Digest);
 
-    pcb->mppe_keys_set = 1;
+     pcb.mppe_keys_set = 1;
 }
 
 /*
@@ -809,7 +809,7 @@ static void SetMasterKeys(ppp_pcb *pcb, const char *secret, int secret_len, u_ch
     lwip_sha1_finish(&sha1Context, Digest);
     lwip_sha1_free(&sha1Context);
 
-    mppe_set_key(pcb, &pcb->mppe_comp, Digest);
+    mppe_set_key(pcb, & pcb.mppe_comp, Digest);
 
     /*
      * generate recv key
@@ -827,19 +827,19 @@ static void SetMasterKeys(ppp_pcb *pcb, const char *secret, int secret_len, u_ch
     lwip_sha1_finish(&sha1Context, Digest);
     lwip_sha1_free(&sha1Context);
 
-    mppe_set_key(pcb, &pcb->mppe_decomp, Digest);
+    mppe_set_key(pcb, & pcb.mppe_decomp, Digest);
 
-    pcb->mppe_keys_set = 1;
+     pcb.mppe_keys_set = 1;
 }
 
-#endif /* MPPE_SUPPORT */
+// #endif /* MPPE_SUPPORT */
 
 
 static void ChapMS(ppp_pcb *pcb, const u_char *rchallenge, const char *secret, int secret_len,
        unsigned char *response) {
 #if !MPPE_SUPPORT
     LWIP_UNUSED_ARG(pcb);
-#endif /* !MPPE_SUPPORT */
+// #endif /* !MPPE_SUPPORT */
     BZERO(response, MS_CHAP_RESPONSE_LEN);
 
     ChapMS_NT(rchallenge, secret, secret_len, &response[MS_CHAP_NTRESP]);
@@ -852,11 +852,11 @@ static void ChapMS(ppp_pcb *pcb, const u_char *rchallenge, const char *secret, i
     response[MS_CHAP_USENT] = !ms_lanman;
 #else
     response[MS_CHAP_USENT] = 1;
-#endif
+// #endif
 
-#if MPPE_SUPPORT
+// #if MPPE_SUPPORT
     Set_Start_Key(pcb, rchallenge, secret, secret_len);
-#endif /* MPPE_SUPPORT */
+// #endif /* MPPE_SUPPORT */
 }
 
 
@@ -877,7 +877,7 @@ static void ChapMS2(ppp_pcb *pcb, const u_char *rchallenge, const u_char *PeerCh
     LWIP_UNUSED_ARG(authenticator);
 #if !MPPE_SUPPORT
     LWIP_UNUSED_ARG(pcb);
-#endif /* !MPPE_SUPPORT */
+// #endif /* !MPPE_SUPPORT */
 
     BZERO(response, MS_CHAP2_RESPONSE_LEN);
 
@@ -898,14 +898,14 @@ static void ChapMS2(ppp_pcb *pcb, const u_char *rchallenge, const u_char *PeerCh
 				       &response[MS_CHAP2_PEER_CHALLENGE],
 				       rchallenge, user, authResponse);
 
-#if MPPE_SUPPORT
+// #if MPPE_SUPPORT
     SetMasterKeys(pcb, secret, secret_len,
 		  &response[MS_CHAP2_NTRESP], authenticator);
-#endif /* MPPE_SUPPORT */
+// #endif /* MPPE_SUPPORT */
 }
 
-#if 0 /* UNUSED */
-#if MPPE_SUPPORT
+// #if 0 /* UNUSED */
+// #if MPPE_SUPPORT
 /*
  * Set MPPE options from plugins.
  */
@@ -934,15 +934,15 @@ void set_mppe_enc_types(int policy, int types) {
 	    break;
     }
 }
-#endif /* MPPE_SUPPORT */
-#endif /* UNUSED */
+// #endif /* MPPE_SUPPORT */
+// #endif /* UNUSED */
 
 const struct chap_digest_type chapms_digest = {
 	CHAP_MICROSOFT,		/* code */
-#if PPP_SERVER
+// #if PPP_SERVER
 	chapms_generate_challenge,
 	chapms_verify_response,
-#endif /* PPP_SERVER */
+// #endif /* PPP_SERVER */
 	chapms_make_response,
 	NULL,			/* check_success */
 	chapms_handle_failure,
@@ -950,13 +950,13 @@ const struct chap_digest_type chapms_digest = {
 
 const struct chap_digest_type chapms2_digest = {
 	CHAP_MICROSOFT_V2,	/* code */
-#if PPP_SERVER
+// #if PPP_SERVER
 	chapms2_generate_challenge,
 	chapms2_verify_response,
-#endif /* PPP_SERVER */
+// #endif /* PPP_SERVER */
 	chapms2_make_response,
 	chapms2_check_success,
 	chapms_handle_failure,
 };
 
-#endif /* PPP_SUPPORT && MSCHAP_SUPPORT */
+// #endif /* PPP_SUPPORT && MSCHAP_SUPPORT */

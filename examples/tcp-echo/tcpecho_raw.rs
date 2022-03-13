@@ -194,7 +194,7 @@ pub fn tcpecho_raw_recv(arg: &mut Vec<u8>, tpcb: &mut TcpContext, p: &mut Packet
   let es: &mut tcpecho_raw_state;
   let ret_err: err_t;
 
-  LWIP_ASSERT("arg != NULL",arg != None);
+  // LWIP_ASSERT("arg != NULL",arg != None);
   es = arg;
   if (p == None) {
     //  remote host closed connection 

@@ -31,7 +31,7 @@ tcp_remove(struct tcp_pcb* pcb_list)
 
 /** Remove all pcbs on listen-, active- and time-wait-list (bound- isn't exported). */
 void
-tcp_remove_all(void)
+tcp_remove_all()
 {
   tcp_remove(tcp_listen_pcbs.pcbs);
   tcp_remove(tcp_bound_pcbs);
@@ -53,7 +53,7 @@ tcp_create_segment_wnd(ip_addr_t* src_ip, ip_addr_t* dst_ip,
   struct ip_hdr* iphdr;
   struct tcp_hdr* tcphdr;
   u16_t pbuf_len = (u16_t)(sizeof(struct ip_hdr) + sizeof(struct tcp_hdr) + data_len);
-  LWIP_ASSERT("data_len too big", data_len <= 0xFFFF);
+  // LWIP_ASSERT("data_len too big", data_len <= 0xFFFF);
 
   p = pbuf_alloc(PBUF_RAW, pbuf_len, PBUF_POOL);
   EXPECT_RETNULL(p != NULL);

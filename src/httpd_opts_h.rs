@@ -169,8 +169,8 @@ pub const HTTPD_USE_MEM_POOL: u32 = 0; /** The server port for HTTPD to use */
 /** Enable https support? */
 #if !defined HTTPD_ENABLE_HTTPS || defined __DOXYGEN__
 pub const HTTPD_ENABLE_HTTPS: u32 = 0; /** Maximum retries before the connection is aborted/closed.
- * - number of times pcb->poll is called -> default is 4*500ms = 2s;
- * - reset when pcb->sent is called
+ * - number of times  pcb.poll is called -> default is 4*500ms = 2s;
+ * - reset when  pcb.sent is called
  */
 #if !defined HTTPD_MAX_RETRIES || defined __DOXYGEN__
 pub const HTTPD_MAX_RETRIES: u32 = 4; /** The poll delay is X*500ms */
@@ -249,14 +249,14 @@ pub const LWIP_HTTPD_OMIT_HEADER_FOR_EXTENSIONLESS_URI: u32 = 0; /** Default: Ta
 #define HTTP_IS_TAG_VOLATILE(ptr) TCP_WRITE_FLAG_COPY
 
 
-/* By default, the httpd is limited to send 2*pcb->mss to keep resource usage low
+/* By default, the httpd is limited to send 2* pcb.mss to keep resource usage low
    when http is not an important protocol in the device. */
 #if !defined HTTPD_LIMIT_SENDING_TO_2MSS || defined __DOXYGEN__
 pub const HTTPD_LIMIT_SENDING_TO_2MSS: u32 = 1; /* Define this to a function that returns the maximum amount of data to enqueue.
    The function have this signature: u16_t fn(struct altcp_pcb* pcb);
    The best place to define this is the hooks file (@see LWIP_HOOK_FILENAME) */
 #if !defined HTTPD_MAX_WRITE_LEN || defined __DOXYGEN__
-#if HTTPD_LIMIT_SENDING_TO_2MSS
+// #if HTTPD_LIMIT_SENDING_TO_2MSS
 #define HTTPD_MAX_WRITE_LEN(pcb)    ((u16_t)(2 * altcp_mss(pcb)))
 
 
@@ -298,7 +298,7 @@ pub const HTTPD_PRECALCULATED_CHECKSUM: u32 = 0; /** LWIP_HTTPD_FS_ASYNC_READ==1
 pub const LWIP_HTTPD_FS_ASYNC_READ: u32 = 0; /** Filename (including path) to use as FS data file */
 #if !defined HTTPD_FSDATA_FILE || defined __DOXYGEN__
 /* HTTPD_USE_CUSTOM_FSDATA: Compatibility with deprecated lwIP option */
-#if defined(HTTPD_USE_CUSTOM_FSDATA) && (HTTPD_USE_CUSTOM_FSDATA != 0)
+// #if defined(HTTPD_USE_CUSTOM_FSDATA) && (HTTPD_USE_CUSTOM_FSDATA != 0)
 #define HTTPD_FSDATA_FILE "fsdata_custom.c"
 #else
 #define HTTPD_FSDATA_FILE "fsdata.c"

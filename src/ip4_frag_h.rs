@@ -50,7 +50,7 @@
 
 
 
-#if IP_REASSEMBLY
+// #if IP_REASSEMBLY
 /* The IP reassembly timer interval in milliseconds. */
 pub const IP_TMR_INTERVAL: u32 = 1000; /** IP reassembly helper struct.
  * This is exported because memp needs to know the size.
@@ -59,17 +59,17 @@ struct ip_reassdata {
   struct ip_reassdata *next;
   struct pbuf *p;
   struct ip_hdr iphdr;
-  u16_t datagram_len;
-  u8_t flags;
-  u8_t timer;
+  datagram_len: u16;
+  flags: u8;
+  timer: u8;
 };
 
-void ip_reass_init(void);
-void ip_reass_tmr(void);
+void ip_reass_init();
+void ip_reass_tmr();
 struct pbuf * ip4_reass(struct pbuf *p);
  /* IP_REASSEMBLY */
 
-#if IP_FRAG
+// #if IP_FRAG
 #if !LWIP_NETIF_TX_SINGLE_PBUF
 
 #define LWIP_PBUF_CUSTOM_REF_DEFINED

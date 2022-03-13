@@ -42,13 +42,13 @@
 
 
 
-#if NO_SYS
+// #if NO_SYS
 
 /* For a totally minimal and standalone system, we provide null
    definitions of the sys_ functions. */
-typedef u8_t sys_sem_t;
-typedef u8_t sys_mutex_t;
-typedef u8_t sys_mbox_t;
+typedef sys_sem_t: u8;
+typedef sys_mutex_t: u8;
+typedef sys_mbox_t: u8;
 
 #define sys_sem_new(s, c) ERR_OK
 #define sys_sem_signal(s)
@@ -432,13 +432,13 @@ sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread, void *arg, 
  * sys_init() must be called before anything else.
  * Initialize the sys_arch layer.
  */
-void sys_init(void);
+void sys_init();
 
 
 /**
  * Ticks/jiffies since power up.
  */
-u32_t sys_jiffies(void);
+u32_t sys_jiffies();
 
 
 #ifdef LWIP_FUZZ_SYS_NOW
@@ -454,7 +454,7 @@ extern u32_t sys_now_offset;
  * Not implementing this function means you cannot use some modules (e.g. TCP
  * timestamps, internal timeouts for NO_SYS==1).
  */
-u32_t sys_now(void);
+u32_t sys_now();
 
 /* Critical Region Protection */
 /* These functions must be implemented in the sys_arch.c file.
@@ -467,7 +467,7 @@ u32_t sys_now(void);
  * for certain critical regions during buffer allocation, deallocation and memory
  * allocation and deallocation.
  */
-#if SYS_LIGHTWEIGHT_PROT
+// #if SYS_LIGHTWEIGHT_PROT
 
 /**
  * @ingroup sys_prot
@@ -500,7 +500,7 @@ u32_t sys_now(void);
  * this macro may be defined in sys_arch.h
  */
 #define SYS_ARCH_UNPROTECT(lev) sys_arch_unprotect(lev)
-sys_prot_t sys_arch_protect(void);
+sys_prot_t sys_arch_protect();
 void sys_arch_unprotect(sys_prot_t pval);
 
 #else

@@ -58,24 +58,24 @@
 
 
 
-#if LWIP_TCP && LWIP_CALLBACK_API
+// #if LWIP_TCP && LWIP_CALLBACK_API
 
 /**
  * HTTPC_DEBUG: Enable debugging for HTTP client.
  */
 #ifndef HTTPC_DEBUG
 #define HTTPC_DEBUG                 LWIP_DBG_OFF
-#endif
+// #endif
 
 /** Set this to 1 to keep server name and uri in request state */
 #ifndef HTTPC_DEBUG_REQUEST
 #define HTTPC_DEBUG_REQUEST         0
-#endif
+// #endif
 
 /** This string is passed in the HTTP header as "User-Agent: " */
 #ifndef HTTPC_CLIENT_AGENT
 #define HTTPC_CLIENT_AGENT "lwIP/" LWIP_VERSION_STRING " (http://savannah.nongnu.org/projects/lwip)"
-#endif
+// #endif
 
 /* the various debug levels for this file */
 #define HTTPC_DEBUG_TRACE        (HTTPC_DEBUG | LWIP_DBG_TRACE)
@@ -134,22 +134,22 @@ typedef struct _httpc_state
 {
   struct altcp_pcb* pcb;
   ip_addr_t remote_addr;
-  u16_t remote_port;
+  remote_port: u16;
   int timeout_ticks;
   struct pbuf *request;
   struct pbuf *rx_hdrs;
-  u16_t rx_http_version;
-  u16_t rx_status;
+  rx_http_version: u16;
+  rx_status: u16;
   altcp_recv_fn recv_fn;
   const httpc_connection_t *conn_settings;
   void* callback_arg;
   u32_t rx_content_len;
   u32_t hdr_content_len;
   httpc_parse_state_t parse_state;
-#if HTTPC_DEBUG_REQUEST
+// #if HTTPC_DEBUG_REQUEST
   char* server_name;
   char* uri;
-#endif
+// #endif
 } httpc_state_t;
 
 /** Free http client state and deallocate all resources within */
@@ -158,16 +158,16 @@ httpc_free_state(httpc_state_t* req)
 {
   struct altcp_pcb* tpcb;
 
-  if (req->request != NULL) {
-    pbuf_free(req->request);
-    req->request = NULL;
+  if ( req.request != NULL) {
+    pbuf_free( req.request);
+     req.request = NULL;
   }
-  if (req->rx_hdrs != NULL) {
-    pbuf_free(req->rx_hdrs);
-    req->rx_hdrs = NULL;
+  if ( req.rx_hdrs != NULL) {
+    pbuf_free( req.rx_hdrs);
+     req.rx_hdrs = NULL;
   }
 
-  tpcb = req->pcb;
+  tpcb =  req.pcb;
   mem_free(req);
   req = NULL;
 
@@ -192,9 +192,9 @@ static err_t
 httpc_close(httpc_state_t* req, httpc_result_t result, u32_t server_response, err_t err)
 {
   if (req != NULL) {
-    if (req->conn_settings != NULL) {
-      if (req->conn_settings->result_fn != NULL) {
-        req->conn_settings->result_fn(req->callback_arg, result, req->rx_content_len, server_response, err);
+    if ( req.conn_settings != NULL) {
+      if ( req.conn_settings->result_fn != NULL) {
+         req.conn_settings->result_fn( req.callback_arg, result,  req.rx_content_len, server_response, err);
       }
     }
     return httpc_free_state(req);
@@ -251,7 +251,7 @@ http_wait_headers(struct pbuf *p, u32_t *content_length, u16_t *total_header_len
   if (end1 < (0xFFFF - 2)) {
     /* all headers received */
     /* check if we have a content length (@todo: case insensitive?) */
-    u16_t content_len_hdr;
+    content_len_hdr: u16;
     *content_length = HTTPC_CONTENT_LEN_INVALID;
     *total_header_len = end1 + 4;
 
@@ -284,66 +284,66 @@ httpc_tcp_recv(void *arg, struct altcp_pcb *pcb, struct pbuf *p, err_t r)
 
   if (p == NULL) {
     httpc_result_t result;
-    if (req->parse_state != HTTPC_PARSE_RX_DATA) {
+    if ( req.parse_state != HTTPC_PARSE_RX_DATA) {
       /* did not get RX data yet */
       result = HTTPC_RESULT_ERR_CLOSED;
-    } else if ((req->hdr_content_len != HTTPC_CONTENT_LEN_INVALID) &&
-      (req->hdr_content_len != req->rx_content_len)) {
+    } else if (( req.hdr_content_len != HTTPC_CONTENT_LEN_INVALID) &&
+      ( req.hdr_content_len !=  req.rx_content_len)) {
       /* header has been received with content length but not all data received */
       result = HTTPC_RESULT_ERR_CONTENT_LEN;
     } else {
       /* receiving data and either all data received or no content length header */
       result = HTTPC_RESULT_OK;
     }
-    return httpc_close(req, result, req->rx_status, ERR_OK);
+    return httpc_close(req, result,  req.rx_status, ERR_OK);
   }
-  if (req->parse_state != HTTPC_PARSE_RX_DATA) {
-    if (req->rx_hdrs == NULL) {
-      req->rx_hdrs = p;
+  if ( req.parse_state != HTTPC_PARSE_RX_DATA) {
+    if ( req.rx_hdrs == NULL) {
+       req.rx_hdrs = p;
     } else {
-      pbuf_cat(req->rx_hdrs, p);
+      pbuf_cat( req.rx_hdrs, p);
     }
-    if (req->parse_state == HTTPC_PARSE_WAIT_FIRST_LINE) {
-      u16_t status_str_off;
-      err_t err = http_parse_response_status(req->rx_hdrs, &req->rx_http_version, &req->rx_status, &status_str_off);
+    if ( req.parse_state == HTTPC_PARSE_WAIT_FIRST_LINE) {
+      status_str_off: u16;
+      err_t err = http_parse_response_status( req.rx_hdrs, & req.rx_http_version, & req.rx_status, &status_str_off);
       if (err == ERR_OK) {
         /* don't care status string */
-        req->parse_state = HTTPC_PARSE_WAIT_HEADERS;
+         req.parse_state = HTTPC_PARSE_WAIT_HEADERS;
       }
     }
-    if (req->parse_state == HTTPC_PARSE_WAIT_HEADERS) {
-      u16_t total_header_len;
-      err_t err = http_wait_headers(req->rx_hdrs, &req->hdr_content_len, &total_header_len);
+    if ( req.parse_state == HTTPC_PARSE_WAIT_HEADERS) {
+      total_header_len: u16;
+      err_t err = http_wait_headers( req.rx_hdrs, & req.hdr_content_len, &total_header_len);
       if (err == ERR_OK) {
         struct pbuf *q;
         /* full header received, send window update for header bytes and call into client callback */
         altcp_recved(pcb, total_header_len);
-        if (req->conn_settings) {
-          if (req->conn_settings->headers_done_fn) {
-            err = req->conn_settings->headers_done_fn(req, req->callback_arg, req->rx_hdrs, total_header_len, req->hdr_content_len);
+        if ( req.conn_settings) {
+          if ( req.conn_settings->headers_done_fn) {
+            err =  req.conn_settings->headers_done_fn(req,  req.callback_arg,  req.rx_hdrs, total_header_len,  req.hdr_content_len);
             if (err != ERR_OK) {
-              return httpc_close(req, HTTPC_RESULT_LOCAL_ABORT, req->rx_status, err);
+              return httpc_close(req, HTTPC_RESULT_LOCAL_ABORT,  req.rx_status, err);
             }
           }
         }
         /* hide header bytes in pbuf */
-        q = pbuf_free_header(req->rx_hdrs, total_header_len);
+        q = pbuf_free_header( req.rx_hdrs, total_header_len);
         p = q;
-        req->rx_hdrs = NULL;
+         req.rx_hdrs = NULL;
         /* go on with data */
-        req->parse_state = HTTPC_PARSE_RX_DATA;
+         req.parse_state = HTTPC_PARSE_RX_DATA;
       }
     }
   }
-  if ((p != NULL) && (req->parse_state == HTTPC_PARSE_RX_DATA)) {
-    req->rx_content_len += p->tot_len;
+  if ((p != NULL) && ( req.parse_state == HTTPC_PARSE_RX_DATA)) {
+     req.rx_content_len +=  p.tot_len;
     /* received valid data: reset timeout */
-    req->timeout_ticks = HTTPC_POLL_TIMEOUT;
-    if (req->recv_fn != NULL) {
+     req.timeout_ticks = HTTPC_POLL_TIMEOUT;
+    if ( req.recv_fn != NULL) {
       /* directly return here: the connection might already be aborted from the callback! */
-      return req->recv_fn(req->callback_arg, pcb, p, r);
+      return  req.recv_fn( req.callback_arg, pcb, p, r);
     } else {
-      altcp_recved(pcb, p->tot_len);
+      altcp_recved(pcb,  p.tot_len);
       pbuf_free(p);
     }
   }
@@ -357,7 +357,7 @@ httpc_tcp_err(void *arg, err_t err)
   httpc_state_t* req = (httpc_state_t*)arg;
   if (req != NULL) {
     /* pcb has already been deallocated */
-    req->pcb = NULL;
+     req.pcb = NULL;
     httpc_close(req, HTTPC_RESULT_ERR_CLOSED, 0, err);
   }
 }
@@ -370,10 +370,10 @@ httpc_tcp_poll(void *arg, struct altcp_pcb *pcb)
   httpc_state_t* req = (httpc_state_t*)arg;
   LWIP_UNUSED_ARG(pcb);
   if (req != NULL) {
-    if (req->timeout_ticks) {
-      req->timeout_ticks--;
+    if ( req.timeout_ticks) {
+       req.timeout_ticks--;
     }
-    if (!req->timeout_ticks) {
+    if (! req.timeout_ticks) {
       return httpc_close(req, HTTPC_RESULT_ERR_TIMEOUT, 0, ERR_OK);
     }
   }
@@ -401,16 +401,16 @@ httpc_tcp_connected(void *arg, struct altcp_pcb *pcb, err_t err)
   LWIP_UNUSED_ARG(err);
 
   /* send request; last char is zero termination */
-  r = altcp_write(req->pcb, req->request->payload, req->request->len - 1, TCP_WRITE_FLAG_COPY);
+  r = altcp_write( req.pcb,  req.request->payload,  req.request->len - 1, TCP_WRITE_FLAG_COPY);
   if (r != ERR_OK) {
      /* could not write the single small request -> fail, don't retry */
      return httpc_close(req, HTTPC_RESULT_ERR_MEM, 0, r);
   }
   /* everything written, we can free the request */
-  pbuf_free(req->request);
-  req->request = NULL;
+  pbuf_free( req.request);
+   req.request = NULL;
 
-  altcp_output(req->pcb);
+  altcp_output( req.pcb);
   return ERR_OK;
 }
 
@@ -419,14 +419,14 @@ static err_t
 httpc_get_internal_addr(httpc_state_t* req, const ip_addr_t *ipaddr)
 {
   err_t err;
-  LWIP_ASSERT("req != NULL", req != NULL);
+  // LWIP_ASSERT("req != NULL", req != NULL);
 
-  if (&req->remote_addr != ipaddr) {
+  if (& req.remote_addr != ipaddr) {
     /* fill in remote addr if called externally */
-    req->remote_addr = *ipaddr;
+     req.remote_addr = *ipaddr;
   }
 
-  err = altcp_connect(req->pcb, &req->remote_addr, req->remote_port, httpc_tcp_connected);
+  err = altcp_connect( req.pcb, & req.remote_addr,  req.remote_port, httpc_tcp_connected);
   if (err == ERR_OK) {
     return ERR_OK;
   }
@@ -434,7 +434,7 @@ httpc_get_internal_addr(httpc_state_t* req, const ip_addr_t *ipaddr)
   return err;
 }
 
-#if LWIP_DNS
+// #if LWIP_DNS
 /** DNS callback
  * If ipaddr is non-NULL, resolving succeeded and the request can be sent, otherwise it failed.
  */
@@ -461,24 +461,24 @@ httpc_dns_found(const char* hostname, const ip_addr_t *ipaddr, void *arg)
   }
   httpc_close(req, result, 0, err);
 }
-#endif /* LWIP_DNS */
+// #endif /* LWIP_DNS */
 
 /** Start the http request after converting 'server_name' to ip address (DNS or address string) */
 static err_t
 httpc_get_internal_dns(httpc_state_t* req, const char* server_name)
 {
   err_t err;
-  LWIP_ASSERT("req != NULL", req != NULL);
+  // LWIP_ASSERT("req != NULL", req != NULL);
 
-#if LWIP_DNS
-  err = dns_gethostbyname(server_name, &req->remote_addr, httpc_dns_found, req);
+// #if LWIP_DNS
+  err = dns_gethostbyname(server_name, & req.remote_addr, httpc_dns_found, req);
 #else
-  err = ipaddr_aton(server_name, &req->remote_addr) ? ERR_OK : ERR_ARG;
-#endif
+  err = ipaddr_aton(server_name, & req.remote_addr) ? ERR_OK : ERR_ARG;
+// #endif
 
   if (err == ERR_OK) {
     /* cached or IP-string */
-    err = httpc_get_internal_addr(req, &req->remote_addr);
+    err = httpc_get_internal_addr(req, & req.remote_addr);
   } else if (err == ERR_INPROGRESS) {
     return ERR_OK;
   }
@@ -489,15 +489,15 @@ static int
 httpc_create_request_string(const httpc_connection_t *settings, const char* server_name, int server_port, const char* uri,
                             int use_host, char *buffer, size_t buffer_size)
 {
-  if (settings->use_proxy) {
-    LWIP_ASSERT("server_name != NULL", server_name != NULL);
+  if ( settings.use_proxy) {
+    // LWIP_ASSERT("server_name != NULL", server_name != NULL);
     if (server_port != HTTP_DEFAULT_PORT) {
       return snprintf(buffer, buffer_size, HTTPC_REQ_11_PROXY_PORT_FORMAT(server_name, server_port, uri, server_name));
     } else {
       return snprintf(buffer, buffer_size, HTTPC_REQ_11_PROXY_FORMAT(server_name, uri, server_name));
     }
   } else if (use_host) {
-    LWIP_ASSERT("server_name != NULL", server_name != NULL);
+    // LWIP_ASSERT("server_name != NULL", server_name != NULL);
     return snprintf(buffer, buffer_size, HTTPC_REQ_11_HOST_FORMAT(uri, server_name));
   } else {
     return snprintf(buffer, buffer_size, HTTPC_REQ_11_FORMAT(uri));
@@ -513,11 +513,11 @@ httpc_init_connection_common(httpc_state_t **connection, const httpc_connection_
   mem_size_t mem_alloc_len;
   int req_len, req_len2;
   httpc_state_t *req;
-#if HTTPC_DEBUG_REQUEST
+// #if HTTPC_DEBUG_REQUEST
   size_t server_name_len, uri_len;
-#endif
+// #endif
 
-  LWIP_ASSERT("uri != NULL", uri != NULL);
+  // LWIP_ASSERT("uri != NULL", uri != NULL);
 
   /* get request len */
   req_len = httpc_create_request_string(settings, server_name, server_port, uri, use_host, NULL, 0);
@@ -526,11 +526,11 @@ httpc_init_connection_common(httpc_state_t **connection, const httpc_connection_
   }
   /* alloc state and request in one block */
   alloc_len = sizeof(httpc_state_t);
-#if HTTPC_DEBUG_REQUEST
+// #if HTTPC_DEBUG_REQUEST
   server_name_len = server_name ? strlen(server_name) : 0;
   uri_len = strlen(uri);
   alloc_len += server_name_len + 1 + uri_len + 1;
-#endif
+// #endif
   mem_alloc_len = (mem_size_t)alloc_len;
   if ((mem_alloc_len < alloc_len) || (req_len + 1 > 0xFFFF)) {
     return ERR_VAL;
@@ -541,49 +541,49 @@ httpc_init_connection_common(httpc_state_t **connection, const httpc_connection_
     return ERR_MEM;
   }
   memset(req, 0, sizeof(httpc_state_t));
-  req->timeout_ticks = HTTPC_POLL_TIMEOUT;
-  req->request = pbuf_alloc(PBUF_RAW, (u16_t)(req_len + 1), PBUF_RAM);
-  if (req->request == NULL) {
+   req.timeout_ticks = HTTPC_POLL_TIMEOUT;
+   req.request = pbuf_alloc(PBUF_RAW, (u16_t)(req_len + 1), PBUF_RAM);
+  if ( req.request == NULL) {
     httpc_free_state(req);
     return ERR_MEM;
   }
-  if (req->request->next != NULL) {
+  if ( req.request->next != NULL) {
     /* need a pbuf in one piece */
     httpc_free_state(req);
     return ERR_MEM;
   }
-  req->hdr_content_len = HTTPC_CONTENT_LEN_INVALID;
-#if HTTPC_DEBUG_REQUEST
-  req->server_name = (char*)(req + 1);
+   req.hdr_content_len = HTTPC_CONTENT_LEN_INVALID;
+// #if HTTPC_DEBUG_REQUEST
+   req.server_name = (char*)(req + 1);
   if (server_name) {
-    memcpy(req->server_name, server_name, server_name_len + 1);
+    memcpy( req.server_name, server_name, server_name_len + 1);
   }
-  req->uri = req->server_name + server_name_len + 1;
-  memcpy(req->uri, uri, uri_len + 1);
-#endif
-  req->pcb = altcp_new(settings->altcp_allocator);
-  if(req->pcb == NULL) {
+   req.uri =  req.server_name + server_name_len + 1;
+  memcpy( req.uri, uri, uri_len + 1);
+// #endif
+   req.pcb = altcp_new( settings.altcp_allocator);
+  if( req.pcb == NULL) {
     httpc_free_state(req);
     return ERR_MEM;
   }
-  req->remote_port = settings->use_proxy ? settings->proxy_port : server_port;
-  altcp_arg(req->pcb, req);
-  altcp_recv(req->pcb, httpc_tcp_recv);
-  altcp_err(req->pcb, httpc_tcp_err);
-  altcp_poll(req->pcb, httpc_tcp_poll, HTTPC_POLL_INTERVAL);
-  altcp_sent(req->pcb, httpc_tcp_sent);
+   req.remote_port =  settings.use_proxy ?  settings.proxy_port : server_port;
+  altcp_arg( req.pcb, req);
+  altcp_recv( req.pcb, httpc_tcp_recv);
+  altcp_err( req.pcb, httpc_tcp_err);
+  altcp_poll( req.pcb, httpc_tcp_poll, HTTPC_POLL_INTERVAL);
+  altcp_sent( req.pcb, httpc_tcp_sent);
 
   /* set up request buffer */
   req_len2 = httpc_create_request_string(settings, server_name, server_port, uri, use_host,
-    (char *)req->request->payload, req_len + 1);
+    (char *) req.request->payload, req_len + 1);
   if (req_len2 != req_len) {
     httpc_free_state(req);
     return ERR_VAL;
   }
 
-  req->recv_fn = recv_fn;
-  req->conn_settings = settings;
-  req->callback_arg = callback_arg;
+   req.recv_fn = recv_fn;
+   req.conn_settings = settings;
+   req.callback_arg = callback_arg;
 
   *connection = req;
   return ERR_OK;
@@ -645,8 +645,8 @@ httpc_get_file(const ip_addr_t* server_addr, u16_t port, const char* uri, const 
     return err;
   }
 
-  if (settings->use_proxy) {
-    err = httpc_get_internal_addr(req, &settings->proxy_addr);
+  if ( settings.use_proxy) {
+    err = httpc_get_internal_addr(req, & settings.proxy_addr);
   } else {
     err = httpc_get_internal_addr(req, server_addr);
   }
@@ -689,8 +689,8 @@ httpc_get_file_dns(const char* server_name, u16_t port, const char* uri, const h
     return err;
   }
 
-  if (settings->use_proxy) {
-    err = httpc_get_internal_addr(req, &settings->proxy_addr);
+  if ( settings.use_proxy) {
+    err = httpc_get_internal_addr(req, & settings.proxy_addr);
   } else {
     err = httpc_get_internal_dns(req, server_name);
   }
@@ -705,7 +705,7 @@ httpc_get_file_dns(const char* server_name, u16_t port, const char* uri, const h
   return ERR_OK;
 }
 
-#if LWIP_HTTPC_HAVE_FILE_IO
+// #if LWIP_HTTPC_HAVE_FILE_IO
 /* Implementation to disk via fopen/fwrite/fclose follows */
 
 typedef struct _httpc_filestate
@@ -737,14 +737,14 @@ httpc_fs_init(httpc_filestate_t **filestate_out, const char* local_file_name,
     return ERR_MEM;
   }
   memset(filestate, 0, sizeof(httpc_filestate_t));
-  filestate->local_file_name = (const char *)(filestate + 1);
+   filestate.local_file_name = (const char *)(filestate + 1);
   memcpy((char *)(filestate + 1), local_file_name, file_len + 1);
-  filestate->file = NULL;
-  filestate->client_settings = settings;
-  filestate->callback_arg = callback_arg;
+   filestate.file = NULL;
+   filestate.client_settings = settings;
+   filestate.callback_arg = callback_arg;
   /* copy client settings but override result callback */
-  memcpy(&filestate->settings, settings, sizeof(httpc_connection_t));
-  filestate->settings.result_fn = httpc_fs_result;
+  memcpy(& filestate.settings, settings, sizeof(httpc_connection_t));
+   filestate.settings.result_fn = httpc_fs_result;
 
   f = fopen(local_file_name, "wb");
   if(f == NULL) {
@@ -752,7 +752,7 @@ httpc_fs_init(httpc_filestate_t **filestate_out, const char* local_file_name,
     mem_free(filestate);
     return ERR_VAL;
   }
-  filestate->file = f;
+   filestate.file = f;
   *filestate_out = filestate;
   return ERR_OK;
 }
@@ -762,9 +762,9 @@ static void
 httpc_fs_free(httpc_filestate_t *filestate)
 {
   if (filestate != NULL) {
-    if (filestate->file != NULL) {
-      fclose(filestate->file);
-      filestate->file = NULL;
+    if ( filestate.file != NULL) {
+      fclose( filestate.file);
+       filestate.file = NULL;
     }
     mem_free(filestate);
   }
@@ -777,8 +777,8 @@ httpc_fs_result(void *arg, httpc_result_t httpc_result, u32_t rx_content_len,
 {
   httpc_filestate_t *filestate = (httpc_filestate_t *)arg;
   if (filestate != NULL) {
-    if (filestate->client_settings->result_fn != NULL) {
-      filestate->client_settings->result_fn(filestate->callback_arg, httpc_result, rx_content_len,
+    if ( filestate.client_settings->result_fn != NULL) {
+       filestate.client_settings->result_fn( filestate.callback_arg, httpc_result, rx_content_len,
         srv_res, err);
     }
     httpc_fs_free(filestate);
@@ -793,12 +793,12 @@ httpc_fs_tcp_recv(void *arg, struct altcp_pcb *pcb, struct pbuf *p, err_t err)
   struct pbuf* q;
   LWIP_UNUSED_ARG(err);
 
-  LWIP_ASSERT("p != NULL", p != NULL);
+  // LWIP_ASSERT("p != NULL", p != NULL);
 
-  for (q = p; q != NULL; q = q->next) {
-    fwrite(q->payload, 1, q->len, filestate->file);
+  for (q = p; q != NULL; q =  q.next) {
+    fwrite( q.payload, 1,  q.len,  filestate.file);
   }
-  altcp_recved(pcb, p->tot_len);
+  altcp_recved(pcb,  p.tot_len);
   pbuf_free(p);
   return ERR_OK;
 }
@@ -831,15 +831,15 @@ httpc_get_file_to_disk(const ip_addr_t* server_addr, u16_t port, const char* uri
     return err;
   }
 
-  err = httpc_init_connection_addr(&req, &filestate->settings, server_addr, port,
+  err = httpc_init_connection_addr(&req, & filestate.settings, server_addr, port,
     uri, httpc_fs_tcp_recv, filestate);
   if (err != ERR_OK) {
     httpc_fs_free(filestate);
     return err;
   }
 
-  if (settings->use_proxy) {
-    err = httpc_get_internal_addr(req, &settings->proxy_addr);
+  if ( settings.use_proxy) {
+    err = httpc_get_internal_addr(req, & settings.proxy_addr);
   } else {
     err = httpc_get_internal_addr(req, server_addr);
   }
@@ -883,15 +883,15 @@ httpc_get_file_dns_to_disk(const char* server_name, u16_t port, const char* uri,
     return err;
   }
 
-  err = httpc_init_connection(&req, &filestate->settings, server_name, port,
+  err = httpc_init_connection(&req, & filestate.settings, server_name, port,
     uri, httpc_fs_tcp_recv, filestate);
   if (err != ERR_OK) {
     httpc_fs_free(filestate);
     return err;
   }
 
-  if (settings->use_proxy) {
-    err = httpc_get_internal_addr(req, &settings->proxy_addr);
+  if ( settings.use_proxy) {
+    err = httpc_get_internal_addr(req, & settings.proxy_addr);
   } else {
     err = httpc_get_internal_dns(req, server_name);
   }
@@ -906,6 +906,6 @@ httpc_get_file_dns_to_disk(const char* server_name, u16_t port, const char* uri,
   }
   return ERR_OK;
 }
-#endif /* LWIP_HTTPC_HAVE_FILE_IO */
+// #endif /* LWIP_HTTPC_HAVE_FILE_IO */
 
-#endif /* LWIP_TCP && LWIP_CALLBACK_API */
+// #endif /* LWIP_TCP && LWIP_CALLBACK_API */

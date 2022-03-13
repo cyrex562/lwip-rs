@@ -61,8 +61,8 @@ pub const TCP_MD5SIG_MAXKEYLEN: u32 = 80;
 /* This is the optval type */
 struct tcp_md5sig {
   struct  sockaddr_storage tcpm_addr;
-  u16_t   __tcpm_pad1;
-  u16_t   tcpm_keylen;
+  __tcpm_pad1: u16;
+  tcpm_keylen: u16;
   u32_t   __tcpm_pad2;
   u8_t    tcpm_key[TCP_MD5SIG_MAXKEYLEN];
 };
@@ -71,7 +71,7 @@ struct tcp_md5sig {
 int tcp_md5_setsockopt_hook(struct lwip_sock *sock, int level, int optname, const void *optval, u32_t optlen, int *err);
 
 /* Internal hook functions */
-void tcp_md5_init(void);
+void tcp_md5_init();
 err_t tcp_md5_check_inpacket(struct tcp_pcb* pcb, struct tcp_hdr *hdr, u16_t optlen, u16_t opt1len, u8_t *opt2, struct pbuf *p);
 u8_t tcp_md5_get_additional_option_length(const struct tcp_pcb *pcb, u8_t internal_option_length);
 u32_t *tcp_md5_add_tx_options(struct pbuf *p, struct tcp_hdr *hdr, const struct tcp_pcb *pcb, u32_t *opts);

@@ -145,15 +145,15 @@ pub fn chargen_thread(arg: &mut Vec<u8>) {
                                               // chargen_saddr.sin_family = AF_INET;
                                               // chargen_saddr.sin_addr.s_addr = PP_HTONL(INADDR_ANY);
                                               // chargen_saddr.sin_port = lwip_htons(19); //  Chargen server port
-    LWIP_ASSERT("chargen_thread(): Socket create failed.", listenfd >= 0);
+    // LWIP_ASSERT("chargen_thread(): Socket create failed.", listenfd >= 0);
 
     if (lwip_bind(listenfd, &chargen_saddr, sizeof(chargen_saddr)) == -1) {
-        LWIP_ASSERT("chargen_thread(): Socket bind failed.", 0);
+        // LWIP_ASSERT("chargen_thread(): Socket bind failed.", 0);
     }
 
     //  Put socket into listening mode
     if (lwip_listen(listenfd, MAX_SERV) == -1) {
-        LWIP_ASSERT("chargen_thread(): Listen failed.", 0);
+        // LWIP_ASSERT("chargen_thread(): Listen failed.", 0);
     }
 
     //  Wait forever for network input: This could be connections or data

@@ -145,7 +145,7 @@ pub fn altcp_proxyconnect_lower_connected(
 ) -> Result<(), LwipError> {
     let conn: &mut AlTcpContext = arg;
     if conn.state.is_some() {
-        LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
+        // LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
         //  for LWIP_NOASSERT 
         //  upper connected is called when handshake is done 
         if err != ERR_OK {
@@ -173,10 +173,10 @@ pub fn altcp_proxyconnect_lower_recv(
     err: err_t,
 ) -> Result<(), LwipError> {
     let conn: &mut AlTcpContext = arg;
-    LWIP_ASSERT("no err expected", err == ERR_OK);
+    // LWIP_ASSERT("no err expected", err == ERR_OK);
 
     let state = &conn.state;
-    LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
+    // LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
     if state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE {
         //  application phase, just pass this through 
         altcp_tcp_recv(&mut conn.arg, conn, p)
@@ -228,7 +228,7 @@ pub fn altcp_proxyconnect_lower_sent(
 
     if conn.state.is_some() {
         let state = conn.state.unwrap();
-        LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
+        // LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
         //  for LWIP_NOASSERT 
         if !(state.flags & ALTCP_PROXYCONNECT_FLAGS_HANDSHAKE_DONE) {
             //  @todo: do something here? 
@@ -251,7 +251,7 @@ pub fn altcp_proxyconnect_lower_poll(
     inner_conn: &mut AlTcpContext,
 ) -> Result<(), LwipError> {
     let conn: &mut AlTcpContext = arg;
-    LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
+    // LWIP_ASSERT("pcb mismatch", conn.inner_conn == inner_conn);
     //  for LWIP_NOASSERT 
     if conn.poll.is_some() {
         return conn.poll.unwrap()(&mut conn.arg.unwrap(), conn);
@@ -284,7 +284,7 @@ pub fn altcp_proxyconnect_setup(
     conn: &mut AlTcpContext,
     inner_conn: &mut AlTcpContext,
 ) -> Result<(), LwipError> {
-    LWIP_ASSERT("invalid inner_conn", conn != inner_conn);
+    // LWIP_ASSERT("invalid inner_conn", conn != inner_conn);
     //  allocate proxyconnect context 
     let mut state = altcp_proxyconnect_state_alloc();
     state.flags = 0;

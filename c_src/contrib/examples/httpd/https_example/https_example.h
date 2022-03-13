@@ -33,6 +33,6 @@
 
 #define LWIP_HDR_HTTP_EXAMPLES_HTTPS_EXAMPLE
 
-void https_ex_init(void);
+void https_ex_init();
 
  /* LWIP_HDR_HTTP_EXAMPLES_HTTPS_EXAMPLE */

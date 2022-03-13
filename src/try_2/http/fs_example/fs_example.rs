@@ -93,7 +93,7 @@ pub fn fs_open_custom(file: &mut fs_file, name: &String) {
             let len: i32 = ftell(f);
             if (!fseek(f, 0, SEEK_SET)) {
                 let data: &mut fs_custom_data = mem_malloc(sizeof(fs_custom_data));
-                LWIP_ASSERT("out of memory?", data != None);
+                // LWIP_ASSERT("out of memory?", data != None);
                 //memset(file, 0, sizeof(FsFile));
 
                 file.len = 0; //  read size delayed
@@ -129,19 +129,19 @@ pub fn fs_canread_custom(file: &mut fs_file) -> u8 {
     supplied callback if reading works. */
 
     let mut data: &mut fs_custom_data;
-    LWIP_ASSERT("file != NULL", file != None);
+    // LWIP_ASSERT("file != NULL", file != None);
     data = file.pextension;
     if (data == None) {
         //  file transfer has been completed already
-        LWIP_ASSERT("transfer complete", file.index == file.len);
+        // LWIP_ASSERT("transfer complete", file.index == file.len);
         return 1;
     }
-    LWIP_ASSERT("data != NULL", data != None);
+    // LWIP_ASSERT("data != NULL", data != None);
     //  This just simulates a simple delay. This delay would normally come e.g. from SPI transfer
     if (data.delay_read == 3) {
         //  delayed file size mode
         data.delay_read = 1;
-        LWIP_ASSERT("", file.len == 0);
+        // LWIP_ASSERT("", file.len == 0);
         if (!fseek(data.f, 0, SEEK_END)) {
             let len: i32 = ftell(data.f);
             if (!fseek(data.f, 0, SEEK_SET)) {
@@ -151,7 +151,7 @@ pub fn fs_canread_custom(file: &mut fs_file) -> u8 {
             }
         }
         //  if we come here, something is wrong with the file
-        LWIP_ASSERT("file error", 0);
+        // LWIP_ASSERT("file error", 0);
     }
     if (data.delay_read == 1) {
         //  tell read function to delay further
@@ -167,7 +167,7 @@ pub fn fs_example_read_cb(arg: &mut Vec<u8>) {
     data.callback_fn = None;
     data.callback_arg = None;
 
-    LWIP_ASSERT("no callback_fn", callback_fn != None);
+    // LWIP_ASSERT("no callback_fn", callback_fn != None);
 
     callback_fn(callback_arg);
 }
@@ -179,13 +179,13 @@ pub fn fs_wait_read_custom(
 ) {
     let err: err_t;
     let data: &mut fs_custom_data = file.pextension;
-    LWIP_ASSERT("data not set", data != None);
+    // LWIP_ASSERT("data not set", data != None);
     data.callback_fn = callback_fn;
     data.callback_arg = callback_arg;
     err = tcpip_try_callback(fs_example_read_cb, data);
-    LWIP_ASSERT("out of queue elements?", err == ERR_OK);
+    // LWIP_ASSERT("out of queue elements?", err == ERR_OK);
 
-    LWIP_ASSERT("not implemented in this example configuration", 0);
+    // LWIP_ASSERT("not implemented in this example configuration", 0);
 
     /* Return
     - 1 if ready to read (at least one byte)
@@ -204,10 +204,10 @@ pub fn fs_read_async_custom(
     let f: &mut FILE;
     let len: i32;
     let read_count: i32 = count;
-    LWIP_ASSERT("data not set", data != None);
+    // LWIP_ASSERT("data not set", data != None);
 
     //  This just simulates a delay. This delay would normally come e.g. from SPI transfer
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "invalid state",
         data.delay_read >= 0 && data.delay_read <= 2,
     );
@@ -219,11 +219,11 @@ pub fn fs_read_async_custom(
         let err: err_t;
         //  execute requested delay
         data.delay_read = 2;
-        LWIP_ASSERT("duplicate callback request", data.callback_fn == None);
+        // LWIP_ASSERT("duplicate callback request", data.callback_fn == None);
         data.callback_fn = callback_fn;
         data.callback_arg = callback_arg;
         err = tcpip_try_callback(fs_example_read_cb, data);
-        LWIP_ASSERT("out of queue elements?", err == ERR_OK);
+        // LWIP_ASSERT("out of queue elements?", err == ERR_OK);
 
         return FS_READ_DELAYED;
     }
@@ -253,7 +253,7 @@ pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32) {
     let f: &mut FILE;
     let len: i32;
     let read_count: i32 = count;
-    LWIP_ASSERT("data not set", data != None);
+    // LWIP_ASSERT("data not set", data != None);
 
     read_count = LWIP_MIN(read_count, LWIP_HTTPD_EXAMPLE_CUSTOMFILES_LIMIT_READ);
 

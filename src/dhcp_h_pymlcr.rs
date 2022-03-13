@@ -40,12 +40,12 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_DHCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_DHCP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/netif.h"
 // #include "lwip/udp.h"
 
-#if LWIP_DHCP_DOES_ACD_CHECK
+// #if LWIP_DHCP_DOES_ACD_CHECK
 // #include "lwip/acd.h"
  /* LWIP_DHCP_DOES_ACD_CHECK */
 
@@ -71,21 +71,21 @@ struct dhcp
   /** transaction identifier of last sent request */
   u32_t xid;
   /** track PCB allocation state */
-  u8_t pcb_allocated;
+  pcb_allocated: u8;
   /** current DHCP state machine state */
-  u8_t state;
+  state: u8;
   /** retries of current request */
-  u8_t tries;
+  tries: u8;
   /** see DHCP_FLAG_* */
-  u8_t flags;
+  flags: u8;
 
-  u16_t request_timeout; /* #ticks with period DHCP_FINE_TIMER_SECS for request timeout */
-  u16_t t1_timeout;  /* #ticks with period DHCP_COARSE_TIMER_SECS for renewal time */
-  u16_t t2_timeout;  /* #ticks with period DHCP_COARSE_TIMER_SECS for rebind time */
-  u16_t t1_renew_time;  /* #ticks with period DHCP_COARSE_TIMER_SECS until next renew try */
-  u16_t t2_rebind_time; /* #ticks with period DHCP_COARSE_TIMER_SECS until next rebind try */
-  u16_t lease_used; /* #ticks with period DHCP_COARSE_TIMER_SECS since last received DHCP ack */
-  u16_t t0_timeout; /* #ticks with period DHCP_COARSE_TIMER_SECS for lease time */
+  request_timeout: u16; /* #ticks with period DHCP_FINE_TIMER_SECS for request timeout */
+  t1_timeout: u16;  /* #ticks with period DHCP_COARSE_TIMER_SECS for renewal time */
+  t2_timeout: u16;  /* #ticks with period DHCP_COARSE_TIMER_SECS for rebind time */
+  t1_renew_time: u16;  /* #ticks with period DHCP_COARSE_TIMER_SECS until next renew try */
+  t2_rebind_time: u16; /* #ticks with period DHCP_COARSE_TIMER_SECS until next rebind try */
+  lease_used: u16; /* #ticks with period DHCP_COARSE_TIMER_SECS since last received DHCP ack */
+  t0_timeout: u16; /* #ticks with period DHCP_COARSE_TIMER_SECS for lease time */
   ip_addr_t server_ip_addr; /* dhcp server address that offered this lease (ip_addr_t because passed to UDP) */
  offered_ip_addr: ip4_addr_t;
  offered_sn_mask: ip4_addr_t;
@@ -94,7 +94,7 @@ struct dhcp
   u32_t offered_t0_lease; /* lease period (in seconds) */
   u32_t offered_t1_renew; /* recommended renew time (usually 50% of lease period) */
   u32_t offered_t2_rebind; /* recommended rebind time (usually 87.5 of lease period)  */
-#if LWIP_DHCP_BOOTP_FILE
+// #if LWIP_DHCP_BOOTP_FILE
  offered_si_addr: ip4_addr_t;
   char boot_file_name[DHCP_BOOT_FILE_LEN];
  /* LWIP_DHCP_BOOTPFILE */
@@ -119,11 +119,11 @@ void dhcp_network_changed_link_up(struct netif *netif);
 
 u8_t dhcp_supplied_address(const struct netif *netif);
 /* to be called every minute */
-void dhcp_coarse_tmr(void);
+void dhcp_coarse_tmr();
 /* to be called every half second */
-void dhcp_fine_tmr(void);
+void dhcp_fine_tmr();
 
-#if LWIP_DHCP_GET_NTP_SRV
+// #if LWIP_DHCP_GET_NTP_SRV
 /** This function must exist, in other to add offered NTP servers to
  * the NTP (or SNTP) engine.
  * See LWIP_DHCP_MAX_NTP_SERVERS */

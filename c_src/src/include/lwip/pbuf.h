@@ -183,18 +183,18 @@ struct pbuf {
    * For non-queue packet chains this is the invariant:
    * p->tot_len == p->len + (p->next? p->next->tot_len: 0)
    */
-  u16_t tot_len;
+  tot_len: u16;
 
   /** length of this buffer */
-  u16_t len;
+  len: u16;
 
   /** a bit field indicating pbuf type and allocation sources
       (see PBUF_TYPE_FLAG_*, PBUF_ALLOC_FLAG_* and PBUF_TYPE_ALLOC_SRC_MASK)
     */
-  u8_t type_internal;
+  type_internal: u8;
 
   /** misc flags */
-  u8_t flags;
+  flags: u8;
 
   /**
    * the reference count always equals the number of pointers
@@ -204,7 +204,7 @@ struct pbuf {
   LWIP_PBUF_REF_T ref;
 
   /** For incoming packets, this contains the input netif's index */
-  u8_t if_idx;
+  if_idx: u8;
 
   /** In case the user needs to store data custom data on a pbuf */
   LWIP_PBUF_CUSTOM_DATA
@@ -223,7 +223,7 @@ struct pbuf_rom {
   const void *payload;
 };
 
-#if LWIP_SUPPORT_CUSTOM_PBUF
+// #if LWIP_SUPPORT_CUSTOM_PBUF
 /** Prototype for a function to free a custom pbuf */
 typedef void (*pbuf_free_custom_fn)(struct pbuf *p);
 
@@ -240,8 +240,8 @@ struct pbuf_custom {
 
 pub const PBUF_POOL_FREE_OOSEQ: u32 = 1; /* PBUF_POOL_FREE_OOSEQ */
 IP_TCP && TCP_QUEUE_OOSEQ && NO_SYS && PBUF_POOL_FREE_OOSEQ
-extern volatile u8_t pbuf_free_ooseq_pending;
-void pbuf_free_ooseq(void);
+extern volatile pbuf_free_ooseq_pending: u8;
+void pbuf_free_ooseq();
 /** When not using sys_check_timeouts(), call PBUF_CHECK_FREE_OOSEQ()
     at regular intervals from main level to check if ooseq pbufs need to be
     freed! */
@@ -259,7 +259,7 @@ void pbuf_free_ooseq(void);
 
 struct pbuf *pbuf_alloc(pbuf_layer l, u16_t length, pbuf_type type);
 struct pbuf *pbuf_alloc_reference(void *payload, u16_t length, pbuf_type type);
-#if LWIP_SUPPORT_CUSTOM_PBUF
+// #if LWIP_SUPPORT_CUSTOM_PBUF
 struct pbuf *pbuf_alloced_custom(pbuf_layer l, u16_t length, pbuf_type type,
                                  struct pbuf_custom *p, void *payload_mem,
                                  u16_t payload_mem_len);
@@ -289,7 +289,7 @@ err_t pbuf_take_at(struct pbuf *buf, const void *dataptr, u16_t len, u16_t offse
 struct pbuf *pbuf_skip(struct pbuf* in, u16_t in_offset, u16_t* out_offset);
 struct pbuf *pbuf_coalesce(struct pbuf *p, pbuf_layer layer);
 struct pbuf *pbuf_clone(pbuf_layer l, pbuf_type type, struct pbuf *p);
-#if LWIP_CHECKSUM_ON_COPY
+// #if LWIP_CHECKSUM_ON_COPY
 err_t pbuf_fill_chksum(struct pbuf *p, u16_t start_offset, const void *dataptr,
                        u16_t len, u16_t *chksum);
  /* LWIP_CHECKSUM_ON_COPY */

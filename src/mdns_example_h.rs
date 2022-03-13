@@ -33,7 +33,7 @@
 
 
 
-void mdns_example_init(void);
+void mdns_example_init();
 
 
 

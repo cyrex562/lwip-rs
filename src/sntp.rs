@@ -64,20 +64,20 @@
 
 
 
-#if LWIP_UDP
+// #if LWIP_UDP
 
 /* Handle support for more than one server via SNTP_MAX_SERVERS */
-#if SNTP_MAX_SERVERS > 1
+// #if SNTP_MAX_SERVERS > 1
 #define SNTP_SUPPORT_MULTIPLE_SERVERS 1
 #else /* NTP_MAX_SERVERS > 1 */
 #define SNTP_SUPPORT_MULTIPLE_SERVERS 0
-#endif /* NTP_MAX_SERVERS > 1 */
+// #endif /* NTP_MAX_SERVERS > 1 */
 
 #ifndef SNTP_SUPPRESS_DELAY_CHECK
-#if SNTP_UPDATE_DELAY < 15000
+// #if SNTP_UPDATE_DELAY < 15000
 #error "SNTPv4 RFC 4330 enforces a minimum update time of 15 seconds (define SNTP_SUPPRESS_DELAY_CHECK to disable this error)!"
-#endif
-#endif
+// #endif
+// #endif
 
 /* the various debug levels for this file */
 #define SNTP_DEBUG_TRACE        (SNTP_DEBUG | LWIP_DBG_TRACE)
@@ -124,7 +124,7 @@
 # else
 #  define SNTP_FRAC_TO_US(f)        ((u32_t)(f) / 4295)
 # endif
-#endif /* !SNTP_FRAC_TO_US */
+// #endif /* !SNTP_FRAC_TO_US */
 
 /* Configure behaviour depending on native, microsecond or second precision.
  * Treat NTP timestamps as signed two's-complement integers. This way,
@@ -140,7 +140,7 @@
 #  define SNTP_SET_SYSTEM_TIME_NTP(s, f) \
     SNTP_SET_SYSTEM_TIME((u32_t)((s) + DIFF_SEC_1970_2036))
 # endif
-#endif /* !SNTP_SET_SYSTEM_TIME_NTP */
+// #endif /* !SNTP_SET_SYSTEM_TIME_NTP */
 
 /* Get the system time either natively as NTP timestamp or convert from
  * Unix time in seconds and microseconds. Take care to avoid overflow if the
@@ -155,14 +155,14 @@
     (s) = (s32_t)(sec_ - DIFF_SEC_1970_2036); \
     (f) = usec_ * 4295 - ((usec_ * 2143) >> 16) + 2147; \
   } while (0)
-#endif /* !SNTP_GET_SYSTEM_TIME_NTP */
+// #endif /* !SNTP_GET_SYSTEM_TIME_NTP */
 
 /* Start offset of the timestamps to extract from the SNTP packet */
 #define SNTP_OFFSET_TIMESTAMPS \
     (SNTP_OFFSET_TRANSMIT_TIME + 8 - sizeof(struct sntp_timestamps))
 
 /* Round-trip delay arithmetic helpers */
-#if SNTP_COMP_ROUNDTRIP
+// #if SNTP_COMP_ROUNDTRIP
 # if !LWIP_HAVE_INT64
 #  error "SNTP round-trip delay compensation requires 64-bit arithmetic"
 # endif
@@ -170,7 +170,7 @@
     ((s64_t)(((u64_t)(s) << 32) | (u32_t)(f)))
 # define SNTP_TIMESTAMP_TO_S64(t) \
     SNTP_SEC_FRAC_TO_S64(lwip_ntohl((t).sec), lwip_ntohl((t).frac))
-#endif /* SNTP_COMP_ROUNDTRIP */
+// #endif /* SNTP_COMP_ROUNDTRIP */
 
 /**
  * 64-bit NTP timestamp, in network byte order.
@@ -184,10 +184,10 @@ struct sntp_time {
  * Timestamps to be extracted from the NTP header.
  */
 struct sntp_timestamps {
-#if SNTP_COMP_ROUNDTRIP || SNTP_CHECK_RESPONSE >= 2
+// #if SNTP_COMP_ROUNDTRIP || SNTP_CHECK_RESPONSE >= 2
   struct sntp_time orig;
   struct sntp_time recv;
-#endif
+// #endif
   struct sntp_time xmit;
 };
 
@@ -199,7 +199,7 @@ struct sntp_timestamps {
  */
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
-#endif
+// #endif
 PACK_STRUCT_BEGIN
 struct sntp_msg {
   PACK_STRUCT_FLD_8(u8_t  li_vn_mode);
@@ -217,63 +217,63 @@ struct sntp_msg {
 PACK_STRUCT_END
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
-#endif
+// #endif
 
 /* function prototypes */
 static void sntp_request(void *arg);
 
 /** The operating mode */
-static u8_t sntp_opmode;
+static sntp_opmode: u8;
 
 /** The UDP pcb used by the SNTP client */
 static struct udp_pcb *sntp_pcb;
 /** Names/Addresses of servers */
 struct sntp_server {
-#if SNTP_SERVER_DNS
+// #if SNTP_SERVER_DNS
   const char *name;
-#endif /* SNTP_SERVER_DNS */
+// #endif /* SNTP_SERVER_DNS */
   ip_addr_t addr;
-#if SNTP_MONITOR_SERVER_REACHABILITY
+// #if SNTP_MONITOR_SERVER_REACHABILITY
   /** Reachability shift register as described in RFC 5905 */
-  u8_t reachability;
-#endif /* SNTP_MONITOR_SERVER_REACHABILITY */
-#if SNTP_SUPPORT_MULTIPLE_SERVERS
-  u8_t kod_received;
-#endif
+  reachability: u8;
+// #endif /* SNTP_MONITOR_SERVER_REACHABILITY */
+// #if SNTP_SUPPORT_MULTIPLE_SERVERS
+  kod_received: u8;
+// #endif
 };
 static struct sntp_server sntp_servers[SNTP_MAX_SERVERS];
 
-#if SNTP_GET_SERVERS_FROM_DHCP || SNTP_GET_SERVERS_FROM_DHCPV6
-static u8_t sntp_set_servers_from_dhcp;
-#endif /* SNTP_GET_SERVERS_FROM_DHCP || SNTP_GET_SERVERS_FROM_DHCPV6 */
-#if SNTP_SUPPORT_MULTIPLE_SERVERS
+// #if SNTP_GET_SERVERS_FROM_DHCP || SNTP_GET_SERVERS_FROM_DHCPV6
+static sntp_set_servers_from_dhcp: u8;
+// #endif /* SNTP_GET_SERVERS_FROM_DHCP || SNTP_GET_SERVERS_FROM_DHCPV6 */
+// #if SNTP_SUPPORT_MULTIPLE_SERVERS
 /** The currently used server (initialized to 0) */
-static u8_t sntp_current_server;
+static sntp_current_server: u8;
 #else /* SNTP_SUPPORT_MULTIPLE_SERVERS */
 #define sntp_current_server 0
-#endif /* SNTP_SUPPORT_MULTIPLE_SERVERS */
+// #endif /* SNTP_SUPPORT_MULTIPLE_SERVERS */
 
-#if SNTP_RETRY_TIMEOUT_EXP
+// #if SNTP_RETRY_TIMEOUT_EXP
 #define SNTP_RESET_RETRY_TIMEOUT() sntp_retry_timeout = SNTP_RETRY_TIMEOUT
 /** Retry time, initialized with SNTP_RETRY_TIMEOUT and doubled with each retry. */
 static u32_t sntp_retry_timeout;
 #else /* SNTP_RETRY_TIMEOUT_EXP */
 #define SNTP_RESET_RETRY_TIMEOUT()
 #define sntp_retry_timeout SNTP_RETRY_TIMEOUT
-#endif /* SNTP_RETRY_TIMEOUT_EXP */
+// #endif /* SNTP_RETRY_TIMEOUT_EXP */
 
-#if SNTP_CHECK_RESPONSE >= 1
+// #if SNTP_CHECK_RESPONSE >= 1
 /** Saves the last server address to compare with response */
 static ip_addr_t sntp_last_server_address;
-#endif /* SNTP_CHECK_RESPONSE >= 1 */
+// #endif /* SNTP_CHECK_RESPONSE >= 1 */
 
-#if SNTP_CHECK_RESPONSE >= 2
+// #if SNTP_CHECK_RESPONSE >= 2
 /** Saves the last timestamp sent (which is sent back by the server)
  * to compare against in response. Stored in network byte order. */
 static struct sntp_time sntp_last_timestamp_sent;
-#endif /* SNTP_CHECK_RESPONSE >= 2 */
+// #endif /* SNTP_CHECK_RESPONSE >= 2 */
 
-#if defined(LWIP_DEBUG) && !defined(sntp_format_time)
+// #if defined(LWIP_DEBUG) && !defined(sntp_format_time)
 /* Debug print helper. */
 static const char *
 sntp_format_time(s32_t sec)
@@ -282,7 +282,7 @@ sntp_format_time(s32_t sec)
   ut = (u32_t)((u32_t)sec + DIFF_SEC_1970_2036);
   return ctime(&ut);
 }
-#endif /* LWIP_DEBUG && !sntp_format_time */
+// #endif /* LWIP_DEBUG && !sntp_format_time */
 
 /**
  * SNTP processing of received timestamp
@@ -293,12 +293,12 @@ sntp_process(const struct sntp_timestamps *timestamps)
   s32_t sec;
   u32_t frac;
 
-  sec  = (s32_t)lwip_ntohl(timestamps->xmit.sec);
-  frac = lwip_ntohl(timestamps->xmit.frac);
+  sec  = (s32_t)lwip_ntohl( timestamps.xmit.sec);
+  frac = lwip_ntohl( timestamps.xmit.frac);
 
-#if SNTP_COMP_ROUNDTRIP
+// #if SNTP_COMP_ROUNDTRIP
 # if SNTP_CHECK_RESPONSE >= 2
-  if (timestamps->recv.sec != 0 || timestamps->recv.frac != 0)
+  if ( timestamps.recv.sec != 0 ||  timestamps.recv.frac != 0)
 # endif
   {
     s32_t dest_sec;
@@ -317,8 +317,8 @@ sntp_process(const struct sntp_timestamps *timestamps)
 
       t4 = SNTP_SEC_FRAC_TO_S64(dest_sec, dest_frac);
       t3 = SNTP_SEC_FRAC_TO_S64(sec, frac);
-      t1 = SNTP_TIMESTAMP_TO_S64(timestamps->orig);
-      t2 = SNTP_TIMESTAMP_TO_S64(timestamps->recv);
+      t1 = SNTP_TIMESTAMP_TO_S64( timestamps.orig);
+      t2 = SNTP_TIMESTAMP_TO_S64( timestamps.recv);
       /* Clock offset calculation according to RFC 4330 */
       t4 += ((t2 - t1) + (t3 - t4)) / 2;
 
@@ -326,7 +326,7 @@ sntp_process(const struct sntp_timestamps *timestamps)
       frac = (u32_t)((u64_t)t4);
     }
   }
-#endif /* SNTP_COMP_ROUNDTRIP */
+// #endif /* SNTP_COMP_ROUNDTRIP */
 
   SNTP_SET_SYSTEM_TIME_NTP(sec, frac);
   LWIP_UNUSED_ARG(frac); /* might be unused if only seconds are set */
@@ -341,9 +341,9 @@ static void
 sntp_initialize_request(struct sntp_msg *req)
 {
   memset(req, 0, SNTP_MSG_LEN);
-  req->li_vn_mode = SNTP_LI_NO_WARNING | SNTP_VERSION | SNTP_MODE_CLIENT;
+   req.li_vn_mode = SNTP_LI_NO_WARNING | SNTP_VERSION | SNTP_MODE_CLIENT;
 
-#if SNTP_CHECK_RESPONSE >= 2 || SNTP_COMP_ROUNDTRIP
+// #if SNTP_CHECK_RESPONSE >= 2 || SNTP_COMP_ROUNDTRIP
   {
     s32_t secs;
     u32_t sec, frac;
@@ -356,10 +356,10 @@ sntp_initialize_request(struct sntp_msg *req)
     sntp_last_timestamp_sent.sec  = sec;
     sntp_last_timestamp_sent.frac = frac;
 # endif
-    req->transmit_timestamp[0] = sec;
-    req->transmit_timestamp[1] = frac;
+     req.transmit_timestamp[0] = sec;
+     req.transmit_timestamp[1] = frac;
   }
-#endif /* SNTP_CHECK_RESPONSE >= 2 || SNTP_COMP_ROUNDTRIP */
+// #endif /* SNTP_CHECK_RESPONSE >= 2 || SNTP_COMP_ROUNDTRIP */
 }
 
 /**
@@ -379,7 +379,7 @@ sntp_retry(void *arg)
   sys_untimeout(sntp_request, NULL);
   sys_timeout(sntp_retry_timeout, sntp_request, NULL);
 
-#if SNTP_RETRY_TIMEOUT_EXP
+// #if SNTP_RETRY_TIMEOUT_EXP
   {
     u32_t new_retry_timeout;
     /* increase the timeout for next retry */
@@ -392,10 +392,10 @@ sntp_retry(void *arg)
       sntp_retry_timeout = SNTP_RETRY_TIMEOUT_MAX;
     }
   }
-#endif /* SNTP_RETRY_TIMEOUT_EXP */
+// #endif /* SNTP_RETRY_TIMEOUT_EXP */
 }
 
-#if SNTP_SUPPORT_MULTIPLE_SERVERS
+// #if SNTP_SUPPORT_MULTIPLE_SERVERS
 /**
  * If Kiss-of-Death is received (or another packet parsing error),
  * try the next server or retry the current server and increase the retry
@@ -421,9 +421,9 @@ sntp_try_next_server(void *arg)
       continue;
     }
     if (!ip_addr_isany(&sntp_servers[sntp_current_server].addr)
-#if SNTP_SERVER_DNS
+// #if SNTP_SERVER_DNS
         || (sntp_servers[sntp_current_server].name != NULL)
-#endif
+// #endif
        ) {
       LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_try_next_server: Sending request to server %"U16_F"\n",
                                      (u16_t)sntp_current_server));
@@ -450,32 +450,32 @@ sntp_kod_try_next_server(void *arg)
 /* Always retry on error if only one server is supported */
 #define sntp_try_next_server     sntp_retry
 #define sntp_kod_try_next_server sntp_retry
-#endif /* SNTP_SUPPORT_MULTIPLE_SERVERS */
+// #endif /* SNTP_SUPPORT_MULTIPLE_SERVERS */
 
 /** UDP recv callback for the sntp pcb */
 static void
 sntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, u16_t port)
 {
   struct sntp_timestamps timestamps;
-  u8_t mode;
-  u8_t stratum;
+  mode: u8;
+  stratum: u8;
   err_t err;
 
   LWIP_UNUSED_ARG(arg);
   LWIP_UNUSED_ARG(pcb);
 
   err = ERR_ARG;
-#if SNTP_CHECK_RESPONSE >= 1
+// #if SNTP_CHECK_RESPONSE >= 1
   /* check server address and port */
   if (((sntp_opmode != SNTP_OPMODE_POLL) || ip_addr_eq(addr, &sntp_last_server_address)) &&
       (port == SNTP_PORT))
 #else /* SNTP_CHECK_RESPONSE >= 1 */
   LWIP_UNUSED_ARG(addr);
   LWIP_UNUSED_ARG(port);
-#endif /* SNTP_CHECK_RESPONSE >= 1 */
+// #endif /* SNTP_CHECK_RESPONSE >= 1 */
   {
     /* process the response */
-    if (p->tot_len == SNTP_MSG_LEN) {
+    if ( p.tot_len == SNTP_MSG_LEN) {
       mode = pbuf_get_at(p, SNTP_OFFSET_LI_VN_MODE) & SNTP_MODE_MASK;
       /* if this is a SNTP response... */
       if (((sntp_opmode == SNTP_OPMODE_POLL)       && (mode == SNTP_MODE_SERVER)) ||
@@ -488,14 +488,14 @@ sntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr,
           LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_recv: Received Kiss-of-Death\n"));
         } else {
           pbuf_copy_partial(p, &timestamps, sizeof(timestamps), SNTP_OFFSET_TIMESTAMPS);
-#if SNTP_CHECK_RESPONSE >= 2
+// #if SNTP_CHECK_RESPONSE >= 2
           /* check originate_timetamp against sntp_last_timestamp_sent */
           if (timestamps.orig.sec != sntp_last_timestamp_sent.sec ||
               timestamps.orig.frac != sntp_last_timestamp_sent.frac) {
             LWIP_DEBUGF(SNTP_DEBUG_WARN,
                         ("sntp_recv: Invalid originate timestamp in response\n"));
           } else
-#endif /* SNTP_CHECK_RESPONSE >= 2 */
+// #endif /* SNTP_CHECK_RESPONSE >= 2 */
             /* @todo: add code for SNTP_CHECK_RESPONSE >= 3 and >= 4 here */
           {
             /* correct answer */
@@ -508,15 +508,15 @@ sntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr,
         err = ERR_TIMEOUT;
       }
     } else {
-      LWIP_DEBUGF(SNTP_DEBUG_WARN, ("sntp_recv: Invalid packet length: %"U16_F"\n", p->tot_len));
+      LWIP_DEBUGF(SNTP_DEBUG_WARN, ("sntp_recv: Invalid packet length: %"U16_F"\n",  p.tot_len));
     }
   }
-#if SNTP_CHECK_RESPONSE >= 1
+// #if SNTP_CHECK_RESPONSE >= 1
   else {
     /* packet from wrong remote address or port, wait for correct response */
     err = ERR_TIMEOUT;
   }
-#endif /* SNTP_CHECK_RESPONSE >= 1 */
+// #endif /* SNTP_CHECK_RESPONSE >= 1 */
 
   pbuf_free(p);
 
@@ -524,10 +524,10 @@ sntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr,
     /* correct packet received: process it it */
     sntp_process(&timestamps);
 
-#if SNTP_MONITOR_SERVER_REACHABILITY
+// #if SNTP_MONITOR_SERVER_REACHABILITY
     /* indicate that server responded */
     sntp_servers[sntp_current_server].reachability |= 1;
-#endif /* SNTP_MONITOR_SERVER_REACHABILITY */
+// #endif /* SNTP_MONITOR_SERVER_REACHABILITY */
     /* Set up timeout for next request (only if poll response was received)*/
     if (sntp_opmode == SNTP_OPMODE_POLL) {
       u32_t sntp_update_delay;
@@ -562,11 +562,11 @@ sntp_send_request(const ip_addr_t *server_addr)
 {
   struct pbuf *p;
 
-  LWIP_ASSERT("server_addr != NULL", server_addr != NULL);
+  // LWIP_ASSERT("server_addr != NULL", server_addr != NULL);
 
   p = pbuf_alloc(PBUF_TRANSPORT, SNTP_MSG_LEN, PBUF_RAM);
   if (p != NULL) {
-    struct sntp_msg *sntpmsg = (struct sntp_msg *)p->payload;
+    struct sntp_msg *sntpmsg = (struct sntp_msg *) p.payload;
     LWIP_DEBUGF(SNTP_DEBUG_STATE, ("sntp_send_request: Sending request to server\n"));
     /* initialize request message */
     sntp_initialize_request(sntpmsg);
@@ -574,17 +574,17 @@ sntp_send_request(const ip_addr_t *server_addr)
     udp_sendto(sntp_pcb, p, server_addr, SNTP_PORT);
     /* free the pbuf after sending it */
     pbuf_free(p);
-#if SNTP_MONITOR_SERVER_REACHABILITY
+// #if SNTP_MONITOR_SERVER_REACHABILITY
     /* indicate new packet has been sent */
     sntp_servers[sntp_current_server].reachability <<= 1;
-#endif /* SNTP_MONITOR_SERVER_REACHABILITY */
+// #endif /* SNTP_MONITOR_SERVER_REACHABILITY */
     /* set up receive timeout: try next server or retry on timeout */
     sys_untimeout(sntp_try_next_server, NULL);
     sys_timeout((u32_t)SNTP_RECV_TIMEOUT, sntp_try_next_server, NULL);
-#if SNTP_CHECK_RESPONSE >= 1
+// #if SNTP_CHECK_RESPONSE >= 1
     /* save server address to verify it in sntp_recv */
     ip_addr_copy(sntp_last_server_address, *server_addr);
-#endif /* SNTP_CHECK_RESPONSE >= 1 */
+// #endif /* SNTP_CHECK_RESPONSE >= 1 */
   } else {
     LWIP_DEBUGF(SNTP_DEBUG_SERIOUS, ("sntp_send_request: Out of memory, trying again in %"U32_F" ms\n",
                                      (u32_t)SNTP_RETRY_TIMEOUT));
@@ -594,7 +594,7 @@ sntp_send_request(const ip_addr_t *server_addr)
   }
 }
 
-#if SNTP_SERVER_DNS
+// #if SNTP_SERVER_DNS
 /**
  * DNS found callback when using DNS names as server address.
  */
@@ -615,7 +615,7 @@ sntp_dns_found(const char *hostname, const ip_addr_t *ipaddr, void *arg)
     sntp_try_next_server(NULL);
   }
 }
-#endif /* SNTP_SERVER_DNS */
+// #endif /* SNTP_SERVER_DNS */
 
 /**
  * Send out an sntp request.
@@ -631,7 +631,7 @@ sntp_request(void *arg)
   LWIP_UNUSED_ARG(arg);
 
   /* initialize SNTP server address */
-#if SNTP_SERVER_DNS
+// #if SNTP_SERVER_DNS
   if (sntp_servers[sntp_current_server].name) {
     /* always resolve the name and rely on dns-internal caching & timeout */
     ip_addr_set_zero(&sntp_servers[sntp_current_server].addr);
@@ -645,7 +645,7 @@ sntp_request(void *arg)
       sntp_servers[sntp_current_server].addr = sntp_server_address;
     }
   } else
-#endif /* SNTP_SERVER_DNS */
+// #endif /* SNTP_SERVER_DNS */
   {
     sntp_server_address = sntp_servers[sntp_current_server].addr;
     err = (ip_addr_isany_val(sntp_server_address)) ? ERR_ARG : ERR_OK;
@@ -669,32 +669,32 @@ sntp_request(void *arg)
  * Send out request instantly or after SNTP_STARTUP_DELAY(_FUNC).
  */
 void
-sntp_init(void)
+sntp_init()
 {
   /* LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() */
   LWIP_DEBUGF(SNTP_DEBUG_TRACE, ("sntp_init: SNTP initialised\n"));
 
 #ifdef SNTP_SERVER_ADDRESS
-#if SNTP_SERVER_DNS
+// #if SNTP_SERVER_DNS
   sntp_setservername(0, SNTP_SERVER_ADDRESS);
 #else
 #error SNTP_SERVER_ADDRESS string not supported SNTP_SERVER_DNS==0
-#endif
-#endif /* SNTP_SERVER_ADDRESS */
+// #endif
+// #endif /* SNTP_SERVER_ADDRESS */
 
   if (sntp_pcb == NULL) {
     sntp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-    LWIP_ASSERT("Failed to allocate udp pcb for sntp client", sntp_pcb != NULL);
+    // LWIP_ASSERT("Failed to allocate udp pcb for sntp client", sntp_pcb != NULL);
     if (sntp_pcb != NULL) {
       udp_recv(sntp_pcb, sntp_recv, NULL);
 
       if (sntp_opmode == SNTP_OPMODE_POLL) {
         SNTP_RESET_RETRY_TIMEOUT();
-#if SNTP_STARTUP_DELAY
+// #if SNTP_STARTUP_DELAY
         sys_timeout((u32_t)SNTP_STARTUP_DELAY_FUNC, sntp_request, NULL);
 #else
         sntp_request(NULL);
-#endif
+// #endif
       } else if (sntp_opmode == SNTP_OPMODE_LISTENONLY) {
         ip_set_option(sntp_pcb, SOF_BROADCAST);
         udp_bind(sntp_pcb, IP_ANY_TYPE, SNTP_PORT);
@@ -708,16 +708,16 @@ sntp_init(void)
  * Stop this module.
  */
 void
-sntp_stop(void)
+sntp_stop()
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (sntp_pcb != NULL) {
-#if SNTP_MONITOR_SERVER_REACHABILITY
-    u8_t i;
+// #if SNTP_MONITOR_SERVER_REACHABILITY
+    i: u8;
     for (i = 0; i < SNTP_MAX_SERVERS; i++) {
       sntp_servers[i].reachability = 0;
     }
-#endif /* SNTP_MONITOR_SERVER_REACHABILITY */
+// #endif /* SNTP_MONITOR_SERVER_REACHABILITY */
     sys_untimeout(sntp_request, NULL);
     sys_untimeout(sntp_try_next_server, NULL);
     udp_remove(sntp_pcb);
@@ -729,7 +729,7 @@ sntp_stop(void)
  * @ingroup sntp
  * Get enabled state.
  */
-u8_t sntp_enabled(void)
+u8_t sntp_enabled()
 {
   return (sntp_pcb != NULL) ? 1 : 0;
 }
@@ -742,9 +742,9 @@ u8_t sntp_enabled(void)
 void
 sntp_setoperatingmode(u8_t operating_mode)
 {
-  LWIP_ASSERT_CORE_LOCKED();
-  LWIP_ASSERT("Invalid operating mode", operating_mode <= SNTP_OPMODE_LISTENONLY);
-  LWIP_ASSERT("Operating mode must not be set while SNTP client is running", sntp_pcb == NULL);
+  // LWIP_ASSERT_CORE_LOCKED()
+  // LWIP_ASSERT("Invalid operating mode", operating_mode <= SNTP_OPMODE_LISTENONLY);
+  // LWIP_ASSERT("Operating mode must not be set while SNTP client is running", sntp_pcb == NULL);
   sntp_opmode = operating_mode;
 }
 
@@ -753,12 +753,12 @@ sntp_setoperatingmode(u8_t operating_mode)
  * Gets the operating mode.
  */
 u8_t
-sntp_getoperatingmode(void)
+sntp_getoperatingmode()
 {
   return sntp_opmode;
 }
 
-#if SNTP_MONITOR_SERVER_REACHABILITY
+// #if SNTP_MONITOR_SERVER_REACHABILITY
 /**
  * @ingroup sntp
  * Gets the server reachability shift register as described in RFC 5905.
@@ -773,9 +773,9 @@ sntp_getreachability(u8_t idx)
   }
   return 0;
 }
-#endif /* SNTP_MONITOR_SERVER_REACHABILITY */
+// #endif /* SNTP_MONITOR_SERVER_REACHABILITY */
 
-#if SNTP_GET_SERVERS_FROM_DHCP || SNTP_GET_SERVERS_FROM_DHCPV6
+// #if SNTP_GET_SERVERS_FROM_DHCP || SNTP_GET_SERVERS_FROM_DHCPV6
 /**
  * Config SNTP server handling by IP address, name, or DHCP; clear table
  * @param set_servers_from_dhcp enable or disable getting server addresses from dhcp
@@ -784,12 +784,12 @@ void
 sntp_servermode_dhcp(int set_servers_from_dhcp)
 {
   u8_t new_mode = set_servers_from_dhcp ? 1 : 0;
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (sntp_set_servers_from_dhcp != new_mode) {
     sntp_set_servers_from_dhcp = new_mode;
   }
 }
-#endif /* SNTP_GET_SERVERS_FROM_DHCP || SNTP_GET_SERVERS_FROM_DHCPV6 */
+// #endif /* SNTP_GET_SERVERS_FROM_DHCP || SNTP_GET_SERVERS_FROM_DHCPV6 */
 
 /**
  * @ingroup sntp
@@ -801,23 +801,23 @@ sntp_servermode_dhcp(int set_servers_from_dhcp)
 void
 sntp_setserver(u8_t idx, const ip_addr_t *server)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (idx < SNTP_MAX_SERVERS) {
     if (server != NULL) {
       sntp_servers[idx].addr = (*server);
-#if SNTP_SUPPORT_MULTIPLE_SERVERS
+// #if SNTP_SUPPORT_MULTIPLE_SERVERS
       sntp_servers[idx].kod_received = 0;
-#endif
+// #endif
     } else {
       ip_addr_set_zero(&sntp_servers[idx].addr);
     }
-#if SNTP_SERVER_DNS
+// #if SNTP_SERVER_DNS
     sntp_servers[idx].name = NULL;
-#endif
+// #endif
   }
 }
 
-#if LWIP_DHCP && SNTP_GET_SERVERS_FROM_DHCP
+// #if LWIP_DHCP && SNTP_GET_SERVERS_FROM_DHCP
 /**
  * Initialize one of the NTP servers by IP address, required by DHCP
  *
@@ -831,7 +831,7 @@ dhcp_set_ntp_servers(u8_t num, const ip4_addr_t *server)
                                  (sntp_set_servers_from_dhcp ? "Got" : "Rejected"),
                                  ip4_addr1(server), ip4_addr2(server), ip4_addr3(server), ip4_addr4(server), num));
   if (sntp_set_servers_from_dhcp && num) {
-    u8_t i;
+    i: u8;
     for (i = 0; (i < num) && (i < SNTP_MAX_SERVERS); i++) {
       ip_addr_t addr;
       ip_addr_copy_from_ip4(addr, server[i]);
@@ -842,9 +842,9 @@ dhcp_set_ntp_servers(u8_t num, const ip4_addr_t *server)
     }
   }
 }
-#endif /* LWIP_DHCP && SNTP_GET_SERVERS_FROM_DHCP */
+// #endif /* LWIP_DHCP && SNTP_GET_SERVERS_FROM_DHCP */
 
-#if LWIP_IPV6_DHCP6 && SNTP_GET_SERVERS_FROM_DHCPV6
+// #if LWIP_IPV6_DHCP6 && SNTP_GET_SERVERS_FROM_DHCPV6
 /**
  * Initialize one of the NTP servers by IP address, required by DHCPV6
  *
@@ -858,7 +858,7 @@ dhcp6_set_ntp_servers(u8_t num_ntp_servers, ip_addr_t* ntp_server_addrs)
                                  (sntp_set_servers_from_dhcp ? "Got" : "Rejected"),
                                  num_ntp_servers));
   if (sntp_set_servers_from_dhcp && num_ntp_servers) {
-    u8_t i;
+    i: u8;
     for (i = 0; (i < num_ntp_servers) && (i < SNTP_MAX_SERVERS); i++) {
       LWIP_DEBUGF(SNTP_DEBUG_TRACE, ("sntp: NTP server %u: %s\n",
                                      i, ipaddr_ntoa(&ntp_server_addrs[i])));
@@ -869,7 +869,7 @@ dhcp6_set_ntp_servers(u8_t num_ntp_servers, ip_addr_t* ntp_server_addrs)
     }
   }
 }
-#endif /* LWIP_DHCPv6 && SNTP_GET_SERVERS_FROM_DHCPV6 */
+// #endif /* LWIP_DHCPv6 && SNTP_GET_SERVERS_FROM_DHCPV6 */
 
 /**
  * @ingroup sntp
@@ -899,17 +899,17 @@ sntp_getserver(u8_t idx)
 u8_t
 sntp_getkodreceived(u8_t idx)
 {
-#if SNTP_SUPPORT_MULTIPLE_SERVERS
+// #if SNTP_SUPPORT_MULTIPLE_SERVERS
   if (idx < SNTP_MAX_SERVERS) {
     return sntp_servers[idx].kod_received;
   }
 #else
   LWIP_UNUSED_ARG(idx);
-#endif
+// #endif
   return 0;
 }
 
-#if SNTP_SERVER_DNS
+// #if SNTP_SERVER_DNS
 /**
  * Initialize one of the NTP servers by name
  *
@@ -919,12 +919,12 @@ sntp_getkodreceived(u8_t idx)
 void
 sntp_setservername(u8_t idx, const char *server)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (idx < SNTP_MAX_SERVERS) {
     sntp_servers[idx].name = server;
-#if SNTP_SUPPORT_MULTIPLE_SERVERS
+// #if SNTP_SUPPORT_MULTIPLE_SERVERS
     sntp_servers[idx].kod_received = 0;
-#endif
+// #endif
   }
 }
 
@@ -943,6 +943,6 @@ sntp_getservername(u8_t idx)
   }
   return NULL;
 }
-#endif /* SNTP_SERVER_DNS */
+// #endif /* SNTP_SERVER_DNS */
 
-#endif /* LWIP_UDP */
+// #endif /* LWIP_UDP */

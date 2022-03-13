@@ -294,11 +294,11 @@ structure. */
  * @param args depends on reason, see reason description
  */
 
-// struct netif_ext_callback;
-// typedef struct netif_ext_callback
+// struct NetifExtCallback;
+// typedef struct NetifExtCallback
 // {
 //   netif_ext_callback_fn callback_fn;
-//   // struct netif_ext_callback* next;
+//   // struct NetifExtCallback* next;
 // } netif_ext_callback_t;
 
 // #define NETIF_DECLARE_EXT_CALLBACK(name) static netif_ext_callback_t name;

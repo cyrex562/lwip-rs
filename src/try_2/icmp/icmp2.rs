@@ -162,7 +162,7 @@ pub fn icmp_input(packet: &mut PacketBuffer, network: &mut NetworkInterfaceCtx) 
                 MEMCPY(r.payload, iphdr_in, hlen);
                 //  match r.payload back to icmp header (cannot fail)
                 if (pbuf_remove_header(r, hlen)) {
-                    LWIP_ASSERT("icmp_input: moving r.payload to icmp header failed\n", 0);
+                    // LWIP_ASSERT("icmp_input: moving r.payload to icmp header failed\n", 0);
                     pbuf_free(r);
                     // goto icmperr;
                 }
@@ -185,7 +185,7 @@ pub fn icmp_input(packet: &mut PacketBuffer, network: &mut NetworkInterfaceCtx) 
                     packet,
                     hlen + PBUF_LINK_HLEN + PBUF_LINK_ENCAPSULATION_HLEN,
                 )) {
-                    LWIP_ASSERT("icmp_input: restoring original p.payload failed\n", 0);
+                    // LWIP_ASSERT("icmp_input: restoring original p.payload failed\n", 0);
                     // goto icmperr;
                 }
             }
@@ -357,7 +357,7 @@ pub fn icmp_send_response(p: &mut PacketBuffer, e_type: u8, code: u8) {
         MIB2_STATS_INC(mib2.icmpouterrors);
         return;
     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "check that first pbuf can hold icmp message",
         (q.len >= (sizeof(icmp_echo_hdr) + IP_HLEN + ICMP_DEST_UNREACH_DATASIZE)),
     );

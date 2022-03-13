@@ -67,7 +67,7 @@ pub const PPPOL2TP_SUPPORT: u32 = 0; /**
 #define LWIP_PPP_API                    (PPP_SUPPORT && (NO_SYS == 0))
 
 
-#if PPP_SUPPORT
+// #if PPP_SUPPORT
 
 /**
  * MEMP_NUM_PPP_PCB: the number of simultaneously active PPP
@@ -392,7 +392,7 @@ pub const PPP_MINMRU: u32 = 128; /**
  * Default = 1500 - PPPoE(6) - PPP Protocol(2) - IPv4 header(20) - UDP Header(8)
  * - L2TP Header(6) - HDLC Header(2) - PPP Protocol(2) - MPPE Header(2) - PPP Protocol(2)
  */
-#if PPPOL2TP_SUPPORT
+// #if PPPOL2TP_SUPPORT
 
 pub const PPPOL2TP_DEFMRU: u32 = 1450; /* PPPOL2TP_SUPPORT */
 
@@ -412,16 +412,16 @@ pub const MAXSECRETLEN: u32 = 256; /* ------------------------------------------
 #if !LWIP_USE_EXTERNAL_POLARSSL && !LWIP_USE_EXTERNAL_MBEDTLS
 
 /* CHAP, EAP, L2TP AUTH and MD5 Random require MD5 support */
-#if CHAP_SUPPORT || EAP_SUPPORT || PPPOL2TP_AUTH_SUPPORT || PPP_MD5_RANDM
+// #if CHAP_SUPPORT || EAP_SUPPORT || PPPOL2TP_AUTH_SUPPORT || PPP_MD5_RANDM
 pub const LWIP_INCLUDED_POLARSSL_MD5: u32 = 1; /* CHAP_SUPPORT || EAP_SUPPORT || PPPOL2TP_AUTH_SUPPORT || PPP_MD5_RANDM */
 
-#if MSCHAP_SUPPORT
+// #if MSCHAP_SUPPORT
 
 /* MSCHAP require MD4 support */
 pub const LWIP_INCLUDED_POLARSSL_MD4: u32 = 1; /* MSCHAP require SHA1 support */
 pub const LWIP_INCLUDED_POLARSSL_SHA1: u32 = 1; /* MSCHAP require DES support */
 pub const LWIP_INCLUDED_POLARSSL_DES: u32 = 1; /* MS-CHAP support is required for MPPE */
-#if MPPE_SUPPORT
+// #if MPPE_SUPPORT
 /* MPPE require ARC4 support */
 pub const LWIP_INCLUDED_POLARSSL_ARC4: u32 = 1; /* MPPE_SUPPORT */
 

@@ -104,11 +104,11 @@ pub fn fifoInit(fifo: &mut fifo_t) {
     fifo.len = 0;
     if (sys_sem_new(&fifo.sem, 1) != ERR_OK) {
         //  critical section 1=free to enter 
-        LWIP_ASSERT("Failed to create semaphore", 0);
+        // LWIP_ASSERT("Failed to create semaphore", 0);
     }
     if (sys_sem_new(&fifo.getSem, 0) != ERR_OK) {
         //  0 = no one waiting 
-        LWIP_ASSERT("Failed to create semaphore", 0);
+        // LWIP_ASSERT("Failed to create semaphore", 0);
     }
     fifo.getWaiting = FALSE;
 }

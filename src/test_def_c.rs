@@ -6,12 +6,12 @@ pub const MAGIC_UNTOUCHED_BYTE: u32 = 0x7a; #define TEST_BUFSIZE          32
 pub const GUARD_SIZE: u32 = 4; /* Setups/teardown functions */
 
 static void
-def_setup(void)
+def_setup()
 {
 }
 
 static void
-def_teardown(void)
+def_teardown()
 {
 }
 
@@ -72,7 +72,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-def_suite(void)
+def_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_def_lwip_itoa)

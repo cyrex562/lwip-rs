@@ -45,7 +45,7 @@
 
 // #include "lwip/mem.h"
 
-#if MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK
 /* if MEM_OVERFLOW_CHECK or MEMP_OVERFLOW_CHECK is turned on, we reserve some
  * bytes at the beginning and at the end of each element, initialize them as
  * 0xcd and check them later.

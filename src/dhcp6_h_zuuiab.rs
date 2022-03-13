@@ -56,15 +56,15 @@ pub const DHCP6_TIMER_MSECS: u32 = 500; struct dhcp6
   /** transaction identifier of last sent request */
   u32_t xid;
   /** track PCB allocation state */
-  u8_t pcb_allocated;
+  pcb_allocated: u8;
   /** current DHCPv6 state machine state */
-  u8_t state;
+  state: u8;
   /** retries of current request */
-  u8_t tries;
+  tries: u8;
   /** if request config is triggered while another action is active, this keeps track of it */
-  u8_t request_config_pending;
+  request_config_pending: u8;
   /** #ticks with period DHCP6_TIMER_MSECS for request timeout */
-  u16_t request_timeout;
+  request_timeout: u16;
 _DHCP6_STATEFUL
   /* @todo: add more members here to keep track of stateful DHCPv6 data, like lease times */
  /* LWIP_IPV6_DHCP6_STATEFUL */
@@ -79,11 +79,11 @@ err_t dhcp6_enable_stateful(struct netif *netif);
 err_t dhcp6_enable_stateless(struct netif *netif);
 void dhcp6_disable(struct netif *netif);
 
-void dhcp6_tmr(void);
+void dhcp6_tmr();
 
 void dhcp6_nd6_ra_trigger(struct netif *netif, u8_t managed_addr_config, u8_t other_config);
 
-#if LWIP_DHCP6_GET_NTP_SRV
+// #if LWIP_DHCP6_GET_NTP_SRV
 /** This function must exist, in other to add offered NTP servers to
  * the NTP (or SNTP) engine.
  * See LWIP_DHCP6_MAX_NTP_SERVERS */

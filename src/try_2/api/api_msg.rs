@@ -100,14 +100,14 @@ pub fn lwip_netconn_err_to_msg(err: err_t) {
         ERR_RST => return &netconn_reset,
         ERR_CLSD => return &netconn_closed,
         _ => {
-            LWIP_ASSERT("unhandled error", err == ERR_OK);
+            // LWIP_ASSERT("unhandled error", err == ERR_OK);
             return None;
         }
     }
 }
 
 pub fn lwip_netconn_is_err_msg(msg: &mut Vec<u8>, err: &mut err_t) {
-    LWIP_ASSERT("err != NULL", err != None);
+    // LWIP_ASSERT("err != NULL", err != None);
 
     if (msg == &netconn_aborted) {
         *err = ERR_ABRT;
@@ -192,8 +192,8 @@ pub fn recv_udp(
     let recv_avail: i32;
 
     //  only used for asserts... 
-    LWIP_ASSERT("recv_udp must have a pcb argument", pcb != None);
-    LWIP_ASSERT("recv_udp must have an argument", arg != None);
+    // LWIP_ASSERT("recv_udp must have a pcb argument", pcb != None);
+    // LWIP_ASSERT("recv_udp must have an argument", arg != None);
     conn = arg;
 
     if (conn == None) {
@@ -201,7 +201,7 @@ pub fn recv_udp(
         return;
     }
 
-    LWIP_ASSERT("recv_udp: recv for wrong pcb!", conn.pcb.udp == pcb);
+    // LWIP_ASSERT("recv_udp: recv for wrong pcb!", conn.pcb.udp == pcb);
 
     SYS_ARCH_GET(conn.recv_avail, recv_avail);
     if (!NETCONN_MBOX_VALID(conn, &conn.recvmbox)
@@ -261,16 +261,16 @@ pub fn recv_tcp(
     let len: usize;
     let msg: &mut Vec<u8>;
 
-    LWIP_ASSERT("recv_tcp must have a pcb argument", pcb != None);
-    LWIP_ASSERT("recv_tcp must have an argument", arg != None);
-    LWIP_ASSERT("err != ERR_OK unhandled", err == ERR_OK);
+    // LWIP_ASSERT("recv_tcp must have a pcb argument", pcb != None);
+    // LWIP_ASSERT("recv_tcp must have an argument", arg != None);
+    // LWIP_ASSERT("err != ERR_OK unhandled", err == ERR_OK);
     //  for LWIP_NOASSERT 
     conn = arg;
 
     if (conn == None) {
         return ERR_VAL;
     }
-    LWIP_ASSERT("recv_tcp: recv for wrong pcb!", conn.pcb.tcp == pcb);
+    // LWIP_ASSERT("recv_tcp: recv for wrong pcb!", conn.pcb.tcp == pcb);
 
     if (!NETCONN_MBOX_VALID(conn, &conn.recvmbox)) {
         //  recvmbox already deleted 
@@ -319,7 +319,7 @@ pub fn recv_tcp(
 pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut TcpContext) -> Result<(), LwipError> {
     let conn: &mut NetConnDesc = arg;
 
-    LWIP_ASSERT("conn != NULL", (conn != None));
+    // LWIP_ASSERT("conn != NULL", (conn != None));
 
     if (conn.state == NETCONN_WRITE) {
         lwip_netconn_do_writemore(conn, WRITE_DELAYED);
@@ -358,7 +358,7 @@ pub fn poll_tcp(arg: &mut Vec<u8>, pcb: &mut TcpContext) -> Result<(), LwipError
 pub fn sent_tcp(arg: &mut Vec<u8>, pcb: &mut TcpContext, len: usize) -> Result<(), LwipError> {
     let conn: &mut NetConnDesc = arg;
 
-    LWIP_ASSERT("conn != NULL", (conn != None));
+    // LWIP_ASSERT("conn != NULL", (conn != None));
 
     if (conn) {
         if (conn.state == NETCONN_WRITE) {
@@ -395,7 +395,7 @@ pub fn cp(arg: &mut Vec<u8>, err: err_t) {
     SYS_ARCH_DECL_PROTECT(lev);
 
     conn = arg;
-    LWIP_ASSERT("conn != NULL", (conn != None));
+    // LWIP_ASSERT("conn != NULL", (conn != None));
 
     SYS_ARCH_PROTECT(lev);
 
@@ -443,7 +443,7 @@ pub fn cp(arg: &mut Vec<u8>, err: err_t) {
         if (!was_nonblocking_connect) {
             sys_sem_t * op_completed_sem;
             //  set error return code 
-            LWIP_ASSERT("conn.current_msg != NULL", conn.current_msg != None);
+            // LWIP_ASSERT("conn.current_msg != NULL", conn.current_msg != None);
             if (old_state == NETCONN_CLOSE) {
                 //  let close succeed: the connection is closed after all... 
                 conn.current_msg.err = ERR_OK;
@@ -452,7 +452,7 @@ pub fn cp(arg: &mut Vec<u8>, err: err_t) {
                 conn.current_msg.err = err;
             }
             op_completed_sem = LWIP_API_MSG_SEM(conn.current_msg);
-            LWIP_ASSERT("inavlid op_completed_sem", sys_sem_valid(op_completed_sem));
+            // LWIP_ASSERT("inavlid op_completed_sem", sys_sem_valid(op_completed_sem));
             conn.current_msg = None;
             //  wake up the waiting task 
             sys_sem_signal(op_completed_sem);
@@ -460,7 +460,7 @@ pub fn cp(arg: &mut Vec<u8>, err: err_t) {
             //  @todo: test what happens for error on nonblocking connect 
         }
     } else {
-        LWIP_ASSERT("conn.current_msg == NULL", conn.current_msg == None);
+        // LWIP_ASSERT("conn.current_msg == NULL", conn.current_msg == None);
     }
 }
 
@@ -514,7 +514,7 @@ pub fn accept_function(
         }
         return ERR_VAL;
     }
-    LWIP_ASSERT("expect newpcb == NULL or err == ERR_OK", err == ERR_OK);
+    // LWIP_ASSERT("expect newpcb == NULL or err == ERR_OK", err == ERR_OK);
     //  for LWIP_NOASSERT 
     /*LWIP_DEBUGF(
         API_MSG_DEBUG,
@@ -576,7 +576,7 @@ pub fn accept_function(
 pub fn pcb_new(msg: &mut ApiMessage) {
     let iptype: lwip_LwipAddrype = IPADDR_TYPE_V4;
 
-    LWIP_ASSERT("pcb_new: pcb already allocated", msg.conn.pcb.tcp == None);
+    // LWIP_ASSERT("pcb_new: pcb already allocated", msg.conn.pcb.tcp == None);
 
     //  IPv6: Dual-stack by default, unless netconn_set_ipv6only() is called 
     if (NETCONNTYPE_ISIPV6(netconn_type(msg.conn))) {
@@ -685,7 +685,7 @@ pub fn netconn_alloc(t: netconn_type, callback: netconn_callback) -> NetConnDesc
         NETCONN_TCP => size = DEFAULT_TCP_RECVMBOX_SIZE,
 
         _ => {
-            LWIP_ASSERT("netconn_alloc: undefined netconn_type", 0);
+            // LWIP_ASSERT("netconn_alloc: undefined netconn_type", 0);
         } // goto free_and_return;
     }
 
@@ -724,7 +724,7 @@ pub fn netconn_alloc(t: netconn_type, callback: netconn_callback) -> NetConnDesc
  * @param conn the netconn to free
  */
 pub fn netconn_free(conn: &mut NetConnDesc) {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "PCB must be deallocated outside this function",
         conn.pcb.tcp == None,
     );
@@ -732,12 +732,12 @@ pub fn netconn_free(conn: &mut NetConnDesc) {
     //  in fullduplex, netconn is drained here 
     netconn_drain(conn);
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "recvmbox must be deallocated before calling this function",
         !sys_mbox_valid(&conn.recvmbox),
     );
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "acceptmbox must be deallocated before calling this function",
         !sys_mbox_valid(&conn.acceptmbox),
     );
@@ -762,7 +762,7 @@ pub fn netconn_drain(conn: &mut NetConnDesc) {
     /* This runs when mbox and netconn are marked as closed,
     so we don't need to lock against rx packets */
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "netconn marked closed",
         conn.flags & NETCONN_FLAG_MBOXINVALID,
     );
@@ -846,17 +846,17 @@ pub fn lwip_netconn_do_close_internal(conn: &mut NetConnDesc) -> Result<(), Lwip
 
     let linger_wait_required: u8 = 0;
 
-    LWIP_ASSERT("invalid conn", (conn != None));
-    LWIP_ASSERT(
+    // LWIP_ASSERT("invalid conn", (conn != None));
+    // LWIP_ASSERT(
         "this is for tcp netconns only",
         (NETCONNTYPE_GROUP(conn.netconntype) == NETCONN_TCP),
     );
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "conn must be in state NETCONN_CLOSE",
         (conn.state == NETCONN_CLOSE),
     );
-    LWIP_ASSERT("pcb already closed", (conn.pcb.tcp != None));
-    LWIP_ASSERT("conn.current_msg != NULL", conn.current_msg != None);
+    // LWIP_ASSERT("pcb already closed", (conn.pcb.tcp != None));
+    // LWIP_ASSERT("conn.current_msg != NULL", conn.current_msg != None);
 
     tpcb = conn.pcb.tcp;
     shut = conn.current_msg.msg.sd.shut;
@@ -1004,7 +1004,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut NetConnDesc) -> Result<(), Lwip
     if (!close_finished) {
         //  Closing failed and we want to wait: restore some of the callbacks 
         //  Closing of listen pcb will never fail! 
-        LWIP_ASSERT("Closing a listen pcb may not fail!", (tpcb.state != LISTEN));
+        // LWIP_ASSERT("Closing a listen pcb may not fail!", (tpcb.state != LISTEN));
         if (shut_tx) {
             tcp_sent(tpcb, sent_tcp);
         }
@@ -1016,7 +1016,7 @@ pub fn lwip_netconn_do_close_internal(conn: &mut NetConnDesc) -> Result<(), Lwip
     }
     /* If closing didn't succeed, we get called again either
     from poll_tcp or from sent_tcp */
-    LWIP_ASSERT("err != ERR_OK", err != ERR_OK);
+    // LWIP_ASSERT("err != ERR_OK", err != ERR_OK);
     return err;
 }
 
@@ -1030,7 +1030,7 @@ pub fn lwip_netconn_do_delconn(m: &mut Vec<u8>) {
     let msg: &mut ApiMessage = m;
 
     let state: netconn_state = msg.conn.state;
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "netconn state error", //  this only happens for TCP netconns 
         (state == NETCONN_NONE) || (NETCONNTYPE_GROUP(msg.conn.netconntype) == NETCONN_TCP),
     );
@@ -1042,7 +1042,7 @@ pub fn lwip_netconn_do_delconn(m: &mut Vec<u8>) {
         {
             //  close requested, abort running write/connect 
             sys_sem_t * op_completed_sem;
-            LWIP_ASSERT("msg.conn.current_msg != NULL", msg.conn.current_msg != None);
+            // LWIP_ASSERT("msg.conn.current_msg != NULL", msg.conn.current_msg != None);
             op_completed_sem = LWIP_API_MSG_SEM(msg.conn.current_msg);
             msg.conn.current_msg.err = ERR_CLSD;
             msg.conn.current_msg = None;
@@ -1058,7 +1058,7 @@ pub fn lwip_netconn_do_delconn(m: &mut Vec<u8>) {
         (nonblocking write returns and sets state to NONE) */
         msg.err = ERR_INPROGRESS;
     } else {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "blocking connect in progress",
             (state != NETCONN_CONNECT) || IN_NONBLOCKING_CONNECT(msg.conn),
         );
@@ -1081,17 +1081,17 @@ pub fn lwip_netconn_do_delconn(m: &mut Vec<u8>) {
                 }
 
                 NETCONN_TCP => {
-                    LWIP_ASSERT("already writing or closing", msg.conn.current_msg == None);
+                    // LWIP_ASSERT("already writing or closing", msg.conn.current_msg == None);
                     msg.conn.state = NETCONN_CLOSE;
                     msg.msg.sd.shut = NETCONN_SHUT_RDWR;
                     msg.conn.current_msg = msg;
 
                     if (lwip_netconn_do_close_internal(&mut msg.conn, 0) != ERR_OK) {
-                        LWIP_ASSERT("state!", msg.conn.state == NETCONN_CLOSE);
+                        // LWIP_ASSERT("state!", msg.conn.state == NETCONN_CLOSE);
                         UNLOCK_TCPIP_CORE();
                         sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 0);
                         LOCK_TCPIP_CORE();
-                        LWIP_ASSERT("state!", msg.conn.state == NETCONN_NONE);
+                        // LWIP_ASSERT("state!", msg.conn.state == NETCONN_NONE);
                     }
                     //  LWIP_TCPIP_CORE_LOCKING 
                     lwip_netconn_do_close_internal(&mut msg.conn);
@@ -1206,11 +1206,11 @@ pub fn lwip_netconn_do_connected(
         return ERR_VAL;
     }
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "conn.state == NETCONN_CONNECT",
         conn.state == NETCONN_CONNECT,
     );
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "(conn.current_msg != NULL) || conn.in_non_blocking_connect",
         (conn.current_msg != None) || IN_NONBLOCKING_CONNECT(conn),
     );
@@ -1224,7 +1224,7 @@ pub fn lwip_netconn_do_connected(
     }
     was_blocking = !IN_NONBLOCKING_CONNECT(conn);
     SET_NONBLOCKING_CONNECT(conn, 0);
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "blocking connect state error",
         (was_blocking && op_completed_sem != None) || (!was_blocking && op_completed_sem == None),
     );
@@ -1287,11 +1287,11 @@ pub fn lwip_netconn_do_connect(m: &mut Vec<u8>) {
                             /* sys_sem_signal() is called from lwip_netconn_do_connected (or err_tcp()),
                             when the connection is established! */
 
-                            LWIP_ASSERT("state!", msg.conn.state == NETCONN_CONNECT);
+                            // LWIP_ASSERT("state!", msg.conn.state == NETCONN_CONNECT);
                             UNLOCK_TCPIP_CORE();
                             sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 0);
                             LOCK_TCPIP_CORE();
-                            LWIP_ASSERT("state!", msg.conn.state != NETCONN_CONNECT);
+                            // LWIP_ASSERT("state!", msg.conn.state != NETCONN_CONNECT);
 
                             return;
                         }
@@ -1543,15 +1543,15 @@ pub fn lwip_netconn_do_writemore(conn: &mut NetConnDesc) -> Result<(), LwipError
     let apiflags: u8;
     let write_more: u8;
 
-    LWIP_ASSERT("conn != NULL", conn != None);
-    LWIP_ASSERT("conn.state == NETCONN_WRITE", (conn.state == NETCONN_WRITE));
-    LWIP_ASSERT("conn.current_msg != NULL", conn.current_msg != None);
-    LWIP_ASSERT("conn.pcb.tcp != NULL", conn.pcb.tcp != None);
-    LWIP_ASSERT(
+    // LWIP_ASSERT("conn != NULL", conn != None);
+    // LWIP_ASSERT("conn.state == NETCONN_WRITE", (conn.state == NETCONN_WRITE));
+    // LWIP_ASSERT("conn.current_msg != NULL", conn.current_msg != None);
+    // LWIP_ASSERT("conn.pcb.tcp != NULL", conn.pcb.tcp != None);
+    // LWIP_ASSERT(
         "conn.current_msg.msg.w.offset < conn.current_msg.msg.w.len",
         conn.current_msg.msg.w.offset < conn.current_msg.msg.w.len,
     );
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "conn.current_msg.msg.w.vector_cnt > 0",
         conn.current_msg.msg.w.vector_cnt > 0,
     );
@@ -1600,7 +1600,7 @@ pub fn lwip_netconn_do_writemore(conn: &mut NetConnDesc) -> Result<(), LwipError
                     apiflags |= TCP_WRITE_FLAG_MORE;
                 }
             }
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "lwip_netconn_do_writemore: invalid length!",
                 ((conn.current_msg.msg.w.vector_off + len) <= conn.current_msg.msg.w.vector.len),
             );
@@ -1728,16 +1728,16 @@ pub fn lwip_netconn_do_write(m: &mut Vec<u8>) {
             } else if (msg.conn.pcb.tcp != None) {
                 msg.conn.state = NETCONN_WRITE;
                 //  set all the variables used by lwip_netconn_do_writemore 
-                LWIP_ASSERT("already writing or closing", msg.conn.current_msg == None);
-                LWIP_ASSERT("msg.msg.w.len != 0", msg.msg.w.len != 0);
+                // LWIP_ASSERT("already writing or closing", msg.conn.current_msg == None);
+                // LWIP_ASSERT("msg.msg.w.len != 0", msg.msg.w.len != 0);
                 msg.conn.current_msg = msg;
 
                 if (lwip_netconn_do_writemore(&mut msg.conn, 0) != ERR_OK) {
-                    LWIP_ASSERT("state!", msg.conn.state == NETCONN_WRITE);
+                    // LWIP_ASSERT("state!", msg.conn.state == NETCONN_WRITE);
                     UNLOCK_TCPIP_CORE();
                     sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 0);
                     LOCK_TCPIP_CORE();
-                    LWIP_ASSERT("state!", msg.conn.state != NETCONN_WRITE);
+                    // LWIP_ASSERT("state!", msg.conn.state != NETCONN_WRITE);
                 }
                 //  LWIP_TCPIP_CORE_LOCKING 
                 lwip_netconn_do_writemore(&mut msg.conn);
@@ -1814,7 +1814,7 @@ pub fn lwip_netconn_do_getaddr(m: &mut Vec<u8>) {
             }
 
             _ => {
-                LWIP_ASSERT("invalid netconn_type", 0);
+                // LWIP_ASSERT("invalid netconn_type", 0);
             }
         }
     } else {
@@ -1847,7 +1847,7 @@ pub fn lwip_netconn_do_close(m: &mut Vec<u8>) {
             if (msg.msg.sd.shut & NETCONN_SHUT_WR) {
                 //  close requested, abort running write 
                 sys_sem_t * write_completed_sem;
-                LWIP_ASSERT("msg.conn.current_msg != NULL", msg.conn.current_msg != None);
+                // LWIP_ASSERT("msg.conn.current_msg != NULL", msg.conn.current_msg != None);
                 write_completed_sem = LWIP_API_MSG_SEM(msg.conn.current_msg);
                 msg.conn.current_msg.err = ERR_CLSD;
                 msg.conn.current_msg = None;
@@ -1855,7 +1855,7 @@ pub fn lwip_netconn_do_close(m: &mut Vec<u8>) {
                 state = NETCONN_NONE;
                 sys_sem_signal(write_completed_sem);
             } else {
-                LWIP_ASSERT(
+                // LWIP_ASSERT(
                     "msg.msg.sd.shut == NETCONN_SHUT_RD",
                     msg.msg.sd.shut == NETCONN_SHUT_RD,
                 );
@@ -1874,16 +1874,16 @@ pub fn lwip_netconn_do_close(m: &mut Vec<u8>) {
                 //  LWIP_NETCONN_FULLDUPLEX 
                 netconn_drain(&mut msg.conn);
             }
-            LWIP_ASSERT("already writing or closing", msg.conn.current_msg == None);
+            // LWIP_ASSERT("already writing or closing", msg.conn.current_msg == None);
             msg.conn.state = NETCONN_CLOSE;
             msg.conn.current_msg = msg;
 
             if (lwip_netconn_do_close_internal(&mut msg.conn, 0) != ERR_OK) {
-                LWIP_ASSERT("state!", msg.conn.state == NETCONN_CLOSE);
+                // LWIP_ASSERT("state!", msg.conn.state == NETCONN_CLOSE);
                 UNLOCK_TCPIP_CORE();
                 sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 0);
                 LOCK_TCPIP_CORE();
-                LWIP_ASSERT("state!", msg.conn.state == NETCONN_NONE);
+                // LWIP_ASSERT("state!", msg.conn.state == NETCONN_NONE);
             }
             //  LWIP_TCPIP_CORE_LOCKING 
             lwip_netconn_do_close_internal(&mut msg.conn);
@@ -2032,7 +2032,7 @@ pub fn lwip_netconn_do_gethostbyname(arg: &mut Vec<u8>) {
         UNLOCK_TCPIP_CORE();
         sys_sem_wait(API_EXPR_REF_SEM(msg.sem));
         LOCK_TCPIP_CORE();
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "do_gethostbyname still in progress!!",
             API_EXPR_DEREF(msg.err) != ERR_INPROGRESS,
         );

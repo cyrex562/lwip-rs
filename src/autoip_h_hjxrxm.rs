@@ -59,9 +59,9 @@ struct autoip
   /** the currently selected, probed, announced or used LL IP-Address */
  llipaddr: ip4_addr_t;
   /** current AutoIP state machine state */
-  u8_t state;
+  state: u8;
   /** total number of probed/used Link Local IP-Addresses */
-  u8_t tried_llipaddr;
+  tried_llipaddr: u8;
   /** acd struct */
   struct acd acd;
 };

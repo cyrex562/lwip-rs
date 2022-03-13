@@ -69,7 +69,7 @@ PACK_STRUCT_END
 TRUCT_BEGIN
 /** Ethernet header */
 struct eth_hdr {
-#if ETH_PAD_SIZE
+// #if ETH_PAD_SIZE
   PACK_STRUCT_FLD_8(u8_t padding[ETH_PAD_SIZE]);
 
 _STRUCT_FLD_S(struct eth_addr dest);

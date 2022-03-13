@@ -1,7 +1,7 @@
 
 
 
-#include <stdlib.h> /* time_t */
+
 
 struct timeval {
   time_t    tv_sec;         /* seconds */

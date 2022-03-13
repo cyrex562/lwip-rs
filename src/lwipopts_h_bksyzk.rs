@@ -341,7 +341,7 @@ pub const PPP_SUPPORT: u32 = 0; /*
 */
 
 pub const LWIP_TCPIP_CORE_LOCKING: u32 = 1; #if !NO_SYS
-void sys_check_core_locking(void);
+void sys_check_core_locking();
 #define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
 
 

@@ -87,7 +87,7 @@ lwip_dnssd_gethostbyname(const char *name, ip_addr_t *addr, u8_t addrtype, err_t
   /* @todo: use with IPv6 */
   LWIP_UNUSED_ARG(addrtype);
 
-#if CONSUME_LOCAL_ONLY
+// #if CONSUME_LOCAL_ONLY
   /* check if this is a .local host. If it is, then we consume the query */
   p = strstr(name, LOCAL_DOMAIN);
   if (p == NULL) {

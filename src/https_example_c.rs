@@ -112,20 +112,20 @@ static u8_t *read_file(const char *filename, size_t *file_size)
  * Copy the resulting files and define the path to them
  */
 void
-https_ex_init(void)
+https_ex_init()
 {
   struct altcp_tls_config *conf;
   u8_t *privkey, *cert;
   size_t privkey_size, cert_size;
 
   privkey = read_file(LWIP_HTTPD_EXAMPLE_HTTPS_KEY_FILE, &privkey_size);
-  LWIP_ASSERT("Failed to open https server private key", privkey != NULL);
+  // LWIP_ASSERT("Failed to open https server private key", privkey != NULL);
   cert = read_file(LWIP_HTTPD_EXAMPLE_HTTPS_CERT_FILE, &cert_size);
-  LWIP_ASSERT("Failed to open https server certificate", cert != NULL);
+  // LWIP_ASSERT("Failed to open https server certificate", cert != NULL);
 
   conf = altcp_tls_create_config_server_privkey_cert(privkey, privkey_size,
     LWIP_HTTPD_EXAMPLE_HTTPS_KEY_FILE_PASS, LWIP_HTTPD_EXAMPLE_HTTPS_KEY_FILE_PASS_LEN, cert, cert_size);
-  LWIP_ASSERT("Failed to create https server config", conf != NULL);
+  // LWIP_ASSERT("Failed to create https server config", conf != NULL);
 
   httpd_inits(conf);
 

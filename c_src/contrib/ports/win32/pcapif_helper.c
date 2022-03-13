@@ -119,7 +119,7 @@ pcapifh_free_readonly_mem(void *data)
 /* @todo: add linux/unix implementation? */
 
 struct pcapifh_linkstate {
-  u8_t empty;
+  empty: u8;
 };
 
 struct pcapifh_linkstate* pcapifh_linkstate_init(char *adapter_name)

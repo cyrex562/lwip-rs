@@ -3,9 +3,9 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_SOCKET
+// #if LWIP_SOCKET
 
-void chargen_init(void);
+void chargen_init();
 
  /* LWIP_SOCKET */
 

@@ -15,10 +15,10 @@ pub const FSDATA_FILE_ALIGNMENT: u32 = 0; #define FSDATA_ALIGN_PRE
 
 #define FSDATA_ALIGN_POST
 
-#if FSDATA_FILE_ALIGNMENT==2
+// #if FSDATA_FILE_ALIGNMENT==2
 // #include "fsdata_alignment.h"
 
-#if FSDATA_FILE_ALIGNMENT==1
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__img_sics_gif = 0;
 
 static const unsigned char FSDATA_ALIGN_PRE data__img_sics_gif[] FSDATA_ALIGN_POST = {
@@ -98,7 +98,7 @@ static const unsigned char FSDATA_ALIGN_PRE data__img_sics_gif[] FSDATA_ALIGN_PO
 0x82,0x0c,0x36,0xe8,0xe0,0x83,0x10,0x46,0x28,0xe1,0x84,0x14,0x56,0x68,0xa1,0x10,
 0x41,0x00,0x00,0x3b,};
 
-#if FSDATA_FILE_ALIGNMENT==1
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__404_html = 1;
 
 static const unsigned char FSDATA_ALIGN_PRE data__404_html[] FSDATA_ALIGN_POST = {
@@ -168,7 +168,7 @@ static const unsigned char FSDATA_ALIGN_PRE data__404_html[] FSDATA_ALIGN_POST =
 0x3e,0x0d,0x0a,0x3c,0x2f,0x62,0x6f,0x64,0x79,0x3e,0x0d,0x0a,0x3c,0x2f,0x68,0x74,
 0x6d,0x6c,0x3e,0x0d,0x0a,};
 
-#if FSDATA_FILE_ALIGNMENT==1
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__index_html = 2;
 
 static const unsigned char FSDATA_ALIGN_PRE data__index_html[] FSDATA_ALIGN_POST = {
@@ -312,7 +312,7 @@ static const unsigned char FSDATA_ALIGN_PRE data__index_html[] FSDATA_ALIGN_POST
 0x3e,0x0d,0x0a,0x3c,0x2f,0x62,0x6f,0x64,0x79,0x3e,0x0d,0x0a,0x3c,0x2f,0x68,0x74,
 0x6d,0x6c,0x3e,0x0d,0x0a,0x0d,0x0a,};
 
-#if FSDATA_FILE_ALIGNMENT==1
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__login_html = 3;
 
 static const unsigned char FSDATA_ALIGN_PRE data__login_html[] FSDATA_ALIGN_POST = {
@@ -395,7 +395,7 @@ static const unsigned char FSDATA_ALIGN_PRE data__login_html[] FSDATA_ALIGN_POST
 0x62,0x6f,0x64,0x79,0x3e,0x0d,0x0a,0x3c,0x2f,0x68,0x74,0x6d,0x6c,0x3e,0x0d,0x0a,
 };
 
-#if FSDATA_FILE_ALIGNMENT==1
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__loginfail_html = 4;
 
 static const unsigned char FSDATA_ALIGN_PRE data__loginfail_html[] FSDATA_ALIGN_POST = {
@@ -465,7 +465,7 @@ static const unsigned char FSDATA_ALIGN_PRE data__loginfail_html[] FSDATA_ALIGN_
 0x0d,0x0a,0x20,0x3c,0x2f,0x74,0x61,0x62,0x6c,0x65,0x3e,0x0d,0x0a,0x3c,0x2f,0x62,
 0x6f,0x64,0x79,0x3e,0x0d,0x0a,0x3c,0x2f,0x68,0x74,0x6d,0x6c,0x3e,0x0d,0x0a,};
 
-#if FSDATA_FILE_ALIGNMENT==1
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__session_html = 5;
 
 static const unsigned char FSDATA_ALIGN_PRE data__session_html[] FSDATA_ALIGN_POST = {
@@ -536,7 +536,7 @@ static const unsigned char FSDATA_ALIGN_PRE data__session_html[] FSDATA_ALIGN_PO
 0x3c,0x2f,0x62,0x6f,0x64,0x79,0x3e,0x0d,0x0a,0x3c,0x2f,0x68,0x74,0x6d,0x6c,0x3e,
 0x0d,0x0a,};
 
-#if FSDATA_FILE_ALIGNMENT==1
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__ssi_shtml = 6;
 
 static const unsigned char FSDATA_ALIGN_PRE data__ssi_shtml[] FSDATA_ALIGN_POST = {

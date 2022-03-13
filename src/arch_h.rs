@@ -97,7 +97,7 @@ pub const LITTLE_ENDIAN: u32 = 1234; #define BIG_ENDIAN 4321
  */
 
 pub const LWIP_NO_STDDEF_H: u32 = 0; #if !LWIP_NO_STDDEF_H
-#include <stddef.h> /* for size_t */
+
 
 
 /** Define this to 1 in arch/cc.h of your port if your compiler does not provide
@@ -116,7 +116,7 @@ typedef uint16_t  u16_t;
 typedef int16_t   s16_t;
 typedef uint32_t  u32_t;
 typedef int32_t   s32_t;
-#if LWIP_HAVE_INT64
+// #if LWIP_HAVE_INT64
 typedef uint64_t  u64_t;
 typedef int64_t   s64_t;
 
@@ -296,7 +296,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
   * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
   */
 
-#if defined(__GNUC__) || defined(__clang__)
+// #if defined(__GNUC__) || defined(__clang__)
 #define PACK_STRUCT_STRUCT __attribute__((packed))
 #else
 #define PACK_STRUCT_STRUCT
@@ -344,7 +344,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
 
 /** Eliminates compiler warning about unused arguments (GCC -Wextra -Wunused). */
 
-#define LWIP_UNUSED_ARG(x) (void)x
+#define LWIP_UNUSED_ARG(x) ()x
  /* LWIP_UNUSED_ARG */
 
 /** LWIP_PROVIDE_ERRNO==1: Let lwIP provide ERRNO values and the 'errno' variable.
@@ -352,7 +352,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
  * define LWIP_ERRNO_STDINCLUDE to get <errno.h> included or
  * define LWIP_ERRNO_INCLUDE to <errno.h> or equivalent.
  */
-#if defined __DOXYGEN__
+// #if defined __DOXYGEN__
 #define LWIP_PROVIDE_ERRNO
 
 
@@ -361,7 +361,7 @@ pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
 #ifdef LWIP_RAND
 #undef LWIP_RAND
 
-lwip_fuzz_rand(void);
+lwip_fuzz_rand();
 #define LWIP_RAND() lwip_fuzz_rand()
 
 

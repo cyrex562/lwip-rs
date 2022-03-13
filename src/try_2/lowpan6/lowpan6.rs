@@ -121,13 +121,13 @@ pub fn lowpan6_write_iee802154_header(
     if (dst.addr_len == 2) {
         fc |= IEEE_802154_FC_DST_ADDR_MODE_SHORT;
     } else {
-        LWIP_ASSERT("invalid dst address length", dst.addr_len == 8);
+        // LWIP_ASSERT("invalid dst address length", dst.addr_len == 8);
         fc |= IEEE_802154_FC_DST_ADDR_MODE_EXT;
     }
     if (src.addr_len == 2) {
         fc |= IEEE_802154_FC_SRC_ADDR_MODE_SHORT;
     } else {
-        LWIP_ASSERT("invalid src address length", src.addr_len == 8);
+        // LWIP_ASSERT("invalid src address length", src.addr_len == 8);
         fc |= IEEE_802154_FC_SRC_ADDR_MODE_EXT;
     }
     hdr.frame_control = fc;
@@ -281,7 +281,7 @@ pub fn dequeue_datagram(lrh: &mut lowpan6_reass_helper, prev: &mut lowpan6_reass
         lowpan6_data.reass_list = lowpan6_data.reass_list.next_packet;
     } else {
         //  it wasn't the first, so it must have a valid 'prev' 
-        LWIP_ASSERT("sanity check linked list", prev != None);
+        // LWIP_ASSERT("sanity check linked list", prev != None);
         prev.next_packet = lrh.next_packet;
     }
 }
@@ -331,7 +331,7 @@ pub fn lowpan6_frag(
     let datagram_offset: u16;
     let err: err_t = ERR_IF;
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "lowpan6_frag: netif.linkoutput not set",
         netif.linkoutput != None,
     );
@@ -342,7 +342,7 @@ pub fn lowpan6_frag(
         MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
         return ERR_MEM;
     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "this needs a pbuf in one piece",
         p_frag.len == p_frag.tot_len,
     );
@@ -350,7 +350,7 @@ pub fn lowpan6_frag(
     //  Write IEEE 802.15.4 header. 
     buffer = p_frag.payload;
     ieee_header_len = lowpan6_write_iee802154_header(buffer, src, dst);
-    LWIP_ASSERT("ieee_header_len < p_frag.len", ieee_header_len < p_frag.len);
+    // LWIP_ASSERT("ieee_header_len < p_frag.len", ieee_header_len < p_frag.len);
 
     //  Perform 6LowPAN IPv6 header compression according to RFC 6282 
     //  do the header compression (this does NOT copy any non-compressed data) 
@@ -420,7 +420,7 @@ pub fn lowpan6_frag(
         remaining_len -= frag_len - lowpan6_header_len;
         //  datagram offset holds the offset before compression 
         datagram_offset = frag_len - lowpan6_header_len + hidden_header_len;
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "datagram offset must be a multiple of 8",
             (datagram_offset & 7) == 0,
         );
@@ -444,7 +444,7 @@ pub fn lowpan6_frag(
 
             buffer[ieee_header_len] |= 0x20; //  Change FRAG1 to FRAGN 
 
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "datagram offset must be a multiple of 8",
                 (datagram_offset & 7) == 0,
             );
@@ -491,7 +491,7 @@ pub fn lowpan6_frag(
 
         //  Calculate frame length 
         p_frag.len = p_frag.tot_len = frag_len + lowpan6_header_len + ieee_header_len + 2;
-        LWIP_ASSERT("", p_frag.len <= 127);
+        // LWIP_ASSERT("", p_frag.len <= 127);
 
         //  2 bytes CRC 
         crc = LWIP_6LOWPAN_DO_CALC_CRC(p_frag.payload, p_frag.len - 2);
@@ -767,7 +767,7 @@ pub fn lowpan6_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
         }
         /* Insert new pbuf into list of fragments. Each fragment is a pbuf,
         this only works for unchained pbufs. */
-        LWIP_ASSERT("p.next == NULL", p.next == None);
+        // LWIP_ASSERT("p.next == NULL", p.next == None);
         if (lrh.reass != None) {
             //  FRAG1 already received, check this offset against first len 
             if (datagram_offset < lrh.reass.len) {
@@ -839,7 +839,7 @@ pub fn lowpan6_input(p: &mut PacketBuffer, netif: &mut NetIfc) {
                 //   q.tot_len = datagram_left;
                 //   datagram_left -= q.len;
                 // }
-                LWIP_ASSERT("datagram_left == 0", datagram_left == 0);
+                // LWIP_ASSERT("datagram_left == 0", datagram_left == 0);
                 q = lrh.reass;
                 q.tot_len = datagram_size;
                 q.next = lrh.frags;

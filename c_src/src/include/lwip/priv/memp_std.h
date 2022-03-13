@@ -38,21 +38,21 @@
  * LWIP_MEMPOOL(pool_name, number_elements, element_size, pool_description)
  *     creates a pool name MEMP_pool_name. description is used in stats.c
  */
-#if LWIP_RAW
+// #if LWIP_RAW
 LWIP_MEMPOOL(RAW_PCB,        MEMP_NUM_RAW_PCB,         sizeof(struct raw_pcb),        "RAW_PCB")
  /* LWIP_RAW */
 
-#if LWIP_UDP
+// #if LWIP_UDP
 LWIP_MEMPOOL(UDP_PCB,        MEMP_NUM_UDP_PCB,         sizeof(struct udp_pcb),        "UDP_PCB")
  /* LWIP_UDP */
 
-#if LWIP_TCP
+// #if LWIP_TCP
 LWIP_MEMPOOL(TCP_PCB,        MEMP_NUM_TCP_PCB,         sizeof(struct tcp_pcb),        "TCP_PCB")
 LWIP_MEMPOOL(TCP_PCB_LISTEN, MEMP_NUM_TCP_PCB_LISTEN,  sizeof(struct tcp_pcb_listen), "TCP_PCB_LISTEN")
 LWIP_MEMPOOL(TCP_SEG,        MEMP_NUM_TCP_SEG,         sizeof(struct tcp_seg),        "TCP_SEG")
  /* LWIP_TCP */
 
-#if LWIP_ALTCP && LWIP_TCP
+// #if LWIP_ALTCP && LWIP_TCP
 LWIP_MEMPOOL(ALTCP_PCB,      MEMP_NUM_ALTCP_PCB,       sizeof(struct altcp_pcb),      "ALTCP_PCB")
  /* LWIP_ALTCP && LWIP_TCP */
 
@@ -63,25 +63,25 @@ LWIP_MEMPOOL(REASSDATA,      MEMP_NUM_REASSDATA,       sizeof(struct ip_reassdat
 LWIP_MEMPOOL(FRAG_PBUF,      MEMP_NUM_FRAG_PBUF,       sizeof(struct pbuf_custom_ref),"FRAG_PBUF")
  /* IP_FRAG && !LWIP_NETIF_TX_SINGLE_PBUF || (LWIP_IPV6 && LWIP_IPV6_FRAG) */
 
-#if LWIP_NETCONN || LWIP_SOCKET
+// #if LWIP_NETCONN || LWIP_SOCKET
 LWIP_MEMPOOL(NETBUF,         MEMP_NUM_NETBUF,          sizeof(struct netbuf),         "NETBUF")
 LWIP_MEMPOOL(NETCONN,        MEMP_NUM_NETCONN,         sizeof(struct netconn),        "NETCONN")
  /* LWIP_NETCONN || LWIP_SOCKET */
 
-#if NO_SYS==0
+// #if NO_SYS==0
 LWIP_MEMPOOL(TCPIP_MSG_API,  MEMP_NUM_TCPIP_MSG_API,   sizeof(struct tcpip_msg),      "TCPIP_MSG_API")
-#if LWIP_MPU_COMPATIBLE
+// #if LWIP_MPU_COMPATIBLE
 LWIP_MEMPOOL(API_MSG,        MEMP_NUM_API_MSG,         sizeof(struct api_msg),        "API_MSG")
-#if LWIP_DNS
+// #if LWIP_DNS
 LWIP_MEMPOOL(DNS_API_MSG,    MEMP_NUM_DNS_API_MSG,     sizeof(struct dns_api_msg),    "DNS_API_MSG")
 
-#if LWIP_SOCKET && !LWIP_TCPIP_CORE_LOCKING
+// #if LWIP_SOCKET && !LWIP_TCPIP_CORE_LOCKING
 LWIP_MEMPOOL(SOCKET_SETGETSOCKOPT_DATA, MEMP_NUM_SOCKET_SETGETSOCKOPT_DATA, sizeof(struct lwip_setgetsockopt_data), "SOCKET_SETGETSOCKOPT_DATA")
 
-#if LWIP_SOCKET && (LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL)
+// #if LWIP_SOCKET && (LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL)
 LWIP_MEMPOOL(SELECT_CB,      MEMP_NUM_SELECT_CB,       sizeof(struct lwip_select_cb), "SELECT_CB")
  /* LWIP_SOCKET && (LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL) */
-#if LWIP_NETIF_API
+// #if LWIP_NETIF_API
 LWIP_MEMPOOL(NETIFAPI_MSG,   MEMP_NUM_NETIFAPI_MSG,    sizeof(struct netifapi_msg),   "NETIFAPI_MSG")
 
  /* LWIP_MPU_COMPATIBLE */
@@ -94,18 +94,18 @@ LWIP_MEMPOOL(TCPIP_MSG_INPKT,MEMP_NUM_TCPIP_MSG_INPKT, sizeof(struct tcpip_msg),
 LWIP_MEMPOOL(ARP_QUEUE,      MEMP_NUM_ARP_QUEUE,       sizeof(struct etharp_q_entry), "ARP_QUEUE")
  /* LWIP_IPV4 && LWIP_ARP && ARP_QUEUEING */
 
-#if LWIP_IGMP
+// #if LWIP_IGMP
 LWIP_MEMPOOL(IGMP_GROUP,     MEMP_NUM_IGMP_GROUP,      sizeof(struct igmp_group),     "IGMP_GROUP")
  /* LWIP_IGMP */
 
-#if LWIP_TIMERS && !LWIP_TIMERS_CUSTOM
+// #if LWIP_TIMERS && !LWIP_TIMERS_CUSTOM
 LWIP_MEMPOOL(SYS_TIMEOUT,    MEMP_NUM_SYS_TIMEOUT,     sizeof(struct sys_timeo),      "SYS_TIMEOUT")
  /* LWIP_TIMERS && !LWIP_TIMERS_CUSTOM */
 
-#if LWIP_DNS && LWIP_SOCKET
+// #if LWIP_DNS && LWIP_SOCKET
 LWIP_MEMPOOL(NETDB,          MEMP_NUM_NETDB,           NETDB_ELEM_SIZE,               "NETDB")
  /* LWIP_DNS && LWIP_SOCKET */
-#if LWIP_DNS && DNS_LOCAL_HOSTLIST && DNS_LOCAL_HOSTLIST_IS_DYNAMIC
+// #if LWIP_DNS && DNS_LOCAL_HOSTLIST && DNS_LOCAL_HOSTLIST_IS_DYNAMIC
 LWIP_MEMPOOL(LOCALHOSTLIST,  MEMP_NUM_LOCALHOSTLIST,   LOCALHOSTLIST_ELEM_SIZE,       "LOCALHOSTLIST")
  /* LWIP_DNS && DNS_LOCAL_HOSTLIST && DNS_LOCAL_HOSTLIST_IS_DYNAMIC */
 
@@ -138,7 +138,7 @@ LWIP_PBUF_MEMPOOL(PBUF_POOL, PBUF_POOL_SIZE,           PBUF_POOL_BUFSIZE,       
  * Allow for user-defined pools; this must be explicitly set in lwipopts.h
  * since the default is to NOT look for lwippools.h
  */
-#if MEMP_USE_CUSTOM_POOLS
+// #if MEMP_USE_CUSTOM_POOLS
 // #include "lwippools.h"
  /* MEMP_USE_CUSTOM_POOLS */
 

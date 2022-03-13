@@ -48,7 +48,7 @@
 
 
 
-#if LWIP_TCPIP_CORE_LOCKING
+// #if LWIP_TCPIP_CORE_LOCKING
 /** The global semaphore to lock the stack. */
 extern sys_mutex_t lock_tcpip_core;
 #if !defined LOCK_TCPIP_CORE || defined __DOXYGEN__
@@ -95,13 +95,13 @@ err_t  tcpip_callbackmsg_trycallback_fromisr(struct tcpip_callback_msg* msg);
 err_t  pbuf_free_callback(struct pbuf *p);
 err_t  mem_free_callback(void *m);
 
-#if LWIP_TCPIP_TIMEOUT && LWIP_TIMERS
+// #if LWIP_TCPIP_TIMEOUT && LWIP_TIMERS
 err_t  tcpip_timeout(u32_t msecs, sys_timeout_handler h, void *arg);
 err_t  tcpip_untimeout(sys_timeout_handler h, void *arg);
  /* LWIP_TCPIP_TIMEOUT && LWIP_TIMERS */
 
 #ifdef TCPIP_THREAD_TEST
-int tcpip_thread_poll_one(void);
+int tcpip_thread_poll_one();
 
 
 

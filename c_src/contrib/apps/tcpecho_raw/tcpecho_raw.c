@@ -46,7 +46,7 @@
 // #include "lwip/tcp.h"
 // #include "tcpecho_raw.h"
 
-#if LWIP_TCP && LWIP_CALLBACK_API
+// #if LWIP_TCP && LWIP_CALLBACK_API
 
 static struct tcp_pcb *tcpecho_raw_pcb;
 
@@ -60,8 +60,8 @@ enum tcpecho_raw_states
 
 struct tcpecho_raw_state
 {
-  u8_t state;
-  u8_t retries;
+  state: u8;
+  retries: u8;
   struct tcp_pcb *pcb;
   /* pbuf (chain) to recycle */
   struct pbuf *p;
@@ -108,7 +108,7 @@ tcpecho_raw_send(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
     /* enqueue data for transmission */
     wr_err = tcp_write(tpcb, ptr->payload, ptr->len, 1);
     if (wr_err == ERR_OK) {
-      u16_t plen;
+      plen: u16;
 
       plen = ptr->len;
       /* continue with next pbuf in chain (if any) */
@@ -197,7 +197,7 @@ tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
   struct tcpecho_raw_state *es;
   err_t ret_err;
 
-  LWIP_ASSERT("arg != NULL",arg != NULL);
+  // LWIP_ASSERT("arg != NULL",arg != NULL);
   es = (struct tcpecho_raw_state *)arg;
   if (p == NULL) {
     /* remote host closed connection */
@@ -212,7 +212,7 @@ tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
     ret_err = ERR_OK;
   } else if(err != ERR_OK) {
     /* cleanup, for unknown reason */
-    LWIP_ASSERT("no pbuf expected here", p == NULL);
+    // LWIP_ASSERT("no pbuf expected here", p == NULL);
     ret_err = err;
   }
   else if(es->state == ES_ACCEPTED) {
@@ -280,7 +280,7 @@ tcpecho_raw_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
 }
 
 void
-tcpecho_raw_init(void)
+tcpecho_raw_init()
 {
   tcpecho_raw_pcb = tcp_new_ip_type(IPADDR_TYPE_ANY);
   if (tcpecho_raw_pcb != NULL) {

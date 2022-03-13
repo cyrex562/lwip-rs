@@ -50,7 +50,7 @@
 // #include "lwip/udp.h"
 // #include "udpecho_raw.h"
 
-#if LWIP_UDP
+// #if LWIP_UDP
 
 static struct udp_pcb *udpecho_raw_pcb;
 
@@ -68,7 +68,7 @@ udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
 }
 
 void
-udpecho_raw_init(void)
+udpecho_raw_init()
 {
   udpecho_raw_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
   if (udpecho_raw_pcb != NULL) {

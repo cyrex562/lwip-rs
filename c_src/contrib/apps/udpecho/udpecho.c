@@ -34,7 +34,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_NETCONN
+// #if LWIP_NETCONN
 
 // #include "lwip/api.h"
 // #include "lwip/sys.h"
@@ -80,7 +80,7 @@ udpecho_thread(void *arg)
 }
 /*-----------------------------------------------------------------------------------*/
 void
-udpecho_init(void)
+udpecho_init()
 {
   sys_thread_new("udpecho_thread", udpecho_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 }

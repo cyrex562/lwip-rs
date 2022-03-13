@@ -42,8 +42,8 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_SOCKET_EXTERNAL_HEADERS
-#include LWIP_SOCKET_EXTERNAL_HEADER_INET_H
+// #if LWIP_SOCKET_EXTERNAL_HEADERS
+
 #else /* LWIP_SOCKET_EXTERNAL_HEADERS */
 
 // #include "lwip/def.h"

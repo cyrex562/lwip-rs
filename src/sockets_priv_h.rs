@@ -39,7 +39,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/err.h"
 // #include "lwip/sockets.h"
@@ -68,23 +68,23 @@ struct lwip_sock {
   struct netconn *conn;
   /** data that was left from the previous read */
   union lwip_sock_lastdata lastdata;
-#if LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL
+// #if LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL
   /** number of times data was received, set by event_callback(),
       tested by the receive and select functions */
   s16_t rcvevent;
   /** number of times data was ACKed (free send buffer), set by event_callback(),
       tested by select */
-  u16_t sendevent;
+  sendevent: u16;
   /** error happened for this socket, set by event_callback(), tested by select */
-  u16_t errevent;
+  errevent: u16;
   /** counter of how many threads are waiting for this socket using select */
   SELWAIT_T select_waiting;
  /* LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL */
 IP_NETCONN_FULLDUPLEX
   /* counter of how many threads are using a struct lwip_sock (not the 'int') */
-  u8_t fd_used;
+  fd_used: u8;
   /* status of pending close/delete actions */
-  u8_t fd_free_pending;
+  fd_free_pending: u8;
 pub const LWIP_SOCK_FD_FREE_TCP: u32 = 1;
 pub const LWIP_SOCK_FD_FREE_FREE: u32 = 2;
 
@@ -109,7 +109,7 @@ struct lwip_setgetsockopt_data {
   int optname;
   /** set: value to set the option to
     * get: value of the option is stored here */
-#if LWIP_MPU_COMPATIBLE
+// #if LWIP_MPU_COMPATIBLE
   u8_t optval[LWIP_SETGETSOCKOPT_MAXOPTLEN];
 #else
   union {
@@ -131,9 +131,9 @@ size of *optval */
 
 struct lwip_sock* lwip_socket_dbg_get_socket(int fd);
 
-#if LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL
+// #if LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL
 
-#if LWIP_NETCONN_SEM_PER_THREAD
+// #if LWIP_NETCONN_SEM_PER_THREAD
 pub const SELECT_SEM_T: u32 = sys_sem_t;*
 #define SELECT_SEM_PTR(sem) (sem)
 #else /* LWIP_NETCONN_SEM_PER_THREAD */
@@ -147,7 +147,7 @@ struct lwip_select_cb {
   struct lwip_select_cb *next;
   /** Pointer to the previous waiting task */
   struct lwip_select_cb *prev;
-#if LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET_SELECT
   /** readset passed to select */
   fd_set *readset;
   /** writeset passed to select */

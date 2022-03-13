@@ -96,7 +96,7 @@ pub fn netbuf_alloc(buf: &mut netbuf, size: u16) -> Vec<u8> {
     if (buf.p == None) {
         return None;
     }
-    LWIP_ASSERT("check that first pbuf can hold size", (buf.p.len >= size));
+    // LWIP_ASSERT("check that first pbuf can hold size", (buf.p.len >= size));
     buf.ptr = buf.p;
     return buf.p.payload;
 }

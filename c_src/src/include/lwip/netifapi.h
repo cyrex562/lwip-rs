@@ -34,7 +34,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_NETIF_API /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_NETIF_API /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/sys.h"
 // #include "lwip/netif.h"
@@ -48,7 +48,7 @@
 
 
 /* API for application */
-#if LWIP_ARP && LWIP_IPV4
+// #if LWIP_ARP && LWIP_IPV4
 /* Used for netfiapi_arp_* APIs */
 enum netifapi_arp_entry {
   NETIFAPI_ARP_PERM /* Permanent entry */

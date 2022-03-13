@@ -218,7 +218,7 @@ use super::ppp_h::PppCtx;
 // ********************************
 
 pub fn  ppp_set_auth(pcb: &mut PppCtx, authtype: u8, user: &String, passwd: &String) {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
 
   pcb.settings.refuse_pap = !(authtype & PPPAUTHTYPE_PAP);
 
@@ -271,7 +271,7 @@ pub fn  ppp_set_notify_phase_callback(pcb: &mut PppCtx, notify_phase_cb: ppp_not
  * established before calling this.
  */
 pub fn  ppp_connect(pcb: &mut PppCtx, holdoff: u16) {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (pcb.phase != PPP_PHASE_DEAD) {
     return ERR_ALREADY;
   }
@@ -300,7 +300,7 @@ pub fn  ppp_connect(pcb: &mut PppCtx, holdoff: u16) {
  * established before calling this.
  */
 pub fn  ppp_listen(pcb: &mut PppCtx) {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (pcb.phase != PPP_PHASE_DEAD) {
     return ERR_ALREADY;
   }
@@ -332,7 +332,7 @@ pub fn  ppp_listen(pcb: &mut PppCtx) {
 pub fn 
 ppp_close(pcb: &mut PppCtx, nocarrier: u8)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
 
   pcb.err_code = PPPERR_USER;
 
@@ -394,7 +394,7 @@ ppp_close(pcb: &mut PppCtx, nocarrier: u8)
  */
 pub fn  ppp_free(pcb: &mut PppCtx) {
   let err: err_t;
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (pcb.phase != PPP_PHASE_DEAD) {
     return ERR_CONN;
   }
@@ -414,7 +414,7 @@ pub fn  ppp_free(pcb: &mut PppCtx) {
 pub fn 
 ppp_ioctl(pcb: &mut PppCtx, cmd: u8, arg: &mut Vec<u8>)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (pcb == None) {
     return ERR_VAL;
   }
@@ -457,7 +457,7 @@ ppp_ioctl(pcb: &mut PppCtx, cmd: u8, arg: &mut Vec<u8>)
 pub fn ppp_do_connect(arg: &mut Vec<u8>) {
   let pcb:  &mut PppCtx = arg;
 
-  LWIP_ASSERT("pcb.phase == PPP_PHASE_DEAD || pcb.phase == PPP_PHASE_HOLDOFF", pcb.phase == PPP_PHASE_DEAD || pcb.phase == PPP_PHASE_HOLDOFF);
+  // LWIP_ASSERT("pcb.phase == PPP_PHASE_DEAD || pcb.phase == PPP_PHASE_HOLDOFF", pcb.phase == PPP_PHASE_DEAD || pcb.phase == PPP_PHASE_HOLDOFF);
 
   new_phase(pcb, PPP_PHASE_INITIALIZE);
   pcb.link_cb.connect(pcb, pcb.link_ctx_cb);

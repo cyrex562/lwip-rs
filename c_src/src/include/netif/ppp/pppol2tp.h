@@ -32,7 +32,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && PPPOL2TP_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && PPPOL2TP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -151,31 +151,31 @@ pub const PPPOL2TP_STATE_DATA: u32 = 4; #define PPPOL2TP_OUTPUT_DATA_HEADER_LEN 
 typedef struct pppol2tp_pcb_s pppol2tp_pcb;
 struct pppol2tp_pcb_s {
   ppp_pcb *ppp;                /* PPP PCB */
-  u8_t phase;                  /* L2TP phase */
+  phase: u8;                  /* L2TP phase */
   struct udp_pcb *udp;         /* UDP L2TP Socket */
   struct netif *netif;         /* Output interface, used as a default route */
   ip_addr_t remote_ip;         /* LNS IP Address */
-  u16_t remote_port;           /* LNS port */
-#if PPPOL2TP_AUTH_SUPPORT
+  remote_port: u16;           /* LNS port */
+// #if PPPOL2TP_AUTH_SUPPORT
   const u8_t *secret;          /* Secret string */
-  u8_t secret_len;             /* Secret string length */
+  secret_len: u8;             /* Secret string length */
   u8_t secret_rv[16];          /* Random vector */
   u8_t challenge_hash[16];     /* Challenge response */
-  u8_t send_challenge;         /* Boolean whether the next sent packet should contains a challenge response */
+  send_challenge: u8;         /* Boolean whether the next sent packet should contains a challenge response */
  /* PPPOL2TP_AUTH_SUPPORT */
 
-  u16_t tunnel_port;           /* Tunnel port */
-  u16_t our_ns;                /* NS to peer */
-  u16_t peer_nr;               /* NR from peer */
-  u16_t peer_ns;               /* Expected NS from peer */
-  u16_t source_tunnel_id;      /* Tunnel ID assigned by peer */
-  u16_t remote_tunnel_id;      /* Tunnel ID assigned to peer */
-  u16_t source_session_id;     /* Session ID assigned by peer */
-  u16_t remote_session_id;     /* Session ID assigned to peer */
+  tunnel_port: u16;           /* Tunnel port */
+  our_ns: u16;                /* NS to peer */
+  peer_nr: u16;               /* NR from peer */
+  peer_ns: u16;               /* Expected NS from peer */
+  source_tunnel_id: u16;      /* Tunnel ID assigned by peer */
+  remote_tunnel_id: u16;      /* Tunnel ID assigned to peer */
+  source_session_id: u16;     /* Session ID assigned by peer */
+  remote_session_id: u16;     /* Session ID assigned to peer */
 
-  u8_t sccrq_retried;          /* number of SCCRQ retries already done */
-  u8_t icrq_retried;           /* number of ICRQ retries already done */
-  u8_t iccn_retried;           /* number of ICCN retries already done */
+  sccrq_retried: u8;          /* number of SCCRQ retries already done */
+  icrq_retried: u8;           /* number of ICRQ retries already done */
+  iccn_retried: u8;           /* number of ICCN retries already done */
 };
 
 

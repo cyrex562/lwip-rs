@@ -106,7 +106,7 @@ pub fn ethernet_output(
     if vlan_prio_vid >= 0 {
         let mut vlanhdr: &mut eth_vlan_hdr;
 
-        LWIP_ASSERT("prio_vid must be <= 0xFFFF", vlan_prio_vid <= 0xFFFF);
+        // LWIP_ASSERT("prio_vid must be <= 0xFFFF", vlan_prio_vid <= 0xFFFF);
 
         if pbuf_add_header(pkt_buf, SIZEOF_ETH_HDR + SIZEOF_VLAN_HDR) != 0 {
             // goto pbuf_header_failed;

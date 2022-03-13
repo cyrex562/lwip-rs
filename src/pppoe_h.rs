@@ -68,7 +68,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && PPPOE_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && PPPOE_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -145,21 +145,21 @@ struct pppoe_softc {
   ppp_pcb *pcb;                /* PPP PCB */
 
   struct eth_addr sc_dest;     /* hardware address of concentrator */
-  u16_t sc_session;            /* PPPoE session id */
-  u8_t sc_state;               /* discovery phase or session connected */
+  sc_session: u16;            /* PPPoE session id */
+  sc_state: u8;               /* discovery phase or session connected */
 
-#if PPPOE_SCNAME_SUPPORT
+// #if PPPOE_SCNAME_SUPPORT
   const char *sc_service_name;      /* if != NULL: requested name of service */
   const char *sc_concentrator_name; /* if != NULL: requested concentrator id */
  /* PPPOE_SCNAME_SUPPORT */
  sc_ac_cookie[PPPOE_MAX_AC_COOKIE_LEN]; /* content of AC cookie we must echo back */
-  u8_t sc_ac_cookie_len;       /* length of cookie data */
+  sc_ac_cookie_len: u8;       /* length of cookie data */
 #ifdef PPPOE_SERVER
   u8_t *sc_hunique;            /* content of host unique we must echo back */
-  u8_t sc_hunique_len;         /* length of host unique */
+  sc_hunique_len: u8;         /* length of host unique */
 
  sc_padi_retried;        /* number of PADI retries already done */
-  u8_t sc_padr_retried;        /* number of PADR retries already done */
+  sc_padr_retried: u8;        /* number of PADR retries already done */
 };
 
 

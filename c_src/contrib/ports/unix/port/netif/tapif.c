@@ -60,7 +60,7 @@
 
 #define IFCONFIG_BIN "/sbin/ifconfig "
 
-#if defined(LWIP_UNIX_LINUX)
+// #if defined(LWIP_UNIX_LINUX)
 
 
 
@@ -222,7 +222,7 @@ low_level_output(struct netif *netif, struct pbuf *p)
   char buf[1518]; /* max packet size including VLAN excluding CRC */
   ssize_t written;
 
-#if 0
+// #if 0
   if (((double)rand()/(double)RAND_MAX) < 0.2) {
     printf("drop output\n");
     return ERR_OK; /* ERR_OK because we simulate packet loss on cable */
@@ -262,7 +262,7 @@ static struct pbuf *
 low_level_input(struct netif *netif)
 {
   struct pbuf *p;
-  u16_t len;
+  len: u16;
   ssize_t readlen;
   char buf[1518]; /* max packet size including VLAN excluding CRC */
   struct tapif *tapif = (struct tapif *)netif->state;
@@ -278,7 +278,7 @@ low_level_input(struct netif *netif)
 
   MIB2_STATS_NETIF_ADD(netif, ifinoctets, len);
 
-#if 0
+// #if 0
   if (((double)rand()/(double)RAND_MAX) < 0.2) {
     printf("drop\n");
     return NULL;
@@ -316,7 +316,7 @@ tapif_input(struct netif *netif)
   struct pbuf *p = low_level_input(netif);
 
   if (p == NULL) {
-#if LINK_STATS
+// #if LINK_STATS
     LINK_STATS_INC(link.recv);
  /* LINK_STATS */
     LWIP_DEBUGF(TAPIF_DEBUG, ("tapif_input: low_level_input returned NULL\n"));
@@ -374,7 +374,7 @@ tapif_poll(struct netif *netif)
   tapif_input(netif);
 }
 
-#if NO_SYS
+// #if NO_SYS
 
 int
 tapif_select(struct netif *netif)

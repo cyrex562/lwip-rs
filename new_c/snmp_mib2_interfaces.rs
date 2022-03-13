@@ -44,16 +44,16 @@
 
 
 
-#if LWIP_SNMP && SNMP_LWIP_MIB2
+// #if LWIP_SNMP && SNMP_LWIP_MIB2
 
-#if SNMP_USE_NETCONN
+// #if SNMP_USE_NETCONN
 #define SYNC_NODE_NAME(node_name) node_name ## _synced
 #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
 #else
 #define SYNC_NODE_NAME(node_name) node_name
 #define CREATE_LWIP_SYNC_NODE(oid, node_name)
-#endif
+// #endif
 
 
 /* --- interfaces .1.3.6.1.2.1.2 ----------------------------------------------------- */
@@ -61,7 +61,7 @@
 static s16_t
 interfaces_get_value(struct snmp_node_instance *instance, void *value)
 {
-  if (instance->node->oid == 1) {
+  if ( instance.node->oid == 1) {
     s32_t *sint_ptr = (s32_t *)value;
     s32_t num_netifs = 0;
 
@@ -79,7 +79,7 @@ interfaces_get_value(struct snmp_node_instance *instance, void *value)
 
 /* list of allowed value ranges for incoming OID */
 static const struct snmp_oid_range interfaces_Table_oid_ranges[] = {
-  { 1, 0xff } /* netif->num is u8_t */
+  { 1, 0xff } /*  netif.num is u8_t */
 };
 
 static const u8_t iftable_ifOutQLen         = 0;
@@ -111,7 +111,7 @@ interfaces_Table_get_cell_instance(const u32_t *column, const u32_t *row_oid, u8
   NETIF_FOREACH(netif) {
     if (netif_to_num(netif) == ifIndex) {
       /* store netif pointer for subsequent operations (get/test/set) */
-      cell_instance->reference.ptr = netif;
+       cell_instance.reference.ptr = netif;
       return SNMP_ERR_NOERROR;
     }
   }
@@ -130,7 +130,7 @@ interfaces_Table_get_next_cell_instance(const u32_t *column, struct snmp_obj_id 
   LWIP_UNUSED_ARG(column);
 
   /* init struct to search next oid */
-  snmp_next_oid_init(&state, row_oid->id, row_oid->len, result_temp, LWIP_ARRAYSIZE(interfaces_Table_oid_ranges));
+  snmp_next_oid_init(&state,  row_oid.id,  row_oid.len, result_temp, LWIP_ARRAYSIZE(interfaces_Table_oid_ranges));
 
   /* iterate over all possible OIDs to find the next one */
   NETIF_FOREACH(netif) {
@@ -145,7 +145,7 @@ interfaces_Table_get_next_cell_instance(const u32_t *column, struct snmp_obj_id 
   if (state.status == SNMP_NEXT_OID_STATUS_SUCCESS) {
     snmp_oid_assign(row_oid, state.next_oid, state.next_oid_len);
     /* store netif pointer for subsequent operations (get/test/set) */
-    cell_instance->reference.ptr = /* (struct netif*) */state.reference;
+     cell_instance.reference.ptr = /* (struct netif*) */state.reference;
     return SNMP_ERR_NOERROR;
   }
 
@@ -156,35 +156,35 @@ interfaces_Table_get_next_cell_instance(const u32_t *column, struct snmp_obj_id 
 static s16_t
 interfaces_Table_get_value(struct snmp_node_instance *instance, void *value)
 {
-  struct netif *netif = (struct netif *)instance->reference.ptr;
+  struct netif *netif = (struct netif *) instance.reference.ptr;
   u32_t *value_u32 = (u32_t *)value;
   s32_t *value_s32 = (s32_t *)value;
-  u16_t value_len;
+  value_len: u16;
 
-  switch (SNMP_TABLE_GET_COLUMN_FROM_OID(instance->instance_oid.id)) {
+  switch (SNMP_TABLE_GET_COLUMN_FROM_OID( instance.instance_oid.id)) {
     case 1: /* ifIndex */
       *value_s32 = netif_to_num(netif);
       value_len = sizeof(*value_s32);
       break;
     case 2: /* ifDescr */
-      value_len = sizeof(netif->name);
-      MEMCPY(value, netif->name, value_len);
+      value_len = sizeof( netif.name);
+      MEMCPY(value,  netif.name, value_len);
       break;
     case 3: /* ifType */
-      *value_s32 = netif->link_type;
+      *value_s32 =  netif.link_type;
       value_len = sizeof(*value_s32);
       break;
     case 4: /* ifMtu */
-      *value_s32 = netif->mtu;
+      *value_s32 =  netif.mtu;
       value_len = sizeof(*value_s32);
       break;
     case 5: /* ifSpeed */
-      *value_u32 = netif->link_speed;
+      *value_u32 =  netif.link_speed;
       value_len = sizeof(*value_u32);
       break;
     case 6: /* ifPhysAddress */
-      value_len = sizeof(netif->hwaddr);
-      MEMCPY(value, &netif->hwaddr, value_len);
+      value_len = sizeof( netif.hwaddr);
+      MEMCPY(value, & netif.hwaddr, value_len);
       break;
     case 7: /* ifAdminStatus */
       if (netif_is_up(netif)) {
@@ -207,51 +207,51 @@ interfaces_Table_get_value(struct snmp_node_instance *instance, void *value)
       value_len = sizeof(*value_s32);
       break;
     case 9: /* ifLastChange */
-      *value_u32 = netif->ts;
+      *value_u32 =  netif.ts;
       value_len = sizeof(*value_u32);
       break;
     case 10: /* ifInOctets */
-      *value_u32 = netif->mib2_counters.ifinoctets;
+      *value_u32 =  netif.mib2_counters.ifinoctets;
       value_len = sizeof(*value_u32);
       break;
     case 11: /* ifInUcastPkts */
-      *value_u32 = netif->mib2_counters.ifinucastpkts;
+      *value_u32 =  netif.mib2_counters.ifinucastpkts;
       value_len = sizeof(*value_u32);
       break;
     case 12: /* ifInNUcastPkts */
-      *value_u32 = netif->mib2_counters.ifinnucastpkts;
+      *value_u32 =  netif.mib2_counters.ifinnucastpkts;
       value_len = sizeof(*value_u32);
       break;
     case 13: /* ifInDiscards */
-      *value_u32 = netif->mib2_counters.ifindiscards;
+      *value_u32 =  netif.mib2_counters.ifindiscards;
       value_len = sizeof(*value_u32);
       break;
     case 14: /* ifInErrors */
-      *value_u32 = netif->mib2_counters.ifinerrors;
+      *value_u32 =  netif.mib2_counters.ifinerrors;
       value_len = sizeof(*value_u32);
       break;
     case 15: /* ifInUnkownProtos */
-      *value_u32 = netif->mib2_counters.ifinunknownprotos;
+      *value_u32 =  netif.mib2_counters.ifinunknownprotos;
       value_len = sizeof(*value_u32);
       break;
     case 16: /* ifOutOctets */
-      *value_u32 = netif->mib2_counters.ifoutoctets;
+      *value_u32 =  netif.mib2_counters.ifoutoctets;
       value_len = sizeof(*value_u32);
       break;
     case 17: /* ifOutUcastPkts */
-      *value_u32 = netif->mib2_counters.ifoutucastpkts;
+      *value_u32 =  netif.mib2_counters.ifoutucastpkts;
       value_len = sizeof(*value_u32);
       break;
     case 18: /* ifOutNUcastPkts */
-      *value_u32 = netif->mib2_counters.ifoutnucastpkts;
+      *value_u32 =  netif.mib2_counters.ifoutnucastpkts;
       value_len = sizeof(*value_u32);
       break;
     case 19: /* ifOutDiscarts */
-      *value_u32 = netif->mib2_counters.ifoutdiscards;
+      *value_u32 =  netif.mib2_counters.ifoutdiscards;
       value_len = sizeof(*value_u32);
       break;
     case 20: /* ifOutErrors */
-      *value_u32 = netif->mib2_counters.ifouterrors;
+      *value_u32 =  netif.mib2_counters.ifouterrors;
       value_len = sizeof(*value_u32);
       break;
     case 21: /* ifOutQLen */
@@ -279,7 +279,7 @@ interfaces_Table_set_test(struct snmp_node_instance *instance, u16_t len, void *
 
   /* stack should never call this method for another column,
   because all other columns are set to readonly */
-  LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID(instance->instance_oid.id) == 7));
+  // LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID( instance.instance_oid.id) == 7));
   LWIP_UNUSED_ARG(len);
 
   if (*sint_ptr == 1 || *sint_ptr == 2) {
@@ -292,12 +292,12 @@ interfaces_Table_set_test(struct snmp_node_instance *instance, u16_t len, void *
 static snmp_err_t
 interfaces_Table_set_value(struct snmp_node_instance *instance, u16_t len, void *value)
 {
-  struct netif *netif = (struct netif *)instance->reference.ptr;
+  struct netif *netif = (struct netif *) instance.reference.ptr;
   s32_t *sint_ptr = (s32_t *)value;
 
   /* stack should never call this method for another column,
   because all other columns are set to readonly */
-  LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID(instance->instance_oid.id) == 7));
+  // LWIP_ASSERT("Invalid column", (SNMP_TABLE_GET_COLUMN_FROM_OID( instance.instance_oid.id) == 7));
   LWIP_UNUSED_ARG(len);
 
   if (*sint_ptr == 1) {
@@ -309,7 +309,7 @@ interfaces_Table_set_value(struct snmp_node_instance *instance, u16_t len, void 
   return SNMP_ERR_NOERROR;
 }
 
-#endif /* SNMP_SAFE_REQUESTS */
+// #endif /* SNMP_SAFE_REQUESTS */
 
 static const struct snmp_scalar_node interfaces_Number = SNMP_SCALAR_CREATE_NODE_READONLY(1, SNMP_ASN1_TYPE_INTEGER, interfaces_get_value);
 
@@ -324,7 +324,7 @@ static const struct snmp_table_col_def interfaces_Table_columns[] = {
   {  7, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_WRITE }, /* ifAdminStatus */
 #else
   {  7, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY }, /* ifAdminStatus */
-#endif
+// #endif
   {  8, SNMP_ASN1_TYPE_INTEGER,      SNMP_NODE_INSTANCE_READ_ONLY }, /* ifOperStatus */
   {  9, SNMP_ASN1_TYPE_TIMETICKS,    SNMP_NODE_INSTANCE_READ_ONLY }, /* ifLastChange */
   { 10, SNMP_ASN1_TYPE_COUNTER,      SNMP_NODE_INSTANCE_READ_ONLY }, /* ifInOctets */
@@ -352,7 +352,7 @@ static const struct snmp_table_node interfaces_Table = SNMP_TABLE_CREATE(
       2, interfaces_Table_columns,
       interfaces_Table_get_cell_instance, interfaces_Table_get_next_cell_instance,
       interfaces_Table_get_value, NULL, NULL);
-#endif
+// #endif
 
 /* the following nodes access variables in LWIP stack from SNMP worker thread and must therefore be synced to LWIP (TCPIP) thread */
 CREATE_LWIP_SYNC_NODE(1, interfaces_Number)
@@ -365,4 +365,4 @@ static const struct snmp_node *const interface_nodes[] = {
 
 const struct snmp_tree_node snmp_mib2_interface_root = SNMP_CREATE_TREE_NODE(2, interface_nodes);
 
-#endif /* LWIP_SNMP && SNMP_LWIP_MIB2 */
+// #endif /* LWIP_SNMP && SNMP_LWIP_MIB2 */

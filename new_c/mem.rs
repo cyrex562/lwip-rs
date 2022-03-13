@@ -62,28 +62,28 @@
 
 
 
-#if MEM_LIBC_MALLOC
-#include <stdlib.h> /* for malloc()/free() */
-#endif
+// #if MEM_LIBC_MALLOC
+
+// #endif
 
 /* This is overridable for tests only... */
 #ifndef LWIP_MEM_ILLEGAL_FREE
 #define LWIP_MEM_ILLEGAL_FREE(msg)         LWIP_ASSERT(msg, 0)
-#endif
+// #endif
 
 #define MEM_STATS_INC_LOCKED(x)         SYS_ARCH_LOCKED(MEM_STATS_INC(x))
 #define MEM_STATS_INC_USED_LOCKED(x, y) SYS_ARCH_LOCKED(MEM_STATS_INC_USED(x, y))
 #define MEM_STATS_DEC_USED_LOCKED(x, y) SYS_ARCH_LOCKED(MEM_STATS_DEC_USED(x, y))
 
-#if MEM_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK
 #define MEM_SANITY_OFFSET   MEM_SANITY_REGION_BEFORE_ALIGNED
 #define MEM_SANITY_OVERHEAD (MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED)
 #else
 #define MEM_SANITY_OFFSET   0
 #define MEM_SANITY_OVERHEAD 0
-#endif
+// #endif
 
-#if MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK
 /**
  * Check if a mep element was victim of an overflow or underflow
  * (e.g. the restricted area after/before it has been altered)
@@ -96,36 +96,36 @@
 void
 mem_overflow_check_raw(void *p, size_t size, const char *descr1, const char *descr2)
 {
-#if MEM_SANITY_REGION_AFTER_ALIGNED || MEM_SANITY_REGION_BEFORE_ALIGNED
-  u16_t k;
+// #if MEM_SANITY_REGION_AFTER_ALIGNED || MEM_SANITY_REGION_BEFORE_ALIGNED
+  k: u16;
   u8_t *m;
 
-#if MEM_SANITY_REGION_AFTER_ALIGNED > 0
+// #if MEM_SANITY_REGION_AFTER_ALIGNED > 0
   m = (u8_t *)p + size;
   for (k = 0; k < MEM_SANITY_REGION_AFTER_ALIGNED; k++) {
     if (m[k] != 0xcd) {
       char errstr[128];
       snprintf(errstr, sizeof(errstr), "detected mem overflow in %s%s", descr1, descr2);
-      LWIP_ASSERT(errstr, 0);
+      // LWIP_ASSERT(errstr, 0);
     }
   }
-#endif /* MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
+// #endif /* MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
 
-#if MEM_SANITY_REGION_BEFORE_ALIGNED > 0
+// #if MEM_SANITY_REGION_BEFORE_ALIGNED > 0
   m = (u8_t *)p - MEM_SANITY_REGION_BEFORE_ALIGNED;
   for (k = 0; k < MEM_SANITY_REGION_BEFORE_ALIGNED; k++) {
     if (m[k] != 0xcd) {
       char errstr[128];
       snprintf(errstr, sizeof(errstr), "detected mem underflow in %s%s", descr1, descr2);
-      LWIP_ASSERT(errstr, 0);
+      // LWIP_ASSERT(errstr, 0);
     }
   }
-#endif /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 */
+// #endif /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 */
 #else
   LWIP_UNUSED_ARG(p);
   LWIP_UNUSED_ARG(desc);
   LWIP_UNUSED_ARG(descr);
-#endif
+// #endif
 }
 
 /**
@@ -134,30 +134,30 @@ mem_overflow_check_raw(void *p, size_t size, const char *descr1, const char *des
 void
 mem_overflow_init_raw(void *p, size_t size)
 {
-#if MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0
+// #if MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0
   u8_t *m;
-#if MEM_SANITY_REGION_BEFORE_ALIGNED > 0
+// #if MEM_SANITY_REGION_BEFORE_ALIGNED > 0
   m = (u8_t *)p - MEM_SANITY_REGION_BEFORE_ALIGNED;
   memset(m, 0xcd, MEM_SANITY_REGION_BEFORE_ALIGNED);
-#endif
-#if MEM_SANITY_REGION_AFTER_ALIGNED > 0
+// #endif
+// #if MEM_SANITY_REGION_AFTER_ALIGNED > 0
   m = (u8_t *)p + size;
   memset(m, 0xcd, MEM_SANITY_REGION_AFTER_ALIGNED);
-#endif
+// #endif
 #else /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
   LWIP_UNUSED_ARG(p);
   LWIP_UNUSED_ARG(desc);
-#endif /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
+// #endif /* MEM_SANITY_REGION_BEFORE_ALIGNED > 0 || MEM_SANITY_REGION_AFTER_ALIGNED > 0 */
 }
-#endif /* MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK */
+// #endif /* MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK */
 
-#if MEM_LIBC_MALLOC || MEM_USE_POOLS
+// #if MEM_LIBC_MALLOC || MEM_USE_POOLS
 
 /** mem_init is not used when using pools instead of a heap or using
  * C library malloc().
  */
 void
-mem_init(void)
+mem_init()
 {
 }
 
@@ -171,9 +171,9 @@ mem_trim(void *mem, mem_size_t size)
   LWIP_UNUSED_ARG(size);
   return mem;
 }
-#endif /* MEM_LIBC_MALLOC || MEM_USE_POOLS */
+// #endif /* MEM_LIBC_MALLOC || MEM_USE_POOLS */
 
-#if MEM_LIBC_MALLOC
+// #if MEM_LIBC_MALLOC
 /* lwIP heap implemented using C library malloc() */
 
 /* in case C library malloc() needs extra protection,
@@ -181,19 +181,19 @@ mem_trim(void *mem, mem_size_t size)
  */
 #ifndef mem_clib_free
 #define mem_clib_free free
-#endif
+// #endif
 #ifndef mem_clib_malloc
 #define mem_clib_malloc malloc
-#endif
+// #endif
 #ifndef mem_clib_calloc
 #define mem_clib_calloc calloc
-#endif
+// #endif
 
-#if LWIP_STATS && MEM_STATS
+// #if LWIP_STATS && MEM_STATS
 #define MEM_LIBC_STATSHELPER_SIZE LWIP_MEM_ALIGN_SIZE(sizeof(mem_size_t))
 #else
 #define MEM_LIBC_STATSHELPER_SIZE 0
-#endif
+// #endif
 
 /**
  * Allocate a block of memory with a minimum of 'size' bytes.
@@ -210,12 +210,12 @@ mem_malloc(mem_size_t size)
   if (ret == NULL) {
     MEM_STATS_INC_LOCKED(err);
   } else {
-    LWIP_ASSERT("malloc() must return aligned memory", LWIP_MEM_ALIGN(ret) == ret);
-#if LWIP_STATS && MEM_STATS
+    // LWIP_ASSERT("malloc() must return aligned memory", LWIP_MEM_ALIGN(ret) == ret);
+// #if LWIP_STATS && MEM_STATS
     *(mem_size_t *)ret = size;
     ret = (u8_t *)ret + MEM_LIBC_STATSHELPER_SIZE;
     MEM_STATS_INC_USED_LOCKED(used, size);
-#endif
+// #endif
   }
   return ret;
 }
@@ -227,12 +227,12 @@ mem_malloc(mem_size_t size)
 void
 mem_free(void *rmem)
 {
-  LWIP_ASSERT("rmem != NULL", (rmem != NULL));
-  LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
-#if LWIP_STATS && MEM_STATS
+  // LWIP_ASSERT("rmem != NULL", (rmem != NULL));
+  // LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
+// #if LWIP_STATS && MEM_STATS
   rmem = (u8_t *)rmem - MEM_LIBC_STATSHELPER_SIZE;
   MEM_STATS_DEC_USED_LOCKED(used, *(mem_size_t *)rmem);
-#endif
+// #endif
   mem_clib_free(rmem);
 }
 
@@ -262,12 +262,12 @@ mem_malloc(mem_size_t size)
       element = (struct memp_malloc_helper *)memp_malloc(poolnr);
       if (element == NULL) {
         /* No need to DEBUGF or ASSERT: This error is already taken care of in memp.c */
-#if MEM_USE_POOLS_TRY_BIGGER_POOL
+// #if MEM_USE_POOLS_TRY_BIGGER_POOL
         /** Try a bigger pool if this one is empty! */
         if (poolnr < MEMP_POOL_LAST) {
           continue;
         }
-#endif /* MEM_USE_POOLS_TRY_BIGGER_POOL */
+// #endif /* MEM_USE_POOLS_TRY_BIGGER_POOL */
         MEM_STATS_INC_LOCKED(err);
         return NULL;
       }
@@ -275,25 +275,25 @@ mem_malloc(mem_size_t size)
     }
   }
   if (poolnr > MEMP_POOL_LAST) {
-    LWIP_ASSERT("mem_malloc(): no pool is that big!", 0);
+    // LWIP_ASSERT("mem_malloc(): no pool is that big!", 0);
     MEM_STATS_INC_LOCKED(err);
     return NULL;
   }
 
   /* save the pool number this element came from */
-  element->poolnr = poolnr;
+   element.poolnr = poolnr;
   /* and return a pointer to the memory directly after the struct memp_malloc_helper */
   ret = (u8_t *)element + LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper));
 
-#if MEMP_OVERFLOW_CHECK || (LWIP_STATS && MEM_STATS)
+// #if MEMP_OVERFLOW_CHECK || (LWIP_STATS && MEM_STATS)
   /* truncating to u16_t is safe because struct memp_desc::size is u16_t */
-  element->size = (u16_t)size;
-  MEM_STATS_INC_USED_LOCKED(used, element->size);
-#endif /* MEMP_OVERFLOW_CHECK || (LWIP_STATS && MEM_STATS) */
-#if MEMP_OVERFLOW_CHECK
+   element.size = (u16_t)size;
+  MEM_STATS_INC_USED_LOCKED(used,  element.size);
+// #endif /* MEMP_OVERFLOW_CHECK || (LWIP_STATS && MEM_STATS) */
+// #if MEMP_OVERFLOW_CHECK
   /* initialize unused memory (diff between requested size and selected pool's size) */
   memset((u8_t *)ret + size, 0xcd, memp_pools[poolnr]->size - size);
-#endif /* MEMP_OVERFLOW_CHECK */
+// #endif /* MEMP_OVERFLOW_CHECK */
   return ret;
 }
 
@@ -309,33 +309,33 @@ mem_free(void *rmem)
 {
   struct memp_malloc_helper *hmem;
 
-  LWIP_ASSERT("rmem != NULL", (rmem != NULL));
-  LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
+  // LWIP_ASSERT("rmem != NULL", (rmem != NULL));
+  // LWIP_ASSERT("rmem == MEM_ALIGN(rmem)", (rmem == LWIP_MEM_ALIGN(rmem)));
 
   /* get the original struct memp_malloc_helper */
   /* cast through void* to get rid of alignment warnings */
   hmem = (struct memp_malloc_helper *)(void *)((u8_t *)rmem - LWIP_MEM_ALIGN_SIZE(sizeof(struct memp_malloc_helper)));
 
-  LWIP_ASSERT("hmem != NULL", (hmem != NULL));
-  LWIP_ASSERT("hmem == MEM_ALIGN(hmem)", (hmem == LWIP_MEM_ALIGN(hmem)));
-  LWIP_ASSERT("hmem->poolnr < MEMP_MAX", (hmem->poolnr < MEMP_MAX));
+  // LWIP_ASSERT("hmem != NULL", (hmem != NULL));
+  // LWIP_ASSERT("hmem == MEM_ALIGN(hmem)", (hmem == LWIP_MEM_ALIGN(hmem)));
+  // LWIP_ASSERT(" hmem.poolnr < MEMP_MAX", ( hmem.poolnr < MEMP_MAX));
 
-  MEM_STATS_DEC_USED_LOCKED(used, hmem->size);
-#if MEMP_OVERFLOW_CHECK
+  MEM_STATS_DEC_USED_LOCKED(used,  hmem.size);
+// #if MEMP_OVERFLOW_CHECK
   {
-    u16_t i;
-    LWIP_ASSERT("MEM_USE_POOLS: invalid chunk size",
-                hmem->size <= memp_pools[hmem->poolnr]->size);
+    i: u16;
+    // LWIP_ASSERT("MEM_USE_POOLS: invalid chunk size",
+                 hmem.size <= memp_pools[ hmem.poolnr]->size);
     /* check that unused memory remained untouched (diff between requested size and selected pool's size) */
-    for (i = hmem->size; i < memp_pools[hmem->poolnr]->size; i++) {
+    for (i =  hmem.size; i < memp_pools[ hmem.poolnr]->size; i++) {
       u8_t data = *((u8_t *)rmem + i);
-      LWIP_ASSERT("MEM_USE_POOLS: mem overflow detected", data == 0xcd);
+      // LWIP_ASSERT("MEM_USE_POOLS: mem overflow detected", data == 0xcd);
     }
   }
-#endif /* MEMP_OVERFLOW_CHECK */
+// #endif /* MEMP_OVERFLOW_CHECK */
 
   /* and put it in the pool we saved earlier */
-  memp_free(hmem->poolnr, hmem);
+  memp_free( hmem.poolnr, hmem);
 }
 
 #else /* MEM_USE_POOLS */
@@ -352,11 +352,11 @@ struct mem {
   /** index (-> ram[prev]) of the previous struct */
   mem_size_t prev;
   /** 1: this area is used; 0: this area is unused */
-  u8_t used;
-#if MEM_OVERFLOW_CHECK
+  used: u8;
+// #if MEM_OVERFLOW_CHECK
   /** this keeps track of the user allocation size for guard checks */
   mem_size_t user_size;
-#endif
+// #endif
 };
 
 /** All allocated blocks will be MIN_SIZE bytes big, at least!
@@ -364,7 +364,7 @@ struct mem {
  * larger values could prevent too small blocks to fragment the RAM too much. */
 #ifndef MIN_SIZE
 #define MIN_SIZE             12
-#endif /* MIN_SIZE */
+// #endif /* MIN_SIZE */
 /* some alignment macros: we define them here for better source code layout */
 #define MIN_SIZE_ALIGNED     LWIP_MEM_ALIGN_SIZE(MIN_SIZE)
 #define SIZEOF_STRUCT_MEM    LWIP_MEM_ALIGN_SIZE(sizeof(struct mem))
@@ -378,7 +378,7 @@ struct mem {
 /** the heap. we need one struct mem at the end and some room for alignment */
 LWIP_DECLARE_MEMORY_ALIGNED(ram_heap, MEM_SIZE_ALIGNED + (2U * SIZEOF_STRUCT_MEM));
 #define LWIP_RAM_HEAP_POINTER ram_heap
-#endif /* LWIP_RAM_HEAP_POINTER */
+// #endif /* LWIP_RAM_HEAP_POINTER */
 
 /** pointer to the heap (ram_heap): for alignment, ram is now a pointer instead of an array */
 static u8_t *ram;
@@ -388,11 +388,11 @@ static struct mem *ram_end;
 /** concurrent access protection */
 #if !NO_SYS
 static sys_mutex_t mem_mutex;
-#endif
+// #endif
 
-#if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+// #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
 
-static volatile u8_t mem_free_count;
+static volatile mem_free_count: u8;
 
 /* Allow mem_free from other (e.g. interrupt) context */
 #define LWIP_MEM_FREE_DECL_PROTECT()  SYS_ARCH_DECL_PROTECT(lev_free)
@@ -415,24 +415,24 @@ static volatile u8_t mem_free_count;
 #define LWIP_MEM_ALLOC_UNPROTECT()
 #define LWIP_MEM_LFREE_VOLATILE
 
-#endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+// #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
 
 /** pointer to the lowest free block, this is used for faster search */
 static struct mem * LWIP_MEM_LFREE_VOLATILE lfree;
 
-#if MEM_SANITY_CHECK
-static void mem_sanity(void);
+// #if MEM_SANITY_CHECK
+static void mem_sanity();
 #define MEM_SANITY() mem_sanity()
 #else
 #define MEM_SANITY()
-#endif
+// #endif
 
-#if MEM_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK
 static void
 mem_overflow_init_element(struct mem *mem, mem_size_t user_size)
 {
   void *p = (u8_t *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
-  mem->user_size = user_size;
+   mem.user_size = user_size;
   mem_overflow_init_raw(p, user_size);
 }
 
@@ -440,12 +440,12 @@ static void
 mem_overflow_check_element(struct mem *mem)
 {
   void *p = (u8_t *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
-  mem_overflow_check_raw(p, mem->user_size, "heap", "");
+  mem_overflow_check_raw(p,  mem.user_size, "heap", "");
 }
 #else /* MEM_OVERFLOW_CHECK */
 #define mem_overflow_init_element(mem, size)
 #define mem_overflow_check_element(mem)
-#endif /* MEM_OVERFLOW_CHECK */
+// #endif /* MEM_OVERFLOW_CHECK */
 
 static struct mem *
 ptr_to_mem(mem_size_t ptr)
@@ -476,35 +476,35 @@ plug_holes(struct mem *mem)
   struct mem *nmem;
   struct mem *pmem;
 
-  LWIP_ASSERT("plug_holes: mem >= ram", (u8_t *)mem >= ram);
-  LWIP_ASSERT("plug_holes: mem < ram_end", (u8_t *)mem < (u8_t *)ram_end);
-  LWIP_ASSERT("plug_holes: mem->used == 0", mem->used == 0);
+  // LWIP_ASSERT("plug_holes: mem >= ram", (u8_t *)mem >= ram);
+  // LWIP_ASSERT("plug_holes: mem < ram_end", (u8_t *)mem < (u8_t *)ram_end);
+  // LWIP_ASSERT("plug_holes:  mem.used == 0",  mem.used == 0);
 
   /* plug hole forward */
-  LWIP_ASSERT("plug_holes: mem->next <= MEM_SIZE_ALIGNED", mem->next <= MEM_SIZE_ALIGNED);
+  // LWIP_ASSERT("plug_holes:  mem.next <= MEM_SIZE_ALIGNED",  mem.next <= MEM_SIZE_ALIGNED);
 
-  nmem = ptr_to_mem(mem->next);
-  if (mem != nmem && nmem->used == 0 && (u8_t *)nmem != (u8_t *)ram_end) {
-    /* if mem->next is unused and not end of ram, combine mem and mem->next */
+  nmem = ptr_to_mem( mem.next);
+  if (mem != nmem &&  nmem.used == 0 && (u8_t *)nmem != (u8_t *)ram_end) {
+    /* if  mem.next is unused and not end of ram, combine mem and  mem.next */
     if (lfree == nmem) {
       lfree = mem;
     }
-    mem->next = nmem->next;
-    if (nmem->next != MEM_SIZE_ALIGNED) {
-      ptr_to_mem(nmem->next)->prev = mem_to_ptr(mem);
+     mem.next =  nmem.next;
+    if ( nmem.next != MEM_SIZE_ALIGNED) {
+      ptr_to_mem( nmem.next)->prev = mem_to_ptr(mem);
     }
   }
 
   /* plug hole backward */
-  pmem = ptr_to_mem(mem->prev);
-  if (pmem != mem && pmem->used == 0) {
-    /* if mem->prev is unused, combine mem and mem->prev */
+  pmem = ptr_to_mem( mem.prev);
+  if (pmem != mem &&  pmem.used == 0) {
+    /* if  mem.prev is unused, combine mem and  mem.prev */
     if (lfree == mem) {
       lfree = pmem;
     }
-    pmem->next = mem->next;
-    if (mem->next != MEM_SIZE_ALIGNED) {
-      ptr_to_mem(mem->next)->prev = mem_to_ptr(pmem);
+     pmem.next =  mem.next;
+    if ( mem.next != MEM_SIZE_ALIGNED) {
+      ptr_to_mem( mem.next)->prev = mem_to_ptr(pmem);
     }
   }
 }
@@ -513,25 +513,25 @@ plug_holes(struct mem *mem)
  * Zero the heap and initialize start, end and lowest-free
  */
 void
-mem_init(void)
+mem_init()
 {
   struct mem *mem;
 
-  LWIP_ASSERT("Sanity check alignment",
+  // LWIP_ASSERT("Sanity check alignment",
               (SIZEOF_STRUCT_MEM & (MEM_ALIGNMENT - 1)) == 0);
 
   /* align the heap */
   ram = (u8_t *)LWIP_MEM_ALIGN(LWIP_RAM_HEAP_POINTER);
   /* initialize the start of the heap */
   mem = (struct mem *)(void *)ram;
-  mem->next = MEM_SIZE_ALIGNED;
-  mem->prev = 0;
-  mem->used = 0;
+   mem.next = MEM_SIZE_ALIGNED;
+   mem.prev = 0;
+   mem.used = 0;
   /* initialize the end of the heap */
   ram_end = ptr_to_mem(MEM_SIZE_ALIGNED);
-  ram_end->used = 1;
-  ram_end->next = MEM_SIZE_ALIGNED;
-  ram_end->prev = MEM_SIZE_ALIGNED;
+   ram_end.used = 1;
+   ram_end.next = MEM_SIZE_ALIGNED;
+   ram_end.prev = MEM_SIZE_ALIGNED;
   MEM_SANITY();
 
   /* initialize the lowest-free pointer to the start of the heap */
@@ -540,7 +540,7 @@ mem_init(void)
   MEM_STATS_AVAIL(avail, MEM_SIZE_ALIGNED);
 
   if (sys_mutex_new(&mem_mutex) != ERR_OK) {
-    LWIP_ASSERT("failed to create mem_mutex", 0);
+    // LWIP_ASSERT("failed to create mem_mutex", 0);
   }
 }
 
@@ -553,59 +553,59 @@ mem_link_valid(struct mem *mem)
   struct mem *nmem, *pmem;
   mem_size_t rmem_idx;
   rmem_idx = mem_to_ptr(mem);
-  nmem = ptr_to_mem(mem->next);
-  pmem = ptr_to_mem(mem->prev);
-  if ((mem->next > MEM_SIZE_ALIGNED) || (mem->prev > MEM_SIZE_ALIGNED) ||
-      ((mem->prev != rmem_idx) && (pmem->next != rmem_idx)) ||
-      ((nmem != ram_end) && (nmem->prev != rmem_idx))) {
+  nmem = ptr_to_mem( mem.next);
+  pmem = ptr_to_mem( mem.prev);
+  if (( mem.next > MEM_SIZE_ALIGNED) || ( mem.prev > MEM_SIZE_ALIGNED) ||
+      (( mem.prev != rmem_idx) && ( pmem.next != rmem_idx)) ||
+      ((nmem != ram_end) && ( nmem.prev != rmem_idx))) {
     return 0;
   }
   return 1;
 }
 
-#if MEM_SANITY_CHECK
+// #if MEM_SANITY_CHECK
 static void
-mem_sanity(void)
+mem_sanity()
 {
   struct mem *mem;
-  u8_t last_used;
+  last_used: u8;
 
   /* begin with first element here */
   mem = (struct mem *)ram;
-  LWIP_ASSERT("heap element used valid", (mem->used == 0) || (mem->used == 1));
-  last_used = mem->used;
-  LWIP_ASSERT("heap element prev ptr valid", mem->prev == 0);
-  LWIP_ASSERT("heap element next ptr valid", mem->next <= MEM_SIZE_ALIGNED);
-  LWIP_ASSERT("heap element next ptr aligned", LWIP_MEM_ALIGN(ptr_to_mem(mem->next) == ptr_to_mem(mem->next)));
+  // LWIP_ASSERT("heap element used valid", ( mem.used == 0) || ( mem.used == 1));
+  last_used =  mem.used;
+  // LWIP_ASSERT("heap element prev ptr valid",  mem.prev == 0);
+  // LWIP_ASSERT("heap element next ptr valid",  mem.next <= MEM_SIZE_ALIGNED);
+  // LWIP_ASSERT("heap element next ptr aligned", LWIP_MEM_ALIGN(ptr_to_mem( mem.next) == ptr_to_mem( mem.next)));
 
   /* check all elements before the end of the heap */
-  for (mem = ptr_to_mem(mem->next);
+  for (mem = ptr_to_mem( mem.next);
        ((u8_t *)mem > ram) && (mem < ram_end);
-       mem = ptr_to_mem(mem->next)) {
-    LWIP_ASSERT("heap element aligned", LWIP_MEM_ALIGN(mem) == mem);
-    LWIP_ASSERT("heap element prev ptr valid", mem->prev <= MEM_SIZE_ALIGNED);
-    LWIP_ASSERT("heap element next ptr valid", mem->next <= MEM_SIZE_ALIGNED);
-    LWIP_ASSERT("heap element prev ptr aligned", LWIP_MEM_ALIGN(ptr_to_mem(mem->prev) == ptr_to_mem(mem->prev)));
-    LWIP_ASSERT("heap element next ptr aligned", LWIP_MEM_ALIGN(ptr_to_mem(mem->next) == ptr_to_mem(mem->next)));
+       mem = ptr_to_mem( mem.next)) {
+    // LWIP_ASSERT("heap element aligned", LWIP_MEM_ALIGN(mem) == mem);
+    // LWIP_ASSERT("heap element prev ptr valid",  mem.prev <= MEM_SIZE_ALIGNED);
+    // LWIP_ASSERT("heap element next ptr valid",  mem.next <= MEM_SIZE_ALIGNED);
+    // LWIP_ASSERT("heap element prev ptr aligned", LWIP_MEM_ALIGN(ptr_to_mem( mem.prev) == ptr_to_mem( mem.prev)));
+    // LWIP_ASSERT("heap element next ptr aligned", LWIP_MEM_ALIGN(ptr_to_mem( mem.next) == ptr_to_mem( mem.next)));
 
     if (last_used == 0) {
       /* 2 unused elements in a row? */
-      LWIP_ASSERT("heap element unused?", mem->used == 1);
+      // LWIP_ASSERT("heap element unused?",  mem.used == 1);
     } else {
-      LWIP_ASSERT("heap element unused member", (mem->used == 0) || (mem->used == 1));
+      // LWIP_ASSERT("heap element unused member", ( mem.used == 0) || ( mem.used == 1));
     }
 
-    LWIP_ASSERT("heap element link valid", mem_link_valid(mem));
+    // LWIP_ASSERT("heap element link valid", mem_link_valid(mem));
 
     /* used/unused altering */
-    last_used = mem->used;
+    last_used =  mem.used;
   }
-  LWIP_ASSERT("heap end ptr sanity", mem == ptr_to_mem(MEM_SIZE_ALIGNED));
-  LWIP_ASSERT("heap element used valid", mem->used == 1);
-  LWIP_ASSERT("heap element prev ptr valid", mem->prev == MEM_SIZE_ALIGNED);
-  LWIP_ASSERT("heap element next ptr valid", mem->next == MEM_SIZE_ALIGNED);
+  // LWIP_ASSERT("heap end ptr sanity", mem == ptr_to_mem(MEM_SIZE_ALIGNED));
+  // LWIP_ASSERT("heap element used valid",  mem.used == 1);
+  // LWIP_ASSERT("heap element prev ptr valid",  mem.prev == MEM_SIZE_ALIGNED);
+  // LWIP_ASSERT("heap element next ptr valid",  mem.next == MEM_SIZE_ALIGNED);
 }
-#endif /* MEM_SANITY_CHECK */
+// #endif /* MEM_SANITY_CHECK */
 
 /**
  * Put a struct mem back on the heap
@@ -642,13 +642,13 @@ mem_free(void *rmem)
     MEM_STATS_INC_LOCKED(illegal);
     return;
   }
-#if MEM_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK
   mem_overflow_check_element(mem);
-#endif
+// #endif
   /* protect the heap from concurrent access */
   LWIP_MEM_FREE_PROTECT();
   /* mem has to be in a used state */
-  if (!mem->used) {
+  if (! mem.used) {
     LWIP_MEM_ILLEGAL_FREE("mem_free: illegal memory: double free");
     LWIP_MEM_FREE_UNPROTECT();
     LWIP_DEBUGF(MEM_DEBUG | LWIP_DBG_LEVEL_SEVERE, ("mem_free: illegal memory: double free?\n"));
@@ -667,21 +667,21 @@ mem_free(void *rmem)
   }
 
   /* mem is now unused. */
-  mem->used = 0;
+   mem.used = 0;
 
   if (mem < lfree) {
     /* the newly freed struct is now the lowest */
     lfree = mem;
   }
 
-  MEM_STATS_DEC_USED(used, mem->next - (mem_size_t)(((u8_t *)mem - ram)));
+  MEM_STATS_DEC_USED(used,  mem.next - (mem_size_t)(((u8_t *)mem - ram)));
 
   /* finally, see if prev or next are free also */
   plug_holes(mem);
   MEM_SANITY();
-#if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+// #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
   mem_free_count = 1;
-#endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+// #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
   LWIP_MEM_FREE_UNPROTECT();
 }
 
@@ -711,14 +711,14 @@ mem_trim(void *rmem, mem_size_t new_size)
     /* every data block must be at least MIN_SIZE_ALIGNED long */
     newsize = MIN_SIZE_ALIGNED;
   }
-#if MEM_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK
   newsize += MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED;
-#endif
+// #endif
   if ((newsize > MEM_SIZE_ALIGNED) || (newsize < new_size)) {
     return NULL;
   }
 
-  LWIP_ASSERT("mem_trim: legal memory", (u8_t *)rmem >= (u8_t *)ram &&
+  // LWIP_ASSERT("mem_trim: legal memory", (u8_t *)rmem >= (u8_t *)ram &&
               (u8_t *)rmem < (u8_t *)ram_end);
 
   if ((u8_t *)rmem < (u8_t *)ram || (u8_t *)rmem >= (u8_t *)ram_end) {
@@ -730,14 +730,14 @@ mem_trim(void *rmem, mem_size_t new_size)
   /* Get the corresponding struct mem ... */
   /* cast through void* to get rid of alignment warnings */
   mem = (struct mem *)(void *)((u8_t *)rmem - (SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET));
-#if MEM_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK
   mem_overflow_check_element(mem);
-#endif
+// #endif
   /* ... and its offset pointer */
   ptr = mem_to_ptr(mem);
 
-  size = (mem_size_t)((mem_size_t)(mem->next - ptr) - (SIZEOF_STRUCT_MEM + MEM_SANITY_OVERHEAD));
-  LWIP_ASSERT("mem_trim can only shrink memory", newsize <= size);
+  size = (mem_size_t)((mem_size_t)( mem.next - ptr) - (SIZEOF_STRUCT_MEM + MEM_SANITY_OVERHEAD));
+  // LWIP_ASSERT("mem_trim can only shrink memory", newsize <= size);
   if (newsize > size) {
     /* not supported */
     return NULL;
@@ -750,31 +750,31 @@ mem_trim(void *rmem, mem_size_t new_size)
   /* protect the heap from concurrent access */
   LWIP_MEM_FREE_PROTECT();
 
-  mem2 = ptr_to_mem(mem->next);
-  if (mem2->used == 0) {
+  mem2 = ptr_to_mem( mem.next);
+  if ( mem2.used == 0) {
     /* The next struct is unused, we can simply move it at little */
     mem_size_t next;
-    LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
+    // LWIP_ASSERT("invalid next ptr",  mem.next != MEM_SIZE_ALIGNED);
     /* remember the old next pointer */
-    next = mem2->next;
+    next =  mem2.next;
     /* create new struct mem which is moved directly after the shrunk mem */
     ptr2 = (mem_size_t)(ptr + SIZEOF_STRUCT_MEM + newsize);
     if (lfree == mem2) {
       lfree = ptr_to_mem(ptr2);
     }
     mem2 = ptr_to_mem(ptr2);
-    mem2->used = 0;
+     mem2.used = 0;
     /* restore the next pointer */
-    mem2->next = next;
+     mem2.next = next;
     /* link it back to mem */
-    mem2->prev = ptr;
+     mem2.prev = ptr;
     /* link mem to it */
-    mem->next = ptr2;
+     mem.next = ptr2;
     /* last thing to restore linked list: as we have moved mem2,
-     * let 'mem2->next->prev' point to mem2 again. but only if mem2->next is not
+     * let ' mem2.next->prev' point to mem2 again. but only if  mem2.next is not
      * the end of the heap */
-    if (mem2->next != MEM_SIZE_ALIGNED) {
-      ptr_to_mem(mem2->next)->prev = ptr2;
+    if ( mem2.next != MEM_SIZE_ALIGNED) {
+      ptr_to_mem( mem2.next)->prev = ptr2;
     }
     MEM_STATS_DEC_USED(used, (size - newsize));
     /* no need to plug holes, we've already done that */
@@ -784,23 +784,23 @@ mem_trim(void *rmem, mem_size_t new_size)
      * Old size ('size') must be big enough to contain at least 'newsize' plus a struct mem
      * ('SIZEOF_STRUCT_MEM') with some data ('MIN_SIZE_ALIGNED').
      * @todo we could leave out MIN_SIZE_ALIGNED. We would create an empty
-     *       region that couldn't hold data, but when mem->next gets freed,
+     *       region that couldn't hold data, but when  mem.next gets freed,
      *       the 2 regions would be combined, resulting in more free memory */
     ptr2 = (mem_size_t)(ptr + SIZEOF_STRUCT_MEM + newsize);
-    LWIP_ASSERT("invalid next ptr", mem->next != MEM_SIZE_ALIGNED);
+    // LWIP_ASSERT("invalid next ptr",  mem.next != MEM_SIZE_ALIGNED);
     mem2 = ptr_to_mem(ptr2);
     if (mem2 < lfree) {
       lfree = mem2;
     }
-    mem2->used = 0;
-    mem2->next = mem->next;
-    mem2->prev = ptr;
-    mem->next = ptr2;
-    if (mem2->next != MEM_SIZE_ALIGNED) {
-      ptr_to_mem(mem2->next)->prev = ptr2;
+     mem2.used = 0;
+     mem2.next =  mem.next;
+     mem2.prev = ptr;
+     mem.next = ptr2;
+    if ( mem2.next != MEM_SIZE_ALIGNED) {
+      ptr_to_mem( mem2.next)->prev = ptr2;
     }
     MEM_STATS_DEC_USED(used, (size - newsize));
-    /* the original mem->next is used, so no need to plug holes! */
+    /* the original  mem.next is used, so no need to plug holes! */
   }
   /* else {
     next struct mem is used but size between mem and mem2 is not big enough
@@ -808,13 +808,13 @@ mem_trim(void *rmem, mem_size_t new_size)
     -> don't do anyhting.
     -> the remaining space stays unused since it is too small
   } */
-#if MEM_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK
   mem_overflow_init_element(mem, new_size);
-#endif
+// #endif
   MEM_SANITY();
-#if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+// #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
   mem_free_count = 1;
-#endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+// #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
   LWIP_MEM_FREE_UNPROTECT();
   return rmem;
 }
@@ -832,9 +832,9 @@ mem_malloc(mem_size_t size_in)
 {
   mem_size_t ptr, ptr2, size;
   struct mem *mem, *mem2;
-#if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+// #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
   u8_t local_mem_free_count = 0;
-#endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+// #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
   LWIP_MEM_ALLOC_DECL_PROTECT();
 
   if (size_in == 0) {
@@ -848,9 +848,9 @@ mem_malloc(mem_size_t size_in)
     /* every data block must be at least MIN_SIZE_ALIGNED long */
     size = MIN_SIZE_ALIGNED;
   }
-#if MEM_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK
   size += MEM_SANITY_REGION_BEFORE_ALIGNED + MEM_SANITY_REGION_AFTER_ALIGNED;
-#endif
+// #endif
   if ((size > MEM_SIZE_ALIGNED) || (size < size_in)) {
     return NULL;
   }
@@ -858,11 +858,11 @@ mem_malloc(mem_size_t size_in)
   /* protect the heap from concurrent access */
   sys_mutex_lock(&mem_mutex);
   LWIP_MEM_ALLOC_PROTECT();
-#if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+// #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
   /* run as long as a mem_free disturbed mem_malloc or mem_trim */
   do {
     local_mem_free_count = 0;
-#endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+// #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
 
     /* Scan through the heap searching for a free block that is big enough,
      * beginning with the lowest free block.
@@ -870,7 +870,7 @@ mem_malloc(mem_size_t size_in)
     for (ptr = mem_to_ptr(lfree); ptr < MEM_SIZE_ALIGNED - size;
          ptr = ptr_to_mem(ptr)->next) {
       mem = ptr_to_mem(ptr);
-#if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+// #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
       mem_free_count = 0;
       LWIP_MEM_ALLOC_UNPROTECT();
       /* allow mem_free or mem_trim to run */
@@ -881,58 +881,58 @@ mem_malloc(mem_size_t size_in)
         local_mem_free_count = 1;
         break;
       }
-#endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+// #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
 
-      if ((!mem->used) &&
-          (mem->next - (ptr + SIZEOF_STRUCT_MEM)) >= size) {
+      if ((! mem.used) &&
+          ( mem.next - (ptr + SIZEOF_STRUCT_MEM)) >= size) {
         /* mem is not used and at least perfect fit is possible:
-         * mem->next - (ptr + SIZEOF_STRUCT_MEM) gives us the 'user data size' of mem */
+         *  mem.next - (ptr + SIZEOF_STRUCT_MEM) gives us the 'user data size' of mem */
 
-        if (mem->next - (ptr + SIZEOF_STRUCT_MEM) >= (size + SIZEOF_STRUCT_MEM + MIN_SIZE_ALIGNED)) {
+        if ( mem.next - (ptr + SIZEOF_STRUCT_MEM) >= (size + SIZEOF_STRUCT_MEM + MIN_SIZE_ALIGNED)) {
           /* (in addition to the above, we test if another struct mem (SIZEOF_STRUCT_MEM) containing
            * at least MIN_SIZE_ALIGNED of data also fits in the 'user data space' of 'mem')
            * -> split large block, create empty remainder,
            * remainder must be large enough to contain MIN_SIZE_ALIGNED data: if
-           * mem->next - (ptr + (2*SIZEOF_STRUCT_MEM)) == size,
-           * struct mem would fit in but no data between mem2 and mem2->next
+           *  mem.next - (ptr + (2*SIZEOF_STRUCT_MEM)) == size,
+           * struct mem would fit in but no data between mem2 and  mem2.next
            * @todo we could leave out MIN_SIZE_ALIGNED. We would create an empty
-           *       region that couldn't hold data, but when mem->next gets freed,
+           *       region that couldn't hold data, but when  mem.next gets freed,
            *       the 2 regions would be combined, resulting in more free memory
            */
           ptr2 = (mem_size_t)(ptr + SIZEOF_STRUCT_MEM + size);
-          LWIP_ASSERT("invalid next ptr",ptr2 != MEM_SIZE_ALIGNED);
+          // LWIP_ASSERT("invalid next ptr",ptr2 != MEM_SIZE_ALIGNED);
           /* create mem2 struct */
           mem2 = ptr_to_mem(ptr2);
-          mem2->used = 0;
-          mem2->next = mem->next;
-          mem2->prev = ptr;
-          /* and insert it between mem and mem->next */
-          mem->next = ptr2;
-          mem->used = 1;
+           mem2.used = 0;
+           mem2.next =  mem.next;
+           mem2.prev = ptr;
+          /* and insert it between mem and  mem.next */
+           mem.next = ptr2;
+           mem.used = 1;
 
-          if (mem2->next != MEM_SIZE_ALIGNED) {
-            ptr_to_mem(mem2->next)->prev = ptr2;
+          if ( mem2.next != MEM_SIZE_ALIGNED) {
+            ptr_to_mem( mem2.next)->prev = ptr2;
           }
           MEM_STATS_INC_USED(used, (size + SIZEOF_STRUCT_MEM));
         } else {
-          /* (a mem2 struct does no fit into the user data space of mem and mem->next will always
+          /* (a mem2 struct does no fit into the user data space of mem and  mem.next will always
            * be used at this point: if not we have 2 unused structs in a row, plug_holes should have
            * take care of this).
            * -> near fit or exact fit: do not split, no mem2 creation
-           * also can't move mem->next directly behind mem, since mem->next
+           * also can't move  mem.next directly behind mem, since  mem.next
            * will always be used at this point!
            */
-          mem->used = 1;
-          MEM_STATS_INC_USED(used, mem->next - mem_to_ptr(mem));
+           mem.used = 1;
+          MEM_STATS_INC_USED(used,  mem.next - mem_to_ptr(mem));
         }
-#if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+// #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
 mem_malloc_adjust_lfree:
-#endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+// #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
         if (mem == lfree) {
           struct mem *cur = lfree;
           /* Find next free block after mem and update lowest free pointer */
-          while (cur->used && cur != ram_end) {
-#if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+          while ( cur.used && cur != ram_end) {
+// #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
             mem_free_count = 0;
             LWIP_MEM_ALLOC_UNPROTECT();
             /* prevent high interrupt latency... */
@@ -942,32 +942,32 @@ mem_malloc_adjust_lfree:
                  could have altered our current struct mem or lfree. */
               goto mem_malloc_adjust_lfree;
             }
-#endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
-            cur = ptr_to_mem(cur->next);
+// #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+            cur = ptr_to_mem( cur.next);
           }
           lfree = cur;
-          LWIP_ASSERT("mem_malloc: !lfree->used", ((lfree == ram_end) || (!lfree->used)));
+          // LWIP_ASSERT("mem_malloc: ! lfree.used", ((lfree == ram_end) || (! lfree.used)));
         }
         LWIP_MEM_ALLOC_UNPROTECT();
         sys_mutex_unlock(&mem_mutex);
-        LWIP_ASSERT("mem_malloc: allocated memory not above ram_end.",
+        // LWIP_ASSERT("mem_malloc: allocated memory not above ram_end.",
                     (mem_ptr_t)mem + SIZEOF_STRUCT_MEM + size <= (mem_ptr_t)ram_end);
-        LWIP_ASSERT("mem_malloc: allocated memory properly aligned.",
+        // LWIP_ASSERT("mem_malloc: allocated memory properly aligned.",
                     ((mem_ptr_t)mem + SIZEOF_STRUCT_MEM) % MEM_ALIGNMENT == 0);
-        LWIP_ASSERT("mem_malloc: sanity check alignment",
+        // LWIP_ASSERT("mem_malloc: sanity check alignment",
                     (((mem_ptr_t)mem) & (MEM_ALIGNMENT - 1)) == 0);
 
-#if MEM_OVERFLOW_CHECK
+// #if MEM_OVERFLOW_CHECK
         mem_overflow_init_element(mem, size_in);
-#endif
+// #endif
         MEM_SANITY();
         return (u8_t *)mem + SIZEOF_STRUCT_MEM + MEM_SANITY_OFFSET;
       }
     }
-#if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
+// #if LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
     /* if we got interrupted by a mem_free, try again */
   } while (local_mem_free_count != 0);
-#endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
+// #endif /* LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT */
   MEM_STATS_INC(err);
   LWIP_MEM_ALLOC_UNPROTECT();
   sys_mutex_unlock(&mem_mutex);
@@ -975,9 +975,9 @@ mem_malloc_adjust_lfree:
   return NULL;
 }
 
-#endif /* MEM_USE_POOLS */
+// #endif /* MEM_USE_POOLS */
 
-#if MEM_LIBC_MALLOC && (!LWIP_STATS || !MEM_STATS)
+// #if MEM_LIBC_MALLOC && (!LWIP_STATS || !MEM_STATS)
 void *
 mem_calloc(mem_size_t count, mem_size_t size)
 {
@@ -1014,4 +1014,4 @@ mem_calloc(mem_size_t count, mem_size_t size)
   }
   return p;
 }
-#endif /* MEM_LIBC_MALLOC && (!LWIP_STATS || !MEM_STATS) */
+// #endif /* MEM_LIBC_MALLOC && (!LWIP_STATS || !MEM_STATS) */

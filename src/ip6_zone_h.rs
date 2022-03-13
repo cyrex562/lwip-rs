@@ -29,7 +29,7 @@
  *
  * Backward compatibility prevents us from requiring that applications always
  * provide properly zoned addresses. We do enforce the rule that the in the
- * lwIP link layer (everything below netif->output_ip6() and in particular ND6)
+ * lwIP link layer (everything below  netif.output_ip6() and in particular ND6)
  * *all* addresses are properly zoned. Thus, on the output paths down the
  * stack, various places deal with the case of addresses that lack a zone.
  * Some of them are best-effort for efficiency (e.g. the PCB bind and connect

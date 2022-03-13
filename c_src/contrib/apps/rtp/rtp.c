@@ -33,7 +33,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_SOCKET && LWIP_IGMP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SOCKET && LWIP_IGMP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/sys.h"
 // #include "lwip/sockets.h"
@@ -282,7 +282,7 @@ rtp_recv_thread(void *arg)
 }
 
 void
-rtp_init(void)
+rtp_init()
 {
   sys_thread_new("rtp_send_thread", rtp_send_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
   sys_thread_new("rtp_recv_thread", rtp_recv_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);

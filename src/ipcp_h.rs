@@ -43,7 +43,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && PPP_IPV4_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && PPP_IPV4_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -55,12 +55,12 @@
  * Options.
  */
 pub const CI_ADDRS: u32 = 1; /* IP Addresses */
-#if VJ_SUPPORT
+// #if VJ_SUPPORT
 pub const CI_COMPRESSTYPE: u32 = 2; /* Compression Type */
  /* VJ_SUPPORT */
 e	CI_ADDR		3
 
-#if LWIP_DNS
+// #if LWIP_DNS
 pub const CI_MS_DNS1: u32 = 129; /* Primary DNS value */
 pub const CI_MS_DNS2: u32 = 131; /* Secondary DNS value */
  /* LWIP_DNS */
@@ -69,7 +69,7 @@ pub const CI_MS_WINS1: u32 = 130; /* Primary WINS value */
 pub const CI_MS_WINS2: u32 = 132; /* Secondary WINS value */
  /* UNUSED - WINS */
 
-#if VJ_SUPPORT
+// #if VJ_SUPPORT
 pub const MAX_STATES: u32 = 16; /* from slcompress.h */
 
 pub const IPCP_VJMODE_OLD: u32 = 1; /* "old" mode (option # = 0x0037) */
@@ -86,7 +86,7 @@ typedef struct ipcp_options {
     unsigned int neg_addr               :1; /* Negotiate IP Address? */
     unsigned int old_addrs              :1; /* Use old (IP-Addresses) option? */
     unsigned int req_addr               :1; /* Ask peer to send IP address? */
-#if 0 /* UNUSED */
+// #if 0 /* UNUSED */
     unsigned int default_route          :1; /* Assign default route through interface? */
     unsigned int replace_default_route  :1; /* Replace default route through interface? */
  /* UNUSED */
@@ -100,26 +100,26 @@ _SUPPORT
  /* VJ_SUPPORT */
 signed int accept_local           :1; /* accept peer's value for ouraddr */
     unsigned int accept_remote          :1; /* accept peer's value for hisaddr */
-#if LWIP_DNS
+// #if LWIP_DNS
     unsigned int req_dns1               :1; /* Ask peer to send primary DNS address? */
     unsigned int req_dns2               :1; /* Ask peer to send secondary DNS address? */
  /* LWIP_DNS */
 
     u32_t ouraddr, hisaddr;	/* Addresses in NETWORK BYTE ORDER */
-#if LWIP_DNS
+// #if LWIP_DNS
     u32_t dnsaddr[2];	/* Primary and secondary MS DNS entries */
  /* LWIP_DNS */
 /* UNUSED - WINS */
     u32_t winsaddr[2];	/* Primary and secondary MS WINS entries */
  /* UNUSED - WINS */
 
-#if VJ_SUPPORT
-    u16_t vj_protocol;		/* protocol value to use in VJ option */
-    u8_t  maxslotindex;		/* values for RFC1332 VJ compression neg. */
+// #if VJ_SUPPORT
+    vj_protocol: u16;		/* protocol value to use in VJ option */
+    maxslotindex: u8;		/* values for RFC1332 VJ compression neg. */
  /* VJ_SUPPORT */
 _options;
 
-#if 0 /* UNUSED, already defined by lwIP */
+// #if 0 /* UNUSED, already defined by lwIP */
 char *ip_ntoa (u32_t);
  /* UNUSED, already defined by lwIP */
 

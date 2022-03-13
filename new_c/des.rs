@@ -40,7 +40,7 @@
  */
 
 
-#if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_DES
+// #if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_DES
 
 
 
@@ -55,7 +55,7 @@
         | ( (unsigned long) (b)[(i) + 2] <<  8 )        \
         | ( (unsigned long) (b)[(i) + 3]       );       \
 }
-#endif
+// #endif
 
 #ifndef PUT_ULONG_BE
 #define PUT_ULONG_BE(n,b,i)                             \
@@ -65,7 +65,7 @@
     (b)[(i) + 2] = (unsigned char) ( (n) >>  8 );       \
     (b)[(i) + 3] = (unsigned char) ( (n)       );       \
 }
-#endif
+// #endif
 
 /*
  * Expanded DES S-boxes
@@ -371,7 +371,7 @@ static void des_setkey( unsigned long SK[32], unsigned char key[8] )
  */
 void des_setkey_enc( des_context *ctx, unsigned char key[8] )
 {
-    des_setkey( ctx->sk, key );
+    des_setkey(  ctx.sk, key );
 }
 
 /*
@@ -381,12 +381,12 @@ void des_setkey_dec( des_context *ctx, unsigned char key[8] )
 {
     int i;
 
-    des_setkey( ctx->sk, key );
+    des_setkey(  ctx.sk, key );
 
     for( i = 0; i < 16; i += 2 )
     {
-        SWAP( ctx->sk[i    ], ctx->sk[30 - i] );
-        SWAP( ctx->sk[i + 1], ctx->sk[31 - i] );
+        SWAP(  ctx.sk[i    ],  ctx.sk[30 - i] );
+        SWAP(  ctx.sk[i + 1],  ctx.sk[31 - i] );
     }
 }
 
@@ -400,7 +400,7 @@ void des_crypt_ecb( des_context *ctx,
     int i;
     unsigned long X, Y, T, *SK;
 
-    SK = ctx->sk;
+    SK =  ctx.sk;
 
     GET_ULONG_BE( X, input, 0 );
     GET_ULONG_BE( Y, input, 4 );
@@ -419,4 +419,4 @@ void des_crypt_ecb( des_context *ctx,
     PUT_ULONG_BE( X, output, 4 );
 }
 
-#endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_DES */
+// #endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_DES */

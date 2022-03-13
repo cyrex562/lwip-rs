@@ -16,7 +16,7 @@
 /* export MIB */
 extern const struct snmp_mib mib_private;
 
-void lwip_privmib_init(void);
+void lwip_privmib_init();
 
 
 

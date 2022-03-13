@@ -56,7 +56,7 @@
 
 
 
-#if LWIP_ND6_QUEUEING
+// #if LWIP_ND6_QUEUEING
 /** struct for queueing outgoing packets for unknown address
   * defined here to be accessed by memp.h
   */
@@ -72,7 +72,7 @@ struct nd6_neighbor_cache_entry {
   struct netif *netif;
   u8_t lladdr[NETIF_MAX_HWADDR_LEN];
   /*u32_t pmtu;*/
-#if LWIP_ND6_QUEUEING
+// #if LWIP_ND6_QUEUEING
   /** Pointer to queue of pending outgoing packets on this entry. */
   struct nd6_q_entry *q;
 #else /* LWIP_ND6_QUEUEING */
@@ -80,7 +80,7 @@ struct nd6_neighbor_cache_entry {
   struct pbuf *q;
  /* LWIP_ND6_QUEUEING */
  state;
-  u8_t isrouter;
+  isrouter: u8;
   union {
     u32_t reachable_time; /* in seconds */
     u32_t delay_time;     /* ticks (ND6_TMR_INTERVAL) */
@@ -92,8 +92,8 @@ struct nd6_neighbor_cache_entry {
 struct nd6_destination_cache_entry {
   ip6_addr_t destination_addr;
   ip6_addr_t next_hop_addr;
-  u16_t pmtu;
-  u8_t cached_neighbor_idx;
+  pmtu: u16;
+  cached_neighbor_idx: u8;
   u32_t age;
 };
 
@@ -106,7 +106,7 @@ struct nd6_prefix_list_entry {
 struct nd6_router_list_entry {
   struct nd6_neighbor_cache_entry *neighbor_entry;
   u32_t invalidation_timer; /* in seconds */
-  u8_t flags;
+  flags: u8;
 };
 
 enum nd6_neighbor_cache_entry_state {

@@ -75,15 +75,15 @@ pub const SNMP_USE_NETCONN: u32 = 0;
 pub const SNMP_USE_RAW: u32 = 1;
 
 
-#if SNMP_USE_NETCONN && SNMP_USE_RAW
+// #if SNMP_USE_NETCONN && SNMP_USE_RAW
 #error SNMP stack can use only one of the APIs {raw, netconn}
 
 
-#if LWIP_SNMP && !SNMP_USE_NETCONN && !SNMP_USE_RAW
+// #if LWIP_SNMP && !SNMP_USE_NETCONN && !SNMP_USE_RAW
 #error SNMP stack needs a receive API and UDP {raw, netconn}
 
 
-#if SNMP_USE_NETCONN
+// #if SNMP_USE_NETCONN
 /**
  * SNMP_STACK_SIZE: Stack size of SNMP netconn worker thread
  */

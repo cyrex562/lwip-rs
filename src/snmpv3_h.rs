@@ -41,7 +41,7 @@
 
 
 
-#if LWIP_SNMP && LWIP_SNMP_V3
+// #if LWIP_SNMP && LWIP_SNMP_V3
 
 typedef enum
 {
@@ -74,21 +74,21 @@ typedef enum
 void snmpv3_get_engine_id(const char **id, u8_t *len);
 err_t snmpv3_set_engine_id(const char* id, u8_t len);
 
-u32_t snmpv3_get_engine_boots(void);
+u32_t snmpv3_get_engine_boots();
 void snmpv3_set_engine_boots(u32_t boots);
 
-u32_t snmpv3_get_engine_time(void);
-void snmpv3_reset_engine_time(void);
+u32_t snmpv3_get_engine_time();
+void snmpv3_reset_engine_time();
 
 err_t snmpv3_get_user(const char* username, snmpv3_auth_algo_t *auth_algo, u8_t *auth_key, snmpv3_priv_algo_t *priv_algo, u8_t *priv_key);
-u8_t snmpv3_get_amount_of_users(void);
+u8_t snmpv3_get_amount_of_users();
 err_t snmpv3_get_user_storagetype(const char *username, snmpv3_user_storagetype_t *storagetype);
 err_t snmpv3_get_username(char *username, u8_t index);
 
 /* The following functions are provided by the SNMPv3 agent */
 
-void snmpv3_engine_id_changed(void);
-s32_t snmpv3_get_engine_time_internal(void);
+void snmpv3_engine_id_changed();
+s32_t snmpv3_get_engine_time_internal();
 
 void snmpv3_password_to_key_md5(
     const u8_t *password,     /* IN */

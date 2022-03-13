@@ -45,16 +45,16 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
-#if LWIP_ALTCP_TLS
+// #if LWIP_ALTCP_TLS
 
 // #include "lwip/altcp.h"
 
 /* check if mbedtls port is enabled */
 // #include "lwip/apps/altcp_tls_mbedtls_opts.h"
 /* allow session structure to be fully defined when using mbedtls port */
-#if LWIP_ALTCP_TLS_MBEDTLS
+// #if LWIP_ALTCP_TLS_MBEDTLS
 // #include "mbedtls/ssl.h"
 
 
@@ -123,7 +123,7 @@ void altcp_tls_free_config(struct altcp_tls_config *conf);
  * This function does nothing if some ALTCP_TLS configuration handle are still
  * active.
  */
-void altcp_tls_free_entropy(void);
+void altcp_tls_free_entropy();
 
 /** @ingroup altcp_tls
  * Create new ALTCP_TLS layer wrapping an existing pcb as inner connection (e.g. TLS over TCP)
@@ -153,7 +153,7 @@ void *altcp_tls_context(struct altcp_pcb *conn);
  * ALTCP_TLS session handle, content depends on port (e.g. mbedtls)
  */
 struct altcp_tls_session
-#if LWIP_ALTCP_TLS_MBEDTLS
+// #if LWIP_ALTCP_TLS_MBEDTLS
 {
     mbedtls_ssl_session data;
 }

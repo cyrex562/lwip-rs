@@ -427,7 +427,7 @@ tftp_init( ctx: &mut tftp_context)
  */
 pub fn  tftp_cleanup()
 {
-  LWIP_ASSERT("Cleanup called on non-initialized TFTP", tftp_state.upcb != None);
+  // LWIP_ASSERT("Cleanup called on non-initialized TFTP", tftp_state.upcb != None);
   udp_remove(tftp_state.upcb);
   close_handle();
   //memset(&tftp_state, 0, sizeof(tftp_state));

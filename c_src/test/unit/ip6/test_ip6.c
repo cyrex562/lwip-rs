@@ -41,7 +41,7 @@ default_netif_init(struct netif *netif)
 }
 
 static void
-default_netif_add(void)
+default_netif_add()
 {
   struct netif *n;
   fail_unless(netif_default == NULL);
@@ -51,7 +51,7 @@ default_netif_add(void)
 }
 
 static void
-default_netif_remove(void)
+default_netif_remove()
 {
   fail_unless(netif_default == &test_netif6);
   netif_remove(&test_netif6);
@@ -69,14 +69,14 @@ ip6_test_handle_timers(int count)
 /* Setups/teardown functions */
 
 static void
-ip6_setup(void)
+ip6_setup()
 {
   default_netif_add();
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-ip6_teardown(void)
+ip6_teardown()
 {
   if (netif_list->loop_first != NULL) {
     pbuf_free(netif_list->loop_first);
@@ -434,7 +434,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-ip6_suite(void)
+ip6_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_ip6_ll_addr),
@@ -459,7 +459,7 @@ START_TEST(test_ip6_dummy)
 END_TEST
 
 Suite *
-ip6_suite(void)
+ip6_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_ip6_dummy),

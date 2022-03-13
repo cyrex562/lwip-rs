@@ -41,11 +41,11 @@
 #define FS_READ_EOF     -1
 #define FS_READ_DELAYED -2
 
-#if HTTPD_PRECALCULATED_CHECKSUM
+// #if HTTPD_PRECALCULATED_CHECKSUM
 struct fsdata_chksum {
   u32_t offset;
-  u16_t chksum;
-  u16_t len;
+  chksum: u16;
+  len: u16;
 };
  /* HTTPD_PRECALCULATED_CHECKSUM */
 
@@ -62,29 +62,29 @@ struct fs_file {
   const char *data;
   int len;
   int index;
-#if LWIP_HTTPD_FILE_EXTENSION
+// #if LWIP_HTTPD_FILE_EXTENSION
   /* pextension is free for implementations to hold private (extensional)
      arbitrary data, e.g. holding some file state or file system handle */
   fs_file_extension *pextension;
  /* LWIP_HTTPD_FILE_EXTENSION */
 TPD_PRECALCULATED_CHECKSUM
   const struct fsdata_chksum *chksum;
-  u16_t chksum_count;
+  chksum_count: u16;
  /* HTTPD_PRECALCULATED_CHECKSUM */
  flags;
-#if LWIP_HTTPD_FILE_STATE
+// #if LWIP_HTTPD_FILE_STATE
   void *state;
  /* LWIP_HTTPD_FILE_STATE */
 
 
-#if LWIP_HTTPD_FS_ASYNC_READ
+// #if LWIP_HTTPD_FS_ASYNC_READ
 typedef void (*fs_wait_cb)(void *arg);
  /* LWIP_HTTPD_FS_ASYNC_READ */
 
 err_t fs_open(struct fs_file *file, const char *name);
 void fs_close(struct fs_file *file);
-#if LWIP_HTTPD_DYNAMIC_FILE_READ
-#if LWIP_HTTPD_FS_ASYNC_READ
+// #if LWIP_HTTPD_DYNAMIC_FILE_READ
+// #if LWIP_HTTPD_FS_ASYNC_READ
 int fs_read_async(struct fs_file *file, char *buffer, int count, fs_wait_cb callback_fn, void *callback_arg);
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
 int fs_read(struct fs_file *file, char *buffer, int count);
@@ -95,7 +95,7 @@ int fs_is_file_ready(struct fs_file *file, fs_wait_cb callback_fn, void *callbac
  /* LWIP_HTTPD_FS_ASYNC_READ */
 _bytes_left(struct fs_file *file);
 
-#if LWIP_HTTPD_FILE_STATE
+// #if LWIP_HTTPD_FILE_STATE
 /** This user-defined function is called when a file is opened. */
 void *fs_state_init(struct fs_file *file, const char *name);
 /** This user-defined function is called when a file is closed. */
@@ -107,18 +107,18 @@ struct fsdata_file {
   const unsigned char *name;
   const unsigned char *data;
   int len;
-  u8_t flags;
-#if HTTPD_PRECALCULATED_CHECKSUM
-  u16_t chksum_count;
+  flags: u8;
+// #if HTTPD_PRECALCULATED_CHECKSUM
+  chksum_count: u16;
   const struct fsdata_chksum *chksum;
  /* HTTPD_PRECALCULATED_CHECKSUM */
 
 
-#if LWIP_HTTPD_CUSTOM_FILES
+// #if LWIP_HTTPD_CUSTOM_FILES
 /* Prototypes required to implement custom files as fs addon */
 int fs_open_custom(struct fs_file *file, const char *name);
 void fs_close_custom(struct fs_file *file);
-#if LWIP_HTTPD_FS_ASYNC_READ
+// #if LWIP_HTTPD_FS_ASYNC_READ
 u8_t fs_canread_custom(struct fs_file *file);
 u8_t fs_wait_read_custom(struct fs_file *file, fs_wait_cb callback_fn, void *callback_arg);
 int fs_read_async_custom(struct fs_file *file, char *buffer, int count, fs_wait_cb callback_fn, void *callback_arg);

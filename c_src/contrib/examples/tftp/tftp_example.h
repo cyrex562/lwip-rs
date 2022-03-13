@@ -17,8 +17,8 @@
 
 
 
-void tftp_example_init_server(void);
-void tftp_example_init_client(void);
+void tftp_example_init_server();
+void tftp_example_init_client();
 
 
 

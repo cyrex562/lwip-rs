@@ -33,7 +33,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_NETCONN
+// #if LWIP_NETCONN
 
 // #include "lwip/sys.h"
 // #include "lwip/api.h"
@@ -68,14 +68,14 @@ tcpecho_thread(void *arg)
     if (err == ERR_OK) {
       struct netbuf *buf;
       void *data;
-      u16_t len;
+      len: u16;
 
       while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {
         /*printf("Recved\n");*/
         do {
              netbuf_data(buf, &data, &len);
              err = netconn_write(newconn, data, len, NETCONN_COPY);
-#if 0
+// #if 0
             if (err != ERR_OK) {
               printf("tcpecho: netconn_write: error \"%s\"\n", lwip_strerr(err));
             }
@@ -92,7 +92,7 @@ tcpecho_thread(void *arg)
 }
 /*-----------------------------------------------------------------------------------*/
 void
-tcpecho_init(void)
+tcpecho_init()
 {
   sys_thread_new("tcpecho_thread", tcpecho_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 }

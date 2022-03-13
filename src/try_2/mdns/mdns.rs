@@ -2202,7 +2202,7 @@ pub fn mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32) 
     let res: err_t;
     let mut mdns: mdns_host = mdns_host::new();
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     // LWIP_ERROR(
         "mdns_resp_add_netif: netif != NULL",
         (netif != None),
@@ -2213,7 +2213,7 @@ pub fn mdns_resp_add_netif(netif: &mut NetIfc, hostname: &String, dns_ttl: u32) 
         (strlen(hostname) <= MDNS_LABEL_MAXLEN),
         return ERR_VAL,
     );
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "mdns_resp_add_netif: Double add",
         NETIF_TO_HOST(netif) == None,
     );
@@ -2267,8 +2267,8 @@ pub fn mdns_resp_remove_netif(netif: &mut NetIfc) {
     let i: i32;
     let mdns: &mut mdns_host;
 
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mdns_resp_remove_netif: Null pointer", netif);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mdns_resp_remove_netif: Null pointer", netif);
     mdns = NETIF_TO_HOST(netif);
     // LWIP_ERROR(
         "mdns_resp_remove_netif: Not an active netif",
@@ -2311,7 +2311,7 @@ pub fn mdns_resp_rename_netif(netif: &mut NetIfc, hostname: &String) {
     let mdns: &mut mdns_host;
     let len: usize;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     len = strlen(hostname);
     // LWIP_ERROR(
         "mdns_resp_rename_netif: netif != NULL",
@@ -2368,8 +2368,8 @@ pub fn mdns_resp_add_service(
     let srv: mdns_service = mdns_service::new();
     let mdns: &mut mdns_host;
 
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mdns_resp_add_service: netif != NULL", netif);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mdns_resp_add_service: netif != NULL", netif);
     mdns = NETIF_TO_HOST(netif);
     // LWIP_ERROR(
         "mdns_resp_add_service: Not an mdns netif",
@@ -2441,7 +2441,7 @@ pub fn mdns_resp_add_service(
 pub fn mdns_resp_del_service(netif: &mut NetIfc, slot: i8) {
     let mdns: &mut mdns_host;
     let srv: &mut mdns_service;
-    LWIP_ASSERT("mdns_resp_del_service: netif != NULL", netif);
+    // LWIP_ASSERT("mdns_resp_del_service: netif != NULL", netif);
     mdns = NETIF_TO_HOST(netif);
     // LWIP_ERROR(
         "mdns_resp_del_service: Not an mdns netif",
@@ -2478,9 +2478,9 @@ pub fn mdns_resp_rename_service(netif: &mut NetIfc, slot: i8, name: &String) {
     let mdns: &mut mdns_host;
     let len: usize;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     len = strlen(name);
-    LWIP_ASSERT("mdns_resp_rename_service: netif != NULL", netif);
+    // LWIP_ASSERT("mdns_resp_rename_service: netif != NULL", netif);
     mdns = NETIF_TO_HOST(netif);
     // LWIP_ERROR(
         "mdns_resp_rename_service: Not an mdns netif",
@@ -2523,8 +2523,8 @@ pub fn mdns_resp_rename_service(netif: &mut NetIfc, slot: i8, name: &String) {
  * @return ERR_OK if the string was added to the reply, an otherwise: err_t
  */
 pub fn mdns_resp_add_service_txtitem(service: &mut mdns_service, txt: &String, txt_len: u8) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("mdns_resp_add_service_txtitem: service != NULL", service);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("mdns_resp_add_service_txtitem: service != NULL", service);
 
     //  Use a mdns_domain struct to store txt chunks since it is the same encoding 
     return mdns_domain_add_label(&service.txtdata, txt, txt_len);
@@ -2537,7 +2537,7 @@ pub fn mdns_resp_add_service_txtitem(service: &mut mdns_service, txt: &String, t
  */
 pub fn mdns_resp_announce(netif: &mut NetIfc) {
     let mdns: &mut mdns_host;
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     // LWIP_ERROR("mdns_resp_announce: netif != NULL", (netif != None), return);
 
     mdns = NETIF_TO_HOST(netif);
@@ -2570,7 +2570,7 @@ pub fn mdns_resp_register_name_result_cb(cb: mdns_name_result_cb_t) {
  */
 pub fn mdns_resp_restart(netif: &mut NetIfc) {
     let mdns: &mut mdns_host;
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     // LWIP_ERROR("mdns_resp_restart: netif != NULL", (netif != None), return);
 
     mdns = NETIF_TO_HOST(netif);
@@ -2597,7 +2597,7 @@ pub fn mdns_resp_init() {
     //  LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() 
 
     mdns_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-    LWIP_ASSERT("Failed to allocate pcb", mdns_pcb != None);
+    // LWIP_ASSERT("Failed to allocate pcb", mdns_pcb != None);
 
     udp_set_multicast_ttl(mdns_pcb, MDNS_TTL);
 
@@ -2605,7 +2605,7 @@ pub fn mdns_resp_init() {
 
     res = udp_bind(mdns_pcb, IP_ANY_TYPE, LWIP_IANA_PORT_MDNS);
     //  in case of LWIP_NOASSERT 
-    LWIP_ASSERT("Failed to bind pcb", res == ERR_OK);
+    // LWIP_ASSERT("Failed to bind pcb", res == ERR_OK);
     udp_recv(mdns_pcb, mdns_recv, None);
 
     mdns_netif_client_id = netif_alloc_client_data_id();

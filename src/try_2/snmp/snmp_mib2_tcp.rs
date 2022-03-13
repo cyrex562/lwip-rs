@@ -212,7 +212,7 @@ pub fn tcp_ConnTable_get_cell_value_core(
         }
 
         _ => {
-            LWIP_ASSERT("invalid id", 0);
+            // LWIP_ASSERT("invalid id", 0);
             return SNMP_ERR_NOSUCHINSTANCE;
         }
     }

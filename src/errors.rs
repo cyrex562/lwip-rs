@@ -1,3 +1,6 @@
+use std::fmt;
+use std::fmt::Formatter;
+
 /**
  * @file
  * Error Management module
@@ -35,10 +38,21 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
-
 #[derive(Debug, Clone)]
-pub enum LwipErrorType {
+pub enum LwipErrorCode {
+    NotSet,
+    Unknown,
+    InvalidArgument,
+}
 
+impl fmt::Display for LwipErrorCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            NotSet => write!(f, "not set"),
+            Unknown => write!(f, "unknown"),
+            _ => write!(f, "unknown")
+        }
+    }
 }
 
 
@@ -82,7 +96,7 @@ pub const ENOLCK: u32 = 37; /* No record locks available */
 pub const ENOSYS: u32 = 38; /* Function not implemented */
 pub const ENOTEMPTY: u32 = 39; /* Directory not empty */
 pub const ELOOP: u32 = 40; /* Too many symbolic links encountered */
-pub const EWOULDBLOCK: u32 =     EAGAIN;  /* Operation would block */
+pub const EWOULDBLOCK: u32 = EAGAIN;  /* Operation would block */
 pub const ENOMSG: u32 = 42; /* No message of desired type */
 pub const EIDRM: u32 = 43; /* Identifier removed */
 pub const ECHRNG: u32 = 44; /* Channel number out of range */
@@ -99,7 +113,7 @@ pub const EXFULL: u32 = 54; /* Exchange full */
 pub const ENOANO: u32 = 55; /* No anode */
 pub const EBADRQC: u32 = 56; /* Invalid request code */
 pub const EBADSLT: u32 = 57; /* Invalid slot */
-pub const  EDEADLOCK: u32 =       EDEADLK;
+pub const EDEADLOCK: u32 = EDEADLK;
 
 pub const EBFONT: u32 = 59; /* Bad font file format */
 pub const ENOSTR: u32 = 60; /* Device not a stream */
@@ -169,11 +183,23 @@ pub const ENOMEDIUM: u32 = 123; /* No medium found */
 pub const EMEDIUMTYPE: u32 = 124; /* Wrong medium type */
 
 
-
-
 #[derive(Debug, Clone)]
 pub struct LwipError {
-    err_type: LwipErrorType,
-    msg: String
+    code: LwipErrorCode,
+    message: String,
 }
 
+impl LwipError {
+    pub fn new(code: LwipErrorCode, msg: &str) -> Self {
+        Self {
+            message: msg.to_string(),
+            code,
+        }
+    }
+}
+
+impl fmt::Display for LwipError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "code: {}, message: {}", self.code, self.message)
+    }
+}

@@ -263,7 +263,7 @@ pub fn autoip_bind(netif: &mut NetIfc) -> Result<(), &str> {
 pub fn autoip_start(netif: &mut NetIfc) -> Result<(), &str> {
     let autoip = netif_autoip_data(netif);
     let result: err_t = ERR_OK;
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     // LWIP_ERROR("netif is not up, old style port?", netif_is_up(netif), return ERR_ARG;;);
     if !netif_is_up(netif) {
         return Err("netif is not up");
@@ -360,7 +360,7 @@ pub fn autoip_network_changed(netif: &mut NetIfc) {
 pub fn autoip_stop(netif: &mut NetIfc) {
     let autoip: &mut autoip = netif_autoip_data(netif);
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (autoip != None) {
         autoip.state = AUTOIP_STATE_OFF;
         if (ip4_addr_islinklocal(netif_ip4_addr(netif))) {

@@ -39,7 +39,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_NETCONN || LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_NETCONN || LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
 
@@ -59,18 +59,18 @@ pub const NETBUF_FLAG_CHKSUM: u32 = 0x02;
 struct netbuf {
   struct pbuf *p, *ptr;
   ip_addr_t addr;
-  u16_t port;
-#if LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY
-  u8_t flags;
-  u16_t toport_chksum;
-#if LWIP_NETBUF_RECVINFO
+  port: u16;
+// #if LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY
+  flags: u8;
+  toport_chksum: u16;
+// #if LWIP_NETBUF_RECVINFO
   ip_addr_t toaddr;
  /* LWIP_NETBUF_RECVINFO */
  /* LWIP_NETBUF_RECVINFO || LWIP_CHECKSUM_ON_COPY */
 
 
 /* Network buffer functions: */
-struct netbuf *   netbuf_new      (void);
+struct netbuf *   netbuf_new      ();
 void              netbuf_delete   (struct netbuf *buf);
 void *            netbuf_alloc    (struct netbuf *buf, u16_t size);
 void              netbuf_free     (struct netbuf *buf);
@@ -92,10 +92,10 @@ void              netbuf_first    (struct netbuf *buf);
 #define netbuf_fromaddr(buf)         (&((buf)->addr))
 #define netbuf_set_fromaddr(buf, fromaddr) ip_addr_set(&((buf)->addr), fromaddr)
 #define netbuf_fromport(buf)         ((buf)->port)
-#if LWIP_NETBUF_RECVINFO
+// #if LWIP_NETBUF_RECVINFO
 #define netbuf_destaddr(buf)         (&((buf)->toaddr))
 #define netbuf_set_destaddr(buf, destaddr) ip_addr_set(&((buf)->toaddr), destaddr)
-#if LWIP_CHECKSUM_ON_COPY
+// #if LWIP_CHECKSUM_ON_COPY
 #define netbuf_destport(buf)         (((buf)->flags & NETBUF_FLAG_DESTADDR) ? (buf)->toport_chksum : 0)
 #else /* LWIP_CHECKSUM_ON_COPY */
 #define netbuf_destport(buf)         ((buf)->toport_chksum)

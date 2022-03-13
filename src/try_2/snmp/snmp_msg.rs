@@ -68,7 +68,7 @@ pub fn snmp_version_enabled(version: u8) {
     } else if (version == SNMP_VERSION_3) {
         return v3_enabled;
     } else {
-        LWIP_ASSERT("Invalid SNMP version", 0);
+        // LWIP_ASSERT("Invalid SNMP version", 0);
         return 0;
     }
 }
@@ -93,7 +93,7 @@ pub fn snmp_version_enable(version: u8, enable: u8) {
     } else if (version == SNMP_VERSION_3) {
         v3_enabled = enable;
     } else {
-        LWIP_ASSERT("Invalid SNMP version", 0);
+        // LWIP_ASSERT("Invalid SNMP version", 0);
     }
 }
 
@@ -127,8 +127,8 @@ pub fn snmp_get_community() -> String {
  * @param community is a pointer to new community string
  */
 pub fn snmp_set_community(community: &str) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT(
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT(
         "community string is too long!",
         strlen(community) <= SNMP_MAX_COMMUNITY_STR_LEN,
     );
@@ -162,9 +162,9 @@ pub fn snmp_get_community_trap() -> String {
  * @param community is a pointer to new write-access community string
  */
 pub fn snmp_set_community_write(community: &str) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("community string must not be NULL", community != None);
-    LWIP_ASSERT(
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("community string must not be NULL", community != None);
+    // LWIP_ASSERT(
         "community string is too long!",
         strlen(community) <= SNMP_MAX_COMMUNITY_STR_LEN,
     );
@@ -180,8 +180,8 @@ pub fn snmp_set_community_write(community: &str) {
  * @param community is a pointer to new trap community string
  */
 pub fn snmp_set_community_trap(community: &str) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT(
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT(
         "community string is too long!",
         strlen(community) <= SNMP_MAX_COMMUNITY_STR_LEN,
     );
@@ -196,7 +196,7 @@ pub fn snmp_set_write_callback(
     write_callback: snmp_write_callback_fct,
     callback_arg: &mut Vec<u8>,
 ) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     snmp_write_callback = write_callback;
     snmp_write_callback_arg = callback_arg;
 }
@@ -421,7 +421,7 @@ pub fn snmp_process_varbind(request: &mut snmp_request, vb: &mut snmp_varbind, g
             vb.value_len = len; //  cast is OK because we checked >= 0 above 
             vb.asn1_type = node_instance.asn1_type;
 
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "SNMP_MAX_VALUE_SIZE is configured too low",
                 (vb.value_len & !SNMP_GET_VALUE_RAW_DATA) <= SNMP_MAX_VALUE_SIZE,
             );
@@ -1834,7 +1834,7 @@ pub fn snmp_append_outbound_varbind(
                 }
 
                 _ => {
-                    LWIP_ASSERT("Unknown variable type", 0);
+                    // LWIP_ASSERT("Unknown variable type", 0);
                 }
             }
         }

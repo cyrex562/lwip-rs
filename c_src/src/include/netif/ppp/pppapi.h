@@ -30,13 +30,13 @@
 
 // #include "netif/ppp/ppp_opts.h"
 
-#if LWIP_PPP_API /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_PPP_API /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/sys.h"
 // #include "lwip/netif.h"
 // #include "lwip/priv/tcpip_priv.h"
 // #include "netif/ppp/ppp.h"
-#if PPPOS_SUPPORT
+// #if PPPOS_SUPPORT
 // #include "netif/ppp/pppos.h"
  /* PPPOS_SUPPORT */
 
@@ -46,7 +46,7 @@
 struct pppapi_msg_msg {
   ppp_pcb *ppp;
   union {
-#if PPP_NOTIFY_PHASE
+// #if PPP_NOTIFY_PHASE
     struct {
       ppp_notify_phase_cb_fn notify_phase_cb;
     } setnotifyphasecb;
@@ -74,23 +74,23 @@ POL2TP_SUPPORT
       struct netif *pppif;
       struct netif *netif;
       API_MSG_M_DEF_C(ip_addr_t, ipaddr);
-      u16_t port;
-#if PPPOL2TP_AUTH_SUPPORT
+      port: u16;
+// #if PPPOL2TP_AUTH_SUPPORT
       const u8_t *secret;
-      u8_t secret_len;
+      secret_len: u8;
  /* PPPOL2TP_AUTH_SUPPORT */
 ppp_link_status_cb_fn link_status_cb;
       void *ctx_cb;
     } l2tpcreate;
  /* PPPOL2TP_SUPPORT */
 ruct {
-      u16_t holdoff;
+      holdoff: u16;
     } connect;
     struct {
-      u8_t nocarrier;
+      nocarrier: u8;
     } close;
     struct {
-      u8_t cmd;
+      cmd: u8;
       void *arg;
     } ioctl;
   } msg;
@@ -103,7 +103,7 @@ struct pppapi_msg {
 
 /* API for application */
 err_t pppapi_set_default(ppp_pcb *pcb);
-#if PPP_NOTIFY_PHASE
+// #if PPP_NOTIFY_PHASE
 err_t pppapi_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn notify_phase_cb);
  /* PPP_NOTIFY_PHASE */
 POS_SUPPORT
@@ -120,7 +120,7 @@ ppp_pcb *pppapi_pppol2tp_create(struct netif *pppif, struct netif *netif, ip_add
                             ppp_link_status_cb_fn link_status_cb, void *ctx_cb);
  /* PPPOL2TP_SUPPORT */
 pppapi_connect(ppp_pcb *pcb, u16_t holdoff);
-#if PPP_SERVER
+// #if PPP_SERVER
 err_t pppapi_listen(ppp_pcb *pcb);
  /* PPP_SERVER */
 pppapi_close(ppp_pcb *pcb, u8_t nocarrier);

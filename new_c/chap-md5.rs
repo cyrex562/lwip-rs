@@ -29,12 +29,12 @@
  */
 
 
-#if PPP_SUPPORT && CHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && CHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
-#if 0 /* UNUSED */
+// #if 0 /* UNUSED */
 
 
-#endif /* UNUSED */
+// #endif /* UNUSED */
 
 
 
@@ -48,7 +48,7 @@
 #define MD5_MAX_CHALLENGE	24
 #define MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE     3   /* 2^3-1 = 7, 17+7 = 24 */
 
-#if PPP_SERVER
+// #if PPP_SERVER
 static void chap_md5_generate_challenge(ppp_pcb *pcb, unsigned char *cp) {
 	int clen;
 	LWIP_UNUSED_ARG(pcb);
@@ -90,7 +90,7 @@ static int chap_md5_verify_response(ppp_pcb *pcb, int id, const char *name,
 	ppp_slprintf(message, message_space, "Access denied");
 	return 0;
 }
-#endif /* PPP_SERVER */
+// #endif /* PPP_SERVER */
 
 static void chap_md5_make_response(ppp_pcb *pcb, unsigned char *response, int id, const char *our_name,
 		       const unsigned char *challenge, const char *secret, int secret_len,
@@ -114,13 +114,13 @@ static void chap_md5_make_response(ppp_pcb *pcb, unsigned char *response, int id
 
 const struct chap_digest_type md5_digest = {
 	CHAP_MD5,		/* code */
-#if PPP_SERVER
+// #if PPP_SERVER
 	chap_md5_generate_challenge,
 	chap_md5_verify_response,
-#endif /* PPP_SERVER */
+// #endif /* PPP_SERVER */
 	chap_md5_make_response,
 	NULL,			/* check_success */
 	NULL,			/* handle_failure */
 };
 
-#endif /* PPP_SUPPORT && CHAP_SUPPORT */
+// #endif /* PPP_SUPPORT && CHAP_SUPPORT */

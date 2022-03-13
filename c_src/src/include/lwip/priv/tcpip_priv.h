@@ -51,7 +51,7 @@
 struct pbuf;
 struct netif;
 
-#if LWIP_MPU_COMPATIBLE
+// #if LWIP_MPU_COMPATIBLE
 #define API_VAR_REF(name)               (*(name))
 #define API_VAR_DECLARE(type, name)     type * name
 #define API_VAR_ALLOC_EXT(type, pool, name, errorblock) do { \
@@ -70,7 +70,7 @@ struct netif;
 #define API_VAR_FREE(pool, name)        memp_free(pool, name)
 #define API_VAR_FREE_POOL(pool, name)   LWIP_MEMPOOL_FREE(pool, name)
 #define API_EXPR_REF(expr)              (&(expr))
-#if LWIP_NETCONN_SEM_PER_THREAD
+// #if LWIP_NETCONN_SEM_PER_THREAD
 #define API_EXPR_REF_SEM(expr)          (expr)
 #else
 #define API_EXPR_REF_SEM(expr)          API_EXPR_REF(expr)
@@ -103,7 +103,7 @@ struct tcpip_api_call_data
   sys_sem_t sem;
  /* LWIP_NETCONN_SEM_PER_THREAD */
 /* !LWIP_TCPIP_CORE_LOCKING */
-  u8_t dummy; /* avoid empty struct :-( */
+  dummy: u8; /* avoid empty struct :-( */
  /* !LWIP_TCPIP_CORE_LOCKING */
 
 typedef err_t (*tcpip_api_call_fn)(struct tcpip_api_call_data* call);
@@ -156,7 +156,7 @@ ruct {
       tcpip_callback_fn function;
       void *ctx;
     } cb;
-#if LWIP_TCPIP_TIMEOUT && LWIP_TIMERS
+// #if LWIP_TCPIP_TIMEOUT && LWIP_TIMERS
     struct {
       u32_t msecs;
       sys_timeout_handler h;

@@ -42,16 +42,16 @@
 
 
 
-#if LWIP_SNMP && SNMP_LWIP_MIB2 && LWIP_ICMP
+// #if LWIP_SNMP && SNMP_LWIP_MIB2 && LWIP_ICMP
 
-#if SNMP_USE_NETCONN
+// #if SNMP_USE_NETCONN
 #define SYNC_NODE_NAME(node_name) node_name ## _synced
 #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
 #else
 #define SYNC_NODE_NAME(node_name) node_name
 #define CREATE_LWIP_SYNC_NODE(oid, node_name)
-#endif
+// #endif
 
 /* --- icmp .1.3.6.1.2.1.5 ----------------------------------------------------- */
 
@@ -60,7 +60,7 @@ icmp_get_value(const struct snmp_scalar_array_node_def *node, void *value)
 {
   u32_t *uint_ptr = (u32_t *)value;
 
-  switch (node->oid) {
+  switch ( node.oid) {
     case 1: /* icmpInMsgs */
       *uint_ptr = STATS_GET(mib2.icmpinmsgs);
       return sizeof(*uint_ptr);
@@ -140,7 +140,7 @@ icmp_get_value(const struct snmp_scalar_array_node_def *node, void *value)
       *uint_ptr = 0;
       return sizeof(*uint_ptr);
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("icmp_get_value(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("icmp_get_value(): unknown id: %"S32_F"\n",  node.oid));
       break;
   }
 
@@ -179,4 +179,4 @@ static const struct snmp_scalar_array_node_def icmp_nodes[] = {
 
 const struct snmp_scalar_array_node snmp_mib2_icmp_root = SNMP_SCALAR_CREATE_ARRAY_NODE(5, icmp_nodes, icmp_get_value, NULL, NULL);
 
-#endif /* LWIP_SNMP && SNMP_LWIP_MIB2 && LWIP_ICMP */
+// #endif /* LWIP_SNMP && SNMP_LWIP_MIB2 && LWIP_ICMP */

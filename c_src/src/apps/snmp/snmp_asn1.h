@@ -40,7 +40,7 @@
 
 // #include "lwip/apps/snmp_opts.h"
 
-#if LWIP_SNMP
+// #if LWIP_SNMP
 
 // #include "lwip/err.h"
 // #include "lwip/apps/snmp_core.h"
@@ -60,10 +60,10 @@ pub const SNMP_ASN1_CONTEXT_PDU_TRAP: u32 = 4; #define SNMP_ASN1_CONTEXT_PDU_GET
 pub const SNMP_ASN1_CONTEXT_PDU_INFORM_REQ: u32 = 6; #define SNMP_ASN1_CONTEXT_PDU_V2_TRAP      7
 pub const SNMP_ASN1_CONTEXT_PDU_REPORT: u32 = 8; #define SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_OBJECT      0
 pub const SNMP_ASN1_CONTEXT_VARBIND_END_OF_MIB_VIEW: u32 = 2; struct snmp_asn1_tlv {
-  u8_t  type;       /* only U8 because extended types are not specified by SNMP */
-  u8_t  type_len;   /* encoded length of 'type' field (normally 1) */
-  u8_t  length_len; /* indicates how many bytes are required to encode the 'value_len' field */
-  u16_t value_len;  /* encoded length of the value */
+  type: u8;       /* only U8 because extended types are not specified by SNMP */
+  type_len: u8;   /* encoded length of 'type' field (normally 1) */
+  length_len: u8; /* indicates how many bytes are required to encode the 'value_len' field */
+  value_len: u16;  /* encoded length of the value */
 };
 #define SNMP_ASN1_TLV_HDR_LENGTH(tlv) ((tlv).type_len + (tlv).length_len)
 #define SNMP_ASN1_TLV_LENGTH(tlv) ((tlv).type_len + (tlv).length_len + (tlv).value_len)
@@ -86,7 +86,7 @@ err_t snmp_asn1_enc_s32t(struct snmp_pbuf_stream *pbuf_stream, u16_t octets_need
 err_t snmp_asn1_enc_u32t(struct snmp_pbuf_stream *pbuf_stream, u16_t octets_needed, u32_t value);
 err_t snmp_asn1_enc_raw(struct snmp_pbuf_stream *pbuf_stream, const u8_t *raw, u16_t raw_len);
 
-#if LWIP_HAVE_INT64
+// #if LWIP_HAVE_INT64
 err_t snmp_asn1_dec_u64t(struct snmp_pbuf_stream *pbuf_stream, u16_t len, u64_t *value);
 void snmp_asn1_enc_u64t_cnt(u64_t value, u16_t *octets_needed);
 err_t snmp_asn1_enc_u64t(struct snmp_pbuf_stream *pbuf_stream, u16_t octets_needed, u64_t value);

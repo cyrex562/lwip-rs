@@ -41,11 +41,11 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/apps/altcp_tls_mbedtls_opts.h"
 
-#if LWIP_ALTCP_TLS && LWIP_ALTCP_TLS_MBEDTLS
+// #if LWIP_ALTCP_TLS && LWIP_ALTCP_TLS_MBEDTLS
 
 // #include "lwip/altcp.h"
 // #include "lwip/pbuf.h"
@@ -64,7 +64,7 @@ typedef struct altcp_mbedtls_state_s {
   /* chain of rx pbufs (before decryption) */
   struct pbuf *rx;
   struct pbuf *rx_app;
-  u8_t flags;
+  flags: u8;
   int rx_passed_unrecved;
   int bio_bytes_read;
   int bio_bytes_appl;

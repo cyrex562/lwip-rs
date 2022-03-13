@@ -134,7 +134,7 @@ pub fn fs_canread_custom(file: &mut fs_file) -> u8
 
 pub fn fs_wait_read_custom(file: &mut fs_file, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>)
 {
-  LWIP_ASSERT("not implemented in this example configuration", 0);
+  // LWIP_ASSERT("not implemented in this example configuration", 0);
   
   
   
@@ -146,7 +146,7 @@ pub fn fs_wait_read_custom(file: &mut fs_file, callback_fn: fs_wait_cb, callback
 
 pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32, callback_fn: fs_wait_cb, callback_arg: &mut Vec<u8>)
 {
-  LWIP_ASSERT("not implemented in this example configuration", 0);
+  // LWIP_ASSERT("not implemented in this example configuration", 0);
   
   
   
@@ -162,7 +162,7 @@ pub fn fs_read_async_custom(file: &mut fs_file, buffer: &mut String, count: i32,
  //  LWIP_HTTPD_FS_ASYNC_READ 
 pub fn fs_read_custom(file: &mut fs_file, buffer: &mut String, count: i32)
 {
-  LWIP_ASSERT("not implemented in this example configuration", 0);
+  // LWIP_ASSERT("not implemented in this example configuration", 0);
   
   
   

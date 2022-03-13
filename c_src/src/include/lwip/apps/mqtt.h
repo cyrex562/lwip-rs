@@ -47,7 +47,7 @@
 
 typedef struct mqtt_client_s mqtt_client_t;
 
-#if LWIP_ALTCP && LWIP_ALTCP_TLS
+// #if LWIP_ALTCP && LWIP_ALTCP_TLS
 struct altcp_tls_config;
 
 
@@ -72,17 +72,17 @@ struct mqtt_connect_client_info_t {
   /** Password, set to NULL if not used */
   const char* client_pass;
   /** keep alive time in seconds, 0 to disable keep alive functionality*/
-  u16_t keep_alive;
+  keep_alive: u16;
   /** will topic, set to NULL if will is not to be used,
       will_msg, will_qos and will retain are then ignored */
   const char* will_topic;
   /** will_msg, see will_topic */
   const char* will_msg;
   /** will_qos, see will_topic */
-  u8_t will_qos;
+  will_qos: u8;
   /** will_retain, see will_topic */
-  u8_t will_retain;
-#if LWIP_ALTCP && LWIP_ALTCP_TLS
+  will_retain: u8;
+// #if LWIP_ALTCP && LWIP_ALTCP_TLS
   /** TLS configuration for secure connections */
   struct altcp_tls_config *tls_config;
 
@@ -177,7 +177,7 @@ err_t mqtt_client_connect(mqtt_client_t *client, const ip_addr_t *ipaddr, u16_t 
 
 void mqtt_disconnect(mqtt_client_t *client);
 
-mqtt_client_t *mqtt_client_new(void);
+mqtt_client_t *mqtt_client_new();
 void mqtt_client_free(mqtt_client_t* client);
 
 u8_t mqtt_client_is_connected(mqtt_client_t *client);

@@ -39,7 +39,7 @@
  */
 
 
-#if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_ARC4
+// #if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_ARC4
 
 
 /*
@@ -50,9 +50,9 @@ void arc4_setup( arc4_context *ctx, unsigned char *key, int keylen )
     int i, j, k, a;
     unsigned char *m;
 
-    ctx->x = 0;
-    ctx->y = 0;
-    m = ctx->m;
+     ctx.x = 0;
+     ctx.y = 0;
+    m =  ctx.m;
 
     for( i = 0; i < 256; i++ )
         m[i] = (unsigned char) i;
@@ -78,9 +78,9 @@ void arc4_crypt( arc4_context *ctx, unsigned char *buf, int buflen )
     int i, x, y, a, b;
     unsigned char *m;
 
-    x = ctx->x;
-    y = ctx->y;
-    m = ctx->m;
+    x =  ctx.x;
+    y =  ctx.y;
+    m =  ctx.m;
 
     for( i = 0; i < buflen; i++ )
     {
@@ -94,8 +94,8 @@ void arc4_crypt( arc4_context *ctx, unsigned char *buf, int buflen )
             ( buf[i] ^ m[(unsigned char)( a + b )] );
     }
 
-    ctx->x = x;
-    ctx->y = y;
+     ctx.x = x;
+     ctx.y = y;
 }
 
-#endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_DES */
+// #endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_DES */

@@ -139,7 +139,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && PPP_IPV6_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && PPP_IPV6_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -167,7 +167,7 @@ typedef struct ipv6cp_options {
     unsigned int opt_local      :1;  /* ourtoken set by option */
     unsigned int opt_remote     :1;  /* histoken set by option */
     unsigned int use_ip         :1;  /* use IP as interface identifier */
-#if 0
+// #if 0
     unsigned int use_persistent :1;  /* use uniquely persistent value for address */
 
  IPV6CP_COMP

@@ -70,7 +70,7 @@ pub const IPV6_FRAG_COPYHEADER: u32 = 0; /* With IPV6_FRAG_COPYHEADER==1, a help
  * we copy the fields that we need from the IP header for as long as the helper
  * structure may still be in place. This is easier than temporarily restoring
  * those fields in the IP header each time we need to perform checks on them. */
-#if IPV6_FRAG_COPYHEADER
+// #if IPV6_FRAG_COPYHEADER
 #define IPV6_FRAG_SRC(ipr) ((ipr)->src)
 #define IPV6_FRAG_DEST(ipr) ((ipr)->dest)
 #else /* IPV6_FRAG_COPYHEADER */
@@ -85,7 +85,7 @@ struct ip6_reassdata {
   struct ip6_reassdata *next;
   struct pbuf *p;
   struct ip6_hdr *iphdr; /* pointer to the first (original) IPv6 header */
-#if IPV6_FRAG_COPYHEADER
+// #if IPV6_FRAG_COPYHEADER
   ip6_addr_p_t src; /* copy of the source address in the IP header */
   ip6_addr_p_t dest; /* copy of the destination address in the IP header */
   /* This buffer (for the part of the original header that we overwrite) will
@@ -96,17 +96,17 @@ struct ip6_reassdata {
   u8_t orig_hdr[sizeof(struct ip6_frag_hdr)];
  /* IPV6_FRAG_COPYHEADER */
 t identification;
-  u16_t datagram_len;
-  u8_t nexth;
-  u8_t timer;
+  datagram_len: u16;
+  nexth: u8;
+  timer: u8;
 _SCOPES
-  u8_t src_zone; /* zone of original packet's source address */
-  u8_t dest_zone; /* zone of original packet's destination address */
+  src_zone: u8; /* zone of original packet's source address */
+  dest_zone: u8; /* zone of original packet's destination address */
  /* LWIP_IPV6_SCOPES */
 
 
 #define ip6_reass_init() /* Compatibility define */
-void ip6_reass_tmr(void);
+void ip6_reass_tmr();
 struct pbuf *ip6_reass(struct pbuf *p);
 
  /* LWIP_IPV6 && LWIP_IPV6_REASS */

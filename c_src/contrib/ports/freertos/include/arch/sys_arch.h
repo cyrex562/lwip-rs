@@ -46,7 +46,7 @@ pub const ERR_NEED_SCHED: u32 = 123; /* This port includes FreeRTOS headers in s
 void sys_arch_msleep(u32_t delay_ms);
 #define sys_msleep(ms) sys_arch_msleep(ms)
 
-#if SYS_LIGHTWEIGHT_PROT
+// #if SYS_LIGHTWEIGHT_PROT
 typedef u32_t sys_prot_t;
  /* SYS_LIGHTWEIGHT_PROT */
 
@@ -81,10 +81,10 @@ struct _sys_thread {
 };
 typedef struct _sys_thread sys_thread_t;
 
-#if LWIP_NETCONN_SEM_PER_THREAD
-sys_sem_t* sys_arch_netconn_sem_get(void);
-void sys_arch_netconn_sem_alloc(void);
-void sys_arch_netconn_sem_free(void);
+// #if LWIP_NETCONN_SEM_PER_THREAD
+sys_sem_t* sys_arch_netconn_sem_get();
+void sys_arch_netconn_sem_alloc();
+void sys_arch_netconn_sem_free();
 #define LWIP_NETCONN_THREAD_SEM_GET()   sys_arch_netconn_sem_get()
 #define LWIP_NETCONN_THREAD_SEM_ALLOC() sys_arch_netconn_sem_alloc()
 #define LWIP_NETCONN_THREAD_SEM_FREE()  sys_arch_netconn_sem_free()

@@ -37,11 +37,11 @@
 
 
 
-void netbiosns_init(void);
+void netbiosns_init();
 
 void netbiosns_set_name(const char* hostname);
 
-etbiosns_stop(void);
+etbiosns_stop();
 
 
 

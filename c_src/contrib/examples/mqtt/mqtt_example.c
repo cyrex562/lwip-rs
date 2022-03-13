@@ -30,7 +30,7 @@
 // #include "lwip/apps/mqtt.h"
 // #include "mqtt_example.h"
 
-#if LWIP_TCP
+// #if LWIP_TCP
 
 /** Define this to a compile-time IP address initialization
  * to connect anything else than IPv4 loopback
@@ -56,7 +56,7 @@ static const struct mqtt_connect_client_info_t mqtt_client_info =
   NULL, /* will_msg */
   0,    /* will_qos */
   0     /* will_retain */
-#if LWIP_ALTCP && LWIP_ALTCP_TLS
+// #if LWIP_ALTCP && LWIP_ALTCP_TLS
   , NULL
 
 };
@@ -110,9 +110,9 @@ mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t st
  /* LWIP_TCP */
 
 void
-mqtt_example_init(void)
+mqtt_example_init()
 {
-#if LWIP_TCP
+// #if LWIP_TCP
   mqtt_client = mqtt_client_new();
 
   mqtt_set_inpub_callback(mqtt_client,

@@ -5,12 +5,12 @@
 /* Setups/teardown functions */
 
 static void
-dns_setup(void)
+dns_setup()
 {
 }
 
 static void
-dns_teardown(void)
+dns_teardown()
 {
 }
 
@@ -43,7 +43,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-dns_suite(void)
+dns_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_dns_set_get_server)

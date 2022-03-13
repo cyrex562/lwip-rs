@@ -33,6 +33,6 @@
 
 #define LWIP_HDR_HTTP_EXAMPLES_SSI_EXAMPLE
 
-void ssi_ex_init(void);
+void ssi_ex_init();
 
  /* LWIP_HDR_HTTP_EXAMPLES_SSI_EXAMPLE */

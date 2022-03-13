@@ -315,12 +315,12 @@ pub fn http_kill_oldest_connection(ssi_required: u8) {
         {
             hs_free_next = hs;
         }
-        LWIP_ASSERT("broken list", hs != hs.next);
+        // LWIP_ASSERT("broken list", hs != hs.next);
         hs = hs.next;
     }
     if (hs_free_next != None) {
-        LWIP_ASSERT("hs_free_next.next != NULL", hs_free_next.next != None);
-        LWIP_ASSERT(
+        // LWIP_ASSERT("hs_free_next.next != NULL", hs_free_next.next != None);
+        // LWIP_ASSERT(
             "hs_free_next.next.pcb != NULL",
             hs_free_next.next.pcb != None,
         );
@@ -440,7 +440,7 @@ pub fn http_write(
     let len: usize;
     let max_len: usize;
     let err: err_t;
-    LWIP_ASSERT("length != NULL", length != None);
+    // LWIP_ASSERT("length != NULL", length != None);
     len = *length;
     if (len == 0) {
         return Ok(());
@@ -654,9 +654,9 @@ pub fn get_tag_insert(hs: &mut http_state) {
 
     let current_tag_part: u16;
 
-    LWIP_ASSERT("hs != NULL", hs != None);
+    // LWIP_ASSERT("hs != NULL", hs != None);
     ssi = hs.ssi;
-    LWIP_ASSERT("ssi != NULL", ssi != None);
+    // LWIP_ASSERT("ssi != NULL", ssi != None);
 
     current_tag_part = ssi.tag_part;
     ssi.tag_part = HTTPD_LAST_TAG_PART;
@@ -714,7 +714,7 @@ pub fn get_tag_insert(hs: &mut http_state) {
         ssi.tag_insert[UNKNOWN_TAG1_LEN + len + UNKNOWN_TAG2_LEN] = 0;
 
         len = strlen(ssi.tag_insert);
-        LWIP_ASSERT("len <= 0xffff", len <= 0xffff);
+        // LWIP_ASSERT("len <= 0xffff", len <= 0xffff);
         ssi.tag_insert_len = len;
     }
 
@@ -827,7 +827,7 @@ pub fn get_tag_insert(hs: &mut http_state) {
     pub fn get_http_content_length(hs: &mut http_state) {
         let add_content_len: u8 = 0;
 
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "already been here?",
             hs.hdrs[HDR_STRINGS_IDX_CONTENT_LEN_KEEPALIVE] == None,
         );
@@ -1059,7 +1059,7 @@ pub fn get_tag_insert(hs: &mut http_state) {
         }
 
         //  LWIP_HTTPD_DYNAMIC_FILE_READ
-        LWIP_ASSERT("SSI and DYNAMIC_HEADERS turned off but eof not reached", 0);
+        // LWIP_ASSERT("SSI and DYNAMIC_HEADERS turned off but eof not reached", 0);
 
         return 1;
     }
@@ -1100,7 +1100,7 @@ pub fn get_tag_insert(hs: &mut http_state) {
         let tag_type: u8;
 
         let ssi: &mut http_ssi_state = hs.ssi;
-        LWIP_ASSERT("ssi != NULL", ssi != None);
+        // LWIP_ASSERT("ssi != NULL", ssi != None);
         /* We are processing an SHTML file so need to scan for tags and replace
          * them with insert strings. We need to be careful here since a tag may
          * straddle the boundary of two blocks read from the file and we may also
@@ -1216,7 +1216,7 @@ pub fn get_tag_insert(hs: &mut http_state) {
                             /* We read a non-empty tag so go ahead and look for the
                              * leadout string. */
                             ssi.tag_state = TAG_LEADOUT;
-                            LWIP_ASSERT("ssi.tag_index <= 0xff", ssi.tag_index <= 0xff);
+                            // LWIP_ASSERT("ssi.tag_index <= 0xff", ssi.tag_index <= 0xff);
                             ssi.tag_name_len = ssi.tag_index;
                             ssi.tag_name[ssi.tag_index] = '\0';
                             if (*ssi.parsed == http_ssi_tag_desc[ssi.tag_type].lead_out[0]) {
@@ -1329,7 +1329,7 @@ pub fn get_tag_insert(hs: &mut http_state) {
 
                         len = LWIP_MIN(ssi.tag_end - hs.file, 0xffff);
                         //  LWIP_HTTPD_SSI_INCLUDE_TAG
-                        LWIP_ASSERT("hs.started >= hs.file", ssi.tag_started >= hs.file);
+                        // LWIP_ASSERT("hs.started >= hs.file", ssi.tag_started >= hs.file);
                         //  we would include the tag in sending
                         len = LWIP_MIN(ssi.tag_started - hs.file, 0xffff);
 
@@ -1787,9 +1787,9 @@ pub fn httpd_post_data_recved(connection: &mut Vec<u8>, recved_len: u16) {
  */
 pub fn http_continue(connection: &mut Vec<u8>) {
     let hs: &mut http_state = connection;
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (hs && (hs.pcb) && (hs.handle)) {
-        LWIP_ASSERT("hs.pcb != NULL", hs.pcb != None);
+        // LWIP_ASSERT("hs.pcb != NULL", hs.pcb != None);
         //    LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("httpd_continue: try to send more data\n"));
         if (http_send(hs.pcb, hs)) {
             //  If we wrote anything to be sent, go ahead and send it now.
@@ -1823,8 +1823,8 @@ pub fn http_parse_request(
     let err: err_t;
 
     //  only used for post
-    LWIP_ASSERT("p != NULL", p != None);
-    LWIP_ASSERT("hs != NULL", hs != None);
+    // LWIP_ASSERT("p != NULL", p != None);
+    // LWIP_ASSERT("hs != NULL", hs != None);
 
     if ((hs.handle != None) || (hs.file != None)) {
         //    LWIP_DEBUGF(HTTPD_DEBUG, ("Received data while sending a file\n"));
@@ -2146,7 +2146,7 @@ pub fn http_init_file(
         //  file opened, initialise struct http_state
 
         //  If dynamic read is disabled, file data must be in one piece and available now
-        LWIP_ASSERT("file.data != NULL", file.data != None);
+        // LWIP_ASSERT("file.data != NULL", file.data != None);
 
         if (tag_check) {
             let ssi: &mut http_ssi_state = http_ssi_state_alloc();
@@ -2184,7 +2184,7 @@ pub fn http_init_file(
         //  LWIP_HTTPD_CGI_SSI
 
         hs.file = file.data;
-        LWIP_ASSERT("File length must be positive!", (file.len >= 0));
+        // LWIP_ASSERT("File length must be positive!", (file.len >= 0));
 
         if (file.is_custom_file && (file.data == None)) {
             //  custom file, need to read data first (via fs_read_custom)
@@ -2196,7 +2196,7 @@ pub fn http_init_file(
 
         hs.time_started = sys_now();
 
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "HTTP headers not included in file system",
             (hs.handle.flags & FS_FILE_FLAGS_HEADER_INCLUDED) != 0,
         );
@@ -2374,7 +2374,7 @@ pub fn http_recv(
     } else {
         if (hs.handle == None) {
             let parsed: err_t = http_parse_request(p, hs, pcb);
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "http_parse_request: unexpected return value",
                 parsed == ERR_OK
                     || parsed == ERR_INPROGRESS
@@ -2454,9 +2454,9 @@ pub fn httpd_init_pcb(pcb: &mut AlTcpPcb, port: u16) {
         //  set SOF_REUSEADDR here to explicitly bind httpd to multiple interfaces
         err = altcp_bind(pcb, IP_ANY_TYPE, port);
         //  in case of LWIP_NOASSERT
-        LWIP_ASSERT("httpd_init: tcp_bind failed", err == ERR_OK);
+        // LWIP_ASSERT("httpd_init: tcp_bind failed", err == ERR_OK);
         pcb = altcp_listen(pcb);
-        LWIP_ASSERT("httpd_init: tcp_listen failed", pcb != None);
+        // LWIP_ASSERT("httpd_init: tcp_listen failed", pcb != None);
         altcp_accept(pcb, http_accept);
     }
 }
@@ -2477,7 +2477,7 @@ pub fn httpd_init() {
     //  LWIP_ASSERT_CORE_LOCKED(); is checked by tcp_new()
 
     pcb = altcp_tcp_new_ip_type(IPADDR_TYPE_ANY);
-    LWIP_ASSERT("httpd_init: tcp_new failed", pcb != None);
+    // LWIP_ASSERT("httpd_init: tcp_new failed", pcb != None);
     httpd_init_pcb(pcb, HTTPD_SERVER_PORT);
 }
 
@@ -2488,7 +2488,7 @@ pub fn httpd_init() {
  */
 pub fn httpd_inits(conf: &mut altcp_tls_config) {
     let pcb_tls: &mut AlTcpPcb = altcp_tls_new(conf, IPADDR_TYPE_ANY);
-    LWIP_ASSERT("httpd_init: altcp_tls_new failed", pcb_tls != None);
+    // LWIP_ASSERT("httpd_init: altcp_tls_new failed", pcb_tls != None);
     httpd_init_pcb(pcb_tls, HTTPD_SERVER_PORT_HTTPS);
     //  lwip_altcp_tls
 }
@@ -2504,12 +2504,12 @@ pub fn httpd_inits(conf: &mut altcp_tls_config) {
 pub fn http_set_ssi_handler(ssi_handler: tSSIHandler, tags: &mut String, num_tags: i32) {
     //  LWIP_DEBUGF(HTTPD_DEBUG, ("http_set_ssi_handler\n"));
 
-    LWIP_ASSERT("no ssi_handler given", ssi_handler != None);
+    // LWIP_ASSERT("no ssi_handler given", ssi_handler != None);
     httpd_ssi_handler = ssi_handler;
 
     //  LWIP_HTTPD_SSI_RAW
-    LWIP_ASSERT("no tags given", tags != None);
-    LWIP_ASSERT("invalid number of tags", num_tags > 0);
+    // LWIP_ASSERT("no tags given", tags != None);
+    // LWIP_ASSERT("invalid number of tags", num_tags > 0);
 
     httpd_tags = tags;
     httpd_num_tags = num_tags;
@@ -2523,8 +2523,8 @@ pub fn http_set_ssi_handler(ssi_handler: tSSIHandler, tags: &mut String, num_tag
  * @param num_handlers number of elements in the 'cgis' array
  */
 pub fn http_set_cgi_handlers(cgis: &mut Vec<tCGI>, num_handlers: i32) {
-    LWIP_ASSERT("no cgis given", cgis != None);
-    LWIP_ASSERT("invalid number of handlers", num_handlers > 0);
+    // LWIP_ASSERT("no cgis given", cgis != None);
+    // LWIP_ASSERT("invalid number of handlers", num_handlers > 0);
 
     httpd_cgis = cgis;
     httpd_num_cgis = num_handlers;

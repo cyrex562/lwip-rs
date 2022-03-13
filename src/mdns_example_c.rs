@@ -30,7 +30,7 @@
 // #include "lwip/apps/mdns.h"
 // #include "mdns_example.h"
 
-#if LWIP_MDNS_RESPONDER
+// #if LWIP_MDNS_RESPONDER
 static void
 srv_txt(struct mdns_service *service, void *txt_userdata)
 {
@@ -42,18 +42,18 @@ srv_txt(struct mdns_service *service, void *txt_userdata)
 }
 
 
-#if LWIP_MDNS_RESPONDER
+// #if LWIP_MDNS_RESPONDER
 static void
 mdns_example_report(struct netif* netif, u8_t result, s8_t service)
 {
-  LWIP_PLATFORM_DIAG(("mdns status[netif %d][service %d]: %d\n", netif->num, service, result));
+  LWIP_PLATFORM_DIAG(("mdns status[netif %d][service %d]: %d\n",  netif.num, service, result));
 }
 
 
 void
-mdns_example_init(void)
+mdns_example_init()
 {
-#if LWIP_MDNS_RESPONDER
+// #if LWIP_MDNS_RESPONDER
   mdns_resp_register_name_result_cb(mdns_example_report);
   mdns_resp_init();
   mdns_resp_add_netif(netif_default, "lwip");

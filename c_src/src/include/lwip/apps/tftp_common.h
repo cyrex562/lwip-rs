@@ -98,7 +98,7 @@ pub const LWIP_TFTP_MODE_CLIENT: u32 = 0x02;
 pub const LWIP_TFTP_MODE_CLIENT: u32 = 0x02;P_TFTP_MODE_SERVER | LWIP_TFTP_MODE_CLIENT)
 
 err_t tftp_init_common(u8_t mode, const struct tftp_context* ctx);
-void tftp_cleanup(void);
+void tftp_cleanup();
 
 
 

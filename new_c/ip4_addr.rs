@@ -38,7 +38,7 @@
 
 
 
-#if LWIP_IPV4
+// #if LWIP_IPV4
 
 
 
@@ -65,7 +65,7 @@ ip4_addr_isbroadcast_u32(u32_t addr, const struct netif *netif)
       (addr == IPADDR_ANY)) {
     return 1;
     /* no broadcast support on this network interface? */
-  } else if ((netif->flags & NETIF_FLAG_BROADCAST) == 0) {
+  } else if (( netif.flags & NETIF_FLAG_BROADCAST) == 0) {
     /* the given address cannot be a broadcast address
      * nor can we check against any broadcast addresses */
     return 0;
@@ -145,7 +145,7 @@ int
 ip4addr_aton(const char *cp, ip4_addr_t *addr)
 {
   u32_t val;
-  u8_t base;
+  base: u8;
   char c;
   u32_t parts[4];
   u32_t *pp = parts;
@@ -248,7 +248,7 @@ ip4addr_aton(const char *cp, ip4_addr_t *addr)
       val |= (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8);
       break;
     default:
-      LWIP_ASSERT("unhandled", 0);
+      // LWIP_ASSERT("unhandled", 0);
       break;
   }
   if (addr) {
@@ -288,9 +288,9 @@ ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, int buflen)
   char inv[3];
   char *rp;
   u8_t *ap;
-  u8_t rem;
-  u8_t n;
-  u8_t i;
+  rem: u8;
+  n: u8;
+  i: u8;
   int len = 0;
 
   s_addr = ip4_addr_get_u32(addr);
@@ -320,4 +320,4 @@ ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, int buflen)
   return buf;
 }
 
-#endif /* LWIP_IPV4 */
+// #endif /* LWIP_IPV4 */

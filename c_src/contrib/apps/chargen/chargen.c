@@ -56,7 +56,7 @@
 
 // #include "chargen.h"
 
-#if LWIP_SOCKET && LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET && LWIP_SOCKET_SELECT
 
 pub const MAX_SERV: u32 = 5; /* Maximum number of chargen services. Don't need too many */
 #define CHARGEN_THREAD_NAME      "chargen"
@@ -160,15 +160,15 @@ chargen_thread(void *arg)
   chargen_saddr.sin_port = lwip_htons(19); /* Chargen server port */
  /* LWIP_IPV6 */
 
-  LWIP_ASSERT("chargen_thread(): Socket create failed.", listenfd >= 0);
+  // LWIP_ASSERT("chargen_thread(): Socket create failed.", listenfd >= 0);
 
   if (lwip_bind(listenfd, (struct sockaddr *) &chargen_saddr, sizeof (chargen_saddr)) == -1) {
-    LWIP_ASSERT("chargen_thread(): Socket bind failed.", 0);
+    // LWIP_ASSERT("chargen_thread(): Socket bind failed.", 0);
   }
 
   /* Put socket into listening mode */
   if (lwip_listen(listenfd, MAX_SERV) == -1) {
-    LWIP_ASSERT("chargen_thread(): Listen failed.", 0);
+    // LWIP_ASSERT("chargen_thread(): Listen failed.", 0);
   }
 
 
@@ -259,13 +259,13 @@ chargen_thread(void *arg)
 
 
 /**************************************************************
- * void chargen_init(void)
+ * void chargen_init()
  *
  * This function initializes the chargen service. This function
  * may only be called either before or after tasking has started.
  **************************************************************/
 void
-chargen_init(void)
+chargen_init()
 {
   sys_thread_new(CHARGEN_THREAD_NAME, chargen_thread, NULL, CHARGEN_THREAD_STACKSIZE, CHARGEN_PRIORITY);
 }

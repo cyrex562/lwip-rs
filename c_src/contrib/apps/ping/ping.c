@@ -40,7 +40,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
 
 // #include "ping.h"
 
@@ -53,7 +53,7 @@
 // #include "lwip/inet_chksum.h"
 // #include "lwip/prot/ip4.h"
 
-#if PING_USE_SOCKETS
+// #if PING_USE_SOCKETS
 // #include "lwip/sockets.h"
 // #include "lwip/inet.h"
 
@@ -82,7 +82,7 @@ pub const PING_DATA_SIZE: u32 = 32; /** ping result action - no default action *
 
 /* ping variables */
 static const ip_addr_t* ping_target;
-static u16_t ping_seq_num;
+static ping_seq_num: u16;
 #ifdef LWIP_DEBUG
 static u32_t ping_time;
  /* LWIP_DEBUG */
@@ -111,7 +111,7 @@ ping_prepare_echo( struct icmp_echo_hdr *iecho, u16_t len)
   iecho->chksum = inet_chksum(iecho, len);
 }
 
-#if PING_USE_SOCKETS
+// #if PING_USE_SOCKETS
 
 /* Ping using the socket ip */
 static err_t
@@ -121,7 +121,7 @@ ping_send(int s, const ip_addr_t *addr)
   struct icmp_echo_hdr *iecho;
   struct sockaddr_storage to;
   size_t ping_size = sizeof(struct icmp_echo_hdr) + PING_DATA_SIZE;
-  LWIP_ASSERT("ping_size is too big", ping_size <= 0xffff);
+  // LWIP_ASSERT("ping_size is too big", ping_size <= 0xffff);
 
 
   if(IP_IS_V6(addr) && !ip6_addr_isipv4mappedipv6(ip_2_ip6(addr))) {
@@ -230,7 +230,7 @@ ping_thread(void *arg)
   int s;
   int ret;
 
-#if LWIP_SO_SNDRCVTIMEO_NONSTANDARD
+// #if LWIP_SO_SNDRCVTIMEO_NONSTANDARD
   int timeout = PING_RCV_TIMEO;
 #else
   struct timeval timeout;
@@ -253,7 +253,7 @@ ping_thread(void *arg)
   }
 
   ret = lwip_setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
-  LWIP_ASSERT("setting receive timeout failed", ret == 0);
+  // LWIP_ASSERT("setting receive timeout failed", ret == 0);
   LWIP_UNUSED_ARG(ret);
 
   while (1) {
@@ -285,7 +285,7 @@ ping_recv(void *arg, struct raw_pcb *pcb, struct pbuf *p, const ip_addr_t *addr)
   LWIP_UNUSED_ARG(arg);
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(addr);
-  LWIP_ASSERT("p != NULL", p != NULL);
+  // LWIP_ASSERT("p != NULL", p != NULL);
 
   if ((p->tot_len >= (PBUF_IP_HLEN + sizeof(struct icmp_echo_hdr))) &&
       pbuf_remove_header(p, PBUF_IP_HLEN) == 0) {
@@ -318,7 +318,7 @@ ping_send(struct raw_pcb *raw, const ip_addr_t *addr)
   LWIP_DEBUGF( PING_DEBUG, ("ping: send "));
   ip_addr_debug_print(PING_DEBUG, addr);
   LWIP_DEBUGF( PING_DEBUG, ("\n"));
-  LWIP_ASSERT("ping_size <= 0xffff", ping_size <= 0xffff);
+  // LWIP_ASSERT("ping_size <= 0xffff", ping_size <= 0xffff);
 
   p = pbuf_alloc(PBUF_IP, (u16_t)ping_size, PBUF_RAM);
   if (!p) {
@@ -342,7 +342,7 @@ ping_timeout(void *arg)
 {
   struct raw_pcb *pcb = (struct raw_pcb*)arg;
 
-  LWIP_ASSERT("ping_timeout: no pcb given!", pcb != NULL);
+  // LWIP_ASSERT("ping_timeout: no pcb given!", pcb != NULL);
 
   ping_send(pcb, ping_target);
 
@@ -350,10 +350,10 @@ ping_timeout(void *arg)
 }
 
 static void
-ping_raw_init(void)
+ping_raw_init()
 {
   ping_pcb = raw_new(IP_PROTO_ICMP);
-  LWIP_ASSERT("ping_pcb != NULL", ping_pcb != NULL);
+  // LWIP_ASSERT("ping_pcb != NULL", ping_pcb != NULL);
 
   raw_recv(ping_pcb, ping_recv, NULL);
   raw_bind(ping_pcb, IP_ADDR_ANY);
@@ -361,9 +361,9 @@ ping_raw_init(void)
 }
 
 void
-ping_send_now(void)
+ping_send_now()
 {
-  LWIP_ASSERT("ping_pcb != NULL", ping_pcb != NULL);
+  // LWIP_ASSERT("ping_pcb != NULL", ping_pcb != NULL);
   ping_send(ping_pcb, ping_target);
 }
 
@@ -374,7 +374,7 @@ ping_init(const ip_addr_t* ping_addr)
 {
   ping_target = ping_addr;
 
-#if PING_USE_SOCKETS
+// #if PING_USE_SOCKETS
   sys_thread_new("ping_thread", ping_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 #else /* PING_USE_SOCKETS */
   ping_raw_init();

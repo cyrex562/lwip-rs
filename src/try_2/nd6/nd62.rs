@@ -1171,7 +1171,7 @@ pub fn nd6_send_ns(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) 
  let mut src_addr: &mut ip6_addr_t;
     let lladdr_opt_len: u16;
 
-    LWIP_ASSERT("target address is required", target_addr != None);
+    // LWIP_ASSERT("target address is required", target_addr != None);
 
     if !(flags & ND6_SEND_FLAG_ANY_SRC) && ip6_addr_isvalid(netif_ip6_addr_state(netif, 0)) {
         //  Use link-local address as source address. 
@@ -1241,7 +1241,7 @@ pub fn nd6_send_na(netif: &mut NetIfc, target_addr: &mut ip6_addr_t, flags: u8) 
  let mut dest_addr: &mut ip6_addr_t;
     let lladdr_opt_len: u16;
 
-    LWIP_ASSERT("target address is required", target_addr != None);
+    // LWIP_ASSERT("target address is required", target_addr != None);
 
     //  Use link-local address as source address. 
     //  src_addr = netif_ip6_addr(netif, 0); 
@@ -1741,7 +1741,7 @@ pub fn nd6_find_route(ip6addr: &mut ip6_addr_t) -> NetIfc {
     //  No on-link prefix match. Find a router that can forward the packet. 
     i = nd6_select_router(ip6addr, None);
     if (i >= 0) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "selected router must have a neighbor entry",
             default_router_list[i].neighbor_entry != None,
         );
@@ -1935,14 +1935,14 @@ pub fn nd6_get_next_hop_entry(ip6addr: &mut ip6_addr_t, netif: &mut NetIfc) {
         dst_idx = nd6_find_destination_cache_entryip6addr;
         if (dst_idx >= 0) {
             //  found destination entry. make it our new cached index. 
-            LWIP_ASSERT("type overflow", dst_idx < NETIF_ADDR_IDX_MAX);
+            // LWIP_ASSERT("type overflow", dst_idx < NETIF_ADDR_IDX_MAX);
             nd6_cached_destination_index = dst_idx;
         } else {
             //  Not found. Create a new destination entry. 
             dst_idx = nd6_new_destination_cache_entry();
             if (dst_idx >= 0) {
                 //  got new destination entry. make it our new cached index. 
-                LWIP_ASSERT("type overflow", dst_idx < NETIF_ADDR_IDX_MAX);
+                // LWIP_ASSERT("type overflow", dst_idx < NETIF_ADDR_IDX_MAX);
                 nd6_cached_destination_index = dst_idx;
             } else {
                 //  Could not create a destination cache entry. 

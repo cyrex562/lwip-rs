@@ -35,7 +35,7 @@
 
 
 
-#if LWIP_UDP
+// #if LWIP_UDP
 
 /* Define a base directory for TFTP access
  * ATTENTION: This code does NOT check for sandboxing,
@@ -96,10 +96,10 @@ static int
 tftp_write(void* handle, struct pbuf* p)
 {
   while (p != NULL) {
-    if (fwrite(p->payload, 1, p->len, (FILE*)handle) != (size_t)p->len) {
+    if (fwrite( p.payload, 1,  p.len, (FILE*)handle) != (size_t) p.len) {
       return -1;
     }
-    p = p->next;
+    p =  p.next;
   }
 
   return 0;
@@ -128,28 +128,28 @@ static const struct tftp_context tftp = {
 };
 
 void
-tftp_example_init_server(void)
+tftp_example_init_server()
 {
   tftp_init_server(&tftp);
 }
 
 void
-tftp_example_init_client(void)
+tftp_example_init_client()
 {
   void *f;
   err_t err;
   ip_addr_t srv;
   int ret = ipaddr_aton(LWIP_TFTP_EXAMPLE_CLIENT_REMOTEIP, &srv);
-  LWIP_ASSERT("ipaddr_aton failed", ret == 1);
+  // LWIP_ASSERT("ipaddr_aton failed", ret == 1);
 
   err = tftp_init_client(&tftp);
-  LWIP_ASSERT("tftp_init_client failed", err == ERR_OK);
+  // LWIP_ASSERT("tftp_init_client failed", err == ERR_OK);
 
   f = tftp_open_file(LWIP_TFTP_EXAMPLE_CLIENT_FILENAME, 1);
-  LWIP_ASSERT("failed to create file", f != NULL);
+  // LWIP_ASSERT("failed to create file", f != NULL);
 
   err = tftp_get(f, &srv, TFTP_PORT, LWIP_TFTP_EXAMPLE_CLIENT_FILENAME, TFTP_MODE_OCTET);
-  LWIP_ASSERT("tftp_get failed", err == ERR_OK);
+  // LWIP_ASSERT("tftp_get failed", err == ERR_OK);
 }
 
  /* LWIP_UDP */

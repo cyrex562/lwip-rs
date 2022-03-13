@@ -55,7 +55,7 @@
  * - If data arrives (HCI event "L2CAP_DATA_PACKET"):
  *   - allocate a @ref PBUF_RAW buffer
  *   - let the pbuf struct point to the incoming data or copy it to the buffer
- *   - call netif->input
+ *   - call  netif.input
  *
  * @todo:
  * - further testing
@@ -68,7 +68,7 @@
 
 
 
-#if LWIP_IPV6
+// #if LWIP_IPV6
 
 
 
@@ -82,12 +82,12 @@
 
 
 
-#if LWIP_6LOWPAN_NUM_CONTEXTS > 0
+// #if LWIP_6LOWPAN_NUM_CONTEXTS > 0
 /** context memory, containing IPv6 addresses */
 static ip6_addr_t rfc7668_context[LWIP_6LOWPAN_NUM_CONTEXTS];
 #else
 #define rfc7668_context NULL
-#endif
+// #endif
 
 static struct lowpan6_link_addr rfc7668_local_addr;
 static struct lowpan6_link_addr rfc7668_peer_addr;
@@ -114,7 +114,7 @@ ble_addr_to_eui64(u8_t *dst, const u8_t *src, int public_addr)
   dst[3] = 0xFF;
   dst[4] = 0xFE;
   memcpy(&dst[5], &src[3], 3);
-#if LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS
+// #if LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS
   if(public_addr) {
     dst[0] &= ~0x02;
   } else {
@@ -122,7 +122,7 @@ ble_addr_to_eui64(u8_t *dst, const u8_t *src, int public_addr)
   }
 #else
   LWIP_UNUSED_ARG(public_addr);
-#endif
+// #endif
 }
 
 /**
@@ -156,14 +156,14 @@ rfc7668_set_addr(struct lowpan6_link_addr *addr, const u8_t *in_addr, size_t in_
     if (in_addr_len != 6) {
       return ERR_VAL;
     }
-    addr->addr_len = 8;
-    ble_addr_to_eui64(addr->addr, in_addr, is_public_addr);
+     addr.addr_len = 8;
+    ble_addr_to_eui64( addr.addr, in_addr, is_public_addr);
   } else {
     if (in_addr_len != 8) {
       return ERR_VAL;
     }
-    addr->addr_len = 8;
-    memcpy(addr->addr, in_addr, 8);
+     addr.addr_len = 8;
+    memcpy( addr.addr, in_addr, 8);
   }
   return ERR_OK;
 }
@@ -224,36 +224,36 @@ rfc7668_set_peer_addr_mac48(struct netif *netif, const u8_t *peer_addr, size_t p
  * @param p Pbuf struct, containing the payload data
  * @param netif Output network interface. Should be of RFC7668 type
  *
- * @return Same as netif->output.
+ * @return Same as  netif.output.
  */
 static err_t
 rfc7668_compress(struct netif *netif, struct pbuf *p)
 {
   struct pbuf *p_frag;
-  u16_t remaining_len;
+  remaining_len: u16;
   u8_t *buffer;
-  u8_t lowpan6_header_len;
-  u8_t hidden_header_len;
+  lowpan6_header_len: u8;
+  hidden_header_len: u8;
   err_t err;
 
-  LWIP_ASSERT("lowpan6_frag: netif->linkoutput not set", netif->linkoutput != NULL);
+  // LWIP_ASSERT("lowpan6_frag:  netif.linkoutput not set",  netif.linkoutput != NULL);
 
-#if LWIP_6LOWPAN_IPHC
+// #if LWIP_6LOWPAN_IPHC
 
   /* We'll use a dedicated pbuf for building BLE fragments.
    * We'll over-allocate it by the bytes saved for header compression.
    */
-  p_frag = pbuf_alloc(PBUF_RAW, p->tot_len, PBUF_RAM);
+  p_frag = pbuf_alloc(PBUF_RAW,  p.tot_len, PBUF_RAM);
   if (p_frag == NULL) {
     MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
     return ERR_MEM;
   }
-  LWIP_ASSERT("this needs a pbuf in one piece", p_frag->len == p_frag->tot_len);
+  // LWIP_ASSERT("this needs a pbuf in one piece",  p_frag.len ==  p_frag.tot_len);
 
   /* Write IP6 header (with IPHC). */
-  buffer = (u8_t*)p_frag->payload;
+  buffer = (u8_t*) p_frag.payload;
 
-  err = lowpan6_compress_headers(netif, (u8_t *)p->payload, p->len, buffer, p_frag->len,
+  err = lowpan6_compress_headers(netif, (u8_t *) p.payload,  p.len, buffer,  p_frag.len,
     &lowpan6_header_len, &hidden_header_len, rfc7668_context, &rfc7668_local_addr, &rfc7668_peer_addr);
   if (err != ERR_OK) {
     MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
@@ -263,18 +263,18 @@ rfc7668_compress(struct netif *netif, struct pbuf *p)
   pbuf_remove_header(p, hidden_header_len);
 
   /* Calculate remaining packet length */
-  remaining_len = p->tot_len;
+  remaining_len =  p.tot_len;
 
   /* Copy IPv6 packet */
   pbuf_copy_partial(p, buffer + lowpan6_header_len, remaining_len, 0);
 
   /* Calculate frame length */
-  p_frag->len = p_frag->tot_len = remaining_len + lowpan6_header_len;
+   p_frag.len =  p_frag.tot_len = remaining_len + lowpan6_header_len;
 
   /* send the packet */
-  MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p_frag->tot_len);
+  MIB2_STATS_NETIF_ADD(netif, ifoutoctets,  p_frag.tot_len);
   LWIP_DEBUGF(LWIP_LOWPAN6_DEBUG|LWIP_DBG_TRACE, ("rfc7668_output: sending packet %p\n", (void *)p));
-  err = netif->linkoutput(netif, p_frag);
+  err =  netif.linkoutput(netif, p_frag);
 
   pbuf_free(p_frag);
 
@@ -282,7 +282,7 @@ rfc7668_compress(struct netif *netif, struct pbuf *p)
 #else /* LWIP_6LOWPAN_IPHC */
   /* 6LoWPAN over BLE requires IPHC! */
   return ERR_IF;
-#endif/* LWIP_6LOWPAN_IPHC */
+// #endif/* LWIP_6LOWPAN_IPHC */
 }
 
 /**
@@ -299,7 +299,7 @@ rfc7668_compress(struct netif *netif, struct pbuf *p)
 err_t
 rfc7668_set_context(u8_t idx, const ip6_addr_t *context)
 {
-#if LWIP_6LOWPAN_NUM_CONTEXTS > 0
+// #if LWIP_6LOWPAN_NUM_CONTEXTS > 0
   /* check if the ID is possible */
   if (idx >= LWIP_6LOWPAN_NUM_CONTEXTS) {
     return ERR_ARG;
@@ -311,12 +311,12 @@ rfc7668_set_context(u8_t idx, const ip6_addr_t *context)
   LWIP_UNUSED_ARG(idx);
   LWIP_UNUSED_ARG(context);
   return ERR_VAL;
-#endif
+// #endif
 }
 
 /**
  * @ingroup rfc7668if
- * Compress outgoing IPv6 packet and pass it on to netif->linkoutput
+ * Compress outgoing IPv6 packet and pass it on to  netif.linkoutput
  *
  * @param netif The lwIP network interface which the IP packet will be sent on.
  * @param q The pbuf(s) containing the IP packet to be sent.
@@ -337,7 +337,7 @@ rfc7668_output(struct netif *netif, struct pbuf *q, const ip6_addr_t *ip6addr)
  * @ingroup rfc7668if
  * Process a received raw payload from an L2CAP channel
  *
- * @param p the received packet, p->payload pointing to the
+ * @param p the received packet,  p.payload pointing to the
  *        IPv6 header (maybe compressed)
  * @param netif the network interface on which the packet was received
  *
@@ -348,10 +348,10 @@ rfc7668_input(struct pbuf * p, struct netif *netif)
 {
   u8_t * puc;
 
-  MIB2_STATS_NETIF_ADD(netif, ifinoctets, p->tot_len);
+  MIB2_STATS_NETIF_ADD(netif, ifinoctets,  p.tot_len);
 
   /* Load first header byte */
-  puc = (u8_t*)p->payload;
+  puc = (u8_t*) p.payload;
 
   /* no IP header compression */
   if (*puc == 0x41) {
@@ -378,19 +378,19 @@ rfc7668_input(struct pbuf * p, struct netif *netif)
   /* @todo: distinguish unicast/multicast */
   MIB2_STATS_NETIF_INC(netif, ifinucastpkts);
 
-#if LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG
+// #if LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG
   {
-    u16_t i;
+    i: u16;
     LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("IPv6 payload:\n"));
-    for (i = 0; i < p->len; i++) {
+    for (i = 0; i <  p.len; i++) {
       if ((i%4)==0) {
         LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("\n"));
       }
-      LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("%2X ", *((u8_t *)p->payload+i)));
+      LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("%2X ", *((u8_t *) p.payload+i)));
     }
-    LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("\np->len: %d\n", p->len));
+    LWIP_DEBUGF(LWIP_RFC7668_IP_UNCOMPRESSED_DEBUG, ("\ np.len: %d\n",  p.len));
   }
-#endif
+// #endif
   /* pass data to ip6_input */
   return ip6_input(p, netif);
 }
@@ -409,18 +409,18 @@ rfc7668_input(struct pbuf * p, struct netif *netif)
 err_t
 rfc7668_if_init(struct netif *netif)
 {
-  netif->name[0] = 'b';
-  netif->name[1] = 't';
+   netif.name[0] = 'b';
+   netif.name[1] = 't';
   /* local function as IPv6 output */
-  netif->output_ip6 = rfc7668_output;
+   netif.output_ip6 = rfc7668_output;
 
   MIB2_INIT_NETIF(netif, snmp_ifType_other, 0);
 
   /* maximum transfer unit, set according to RFC7668 ch2.4 */
-  netif->mtu = IP6_MIN_MTU_LENGTH;
+   netif.mtu = IP6_MIN_MTU_LENGTH;
 
   /* no flags set (no broadcast, ethernet,...)*/
-  netif->flags = 0;
+   netif.flags = 0;
 
   /* everything fine */
   return ERR_OK;
@@ -430,7 +430,7 @@ rfc7668_if_init(struct netif *netif)
 /**
  * Pass a received packet to tcpip_thread for input processing
  *
- * @param p the received packet, p->payload pointing to the
+ * @param p the received packet,  p.payload pointing to the
  *          IEEE 802.15.4 header.
  * @param inp the network interface on which the packet was received
  *
@@ -442,6 +442,6 @@ tcpip_rfc7668_input(struct pbuf *p, struct netif *inp)
   /* send data to upper layer, return the result */
   return tcpip_inpkt(p, inp, rfc7668_input);
 }
-#endif /* !NO_SYS */
+// #endif /* !NO_SYS */
 
-#endif /* LWIP_IPV6 */
+// #endif /* LWIP_IPV6 */

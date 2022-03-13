@@ -253,7 +253,7 @@ pub fn igmp_lookup_group(ifp: &mut NetworkInterfaceCtx, addr: &mut LwipAddr) -> 
         //  Ensure allsystems group is always first in list 
         if (list_head == None) {
             //  this is the first entry in linked list 
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "igmp_lookup_group: first group must be allsystems",
                 (ip4_addr_cmp(addr, &allsystems) != 0),
             );
@@ -261,7 +261,7 @@ pub fn igmp_lookup_group(ifp: &mut NetworkInterfaceCtx, addr: &mut LwipAddr) -> 
             netif_set_client_data(ifp, LWIP_NETIF_CLIENT_DATA_INDEX_IGMP, group);
         } else {
             //  append _after_ first entry 
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "igmp_lookup_group: all except first group must not be allsystems",
                 (ip4_addr_cmp(addr, &allsystems) == 0),
             );
@@ -461,7 +461,7 @@ pub fn igmp_joingroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) -> Result
     let err: err_t = ERR_VAL; //  no matching interface 
     let netif: &mut NetworkInterfaceCtx;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  make sure it is multicast address 
     // LWIP_ERROR("igmp_joingroup: attempt to join non-multicast address", ip4_addr_ismulticast(groupaddr), return ERR_VAL;);
@@ -494,7 +494,7 @@ pub fn igmp_joingroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) -> Result
 pub fn igmp_joingroup_netif(netif: &mut NetworkInterfaceCtx, groupaddr: &mut LwipAddr) {
     let group: &mut igmp_group;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  make sure it is multicast address 
     // LWIP_ERROR("igmp_joingroup_netif: attempt to join non-multicast address", ip4_addr_ismulticast(groupaddr), return ERR_VAL;);
@@ -559,7 +559,7 @@ pub fn igmp_leavegroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) {
     let err: err_t = ERR_VAL; //  no matching interface 
     let netif: &mut NetworkInterfaceCtx;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  make sure it is multicast address 
     // LWIP_ERROR("igmp_leavegroup: attempt to leave non-multicast address", ip4_addr_ismulticast(groupaddr), return ERR_VAL;);
@@ -591,7 +591,7 @@ pub fn igmp_leavegroup(ifaddr: &mut LwipAddr, groupaddr: &mut LwipAddr) {
 pub fn igmp_leavegroup_netif(netif: &mut NetworkInterfaceCtx, groupaddr: &mut LwipAddr) {
     let group: &mut igmp_group;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  make sure it is multicast address 
     // LWIP_ERROR("igmp_leavegroup_netif: attempt to leave non-multicast address", ip4_addr_ismulticast(groupaddr), return ERR_VAL;);
@@ -789,7 +789,7 @@ pub fn igmp_send(netif: &mut NetworkInterfaceCtx, group: &mut igmp_group, msg_ty
 
     if p {
         igmp = p.payload;
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "igmp_send: check that first pbuf can hold struct igmp_msg",
             (p.len >= sizeof(igmp_msg)),
         );

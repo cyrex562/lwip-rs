@@ -39,7 +39,7 @@
  */
 
 
-#if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_MD5
+// #if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_MD5
 
 
 
@@ -56,7 +56,7 @@
         | ( (unsigned long) (b)[(i) + 2] << 16 )        \
         | ( (unsigned long) (b)[(i) + 3] << 24 );       \
 }
-#endif
+// #endif
 
 #ifndef PUT_ULONG_LE
 #define PUT_ULONG_LE(n,b,i)                             \
@@ -66,20 +66,20 @@
     (b)[(i) + 2] = (unsigned char) ( (n) >> 16 );       \
     (b)[(i) + 3] = (unsigned char) ( (n) >> 24 );       \
 }
-#endif
+// #endif
 
 /*
  * MD5 context setup
  */
 void md5_starts( md5_context *ctx )
 {
-    ctx->total[0] = 0;
-    ctx->total[1] = 0;
+     ctx.total[0] = 0;
+     ctx.total[1] = 0;
 
-    ctx->state[0] = 0x67452301;
-    ctx->state[1] = 0xEFCDAB89;
-    ctx->state[2] = 0x98BADCFE;
-    ctx->state[3] = 0x10325476;
+     ctx.state[0] = 0x67452301;
+     ctx.state[1] = 0xEFCDAB89;
+     ctx.state[2] = 0x98BADCFE;
+     ctx.state[3] = 0x10325476;
 }
 
 static void md5_process( md5_context *ctx, const unsigned char data[64] )
@@ -110,10 +110,10 @@ static void md5_process( md5_context *ctx, const unsigned char data[64] )
     a += F(b,c,d) + X[k] + t; a = S(a,s) + b;           \
 }
 
-    A = ctx->state[0];
-    B = ctx->state[1];
-    C = ctx->state[2];
-    D = ctx->state[3];
+    A =  ctx.state[0];
+    B =  ctx.state[1];
+    C =  ctx.state[2];
+    D =  ctx.state[3];
 
 #define F(x,y,z) (z ^ (x & (y ^ z)))
 
@@ -199,10 +199,10 @@ static void md5_process( md5_context *ctx, const unsigned char data[64] )
 
 #undef F
 
-    ctx->state[0] += A;
-    ctx->state[1] += B;
-    ctx->state[2] += C;
-    ctx->state[3] += D;
+     ctx.state[0] += A;
+     ctx.state[1] += B;
+     ctx.state[2] += C;
+     ctx.state[3] += D;
 }
 
 /*
@@ -216,20 +216,20 @@ void md5_update( md5_context *ctx, const unsigned char *input, int ilen )
     if( ilen <= 0 )
         return;
 
-    left = ctx->total[0] & 0x3F;
+    left =  ctx.total[0] & 0x3F;
     fill = 64 - left;
 
-    ctx->total[0] += ilen;
-    ctx->total[0] &= 0xFFFFFFFF;
+     ctx.total[0] += ilen;
+     ctx.total[0] &= 0xFFFFFFFF;
 
-    if( ctx->total[0] < (unsigned long) ilen )
-        ctx->total[1]++;
+    if(  ctx.total[0] < (unsigned long) ilen )
+         ctx.total[1]++;
 
     if( left && ilen >= fill )
     {
-        MEMCPY( (void *) (ctx->buffer + left),
+        MEMCPY( (void *) ( ctx.buffer + left),
                 input, fill );
-        md5_process( ctx, ctx->buffer );
+        md5_process( ctx,  ctx.buffer );
         input += fill;
         ilen  -= fill;
         left = 0;
@@ -244,7 +244,7 @@ void md5_update( md5_context *ctx, const unsigned char *input, int ilen )
 
     if( ilen > 0 )
     {
-        MEMCPY( (void *) (ctx->buffer + left),
+        MEMCPY( (void *) ( ctx.buffer + left),
                 input, ilen );
     }
 }
@@ -266,23 +266,23 @@ void md5_finish( md5_context *ctx, unsigned char output[16] )
     unsigned long high, low;
     unsigned char msglen[8];
 
-    high = ( ctx->total[0] >> 29 )
-         | ( ctx->total[1] <<  3 );
-    low  = ( ctx->total[0] <<  3 );
+    high = (  ctx.total[0] >> 29 )
+         | (  ctx.total[1] <<  3 );
+    low  = (  ctx.total[0] <<  3 );
 
     PUT_ULONG_LE( low,  msglen, 0 );
     PUT_ULONG_LE( high, msglen, 4 );
 
-    last = ctx->total[0] & 0x3F;
+    last =  ctx.total[0] & 0x3F;
     padn = ( last < 56 ) ? ( 56 - last ) : ( 120 - last );
 
     md5_update( ctx, md5_padding, padn );
     md5_update( ctx, msglen, 8 );
 
-    PUT_ULONG_LE( ctx->state[0], output,  0 );
-    PUT_ULONG_LE( ctx->state[1], output,  4 );
-    PUT_ULONG_LE( ctx->state[2], output,  8 );
-    PUT_ULONG_LE( ctx->state[3], output, 12 );
+    PUT_ULONG_LE(  ctx.state[0], output,  0 );
+    PUT_ULONG_LE(  ctx.state[1], output,  4 );
+    PUT_ULONG_LE(  ctx.state[2], output,  8 );
+    PUT_ULONG_LE(  ctx.state[3], output, 12 );
 }
 
 /*
@@ -297,4 +297,4 @@ void md5( unsigned char *input, int ilen, unsigned char output[16] )
     md5_finish( &ctx, output );
 }
 
-#endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_MD5 */
+// #endif /* PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_MD5 */

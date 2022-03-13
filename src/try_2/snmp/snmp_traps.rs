@@ -113,7 +113,7 @@ pub struct snmp_trap_dst {
 pub fn 
 snmp_trap_dst_enable(dst_idx: u8, enable: u8)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (dst_idx < SNMP_TRAP_DESTINATIONS) {
     trap_dst[dst_idx].enable = enable;
   }
@@ -128,7 +128,7 @@ snmp_trap_dst_enable(dst_idx: u8, enable: u8)
 pub fn 
 snmp_trap_dst_ip_set(dst_idx: u8,  dst: &mut LwipAddr)
 {
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
   if (dst_idx < SNMP_TRAP_DESTINATIONS) {
     ip_addr_set(&trap_dst[dst_idx].dip, dst);
   }
@@ -179,7 +179,7 @@ snmp_send_trap( eoid: &mut snmp_obj_id, generic_trap: i32, specific_trap: i32, v
   let i: u16; let tot_len: u16;
   let err: err_t = ERR_OK;
 
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
 
   trap_msg.snmp_version = 0;
 

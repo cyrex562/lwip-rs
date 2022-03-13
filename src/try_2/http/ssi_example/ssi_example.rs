@@ -146,7 +146,7 @@ pub fn ssi_example_ssi_handler(
             printed = 0;
         }
     }
-    LWIP_ASSERT("sane length", printed <= 0xFFFF);
+    // LWIP_ASSERT("sane length", printed <= 0xFFFF);
     return printed;
 }
 

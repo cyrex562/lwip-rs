@@ -44,7 +44,7 @@
 
 
 
-#if LWIP_NETCONN /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_NETCONN /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -60,7 +60,7 @@
  *         NULL on lack of memory
  */
 struct
-netbuf *netbuf_new(void)
+netbuf *netbuf_new()
 {
   struct netbuf *buf;
 
@@ -81,9 +81,9 @@ void
 netbuf_delete(struct netbuf *buf)
 {
   if (buf != NULL) {
-    if (buf->p != NULL) {
-      pbuf_free(buf->p);
-      buf->p = buf->ptr = NULL;
+    if ( buf.p != NULL) {
+      pbuf_free( buf.p);
+       buf.p =  buf.ptr = NULL;
     }
     memp_free(MEMP_NETBUF, buf);
   }
@@ -104,17 +104,17 @@ netbuf_alloc(struct netbuf *buf, u16_t size)
   LWIP_ERROR("netbuf_alloc: invalid buf", (buf != NULL), return NULL;);
 
   /* Deallocate any previously allocated memory. */
-  if (buf->p != NULL) {
-    pbuf_free(buf->p);
+  if ( buf.p != NULL) {
+    pbuf_free( buf.p);
   }
-  buf->p = pbuf_alloc(PBUF_TRANSPORT, size, PBUF_RAM);
-  if (buf->p == NULL) {
+   buf.p = pbuf_alloc(PBUF_TRANSPORT, size, PBUF_RAM);
+  if ( buf.p == NULL) {
     return NULL;
   }
-  LWIP_ASSERT("check that first pbuf can hold size",
-              (buf->p->len >= size));
-  buf->ptr = buf->p;
-  return buf->p->payload;
+  // LWIP_ASSERT("check that first pbuf can hold size",
+              ( buf.p->len >= size));
+   buf.ptr =  buf.p;
+  return  buf.p->payload;
 }
 
 /**
@@ -127,14 +127,14 @@ void
 netbuf_free(struct netbuf *buf)
 {
   LWIP_ERROR("netbuf_free: invalid buf", (buf != NULL), return;);
-  if (buf->p != NULL) {
-    pbuf_free(buf->p);
+  if ( buf.p != NULL) {
+    pbuf_free( buf.p);
   }
-  buf->p = buf->ptr = NULL;
-#if LWIP_CHECKSUM_ON_COPY
-  buf->flags = 0;
-  buf->toport_chksum = 0;
-#endif /* LWIP_CHECKSUM_ON_COPY */
+   buf.p =  buf.ptr = NULL;
+// #if LWIP_CHECKSUM_ON_COPY
+   buf.flags = 0;
+   buf.toport_chksum = 0;
+// #endif /* LWIP_CHECKSUM_ON_COPY */
 }
 
 /**
@@ -151,17 +151,17 @@ err_t
 netbuf_ref(struct netbuf *buf, const void *dataptr, u16_t size)
 {
   LWIP_ERROR("netbuf_ref: invalid buf", (buf != NULL), return ERR_ARG;);
-  if (buf->p != NULL) {
-    pbuf_free(buf->p);
+  if ( buf.p != NULL) {
+    pbuf_free( buf.p);
   }
-  buf->p = pbuf_alloc(PBUF_TRANSPORT, 0, PBUF_REF);
-  if (buf->p == NULL) {
-    buf->ptr = NULL;
+   buf.p = pbuf_alloc(PBUF_TRANSPORT, 0, PBUF_REF);
+  if ( buf.p == NULL) {
+     buf.ptr = NULL;
     return ERR_MEM;
   }
-  ((struct pbuf_rom *)buf->p)->payload = dataptr;
-  buf->p->len = buf->p->tot_len = size;
-  buf->ptr = buf->p;
+  ((struct pbuf_rom *) buf.p)->payload = dataptr;
+   buf.p->len =  buf.p->tot_len = size;
+   buf.ptr =  buf.p;
   return ERR_OK;
 }
 
@@ -177,8 +177,8 @@ netbuf_chain(struct netbuf *head, struct netbuf *tail)
 {
   LWIP_ERROR("netbuf_chain: invalid head", (head != NULL), return;);
   LWIP_ERROR("netbuf_chain: invalid tail", (tail != NULL), return;);
-  pbuf_cat(head->p, tail->p);
-  head->ptr = head->p;
+  pbuf_cat( head.p,  tail.p);
+   head.ptr =  head.p;
   memp_free(MEMP_NETBUF, tail);
 }
 
@@ -199,11 +199,11 @@ netbuf_data(struct netbuf *buf, void **dataptr, u16_t *len)
   LWIP_ERROR("netbuf_data: invalid dataptr", (dataptr != NULL), return ERR_ARG;);
   LWIP_ERROR("netbuf_data: invalid len", (len != NULL), return ERR_ARG;);
 
-  if (buf->ptr == NULL) {
+  if ( buf.ptr == NULL) {
     return ERR_BUF;
   }
-  *dataptr = buf->ptr->payload;
-  *len = buf->ptr->len;
+  *dataptr =  buf.ptr->payload;
+  *len =  buf.ptr->len;
   return ERR_OK;
 }
 
@@ -222,11 +222,11 @@ s8_t
 netbuf_next(struct netbuf *buf)
 {
   LWIP_ERROR("netbuf_next: invalid buf", (buf != NULL), return -1;);
-  if (buf->ptr->next == NULL) {
+  if ( buf.ptr->next == NULL) {
     return -1;
   }
-  buf->ptr = buf->ptr->next;
-  if (buf->ptr->next == NULL) {
+   buf.ptr =  buf.ptr->next;
+  if ( buf.ptr->next == NULL) {
     return 1;
   }
   return 0;
@@ -244,7 +244,7 @@ void
 netbuf_first(struct netbuf *buf)
 {
   LWIP_ERROR("netbuf_first: invalid buf", (buf != NULL), return;);
-  buf->ptr = buf->p;
+   buf.ptr =  buf.p;
 }
 
-#endif /* LWIP_NETCONN */
+// #endif /* LWIP_NETCONN */

@@ -1,3 +1,5 @@
+use std::fmt;
+
 pub enum IpAddressType {
     IPv4,
     IPv6,
@@ -28,7 +30,7 @@ impl fmt::Display for IpAddress {
         if self.address_type == IpAddressType::IPv4 {
             write!(f, "{}.{}.{}.{}", self.address_bytes[0], self.address_bytes[1], self.address_bytes[2], self.address_bytes[3])
         } else {
-            write!(f, "{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}", self.address_bytes[0], self.address_bytes[1], self.address_bytes[2], self.address_bytes[3], self.address_bytes[4], self.address_bytes[5], self.address_bytes[6], self.address_bytes[7], self.address_bytes[8], self.address_bytes[9], self.address_bytes[10], self.address_bytes[11], self.address_bytes[12], self.address_bytes[13], self.address_bytes[14], self.address_bytes[15])
+            write!(f, "{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}:{:01x}{:01x}", self.address_bytes[0], self.address_bytes[1], self.address_bytes[2], self.address_bytes[3], self.address_bytes[4], self.address_bytes[5], self.address_bytes[6], self.address_bytes[7], self.address_bytes[8], self.address_bytes[9], self.address_bytes[10], self.address_bytes[11], self.address_bytes[12], self.address_bytes[13], self.address_bytes[14], self.address_bytes[15])
         }
     }
 }
@@ -109,3 +111,7 @@ impl IpAddress {
         unimplemented!()
     }
 }
+
+pub const IPV4_ADDR_ANY: IpAddress = IpAddress{..Default::default()};
+pub const IPV6_ADDR_ANY: IpAddress = IpAddress{..Default::default()};
+

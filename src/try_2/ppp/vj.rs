@@ -410,7 +410,7 @@ pub fn vj_compress_tcp(comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>) -> u8
     hlen -= deltaS + 4;
     if (pbuf_remove_header(np, hlen)){
       //  Can we cope with this failing?  Just assert for now 
-      LWIP_ASSERT("pbuf_remove_header failed\n", 0);
+      // LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     }
     cp = np.payload;
     *cp+= 1 = (changes | NEW_C);
@@ -419,7 +419,7 @@ pub fn vj_compress_tcp(comp: &mut vjcompress, pb: &mut Vec<PacketBuffer>) -> u8
     hlen -= deltaS + 3;
     if (pbuf_remove_header(np, hlen)) {
       //  Can we cope with this failing?  Just assert for now 
-      LWIP_ASSERT("pbuf_remove_header failed\n", 0);
+      // LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     }
     cp = np.payload;
     *cp+= 1 = changes;
@@ -622,7 +622,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
   //  Remove the compressed header and prepend the uncompressed header. 
   if (pbuf_remove_header(n0, vjlen)) {
     //  Can we cope with this failing?  Just assert for now 
-    LWIP_ASSERT("pbuf_remove_header failed\n", 0);
+    // LWIP_ASSERT("pbuf_remove_header failed\n", 0);
     // goto bad;
   }
 
@@ -645,7 +645,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
 
     if (pbuf_remove_header(np, cs.cs_hlen)) {
       //  Can we cope with this failing?  Just assert for now 
-      LWIP_ASSERT("pbuf_remove_header failed\n", 0);
+      // LWIP_ASSERT("pbuf_remove_header failed\n", 0);
       // goto bad;
     }
 
@@ -662,7 +662,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
   if (pbuf_add_header(n0, cs.cs_hlen)) {
     let np: &mut PacketBuffer;
 
-    LWIP_ASSERT("vj_uncompress_tcp: cs.cs_hlen <= PBUF_POOL_BUFSIZE", cs.cs_hlen <= PBUF_POOL_BUFSIZE);
+    // LWIP_ASSERT("vj_uncompress_tcp: cs.cs_hlen <= PBUF_POOL_BUFSIZE", cs.cs_hlen <= PBUF_POOL_BUFSIZE);
     np = pbuf_alloc(PBUF_RAW, cs.cs_hlen, PBUF_POOL);
     if(!np) {
       PPPDEBUG(LOG_WARNING, ("vj_uncompress_tcp: prepend failed\n"));
@@ -671,7 +671,7 @@ pub fn vj_uncompress_tcp(nb: &mut Vec<PacketBuffer>, comp: &mut vjcompress)
     pbuf_cat(np, n0);
     n0 = np;
   }
-  LWIP_ASSERT("n0.len >= cs.cs_hlen", n0.len >= cs.cs_hlen);
+  // LWIP_ASSERT("n0.len >= cs.cs_hlen", n0.len >= cs.cs_hlen);
   MEMCPY(n0.payload, &cs.cs_ip, cs.cs_hlen);
 
   *nb = n0;

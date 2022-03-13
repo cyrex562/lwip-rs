@@ -7,8 +7,8 @@
 // #include "lwip/inet.h"
 // #include "netif/ethernet.h"
 
-#if LWIP_ACD
-#if LWIP_DHCP_DOES_ACD_CHECK
+// #if LWIP_ACD
+// #if LWIP_DHCP_DOES_ACD_CHECK
 pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 5; #else
 pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 0; #else
 pub const DHCP_TEST_NUM_ARP_FRAMES: u32 = 1; static struct netif net_test;
@@ -134,10 +134,10 @@ static int debug = 0;
 static void setdebug(int a) {debug = a;}
 
 static int tick = 0;
-static void tick_lwip(void)
+static void tick_lwip()
 {
   tick++;
-#if LWIP_DHCP_DOES_ACD_CHECK
+// #if LWIP_DHCP_DOES_ACD_CHECK
   acd_tmr();
 
   if (tick % 5 == 0) {
@@ -151,7 +151,7 @@ static void tick_lwip(void)
 static void send_pkt(struct netif *netif, const u8_t *data, size_t len)
 {
   struct pbuf *p, *q;
-  LWIP_ASSERT("pkt too big", len <= 0xFFFF);
+  // LWIP_ASSERT("pkt too big", len <= 0xFFFF);
   p = pbuf_alloc(PBUF_RAW, (u16_t)len, PBUF_POOL);
 
   if (debug) {
@@ -194,13 +194,13 @@ static err_t testif_init(struct netif *netif)
   return ERR_OK;
 }
 
-static void dhcp_setup(void)
+static void dhcp_setup()
 {
   txpacket = 0;
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
-static void dhcp_teardown(void)
+static void dhcp_teardown()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
@@ -303,15 +303,15 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
         }
         break;
       }
-#if DHCP_TEST_NUM_ARP_FRAMES > 0
+// #if DHCP_TEST_NUM_ARP_FRAMES > 0
     case 3:
-#if DHCP_TEST_NUM_ARP_FRAMES > 1
+// #if DHCP_TEST_NUM_ARP_FRAMES > 1
     case 4:
-#if DHCP_TEST_NUM_ARP_FRAMES > 2
+// #if DHCP_TEST_NUM_ARP_FRAMES > 2
     case 5:
-#if DHCP_TEST_NUM_ARP_FRAMES > 3
+// #if DHCP_TEST_NUM_ARP_FRAMES > 3
     case 6:
-#if DHCP_TEST_NUM_ARP_FRAMES > 4
+// #if DHCP_TEST_NUM_ARP_FRAMES > 4
     case 7:
 
 
@@ -397,15 +397,15 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
         break;
       }
     case 3:
-#if DHCP_TEST_NUM_ARP_FRAMES > 0
+// #if DHCP_TEST_NUM_ARP_FRAMES > 0
     case 4:
-#if DHCP_TEST_NUM_ARP_FRAMES > 1
+// #if DHCP_TEST_NUM_ARP_FRAMES > 1
     case 5:
-#if DHCP_TEST_NUM_ARP_FRAMES > 2
+// #if DHCP_TEST_NUM_ARP_FRAMES > 2
     case 6:
-#if DHCP_TEST_NUM_ARP_FRAMES > 3
+// #if DHCP_TEST_NUM_ARP_FRAMES > 3
     case 7:
-#if DHCP_TEST_NUM_ARP_FRAMES > 4
+// #if DHCP_TEST_NUM_ARP_FRAMES > 4
     case 8:
 
 
@@ -915,8 +915,8 @@ START_TEST(test_dhcp_nak_no_endmarker)
   };
   u32_t xid;
   struct dhcp* dhcp;
-  u8_t tries;
-  u16_t request_timeout;
+  tries: u8;
+  request_timeout: u16;
   LWIP_UNUSED_ARG(_i);
 
   tcase = TEST_LWIP_DHCP_NAK_NO_ENDMARKER;
@@ -1083,7 +1083,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-dhcp_suite(void)
+dhcp_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_dhcp),

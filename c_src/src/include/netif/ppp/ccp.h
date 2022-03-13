@@ -31,7 +31,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && CCP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && CCP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -69,7 +69,7 @@ pub const CCP_HDRLEN: u32 = 4;
 #define CCP_OPT_LENGTH(dp)	((dp)[1])
 pub const CCP_OPT_MINLEN: u32 = 2;
 
-#if BSDCOMPRESS_SUPPORT
+// #if BSDCOMPRESS_SUPPORT
 /*
  * Definitions for BSD-Compress.
  */
@@ -87,7 +87,7 @@ pub const BSD_MIN_BITS: u32 = 9;	/* smallest code size supported */
 pub const BSD_MAX_BITS: u32 = 15;	/* largest code size supported */
  /* BSDCOMPRESS_SUPPORT */
 
-#if DEFLATE_SUPPORT
+// #if DEFLATE_SUPPORT
 /*
  * Definitions for Deflate.
  */
@@ -105,7 +105,7 @@ pub const DEFLATE_METHOD_VAL: u32 = 8;
 pub const DEFLATE_CHK_SEQUENCE: u32 = 0;
  /* DEFLATE_SUPPORT */
 
-#if MPPE_SUPPORT
+// #if MPPE_SUPPORT
 /*
  * Definitions for MPPE.
  */
@@ -114,7 +114,7 @@ pub const CI_MPPE: u32 = 18;      /* config option for MPPE */
 pub const CILEN_MPPE: u32 = 6;      /* length of config option */
  /* MPPE_SUPPORT */
 
-#if PREDICTOR_SUPPORT
+// #if PREDICTOR_SUPPORT
 /*
  * Definitions for other, as yet unsupported, compression methods.
  */
@@ -126,7 +126,7 @@ pub const CILEN_PREDICTOR_2: u32 = 2;	/* length of its config option */
  /* PREDICTOR_SUPPORT */
 
 typedef struct ccp_options {
-#if DEFLATE_SUPPORT
+// #if DEFLATE_SUPPORT
     unsigned int deflate          :1; /* do Deflate? */
     unsigned int deflate_correct  :1; /* use correct code for deflate? */
     unsigned int deflate_draft    :1; /* use draft RFC code for deflate? */
@@ -139,8 +139,8 @@ EDICTOR_SUPPORT
     unsigned int predictor_2      :1; /* do Predictor-2? */
  /* PREDICTOR_SUPPORT */
 
-#if MPPE_SUPPORT
-    u8_t mppe;			/* MPPE bitfield */
+// #if MPPE_SUPPORT
+    mppe: u8;			/* MPPE bitfield */
  /* MPPE_SUPPORT */
 DCOMPRESS_SUPPORT
     u_short bsd_bits;		/* # bits/code for BSD Compress */

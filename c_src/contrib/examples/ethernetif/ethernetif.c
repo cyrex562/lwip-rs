@@ -45,7 +45,7 @@
 
 // #include "lwip/opt.h"
 
-#if 0 /* don't build, this is only a skeleton, see previous comment */
+// #if 0 /* don't build, this is only a skeleton, see previous comment */
 
 // #include "lwip/def.h"
 // #include "lwip/mem.h"
@@ -141,7 +141,7 @@ low_level_output(struct netif *netif, struct pbuf *p)
 
   initiate transfer();
 
-#if ETH_PAD_SIZE
+// #if ETH_PAD_SIZE
   pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
 
 
@@ -164,7 +164,7 @@ low_level_output(struct netif *netif, struct pbuf *p)
   }
   /* increase ifoutdiscards or ifouterrors on error */
 
-#if ETH_PAD_SIZE
+// #if ETH_PAD_SIZE
   pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
 
 
@@ -186,13 +186,13 @@ low_level_input(struct netif *netif)
 {
   struct ethernetif *ethernetif = netif->state;
   struct pbuf *p, *q;
-  u16_t len;
+  len: u16;
 
   /* Obtain the size of the packet and put it into the "len"
      variable. */
   len = ;
 
-#if ETH_PAD_SIZE
+// #if ETH_PAD_SIZE
   len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
 
 
@@ -201,7 +201,7 @@ low_level_input(struct netif *netif)
 
   if (p != NULL) {
 
-#if ETH_PAD_SIZE
+// #if ETH_PAD_SIZE
     pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
 
 
@@ -228,7 +228,7 @@ low_level_input(struct netif *netif)
       /* unicast packet*/
       MIB2_STATS_NETIF_INC(netif, ifinucastpkts);
     }
-#if ETH_PAD_SIZE
+// #if ETH_PAD_SIZE
     pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
 
 
@@ -291,7 +291,7 @@ ethernetif_init(struct netif *netif)
 {
   struct ethernetif *ethernetif;
 
-  LWIP_ASSERT("netif != NULL", (netif != NULL));
+  // LWIP_ASSERT("netif != NULL", (netif != NULL));
 
   ethernetif = mem_malloc(sizeof(struct ethernetif));
   if (ethernetif == NULL) {
@@ -299,7 +299,7 @@ ethernetif_init(struct netif *netif)
     return ERR_MEM;
   }
 
-#if LWIP_NETIF_HOSTNAME
+// #if LWIP_NETIF_HOSTNAME
   /* Initialize interface hostname */
   netif->hostname = "lwip";
  /* LWIP_NETIF_HOSTNAME */

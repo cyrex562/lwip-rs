@@ -330,11 +330,11 @@ pub fn lwip_getaddrinfo(
             //  invalid name length
             return EAI_FAIL;
         }
-        LWIP_ASSERT("namelen is too long", total_size + namelen + 1 > total_size);
+        // LWIP_ASSERT("namelen is too long", total_size + namelen + 1 > total_size);
         total_size += namelen + 1;
     }
     //  If this fails, please report to lwip-devel! :-)
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "total_size <= NETDB_ELEM_SIZE: please report this!",
         total_size <= NETDB_ELEM_SIZE,
     );

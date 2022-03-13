@@ -38,7 +38,7 @@
 
 // #include "lwip/apps/snmp_opts.h"
 
-#if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/ip_addr.h"
 // #include "lwip/err.h"
@@ -82,7 +82,7 @@ pub const SNMP_ASN1_CONTEXT_VARBIND_NO_SUCH_INSTANCE: u32 = 1; /* full ASN1 type
 #define SNMP_ASN1_TYPE_UNSIGNED32     SNMP_ASN1_TYPE_GAUGE
 #define SNMP_ASN1_TYPE_TIMETICKS      (SNMP_ASN1_CLASS_APPLICATION | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_APPLICATION_TIMETICKS)
 #define SNMP_ASN1_TYPE_OPAQUE         (SNMP_ASN1_CLASS_APPLICATION | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_APPLICATION_OPAQUE)
-#if LWIP_HAVE_INT64
+// #if LWIP_HAVE_INT64
 #define SNMP_ASN1_TYPE_COUNTER64      (SNMP_ASN1_CLASS_APPLICATION | SNMP_ASN1_CONTENTTYPE_PRIMITIVE | SNMP_ASN1_APPLICATION_COUNTER64)
 
 
@@ -117,13 +117,13 @@ pub const SNMP_ERR_READONLY: u32 = 4; use SNMP_ERR_NOTWRITABLE instead
 /** internal object identifier representation */
 struct snmp_obj_id
 {
-  u8_t len;
+  len: u8;
   u32_t id[SNMP_MAX_OBJ_ID_LEN];
 };
 
 struct snmp_obj_id_const_ref
 {
-  u8_t len;
+  len: u8;
   const u32_t* id;
 };
 
@@ -136,7 +136,7 @@ union snmp_variant_value
   const void* const_ptr;
   u32_t u32;
   s32_t s32;
-#if LWIP_HAVE_INT64
+// #if LWIP_HAVE_INT64
   u64_t u64;
 
 
@@ -156,7 +156,7 @@ pub const SNMP_NODE_TABLE: u32 = 0x03; #define SNMP_NODE_THREADSYNC   0x04
 struct snmp_node
 {
   /** one out of SNMP_NODE_TREE or any leaf node type (like SNMP_NODE_SCALAR) */
-  u8_t node_type;
+  node_type: u8;
   /** the number assigned to this node which used as part of the full OID */
   u32_t oid;
 };
@@ -189,7 +189,7 @@ struct snmp_node_instance
   struct snmp_obj_id instance_oid;
 
   /** ASN type for this object (see snmp_asn1.h for definitions) */
-  u8_t asn1_type;
+  asn1_type: u8;
   /** one out of instance access types defined above (SNMP_NODE_INSTANCE_READ_ONLY,...) */
   snmp_access_t access;
 
@@ -214,7 +214,7 @@ struct snmp_tree_node
 {
   /** inherited "base class" members */
   struct snmp_node node;
-  u16_t subnode_count;
+  subnode_count: u16;
   const struct snmp_node* const *subnodes;
 };
 
@@ -239,7 +239,7 @@ struct snmp_leaf_node
 struct snmp_mib
 {
   const u32_t *base_oid;
-  u8_t base_oid_len;
+  base_oid_len: u8;
   const struct snmp_node *root_node;
 };
 
@@ -265,11 +265,11 @@ typedef enum {
 struct snmp_next_oid_state
 {
   const u32_t* start_oid;
-  u8_t start_oid_len;
+  start_oid_len: u8;
 
   u32_t* next_oid;
-  u8_t next_oid_len;
-  u8_t next_oid_max_len;
+  next_oid_len: u8;
+  next_oid_max_len: u8;
 
   snmp_next_oid_status_t status;
   void* reference;
@@ -343,7 +343,7 @@ struct snmp_statistics
   u32_t outsetrequests;
   u32_t outgetresponses;
   u32_t outtraps;
-#if LWIP_SNMP_V3
+// #if LWIP_SNMP_V3
   u32_t unsupportedseclevels;
   u32_t notintimewindows;
   u32_t unknownusernames;

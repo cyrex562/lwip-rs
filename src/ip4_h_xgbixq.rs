@@ -70,7 +70,7 @@ err_t ip4_output_if(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *des
        u8_t ttl, u8_t tos, u8_t proto, struct netif *netif);
 err_t ip4_output_if_src(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
        u8_t ttl, u8_t tos, u8_t proto, struct netif *netif);
-#if LWIP_NETIF_USE_HINTS
+// #if LWIP_NETIF_USE_HINTS
 err_t ip4_output_hinted(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
        u8_t ttl, u8_t tos, u8_t proto, struct netif_hint *netif_hint);
  /* LWIP_NETIF_USE_HINTS */
@@ -83,13 +83,13 @@ err_t ip4_output_if_opt_src(struct pbuf *p, const ip4_addr_t *src, const ip4_add
        u16_t optlen);
  /* IP_OPTIONS_SEND */
 
-#if LWIP_MULTICAST_TX_OPTIONS
+// #if LWIP_MULTICAST_TX_OPTIONS
 void  ip4_set_default_multicast_netif(struct netif* default_multicast_netif);
  /* LWIP_MULTICAST_TX_OPTIONS */
 
 #define ip4_netif_get_local_ip(netif) (((netif) != NULL) ? netif_ip_addr4(netif) : NULL)
 
-#if IP_DEBUG
+// #if IP_DEBUG
 void ip4_debug_print(struct pbuf *p);
 #else
 #define ip4_debug_print(p)

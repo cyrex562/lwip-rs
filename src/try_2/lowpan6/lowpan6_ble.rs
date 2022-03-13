@@ -232,7 +232,7 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
     let hidden_header_len: u8;
     let err: err_t;
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "lowpan6_frag: netif.linkoutput not set",
         netif.linkoutput != None,
     );
@@ -245,7 +245,7 @@ pub fn rfc7668_compress(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
         MIB2_STATS_NETIF_INC(netif, ifoutdiscards);
         return ERR_MEM;
     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "this needs a pbuf in one piece",
         p_frag.len == p_frag.tot_len,
     );

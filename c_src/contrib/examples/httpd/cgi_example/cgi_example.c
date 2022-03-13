@@ -70,7 +70,7 @@ static const tCGI cgi_handlers[] = {
 };
 
 void
-cgi_ex_init(void)
+cgi_ex_init()
 {
   http_set_cgi_handlers(cgi_handlers, LWIP_ARRAYSIZE(cgi_handlers));
 }
@@ -85,7 +85,7 @@ cgi_ex_init(void)
 static const char *
 cgi_handler_basic(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
 {
-  LWIP_ASSERT("check index", iIndex < LWIP_ARRAYSIZE(cgi_handlers));
+  // LWIP_ASSERT("check index", iIndex < LWIP_ARRAYSIZE(cgi_handlers));
 
   if (iNumParams == 2) {
     if (!strcmp(pcParam[0], "foo")) {

@@ -36,7 +36,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_DNS && LWIP_SOCKET
+// #if LWIP_DNS && LWIP_SOCKET
 
 // #include "lwip/arch.h"
 // #include "lwip/inet.h"
@@ -54,7 +54,7 @@ pub const LWIP_DNS_API_DECLARE_H_ERRNO: u32 = 1; #define LWIP_DNS_API_DEFINE_ERR
 pub const LWIP_DNS_API_DEFINE_FLAGS: u32 = 1; #define LWIP_DNS_API_DECLARE_STRUCTS  1
 
 
-#if LWIP_DNS_API_DEFINE_ERRORS
+// #if LWIP_DNS_API_DEFINE_ERRORS
 /** Errors used by the DNS API functions, h_errno can be one of them */
 pub const EAI_NONAME: u32 = 200; #define EAI_SERVICE     201
 pub const EAI_FAIL: u32 = 202; #define EAI_MEMORY      203
@@ -62,14 +62,14 @@ pub const EAI_FAMILY: u32 = 204; #define HOST_NOT_FOUND  210
 pub const NO_DATA: u32 = 211; #define NO_RECOVERY     212
 pub const TRY_AGAIN: u32 = 213; /* LWIP_DNS_API_DEFINE_ERRORS */
 
-#if LWIP_DNS_API_DEFINE_FLAGS
+// #if LWIP_DNS_API_DEFINE_FLAGS
 /* input flags for struct addrinfo */
 pub const AI_PASSIVE: u32 = 0x01; #define AI_CANONNAME    0x02
 pub const AI_NUMERICHOST: u32 = 0x04; #define AI_NUMERICSERV  0x08
 pub const AI_V4MAPPED: u32 = 0x10; #define AI_ALL          0x20
 pub const AI_ADDRCONFIG: u32 = 0x40; /* LWIP_DNS_API_DEFINE_FLAGS */
 
-#if LWIP_DNS_API_DECLARE_STRUCTS
+// #if LWIP_DNS_API_DECLARE_STRUCTS
 struct hostent {
     char  *h_name;      /* Official name of the host. */
     char **h_aliases;   /* A pointer to an array of pointers to alternative host names,
@@ -95,7 +95,7 @@ struct addrinfo {
 
 #define NETDB_ELEM_SIZE           (sizeof(struct addrinfo) + sizeof(struct sockaddr_storage) + DNS_MAX_NAME_LENGTH + 1)
 
-#if LWIP_DNS_API_DECLARE_H_ERRNO
+// #if LWIP_DNS_API_DECLARE_H_ERRNO
 /* application accessible error code set by the DNS API functions */
 extern int h_errno;
  /* LWIP_DNS_API_DECLARE_H_ERRNO*/
@@ -109,7 +109,7 @@ int lwip_getaddrinfo(const char *nodename,
        const struct addrinfo *hints,
        struct addrinfo **res);
 
-#if LWIP_COMPAT_SOCKETS
+// #if LWIP_COMPAT_SOCKETS
 /** @ingroup netdbapi */
 #define gethostbyname(name) lwip_gethostbyname(name)
 /** @ingroup netdbapi */

@@ -7,26 +7,26 @@
 
 #ifndef FS_FILE_FLAGS_HEADER_INCLUDED
 #define FS_FILE_FLAGS_HEADER_INCLUDED 1
-#endif
+// #endif
 #ifndef FS_FILE_FLAGS_HEADER_PERSISTENT
 #define FS_FILE_FLAGS_HEADER_PERSISTENT 0
-#endif
+// #endif
 /* FSDATA_FILE_ALIGNMENT: 0=off, 1=by variable, 2=by include */
 #ifndef FSDATA_FILE_ALIGNMENT
 #define FSDATA_FILE_ALIGNMENT 0
-#endif
+// #endif
 #ifndef FSDATA_ALIGN_PRE
 #define FSDATA_ALIGN_PRE
-#endif
+// #endif
 #ifndef FSDATA_ALIGN_POST
 #define FSDATA_ALIGN_POST
-#endif
-#if FSDATA_FILE_ALIGNMENT==2
+// #endif
+// #if FSDATA_FILE_ALIGNMENT==2
 
-#endif
-#if FSDATA_FILE_ALIGNMENT==1
+// #endif
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__img_sics_gif = 0;
-#endif
+// #endif
 static const unsigned char FSDATA_ALIGN_PRE data__img_sics_gif[] FSDATA_ALIGN_POST = {
 /* /img/sics.gif (14 chars) */
 0x2f,0x69,0x6d,0x67,0x2f,0x73,0x69,0x63,0x73,0x2e,0x67,0x69,0x66,0x00,0x00,0x00,
@@ -100,9 +100,9 @@ static const unsigned char FSDATA_ALIGN_PRE data__img_sics_gif[] FSDATA_ALIGN_PO
 0x82,0x0c,0x36,0xe8,0xe0,0x83,0x10,0x46,0x28,0xe1,0x84,0x14,0x56,0x68,0xa1,0x10,
 0x41,0x00,0x00,0x3b,};
 
-#if FSDATA_FILE_ALIGNMENT==1
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__404_html = 1;
-#endif
+// #endif
 static const unsigned char FSDATA_ALIGN_PRE data__404_html[] FSDATA_ALIGN_POST = {
 /* /404.html (10 chars) */
 0x2f,0x34,0x30,0x34,0x2e,0x68,0x74,0x6d,0x6c,0x00,0x00,0x00,
@@ -166,9 +166,9 @@ static const unsigned char FSDATA_ALIGN_PRE data__404_html[] FSDATA_ALIGN_POST =
 0x3e,0x0d,0x0a,0x3c,0x2f,0x62,0x6f,0x64,0x79,0x3e,0x0d,0x0a,0x3c,0x2f,0x68,0x74,
 0x6d,0x6c,0x3e,0x0d,0x0a,};
 
-#if FSDATA_FILE_ALIGNMENT==1
+// #if FSDATA_FILE_ALIGNMENT==1
 static const unsigned int dummy_align__index_html = 2;
-#endif
+// #endif
 static const unsigned char FSDATA_ALIGN_PRE data__index_html[] FSDATA_ALIGN_POST = {
 /* /index.html (12 chars) */
 0x2f,0x69,0x6e,0x64,0x65,0x78,0x2e,0x68,0x74,0x6d,0x6c,0x00,

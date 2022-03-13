@@ -75,7 +75,7 @@
 *****************************************************************************/
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -90,18 +90,18 @@
 /*
  * Initialize the random number generator.
  */
-void magic_init(void);
+void magic_init();
 
 /*
  * Randomize our random seed value.  To be called for truly random events
  * such as user operations and network traffic.
  */
-void magic_randomize(void);
+void magic_randomize();
 
 /*
  * Return a new random number.
  */
-u32_t magic(void);	/* Returns the next magic number */
+u32_t magic();	/* Returns the next magic number */
 
 /*
  * Fill buffer with random bytes

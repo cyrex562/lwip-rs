@@ -47,13 +47,13 @@
 /** When 1, use COM ports, when 0, use named pipes (for simulation). */
 
 pub const SIO_USE_COMPORT: u32 = 1; /** If SIO_USE_COMPORT==1, use COMx, if 0, use a pipe (default) */
-#if SIO_USE_COMPORT
+// #if SIO_USE_COMPORT
 #define SIO_DEVICENAME "\\\\.\\COM"
 #else
 #define SIO_DEVICENAME "\\\\.\\pipe\\lwip"
 
 
-#if SIO_USE_COMPORT
+// #if SIO_USE_COMPORT
 
 pub const SIO_COMPORT_SPEED: u32 = 115200; #define SIO_COMPORT_BYTESIZE 8
 
@@ -78,7 +78,7 @@ static int sio_abort = 0;
 #define SIO_DEBUG    LWIP_DBG_OFF
 
 
-#if SIO_USE_COMPORT
+// #if SIO_USE_COMPORT
 /** When using a real COM port, set up the
  * serial line settings (baudrate etc.)
  */
@@ -141,7 +141,7 @@ sio_fd_t sio_open(u8_t devnum)
   HANDLE fileHandle = INVALID_HANDLE_VALUE;
   CHAR   fileName[256];
   LWIP_DEBUGF(SIO_DEBUG, ("sio_open(%lu)\n", (DWORD)devnum));
-#if SIO_USE_COMPORT
+// #if SIO_USE_COMPORT
   snprintf(fileName, 255, SIO_DEVICENAME"%lu", (DWORD)(devnum));
 #else /* SIO_USE_COMPORT */
   snprintf(fileName, 255, SIO_DEVICENAME"%lu", (DWORD)(devnum & ~1));
@@ -167,7 +167,7 @@ sio_fd_t sio_open(u8_t devnum)
     {
       FlushFileBuffers(fileHandle);
     }
-#if SIO_USE_COMPORT
+// #if SIO_USE_COMPORT
     if(!sio_setup(fileHandle)) {
       CloseHandle(fileHandle);
       LWIP_DEBUGF(SIO_DEBUG, ("sio_open(%lu): sio_setup failed. GetLastError() returns %lu\n",

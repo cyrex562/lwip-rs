@@ -74,13 +74,13 @@ struct acd
   /** current ACD state machine state */
   acd_state_enum_t state;
   /** sent number of probes or announces, dependent on state */
-  u8_t sent_num;
+  sent_num: u8;
   /** ticks to wait, tick is ACD_TMR_INTERVAL long */
-  u16_t ttw;
+  ttw: u16;
   /** ticks until a conflict can again be solved by defending */
-  u8_t lastconflict;
+  lastconflict: u8;
   /** total number of probed/used IP-Addresses that resulted in a conflict */
-  u8_t num_conflicts;
+  num_conflicts: u8;
   /** callback function -> let's the acd user know if the address is good or
       if a conflict is detected */
   acd_conflict_callback_t acd_conflict_callback;
@@ -92,7 +92,7 @@ void acd_remove(struct netif *netif, struct acd *acd);
 err_t acd_start(struct netif *netif, struct acd *acd, ip4_addr_t ipaddr);
 err_t acd_stop(struct acd *acd);
 void acd_arp_reply(struct netif *netif, struct etharp_hdr *hdr);
-void acd_tmr(void);
+void acd_tmr();
 void acd_network_changed_link_down(struct netif *netif);
 void acd_netif_ip_addr_changed(struct netif *netif, const ip_addr_t *old_addr,
                                const ip_addr_t *new_addr);

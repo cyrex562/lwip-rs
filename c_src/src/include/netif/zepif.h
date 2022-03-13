@@ -54,9 +54,9 @@ pub const ZEPIF_DEFAULT_UDP_PORT: u32 = 17754; /** Pass this struct as 'state' t
  * of this netif. If NULL is passed, default behaviour is chosen */
 struct zepif_init {
   /** The UDP port used to ZEP frames from (0 = default) */
-  u16_t               zep_src_udp_port;
+  zep_src_udp_port: u16;
   /** The UDP port used to ZEP frames to (0 = default) */
-  u16_t               zep_dst_udp_port;
+  zep_dst_udp_port: u16;
   /** The IP address to sed ZEP frames from (NULL = ANY) */
   const ip_addr_t    *zep_src_ip_addr;
   /** The IP address to sed ZEP frames to (NULL = BROADCAST) */

@@ -40,16 +40,16 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_TCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_TCP /* don't build if not configured for use in lwipopts.h */
 
 
 
 
 
-#if LWIP_WND_SCALE
+// #if LWIP_WND_SCALE
 typedef u32_t tcpwnd_size_t;
 #else
-typedef u16_t tcpwnd_size_t;
+typedef tcpwnd_size_t: u16;
 
 
 enum tcp_state {

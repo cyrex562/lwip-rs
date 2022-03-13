@@ -44,13 +44,13 @@
 
 
 
-#if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
 /** default (customizable) read/write table */
 struct snmp_table_col_def
 {
   u32_t index;
-  u8_t asn1_type;
+  asn1_type: u8;
   snmp_access_t access;
 };
 
@@ -59,7 +59,7 @@ struct snmp_table_node
 {
   /** inherited "base class" members */
   struct snmp_leaf_node node;
-  u16_t column_count;
+  column_count: u16;
   const struct snmp_table_col_def* columns;
   snmp_err_t (*get_cell_instance)(const u32_t* column, const u32_t* row_oid, u8_t row_oid_len, struct snmp_node_instance* cell_instance);
   snmp_err_t (*get_next_cell_instance)(const u32_t* column, struct snmp_obj_id* row_oid, struct snmp_node_instance* cell_instance);
@@ -96,7 +96,7 @@ typedef enum {
 struct snmp_table_simple_col_def
 {
   u32_t index;
-  u8_t asn1_type;
+  asn1_type: u8;
   snmp_table_column_data_type_t data_type; /* depending of what union member is used to store the value*/
 };
 
@@ -105,7 +105,7 @@ struct snmp_table_simple_node
 {
   /* inherited "base class" members */
   struct snmp_leaf_node node;
-  u16_t column_count;
+  column_count: u16;
   const struct snmp_table_simple_col_def* columns;
   snmp_err_t (*get_cell_value)(const u32_t* column, const u32_t* row_oid, u8_t row_oid_len, union snmp_variant_value* value, u32_t* value_len);
   snmp_err_t (*get_next_cell_instance_and_value)(const u32_t* column, struct snmp_obj_id* row_oid, union snmp_variant_value* value, u32_t* value_len);

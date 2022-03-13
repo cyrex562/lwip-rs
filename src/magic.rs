@@ -73,12 +73,12 @@
 *****************************************************************************/
 
 
-#if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
 
-#if PPP_MD5_RANDM /* Using MD5 for better randomness if enabled */
+// #if PPP_MD5_RANDM /* Using MD5 for better randomness if enabled */
 
 
 
@@ -112,14 +112,14 @@ static void magic_churnrand(char *rand_data, u32_t rand_len) {
       u32_t jiffies;
 #ifdef LWIP_RAND
       u32_t rand;
-#endif /* LWIP_RAND */
+// #endif /* LWIP_RAND */
     } sys_data;
     /* Load sys_data fields here. */
     magic_randomseed += sys_jiffies();
     sys_data.jiffies = magic_randomseed;
 #ifdef LWIP_RAND
     sys_data.rand = LWIP_RAND();
-#endif /* LWIP_RAND */
+// #endif /* LWIP_RAND */
     lwip_md5_update(&md5_ctx, (u_char *)&sys_data, sizeof(sys_data));
   }
   lwip_md5_finish(&md5_ctx, (u_char *)magic_randpool);
@@ -130,14 +130,14 @@ static void magic_churnrand(char *rand_data, u32_t rand_len) {
 /*
  * Initialize the random number generator.
  */
-void magic_init(void) {
+void magic_init() {
   magic_churnrand(NULL, 0);
 }
 
 /*
  * Randomize our random seed value.
  */
-void magic_randomize(void) {
+void magic_randomize() {
   magic_churnrand(NULL, 0);
 }
 
@@ -182,7 +182,7 @@ void magic_random_bytes(unsigned char *buf, u32_t buf_len) {
 /*
  * Return a new 32-bit random number.
  */
-u32_t magic(void) {
+u32_t magic() {
   u32_t new_rand;
 
   magic_random_bytes((unsigned char *)&new_rand, sizeof(new_rand));
@@ -193,7 +193,7 @@ u32_t magic(void) {
 
 #ifndef LWIP_RAND
 static int  magic_randomized;       /* Set when truly randomized. */
-#endif /* LWIP_RAND */
+// #endif /* LWIP_RAND */
 static u32_t magic_randomseed;      /* Seed used for random number generation. */
 
 /*
@@ -210,12 +210,12 @@ static u32_t magic_randomseed;      /* Seed used for random number generation. *
  * If LWIP_RAND if available, we do not call srand() as we are
  * not going to call rand().
  */
-void magic_init(void) {
+void magic_init() {
   magic_randomseed += sys_jiffies();
 #ifndef LWIP_RAND
   /* Initialize the random number generator. */
   srand((unsigned)magic_randomseed);
-#endif /* LWIP_RAND */
+// #endif /* LWIP_RAND */
 }
 
 /*
@@ -225,7 +225,7 @@ void magic_init(void) {
  * value but we use the previous value to randomize the other 16
  * bits.
  */
-void magic_randomize(void) {
+void magic_randomize() {
 #ifndef LWIP_RAND
   if (!magic_randomized) {
     magic_randomized = !0;
@@ -233,7 +233,7 @@ void magic_randomize(void) {
     /* The initialization function also updates the seed. */
     return;
   }
-#endif /* LWIP_RAND */
+// #endif /* LWIP_RAND */
   magic_randomseed += sys_jiffies();
 }
 
@@ -252,12 +252,12 @@ void magic_randomize(void) {
  * going to be defined to directly return the rand() value. For
  * example, LCP magic numbers are 32-bit random values.
  */
-u32_t magic(void) {
+u32_t magic() {
 #ifdef LWIP_RAND
   return (LWIP_RAND() << 16) + LWIP_RAND() + magic_randomseed;
 #else /* LWIP_RAND */
   return ((u32_t)rand() << 16) + (u32_t)rand() + magic_randomseed;
-#endif /* LWIP_RAND */
+// #endif /* LWIP_RAND */
 }
 
 /*
@@ -274,7 +274,7 @@ void magic_random_bytes(unsigned char *buf, u32_t buf_len) {
     buf_len -= n;
   }
 }
-#endif /* PPP_MD5_RANDM */
+// #endif /* PPP_MD5_RANDM */
 
 /*
  * Return a new random number between 0 and (2^pow)-1 included.
@@ -283,4 +283,4 @@ u32_t magic_pow(u8_t pow) {
   return magic() & ~(~0UL<<pow);
 }
 
-#endif /* PPP_SUPPORT */
+// #endif /* PPP_SUPPORT */

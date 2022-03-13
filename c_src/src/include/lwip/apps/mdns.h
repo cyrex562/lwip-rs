@@ -45,7 +45,7 @@
 
 
 
-#if LWIP_MDNS_RESPONDER
+// #if LWIP_MDNS_RESPONDER
 
 enum mdns_sd_proto {
   DNSSD_PROTO_UDP = 0,
@@ -64,29 +64,29 @@ struct mdns_domain {
   /* Encoded domain name */
   u8_t name[MDNS_DOMAIN_MAXLEN];
   /* Total length of domain name, including zero */
-  u16_t length;
+  length: u16;
   /* Set if compression of this domain is not allowed */
-  u8_t skip_compression;
+  skip_compression: u8;
 };
 
 /** Domain, type and class.
  *  Shared between questions and answers */
 struct mdns_rr_info {
   struct mdns_domain domain;
-  u16_t type;
-  u16_t klass;
+  type: u16;
+  klass: u16;
 };
 
 struct mdns_answer {
   struct mdns_rr_info info;
   /** cache flush command bit */
-  u16_t cache_flush;
+  cache_flush: u16;
   /* Validity time in seconds */
   u32_t ttl;
   /** Length of variable answer */
-  u16_t rd_length;
+  rd_length: u16;
   /** Offset of start of variable answer in packet */
-  u16_t rd_offset;
+  rd_offset: u16;
 };
 
 /** Callback function to add text to a reply, called when generating the reply */
@@ -100,7 +100,7 @@ typedef void (*mdns_name_result_cb_t)(struct netif* netif, u8_t result, s8_t slo
 
 void *mdns_get_service_txt_userdata(struct netif *netif, s8_t slot);
 
-void mdns_resp_init(void);
+void mdns_resp_init();
 
 void mdns_resp_register_name_result_cb(mdns_name_result_cb_t cb);
 
@@ -129,7 +129,7 @@ void mdns_resp_announce(struct netif *netif);
  */
 #define mdns_resp_netif_settings_changed(netif) mdns_resp_announce(netif)
 
-#if LWIP_MDNS_SEARCH
+// #if LWIP_MDNS_SEARCH
 typedef void (*search_result_fn_t)(struct mdns_answer *answer, const char *varpart, int varlen, int flags, void *arg);
 /* flags bits, both can be set! */
 pub const MDNS_SEARCH_RESULT_FIRST: u32 = 1; /* First answer in received frame. */

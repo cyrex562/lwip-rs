@@ -43,7 +43,7 @@
 
 
 
-#if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/apps/snmp_core.h"
 // #include "lwip/sys.h"
@@ -64,8 +64,8 @@ struct threadsync_data
     void *value;
   } arg1;
   union {
-    u8_t root_oid_len;
-    u16_t len;
+    root_oid_len: u8;
+    len: u16;
   } arg2;
   const struct snmp_threadsync_node *threadsync_node;
   struct snmp_node_instance proxy_instance;

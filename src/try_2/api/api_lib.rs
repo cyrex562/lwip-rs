@@ -151,15 +151,15 @@ pub fn netconn_new_with_proto_and_callback(
         msg.conn = conn;
         err = netconn_apimsg(lwip_netconn_do_newconn, &(msg));
         if (err != ERR_OK) {
-            LWIP_ASSERT("freeing conn without freeing pcb", conn.pcb.tcp == None);
-            LWIP_ASSERT("conn has no recvmbox", sys_mbox_valid(&conn.recvmbox));
+            // LWIP_ASSERT("freeing conn without freeing pcb", conn.pcb.tcp == None);
+            // LWIP_ASSERT("conn has no recvmbox", sys_mbox_valid(&conn.recvmbox));
 
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "conn.acceptmbox shouldn't exist",
                 !sys_mbox_valid(&conn.acceptmbox),
             );
 
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "conn has no op_completed",
                 sys_sem_valid(&conn.op_completed),
             );
@@ -610,7 +610,7 @@ pub fn netconn_recv_data(
         }
         len = (buf).tot_len;
     } else {
-        LWIP_ASSERT("buf != NULL", buf != None);
+        // LWIP_ASSERT("buf != NULL", buf != None);
         len = netbuf_len(buf);
     }
 
@@ -831,7 +831,7 @@ pub fn netconn_recv(conn: &mut NetConnDesc, new_buf: &mut netbuf) {
             memp_free(MEMP_NETBUF, buf);
             return err;
         }
-        LWIP_ASSERT("p != NULL", p != None);
+        // LWIP_ASSERT("p != NULL", p != None);
 
         buf.p = p;
         buf.ptr = p;
@@ -1011,7 +1011,7 @@ pub fn netconn_write_vectors_partly(
         /* for blocking, check all requested bytes were written, NOTE: send_timeout is
         treated as dontblock (see dontblock assignment above) */
         if (!dontblock) {
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "do_write failed to write all bytes",
                 msg.msg.w.offset == size,
             );
@@ -1266,7 +1266,7 @@ pub fn netconn_thread_init() {
     if ((sem == None) || !sys_sem_valid(sem)) {
         //  call alloc only once
         LWIP_NETCONN_THREAD_SEM_ALLOC();
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "LWIP_NETCONN_THREAD_SEM_ALLOC() failed",
             sys_sem_valid(LWIP_NETCONN_THREAD_SEM_GET()),
         );

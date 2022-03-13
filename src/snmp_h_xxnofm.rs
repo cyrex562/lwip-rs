@@ -44,7 +44,7 @@
 
 
 
-#if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/err.h"
 // #include "lwip/apps/snmp_core.h"
@@ -61,9 +61,9 @@ struct snmp_varbind
   struct snmp_obj_id oid;
 
   /** value ASN1 type */
-  u8_t type;
+  type: u8;
   /** object value length */
-  u16_t value_len;
+  value_len: u16;
   /** object value */
   void *value;
 };
@@ -72,11 +72,11 @@ struct snmp_varbind
  * @ingroup snmp_core
  * Agent setup, start listening to port 161.
  */
-void snmp_init(void);
+void snmp_init();
 void snmp_set_mibs(const struct snmp_mib **mibs, u8_t num_mibs);
 
 void snmp_set_device_enterprise_oid(const struct snmp_obj_id* device_enterprise_oid);
-const struct snmp_obj_id* snmp_get_device_enterprise_oid(void);
+const struct snmp_obj_id* snmp_get_device_enterprise_oid();
 
 void snmp_trap_dst_enable(u8_t dst_idx, u8_t enable);
 void snmp_trap_dst_ip_set(u8_t dst_idx, const ip_addr_t *dst);
@@ -100,28 +100,28 @@ typedef void (*snmp_inform_callback_fct)(struct snmp_request *request, void* cal
 void snmp_set_inform_callback(snmp_inform_callback_fct inform_callback, void* callback_arg);
 
 void snmp_set_default_trap_version(u8_t snmp_version);
-u8_t snmp_get_default_trap_version(void);
+u8_t snmp_get_default_trap_version();
 
 pub const SNMP_AUTH_TRAPS_DISABLED: u32 = 0; #define SNMP_AUTH_TRAPS_ENABLED  1
 void snmp_set_auth_traps_enabled(u8_t enable);
-u8_t snmp_get_auth_traps_enabled(void);
+u8_t snmp_get_auth_traps_enabled();
 
-u8_t snmp_v1_enabled(void);
-u8_t snmp_v2c_enabled(void);
-u8_t snmp_v3_enabled(void);
+u8_t snmp_v1_enabled();
+u8_t snmp_v2c_enabled();
+u8_t snmp_v3_enabled();
 void snmp_v1_enable(u8_t enable);
 void snmp_v2c_enable(u8_t enable);
 void snmp_v3_enable(u8_t enable);
 
-const char * snmp_get_community(void);
-const char * snmp_get_community_write(void);
-const char * snmp_get_community_trap(void);
+const char * snmp_get_community();
+const char * snmp_get_community_write();
+const char * snmp_get_community_trap();
 void snmp_set_community(const char * const community);
 void snmp_set_community_write(const char * const community);
 void snmp_set_community_trap(const char * const community);
 
-void snmp_coldstart_trap(void);
-void snmp_authfail_trap(void);
+void snmp_coldstart_trap();
+void snmp_authfail_trap();
 
 typedef void (*snmp_write_callback_fct)(const u32_t* oid, u8_t oid_len, void* callback_arg);
 void snmp_set_write_callback(snmp_write_callback_fct write_callback, void* callback_arg);

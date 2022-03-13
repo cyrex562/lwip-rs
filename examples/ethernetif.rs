@@ -257,7 +257,7 @@ pub fn ethernetif_input(netif: &mut NetIfc) {
 pub fn ethernetif_init(netif: &mut NetIfc) {
     let ethernetif: &mut ethernetif;
 
-    LWIP_ASSERT("netif != NULL", (netif != None));
+    // LWIP_ASSERT("netif != NULL", (netif != None));
 
     ethernetif = mem_malloc(sizeof(ethernetif));
     if (ethernetif == None) {

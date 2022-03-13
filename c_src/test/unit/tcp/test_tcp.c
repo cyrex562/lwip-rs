@@ -13,7 +13,7 @@
 #if !LWIP_STATS || !TCP_STATS || !MEMP_STATS
 #error "This tests needs TCP- and MEMP-statistics enabled"
 
-#if TCP_SND_BUF <= TCP_WND
+// #if TCP_SND_BUF <= TCP_WND
 #error "This tests needs TCP_SND_BUF to be > TCP_WND"
 
 
@@ -27,11 +27,11 @@ pub const ISS: u32 = 6510; static u32_t seqnos[] = {
     SEQNO1 + (4 * TCP_MSS),
     SEQNO1 + (5 * TCP_MSS) };
 
-static u8_t test_tcp_timer;
+static test_tcp_timer: u8;
 
 /* our own version of tcp_tmr so we can reset fast/slow timer state */
 static void
-test_tcp_tmr(void)
+test_tcp_tmr()
 {
   tcp_fasttmr();
   if (++test_tcp_timer & 1) {
@@ -44,7 +44,7 @@ static struct netif *old_netif_list;
 static struct netif *old_netif_default;
 
 static void
-tcp_setup(void)
+tcp_setup()
 {
   struct tcp_pcb dummy_pcb; /* we need this for tcp_next_iss() only */
 
@@ -64,7 +64,7 @@ tcp_setup(void)
 }
 
 static void
-tcp_teardown(void)
+tcp_teardown()
 {
   netif_list = NULL;
   netif_default = NULL;
@@ -162,7 +162,7 @@ START_TEST(test_tcp_recv_inseq)
   struct tcp_pcb* pcb;
   struct pbuf* p;
   char data[] = {1, 2, 3, 4};
-  u16_t data_len;
+  data_len: u16;
   struct netif netif;
   struct test_tcp_txcounters txcounters;
   LWIP_UNUSED_ARG(_i);
@@ -208,7 +208,7 @@ START_TEST(test_tcp_recv_inseq_trim)
   struct tcp_pcb* pcb;
   struct pbuf* p;
   char data[PBUF_POOL_BUFSIZE*2];
-  u16_t data_len;
+  data_len: u16;
   struct netif netif;
   struct test_tcp_txcounters txcounters;
   const u32_t new_data_len = 40;
@@ -363,7 +363,7 @@ START_TEST(test_tcp_active_abort)
   EXPECT(txcounters.num_tx_bytes == 40U);
   EXPECT(txcounters.tx_packets != NULL);
   if (txcounters.tx_packets != NULL) {
-    u16_t ret;
+    ret: u16;
     struct tcp_hdr tcphdr;
     ret = pbuf_copy_partial(txcounters.tx_packets, &tcphdr, 20, 20);
     EXPECT(ret == 20);
@@ -586,7 +586,7 @@ START_TEST(test_tcp_fast_retx_recover)
   err = tcp_output(pcb);
   EXPECT_RET(err == ERR_OK);
 
-#if 0
+// #if 0
   /* create expected segment */
   p1 = tcp_create_rx_segment(pcb, counters.expected_data, data_len, 0, 0, 0);
   EXPECT_RET(p != NULL);
@@ -799,7 +799,7 @@ static void test_tcp_tx_full_window_lost(u8_t zero_window_probe_from_unsent)
   struct pbuf *p;
   err_t err;
   size_t i;
-  u16_t sent_total;
+  sent_total: u16;
   u8_t expected = 0xFE;
 
   for (i = 0; i < sizeof(tx_data); i++) {
@@ -911,8 +911,8 @@ static void test_tcp_tx_full_window_lost(u8_t zero_window_probe_from_unsent)
     EXPECT(txcounters.num_tx_bytes == 1 + 40U);
     EXPECT(txcounters.tx_packets != NULL);
     if (txcounters.tx_packets != NULL) {
-      u8_t sent;
-      u16_t ret;
+      sent: u8;
+      ret: u16;
       ret = pbuf_copy_partial(txcounters.tx_packets, &sent, 1, 40U);
       EXPECT(ret == 1);
       EXPECT(sent == expected);
@@ -1558,9 +1558,9 @@ START_TEST(test_tcp_persist_split)
   EXPECT(pcb->unsent != NULL);
   EXPECT(pcb->unsent->len == TCP_MSS - (TCP_MSS / 4));
   check_seqnos(pcb->unsent, 1, &seqnos[3]);
-#if TCP_OVERSIZE
+// #if TCP_OVERSIZE
   EXPECT(pcb->unsent_oversize == TCP_MSS / 4);
-#if TCP_OVERSIZE_DBGCHECK
+// #if TCP_OVERSIZE_DBGCHECK
   EXPECT(pcb->unsent->oversize_left == pcb->unsent_oversize);
  /* TCP_OVERSIZE_DBGCHECK */
  /* TCP_OVERSIZE */
@@ -1603,11 +1603,11 @@ START_TEST(test_tcp_persist_split)
   EXPECT(pcb->unsent->len == TCP_MSS / 4);
   EXPECT(pcb->unacked != NULL);
   EXPECT(pcb->unacked->len == TCP_MSS / 2);
-#if TCP_OVERSIZE
+// #if TCP_OVERSIZE
   /* verify there is no oversized remaining since during the
      segment split, the remainder pbuf is always the exact length */
   EXPECT(pcb->unsent_oversize == 0);
-#if TCP_OVERSIZE_DBGCHECK
+// #if TCP_OVERSIZE_DBGCHECK
   /* Split segment already transmitted, should be at 0 */
   EXPECT(pcb->unacked->oversize_left == 0);
   /* Remainder segment should match pcb value (which is 0) */
@@ -1619,7 +1619,7 @@ START_TEST(test_tcp_persist_split)
   EXPECT(txcounters.tx_packets != NULL);
   if (txcounters.tx_packets != NULL) {
     u8_t sent[TCP_MSS / 2];
-    u16_t ret;
+    ret: u16;
     ret = pbuf_copy_partial(txcounters.tx_packets, &sent, TCP_MSS / 2, 40U);
     EXPECT(ret == TCP_MSS / 2);
     EXPECT(memcmp(sent, &tx_data[3 * TCP_MSS], TCP_MSS / 2) == 0);
@@ -1647,7 +1647,7 @@ START_TEST(test_tcp_persist_split)
   EXPECT(txcounters.tx_packets != NULL);
   if (txcounters.tx_packets != NULL) {
     u8_t sent[TCP_MSS / 4];
-    u16_t ret;
+    ret: u16;
     ret = pbuf_copy_partial(txcounters.tx_packets, &sent, TCP_MSS / 4, 40U);
     EXPECT(ret == TCP_MSS / 4);
     EXPECT(memcmp(sent, &tx_data[(3 * TCP_MSS) + TCP_MSS / 2], TCP_MSS / 4) == 0);
@@ -1670,7 +1670,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-tcp_suite(void)
+tcp_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_tcp_new_abort),

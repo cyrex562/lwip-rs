@@ -45,7 +45,7 @@
 // #include "lwip/prot/iana.h"
 // #include "lwip/pbuf.h"
 
-#if LWIP_TCP && LWIP_CALLBACK_API
+// #if LWIP_TCP && LWIP_CALLBACK_API
 
 
 
@@ -120,11 +120,11 @@ typedef err_t (*httpc_headers_done_fn)(httpc_state_t *connection, void *arg, str
 
 typedef struct _httpc_connection {
   ip_addr_t proxy_addr;
-  u16_t proxy_port;
-  u8_t use_proxy;
+  proxy_port: u16;
+  use_proxy: u8;
   /* @todo: add username:pass? */
 
-#if LWIP_ALTCP
+// #if LWIP_ALTCP
   altcp_allocator_t *altcp_allocator;
 
 
@@ -140,7 +140,7 @@ err_t httpc_get_file(const ip_addr_t* server_addr, u16_t port, const char* uri, 
 err_t httpc_get_file_dns(const char* server_name, u16_t port, const char* uri, const httpc_connection_t *settings,
                      altcp_recv_fn recv_fn, void* callback_arg, httpc_state_t **connection);
 
-#if LWIP_HTTPC_HAVE_FILE_IO
+// #if LWIP_HTTPC_HAVE_FILE_IO
 err_t httpc_get_file_to_disk(const ip_addr_t* server_addr, u16_t port, const char* uri, const httpc_connection_t *settings,
                      void* callback_arg, const char* local_file_name, httpc_state_t **connection);
 err_t httpc_get_file_dns_to_disk(const char* server_name, u16_t port, const char* uri, const httpc_connection_t *settings,

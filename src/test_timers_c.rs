@@ -9,7 +9,7 @@
 static struct sys_timeo* old_list_head;
 
 static void
-timers_setup(void)
+timers_setup()
 {
   struct sys_timeo** list_head = sys_timeouts_get_next_timeout();
   old_list_head = *list_head;
@@ -17,7 +17,7 @@ timers_setup(void)
 }
 
 static void
-timers_teardown(void)
+timers_teardown()
 {
   struct sys_timeo** list_head = sys_timeouts_get_next_timeout();
   *list_head = old_list_head;
@@ -34,7 +34,7 @@ dummy_handler(void* arg)
 
 pub const HANDLER_EXECUTION_TIME: u32 = 5; static int cyclic_fired;
 static void
-dummy_cyclic_handler(void)
+dummy_cyclic_handler()
 {
    cyclic_fired = 1;
    lwip_sys_now += HANDLER_EXECUTION_TIME;
@@ -139,8 +139,8 @@ do_test_timers(u32_t offset)
 
   /* linked list correctly sorted? */
   fail_unless((*list_head)->time             == (u32_t)(lwip_sys_now + 5));
-  fail_unless((*list_head)->next->time       == (u32_t)(lwip_sys_now + 10));
-  fail_unless((*list_head)->next->next->time == (u32_t)(lwip_sys_now + 20));
+  fail_unless((*list_head)-> next.time       == (u32_t)(lwip_sys_now + 10));
+  fail_unless((*list_head)-> next.next->time == (u32_t)(lwip_sys_now + 20));
   
   /* check timers expire in correct order */
   memset(&fired, 0, sizeof(fired));
@@ -220,7 +220,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-timers_suite(void)
+timers_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_bug52748),

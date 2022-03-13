@@ -41,7 +41,7 @@
  */
 
 
-#if LWIP_SOCKET
+// #if LWIP_SOCKET
 
 
 
@@ -60,7 +60,7 @@
 char *
 lwip_if_indextoname(unsigned int ifindex, char *ifname)
 {
-#if LWIP_NETIF_API
+// #if LWIP_NETIF_API
   if (ifindex <= 0xff) {
     err_t err = netifapi_netif_index_to_name(ifindex, ifname);
     if (!err && ifname[0] != '\0') {
@@ -70,7 +70,7 @@ lwip_if_indextoname(unsigned int ifindex, char *ifname)
 #else /* LWIP_NETIF_API */
   LWIP_UNUSED_ARG(ifindex);
   LWIP_UNUSED_ARG(ifname);
-#endif /* LWIP_NETIF_API */
+// #endif /* LWIP_NETIF_API */
   set_errno(ENXIO);
   return NULL;
 }
@@ -85,9 +85,9 @@ lwip_if_indextoname(unsigned int ifindex, char *ifname)
 unsigned int
 lwip_if_nametoindex(const char *ifname)
 {
-#if LWIP_NETIF_API
+// #if LWIP_NETIF_API
   err_t err;
-  u8_t idx;
+  idx: u8;
 
   err = netifapi_netif_name_to_index(ifname, &idx);
   if (!err) {
@@ -95,8 +95,8 @@ lwip_if_nametoindex(const char *ifname)
   }
 #else /* LWIP_NETIF_API */
   LWIP_UNUSED_ARG(ifname);
-#endif /* LWIP_NETIF_API */
+// #endif /* LWIP_NETIF_API */
   return 0; /* invalid index */
 }
 
-#endif /* LWIP_SOCKET */
+// #endif /* LWIP_SOCKET */

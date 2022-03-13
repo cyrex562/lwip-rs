@@ -290,7 +290,7 @@ pub fn icmp6_send_response(p: &mut PacketBuffer, code: u8, data: u32, msg_type: 
     let reply_dest: &mut ip6_addr;
     let netif: &mut NetIfc = ip_current_netif();
 
-    LWIP_ASSERT("icmpv6 packet not a direct response", netif != None);
+    // LWIP_ASSERT("icmpv6 packet not a direct response", netif != None);
     reply_dest = ip6_current_src_addr();
 
     //  Select an address to use as source.
@@ -334,8 +334,8 @@ pub fn icmp6_send_response_with_addrs(
     let netif: &mut NetIfc;
 
     //  Get the destination address and netif for this ICMP message.
-    LWIP_ASSERT("must provide both source and destination", src_addr != None);
-    LWIP_ASSERT(
+    // LWIP_ASSERT("must provide both source and destination", src_addr != None);
+    // LWIP_ASSERT(
         "must provide both source and destination",
         dest_addr != None,
     );
@@ -387,7 +387,7 @@ pub fn icmp6_send_response_with_addrs_and_netif(
     //   ICMP6_STATS_INC(icmp6.memerr);
     //   return;
     // }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "check that first pbuf can hold icmp 6message",
         (q.len >= (sizeof(icmp6_hdr) + IP6_HLEN + LWIP_ICMP6_DATASIZE)),
     );

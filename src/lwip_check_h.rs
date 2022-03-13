@@ -35,13 +35,13 @@ typedef const TTest * testfunc;
 
 
 /** typedef for a function returning a test suite */
-typedef Suite* (suite_getter_fn)(void);
+typedef Suite* (suite_getter_fn)();
 
 /** Create a test suite */
 Suite* create_suite(const char* name, testfunc *tests, size_t num_tests, SFun setup, SFun teardown);
 
 #ifdef LWIP_UNITTESTS_LIB
-int lwip_unittests_run(void)
+int lwip_unittests_run()
 
 
 /* helper functions */

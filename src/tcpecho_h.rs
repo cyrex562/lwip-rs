@@ -33,6 +33,6 @@
 
 
 
-void tcpecho_init(void);
+void tcpecho_init();
 
  /* LWIP_TCPECHO_H */

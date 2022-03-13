@@ -23,16 +23,16 @@ test_mqtt_init_netif(struct netif *netif, const ip_addr_t *ip_addr, const ip_add
 {
   struct netif *n;
   memset(netif, 0, sizeof(struct netif));
-  netif->output = test_mqtt_netif_output;
-  netif->flags |= NETIF_FLAG_UP | NETIF_FLAG_LINK_UP;
-  ip_addr_copy_from_ip4(netif->netmask, *ip_2_ip4(netmask));
-  ip_addr_copy_from_ip4(netif->ip_addr, *ip_2_ip4(ip_addr));
-  for (n = netif_list; n != NULL; n = n->next) {
+   netif.output = test_mqtt_netif_output;
+   netif.flags |= NETIF_FLAG_UP | NETIF_FLAG_LINK_UP;
+  ip_addr_copy_from_ip4( netif.netmask, *ip_2_ip4(netmask));
+  ip_addr_copy_from_ip4( netif.ip_addr, *ip_2_ip4(ip_addr));
+  for (n = netif_list; n != NULL; n =  n.next) {
     if (n == netif) {
       return;
     }
   }
-  netif->next = NULL;
+   netif.next = NULL;
   netif_list = netif;
 }
 
@@ -41,7 +41,7 @@ static struct netif *old_netif_list;
 static struct netif *old_netif_default;
 
 static void
-mqtt_setup(void)
+mqtt_setup()
 {
   old_netif_list = netif_list;
   old_netif_default = netif_default;
@@ -51,7 +51,7 @@ mqtt_setup(void)
 }
 
 static void
-mqtt_teardown(void)
+mqtt_teardown()
 {
   netif_list = NULL;
   netif_default = NULL;
@@ -90,13 +90,13 @@ START_TEST(basic_connect)
   err = mqtt_client_connect(client, &test_mqtt_remote_ip, 1234, test_mqtt_connection_cb, NULL, &client_info);
   fail_unless(err == ERR_OK);
 
-  client->conn->connected(client->conn->callback_arg, client->conn, ERR_OK);
+   client.conn->connected( client.conn->callback_arg,  client.conn, ERR_OK);
   p = pbuf_alloc(PBUF_RAW, sizeof(rxbuf), PBUF_REF);
   fail_unless(p != NULL);
-  p->payload = rxbuf;
+   p.payload = rxbuf;
   /* since we hack the rx path, we have to hack the rx window, too: */
-  client->conn->rcv_wnd -= p->tot_len;
-  if (client->conn->recv(client->conn->callback_arg, client->conn, p, ERR_OK) != ERR_OK) {
+   client.conn->rcv_wnd -=  p.tot_len;
+  if ( client.conn->recv( client.conn->callback_arg,  client.conn, p, ERR_OK) != ERR_OK) {
     pbuf_free(p);
   }
 
@@ -106,7 +106,7 @@ START_TEST(basic_connect)
 }
 END_TEST
 
-Suite* mqtt_suite(void)
+Suite* mqtt_suite()
 {
   testfunc tests[] = {
     TESTFUNC(basic_connect),

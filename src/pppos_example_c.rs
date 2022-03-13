@@ -32,7 +32,7 @@
 
 pub const PPPOS_SUPPORT: u32 = 0; /* PPPOS_SUPPORT */
 
-#if PPPOS_SUPPORT
+// #if PPPOS_SUPPORT
 // #include "netif/ppp/pppos.h"
 // #include "lwip/sio.h"
 pub const PPP_PTY_TEST: u32 = 1; /* PPPOS_SUPPORT */
@@ -41,7 +41,7 @@ pub const PPP_PTY_TEST: u32 = 1; /* PPPOS_SUPPORT */
 
 
 
-#if PPPOS_SUPPORT
+// #if PPPOS_SUPPORT
 static sio_fd_t ppp_sio;
 static ppp_pcb *ppp;
 static struct netif pppos_netif;
@@ -74,7 +74,7 @@ ppp_link_status_cb(ppp_pcb *pcb, int err_code, void *ctx)
     switch(err_code) {
     case PPPERR_NONE:               /* No error. */
         {
-#if LWIP_DNS
+// #if LWIP_DNS
         const ip_addr_t *ns;
  /* LWIP_DNS */
         fprintf(stderr, "ppp_link_status_cb: PPPERR_NONE\n\r");
@@ -87,13 +87,13 @@ ppp_link_status_cb(ppp_pcb *pcb, int err_code, void *ctx)
         fprintf(stderr, "   our_ip6addr = %s\n\r", ip6addr_ntoa(netif_ip6_addr(pppif, 0)));
  /* LWIP_IPV6 */
 
-#if LWIP_DNS
+// #if LWIP_DNS
         ns = dns_getserver(0);
         fprintf(stderr, "   dns1        = %s\n\r", ipaddr_ntoa(ns));
         ns = dns_getserver(1);
         fprintf(stderr, "   dns2        = %s\n\r", ipaddr_ntoa(ns));
  /* LWIP_DNS */
-#if PPP_IPV6_SUPPORT
+// #if PPP_IPV6_SUPPORT
         fprintf(stderr, "   our6_ipaddr = %s\n\r", ip6addr_ntoa(netif_ip6_addr(pppif, 0)));
  /* PPP_IPV6_SUPPORT */
         }
@@ -161,11 +161,11 @@ ppp_output_cb(ppp_pcb *pcb, const void *data, u32_t len, void *ctx)
   return sio_write(ppp_sio, (const u8_t*)data, len);
 }
 
-#if LWIP_NETIF_STATUS_CALLBACK
+// #if LWIP_NETIF_STATUS_CALLBACK
 static void
 netif_status_callback(struct netif *nif)
 {
-  printf("PPPNETIF: %c%c%d is %s\n", nif->name[0], nif->name[1], nif->num,
+  printf("PPPNETIF: %c%c%d is %s\n",  nif.name[0],  nif.name[1],  nif.num,
          netif_is_up(nif) ? "UP" : "DOWN");
 
   printf("IPV4: Host at %s ", ip4addr_ntoa(netif_ip4_addr(nif)));
@@ -175,7 +175,7 @@ netif_status_callback(struct netif *nif)
 
   printf("IPV6: Host at %s\n", ip6addr_ntoa(netif_ip6_addr(nif, 0)));
  /* LWIP_IPV6 */
-#if LWIP_NETIF_HOSTNAME
+// #if LWIP_NETIF_HOSTNAME
   printf("FQDN: %s\n", netif_get_hostname(nif));
  /* LWIP_NETIF_HOSTNAME */
 }
@@ -183,10 +183,10 @@ netif_status_callback(struct netif *nif)
 
 
 void
-pppos_example_init(void)
+pppos_example_init()
 {
-#if PPPOS_SUPPORT
-#if PPP_PTY_TEST
+// #if PPPOS_SUPPORT
+// #if PPP_PTY_TEST
   ppp_sio = sio_open(2);
 #else
   ppp_sio = sio_open(0);
@@ -210,7 +210,7 @@ pppos_example_init(void)
 
   ppp_connect(ppp, 0);
 
-#if LWIP_NETIF_STATUS_CALLBACK
+// #if LWIP_NETIF_STATUS_CALLBACK
   netif_set_status_callback(&pppos_netif, netif_status_callback);
  /* LWIP_NETIF_STATUS_CALLBACK */
 

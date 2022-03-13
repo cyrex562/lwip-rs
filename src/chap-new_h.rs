@@ -29,7 +29,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && CHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && CHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -68,7 +68,7 @@ pub const MAX_CHALLENGE_LEN: u32 = 64; #define MAX_RESPONSE_LEN	64
 #define RESP_MAX_PKTLEN	(PPP_HDRLEN + CHAP_HDRLEN + 4 + MAX_RESPONSE_LEN + MAXNAMELEN)
 
 /* bitmask of supported algorithms */
-#if MSCHAP_SUPPORT
+// #if MSCHAP_SUPPORT
 pub const MDTYPE_MICROSOFT_V2: u32 = 0x1; #define MDTYPE_MICROSOFT	0x2
  /* MSCHAP_SUPPORT */
 e MDTYPE_MD5		0x4
@@ -89,7 +89,7 @@ pub const MDTYPE_NONE: u32 = 0; #if MSCHAP_SUPPORT
 #define CHAP_MDTYPE(mdtype) ((mdtype) ^ ((mdtype) - 1)) & (mdtype)
 
 /* Return the bit flag for a given digest algorithm ID. */
-#if MSCHAP_SUPPORT
+// #if MSCHAP_SUPPORT
 #define CHAP_MDTYPE_D(digest) \
     ((digest) == CHAP_MICROSOFT_V2)? MDTYPE_MICROSOFT_V2: \
     ((digest) == CHAP_MICROSOFT)? MDTYPE_MICROSOFT: \
@@ -102,7 +102,7 @@ pub const MDTYPE_NONE: u32 = 0; #if MSCHAP_SUPPORT
  /* MSCHAP_SUPPORT */
 
 /* Can we do the requested digest? */
-#if MSCHAP_SUPPORT
+// #if MSCHAP_SUPPORT
 #define CHAP_CANDIGEST(mdtype, digest) \
     ((digest) == CHAP_MICROSOFT_V2)? (mdtype) & MDTYPE_MICROSOFT_V2: \
     ((digest) == CHAP_MICROSOFT)? (mdtype) & MDTYPE_MICROSOFT: \
@@ -120,7 +120,7 @@ pub const MDTYPE_NONE: u32 = 0; #if MSCHAP_SUPPORT
 struct chap_digest_type {
 	int code;
 
-#if PPP_SERVER
+// #if PPP_SERVER
 	/*
 	 * Note: challenge and response arguments below are formatted as
 	 * a length byte followed by the actual challenge/response data.
@@ -141,18 +141,18 @@ struct chap_digest_type {
 /*
  * Each interface is described by chap structure.
  */
-#if CHAP_SUPPORT
+// #if CHAP_SUPPORT
 typedef struct chap_client_state {
-	u8_t flags;
+	flags: u8;
 	const char *name;
 	const struct chap_digest_type *digest;
 	unsigned char priv[64];		/* private area for digest's use */
 } chap_client_state;
 
-#if PPP_SERVER
+// #if PPP_SERVER
 typedef struct chap_server_state {
-	u8_t flags;
-	u8_t id;
+	flags: u8;
+	id: u8;
 	const char *name;
 	const struct chap_digest_type *digest;
 	int challenge_xmits;
@@ -162,7 +162,7 @@ typedef struct chap_server_state {
  /* PPP_SERVER */
  /* CHAP_SUPPORT */
 
-#if 0 /* UNUSED */
+// #if 0 /* UNUSED */
 /* Hook for a plugin to validate CHAP challenge */
 extern int (*chap_verify_hook)(char *name, char *ourname, int id,
 			const struct chap_digest_type *digest,
@@ -170,7 +170,7 @@ extern int (*chap_verify_hook)(char *name, char *ourname, int id,
 			char *message, int message_space);
  /* UNUSED */
 
-#if PPP_SERVER
+// #if PPP_SERVER
 /* Called by authentication code to start authenticating the peer. */
 extern void chap_auth_peer(ppp_pcb *pcb, const char *our_name, int digest_code);
  /* PPP_SERVER */

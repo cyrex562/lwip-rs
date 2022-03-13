@@ -40,7 +40,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_UDP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_UDP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/pbuf.h"
 // #include "lwip/netif.h"
@@ -85,22 +85,22 @@ struct udp_pcb {
 
   struct udp_pcb *next;
 
-  u8_t flags;
+  flags: u8;
   /** ports are in host byte order */
   u16_t local_port, remote_port;
 
-#if LWIP_MULTICAST_TX_OPTIONS
+// #if LWIP_MULTICAST_TX_OPTIONS
 
   /** outgoing network interface for multicast packets, by IPv4 address (if not 'any') */
  mcast_ip4: ip4_addr_t;
  /* LWIP_IPV4 */
 outgoing network interface for multicast packets, by interface index (if nonzero) */
-  u8_t mcast_ifindex;
+  mcast_ifindex: u8;
   /** TTL for outgoing multicast packets */
-  u8_t mcast_ttl;
+  mcast_ttl: u8;
  /* LWIP_MULTICAST_TX_OPTIONS */
 
-#if LWIP_UDPLITE
+// #if LWIP_UDPLITE
   /** used for UDP_LITE only */
   u16_t chksum_len_rx, chksum_len_tx;
  /* LWIP_UDPLITE */
@@ -115,7 +115,7 @@ extern struct udp_pcb *udp_pcbs;
 
 /* The following functions is the application layer interface to the
    UDP code. */
-struct udp_pcb * udp_new        (void);
+struct udp_pcb * udp_new        ();
 struct udp_pcb * udp_new_ip_type(u8_t type);
 void             udp_remove     (struct udp_pcb *pcb);
 err_t            udp_bind       (struct udp_pcb *pcb, const ip_addr_t *ipaddr,
@@ -136,7 +136,7 @@ err_t            udp_sendto     (struct udp_pcb *pcb, struct pbuf *p,
                                  const ip_addr_t *dst_ip, u16_t dst_port);
 err_t            udp_send       (struct udp_pcb *pcb, struct pbuf *p);
 
-#if LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP
+// #if LWIP_CHECKSUM_ON_COPY && CHECKSUM_GEN_UDP
 err_t            udp_sendto_if_chksum(struct udp_pcb *pcb, struct pbuf *p,
                                  const ip_addr_t *dst_ip, u16_t dst_port,
                                  struct netif *netif, u8_t have_chksum,
@@ -161,12 +161,12 @@ err_t            udp_sendto_if_src_chksum(struct udp_pcb *pcb, struct pbuf *p,
 /* The following functions are the lower layer interface to UDP. */
 void             udp_input      (struct pbuf *p, struct netif *inp);
 
-void             udp_init       (void);
+void             udp_init       ();
 
 /* for compatibility with older implementation */
 #define udp_new_ip6() udp_new_ip_type(IPADDR_TYPE_V6)
 
-#if LWIP_MULTICAST_TX_OPTIONS
+// #if LWIP_MULTICAST_TX_OPTIONS
 
 #define udp_set_multicast_netif_addr(pcb, ip4addr) ip4_addr_copy((pcb)->mcast_ip4, *(ip4addr))
 #define udp_get_multicast_netif_addr(pcb)          (&(pcb)->mcast_ip4)
@@ -177,7 +177,7 @@ e udp_set_multicast_netif_index(pcb, idx)    ((pcb)->mcast_ifindex = (idx))
 #define udp_get_multicast_ttl(pcb)                 ((pcb)->mcast_ttl)
  /* LWIP_MULTICAST_TX_OPTIONS */
 
-#if UDP_DEBUG
+// #if UDP_DEBUG
 void udp_debug_print(struct udp_hdr *udphdr);
 #else
 #define udp_debug_print(udphdr)

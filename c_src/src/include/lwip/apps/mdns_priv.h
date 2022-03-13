@@ -45,7 +45,7 @@
 
 
 
-#if LWIP_MDNS_RESPONDER
+// #if LWIP_MDNS_RESPONDER
 
 pub const MDNS_READNAME_ERROR: u32 = 0xFFFF; #define NUM_DOMAIN_OFFSETS 10
 
@@ -73,11 +73,11 @@ struct mdns_request {
   search_result_fn_t result_fn;
   void *arg;
   /** Protocol, TCP or UDP */
-  u16_t proto;
+  proto: u16;
   /** Query type (PTR, SRV, ...) */
-  u8_t qtype;
+  qtype: u8;
   /** PTR only request. */
-  u16_t only_ptr;
+  only_ptr: u16;
 };
 
 
@@ -94,9 +94,9 @@ struct mdns_service {
   service_get_txt_fn_t txt_fn;
   void *txt_userdata;
   /** Protocol, TCP or UDP */
-  u16_t proto;
+  proto: u16;
   /** Port of the service */
-  u16_t port;
+  port: u16;
 };
 
 /** mDNS output packet */
@@ -104,15 +104,15 @@ struct mdns_outpacket {
   /** Packet data */
   struct pbuf *pbuf;
   /** Current write offset in packet */
-  u16_t write_offset;
+  write_offset: u16;
   /** Number of questions written */
-  u16_t questions;
+  questions: u16;
   /** Number of normal answers written */
-  u16_t answers;
+  answers: u16;
   /** Number of authoritative answers written */
-  u16_t authoritative;
+  authoritative: u16;
   /** Number of additional answers written */
-  u16_t additional;
+  additional: u16;
   /** Offsets for written domain names in packet.
    *  Used for compression */
   u16_t domain_offsets[NUM_DOMAIN_OFFSETS];
@@ -121,30 +121,30 @@ struct mdns_outpacket {
 /** mDNS output message */
 struct mdns_outmsg {
   /** Identifier. Used in legacy queries */
-  u16_t tx_id;
+  tx_id: u16;
   /** dns flags */
-  u8_t flags;
+  flags: u8;
   /** Destination IP/port if sent unicast */
   ip_addr_t dest_addr;
-  u16_t dest_port;
+  dest_port: u16;
   /** If all answers in packet should set cache_flush bit */
-  u8_t cache_flush;
+  cache_flush: u8;
   /** If reply should be sent unicast (as requested) */
-  u8_t unicast_reply_requested;
+  unicast_reply_requested: u8;
   /** If legacy query. (tx_id needed, and write
    *  question again in reply before answer) */
-  u8_t legacy_query;
+  legacy_query: u8;
   /** If the query is a probe msg we need to respond immediately. Independent of
    *  the QU or QM flag. */
-  u8_t probe_query_recv;
+  probe_query_recv: u8;
   /* Question bitmask for host information */
-  u8_t host_questions;
+  host_questions: u8;
   /* Questions bitmask per service */
   u8_t serv_questions[MDNS_MAX_SERVICES];
   /* Reply bitmask for host information */
-  u8_t host_replies;
+  host_replies: u8;
   /* Bitmask for which reverse IPv6 hosts to answer */
-  u8_t host_reverse_v6_replies;
+  host_reverse_v6_replies: u8;
   /* Reply bitmask per service */
   u8_t serv_replies[MDNS_MAX_SERVICES];
 #ifdef LWIP_MDNS_SEARCH
@@ -156,18 +156,18 @@ struct mdns_outmsg {
 /** Delayed msg info */
 struct mdns_delayed_msg {
   /** Signals if a multicast msg needs to be send out */
-  u8_t multicast_msg_waiting;
+  multicast_msg_waiting: u8;
   /** Multicast timeout for all multicast traffic except probe answers */
-  u8_t multicast_timeout;
+  multicast_timeout: u8;
   /** Multicast timeout only for probe answers */
-  u8_t multicast_probe_timeout;
+  multicast_probe_timeout: u8;
   /** Output msg used for delayed multicast responses */
   struct mdns_outmsg delayed_msg_multicast;
   /** Prefer multicast over unicast timeout -> 25% of TTL = we take 30s as
       general delay. */
-  u8_t multicast_timeout_25TTL;
+  multicast_timeout_25TTL: u8;
   /** Only send out new unicast message if previous was send */
-  u8_t unicast_msg_in_use;
+  unicast_msg_in_use: u8;
   /** Output msg used for delayed unicast responses */
   struct mdns_outmsg delayed_msg_unicast;
 };
@@ -195,7 +195,7 @@ struct mdns_host {
   /** Pointer to services */
   struct mdns_service *services[MDNS_MAX_SERVICES];
   /** Number of probes/announces sent for the current name */
-  u8_t sent_num;
+  sent_num: u8;
   /** State of the mdns responder */
   mdns_resp_state_enum_t state;
 
@@ -209,15 +209,15 @@ IP_IPV6
 Timestamp of probe conflict saved in list */
   u32_t conflict_time[MDNS_PROBE_MAX_CONFLICTS_BEFORE_RATE_LIMIT];
   /** Rate limit flag */
-  u8_t rate_limit_activated;
+  rate_limit_activated: u8;
   /** List index for timestamps */
-  u8_t index;
+  index: u8;
   /** number of conflicts since startup */
-  u8_t num_conflicts;
+  num_conflicts: u8;
 };
 
 struct mdns_host* netif_mdns_data(struct netif *netif);
-struct udp_pcb* get_mdns_pcb(void);
+struct udp_pcb* get_mdns_pcb();
 
  /* LWIP_MDNS_RESPONDER */
 

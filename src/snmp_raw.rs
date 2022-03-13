@@ -35,7 +35,7 @@
 
 
 
-#if LWIP_SNMP && SNMP_USE_RAW
+// #if LWIP_SNMP && SNMP_USE_RAW
 
 
 
@@ -68,7 +68,7 @@ snmp_get_local_ip_for_dst(void *handle, const ip_addr_t *dst, ip_addr_t *result)
 
   LWIP_UNUSED_ARG(udp_pcb); /* unused in case of IPV4 only configuration */
 
-  ip_route_get_local_ip(&udp_pcb->local_ip, dst, dst_if, dst_ip);
+  ip_route_get_local_ip(& udp_pcb.local_ip, dst, dst_if, dst_ip);
 
   if ((dst_if != NULL) && (dst_ip != NULL)) {
     ip_addr_copy(*result, *dst_ip);
@@ -84,14 +84,14 @@ snmp_get_local_ip_for_dst(void *handle, const ip_addr_t *dst, ip_addr_t *result)
  * Allocates UDP pcb and binds it to IP_ANY_TYPE port 161.
  */
 void
-snmp_init(void)
+snmp_init()
 {
   err_t err;
 
   struct udp_pcb *snmp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
   LWIP_ERROR("snmp_raw: no PCB", (snmp_pcb != NULL), return;);
 
-  LWIP_ASSERT_CORE_LOCKED();
+  // LWIP_ASSERT_CORE_LOCKED()
 
   snmp_traps_handle = snmp_pcb;
 
@@ -100,4 +100,4 @@ snmp_init(void)
   LWIP_ERROR("snmp_raw: Unable to bind PCB", (err == ERR_OK), return;);
 }
 
-#endif /* LWIP_SNMP && SNMP_USE_RAW */
+// #endif /* LWIP_SNMP && SNMP_USE_RAW */

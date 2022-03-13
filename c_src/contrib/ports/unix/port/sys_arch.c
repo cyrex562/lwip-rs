@@ -72,7 +72,7 @@
 #define SYS_ARCH_INTR 0xfffffffeL
 
 u32_t
-lwip_port_rand(void)
+lwip_port_rand()
 {
   return (u32_t)rand();
 }
@@ -95,7 +95,7 @@ get_monotonic_time(struct timespec *ts)
 
 }
 
-#if SYS_LIGHTWEIGHT_PROT
+// #if SYS_LIGHTWEIGHT_PROT
 static pthread_mutex_t lwprot_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t lwprot_thread = (pthread_t)0xDEAD;
 static int lwprot_count = 0;
@@ -215,15 +215,15 @@ sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksi
   return st;
 }
 
-#if LWIP_TCPIP_CORE_LOCKING
+// #if LWIP_TCPIP_CORE_LOCKING
 static pthread_t lwip_core_lock_holder_thread_id;
-void sys_lock_tcpip_core(void)
+void sys_lock_tcpip_core()
 {
   sys_mutex_lock(&lock_tcpip_core);
   lwip_core_lock_holder_thread_id = pthread_self();
 }
 
-void sys_unlock_tcpip_core(void)
+void sys_unlock_tcpip_core()
 {
   lwip_core_lock_holder_thread_id = 0;
   sys_mutex_unlock(&lock_tcpip_core);
@@ -231,22 +231,22 @@ void sys_unlock_tcpip_core(void)
  /* LWIP_TCPIP_CORE_LOCKING */
 
 static pthread_t lwip_tcpip_thread_id;
-void sys_mark_tcpip_thread(void)
+void sys_mark_tcpip_thread()
 {
   lwip_tcpip_thread_id = pthread_self();
 }
 
-void sys_check_core_locking(void)
+void sys_check_core_locking()
 {
   /* Embedded systems should check we are NOT in an interrupt context here */
 
   if (lwip_tcpip_thread_id != 0) {
     pthread_t current_thread_id = pthread_self();
 
-#if LWIP_TCPIP_CORE_LOCKING
-    LWIP_ASSERT("Function called without core lock", current_thread_id == lwip_core_lock_holder_thread_id);
+// #if LWIP_TCPIP_CORE_LOCKING
+    // LWIP_ASSERT("Function called without core lock", current_thread_id == lwip_core_lock_holder_thread_id);
 #else /* LWIP_TCPIP_CORE_LOCKING */
-    LWIP_ASSERT("Function called from wrong thread", current_thread_id == lwip_tcpip_thread_id);
+    // LWIP_ASSERT("Function called from wrong thread", current_thread_id == lwip_tcpip_thread_id);
  /* LWIP_TCPIP_CORE_LOCKING */
   }
 }
@@ -294,9 +294,9 @@ sys_mbox_free(struct sys_mbox **mb)
 err_t
 sys_mbox_trypost(struct sys_mbox **mb, void *msg)
 {
-  u8_t first;
+  first: u8;
   struct sys_mbox *mbox;
-  LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
+  // LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
   mbox = *mb;
 
   sys_arch_sem_wait(&mbox->mutex, 0);
@@ -337,9 +337,9 @@ sys_mbox_trypost_fromisr(sys_mbox_t *q, void *msg)
 void
 sys_mbox_post(struct sys_mbox **mb, void *msg)
 {
-  u8_t first;
+  first: u8;
   struct sys_mbox *mbox;
-  LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
+  // LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
   mbox = *mb;
 
   sys_arch_sem_wait(&mbox->mutex, 0);
@@ -375,7 +375,7 @@ u32_t
 sys_arch_mbox_tryfetch(struct sys_mbox **mb, void **msg)
 {
   struct sys_mbox *mbox;
-  LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
+  // LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
   mbox = *mb;
 
   sys_arch_sem_wait(&mbox->mutex, 0);
@@ -409,7 +409,7 @@ sys_arch_mbox_fetch(struct sys_mbox **mb, void **msg, u32_t timeout)
 {
   u32_t time_needed = 0;
   struct sys_mbox *mbox;
-  LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
+  // LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
   mbox = *mb;
 
   /* The mutex lock is quick so we don't bother with the timeout
@@ -508,7 +508,7 @@ cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, u32_t timeout)
 
   /* Get a timestamp and add the timeout value. */
   get_monotonic_time(&rtime1);
-#if defined(LWIP_UNIX_MACH) || (defined(LWIP_UNIX_ANDROID) && __ANDROID_API__ < 21)
+// #if defined(LWIP_UNIX_MACH) || (defined(LWIP_UNIX_ANDROID) && __ANDROID_API__ < 21)
   ts.tv_sec = timeout / 1000L;
   ts.tv_nsec = (timeout % 1000L) * 1000000L;
   ret = pthread_cond_timedwait_relative_np(cond, mutex, &ts);
@@ -548,7 +548,7 @@ sys_arch_sem_wait(struct sys_sem **s, u32_t timeout)
 {
   u32_t time_needed = 0;
   struct sys_sem *sem;
-  LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
+  // LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
   sem = *s;
 
   pthread_mutex_lock(&(sem->mutex));
@@ -582,7 +582,7 @@ void
 sys_sem_signal(struct sys_sem **s)
 {
   struct sys_sem *sem;
-  LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
+  // LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
   sem = *s;
 
   pthread_mutex_lock(&(sem->mutex));
@@ -665,7 +665,7 @@ sys_mutex_free(struct sys_mutex **mutex)
 /*-----------------------------------------------------------------------------------*/
 /* Time */
 u32_t
-sys_now(void)
+sys_now()
 {
   struct timespec ts;
   u32_t now;
@@ -679,7 +679,7 @@ sys_now(void)
 }
 
 u32_t
-sys_jiffies(void)
+sys_jiffies()
 {
   struct timespec ts;
 
@@ -691,14 +691,14 @@ sys_jiffies(void)
 /* Init */
 
 void
-sys_init(void)
+sys_init()
 {
 }
 
 /*-----------------------------------------------------------------------------------*/
 /* Critical section */
-#if SYS_LIGHTWEIGHT_PROT
-/** sys_prot_t sys_arch_protect(void)
+// #if SYS_LIGHTWEIGHT_PROT
+/** sys_prot_t sys_arch_protect()
 
 This optional function does a "fast" critical region protection and returns
 the previous protection level. This function is only called during very short
@@ -713,7 +713,7 @@ sys_arch_protect() is only required if your port is supporting an operating
 system.
 */
 sys_prot_t
-sys_arch_protect(void)
+sys_arch_protect()
 {
     /* Note that for the UNIX port, we are using a lightweight mutex, and our
      * own counter (which is locked by the mutex). The return code is not actually
@@ -758,7 +758,7 @@ sys_arch_unprotect(sys_prot_t pval)
 #if !NO_SYS
 /* get keyboard state to terminate the debug app by using select */
 int
-lwip_unix_keypressed(void)
+lwip_unix_keypressed()
 {
   struct timeval tv = { 0L, 0L };
   fd_set fds;

@@ -33,7 +33,7 @@
 
 
 
-void pppos_example_init(void);
+void pppos_example_init();
 
 
 

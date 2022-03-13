@@ -51,7 +51,7 @@
 /* arch.h might define NULL already */
 // #include "lwip/arch.h"
 // #include "lwip/opt.h"
-#if LWIP_PERF
+// #if LWIP_PERF
 // #include "arch/perf.h"
 #else /* LWIP_PERF */
 #define PERF_START    /* null definition */
@@ -80,7 +80,7 @@ pub const NULL: u32 = 0; #else
 
 
 
-#if BYTE_ORDER == BIG_ENDIAN
+// #if BYTE_ORDER == BIG_ENDIAN
 #define lwip_htons(x) ((u16_t)(x))
 #define lwip_ntohs(x) ((u16_t)(x))
 #define lwip_htonl(x) ((u32_t)(x))

@@ -105,9 +105,9 @@ pub fn slipif_output(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), Lwi
     let i: u16;
     let c: u8;
 
-    LWIP_ASSERT("netif != NULL", (netif != None));
-    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
-    LWIP_ASSERT("p != NULL", (p != None));
+    // LWIP_ASSERT("netif != NULL", (netif != None));
+    // LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    // LWIP_ASSERT("p != NULL", (p != None));
 
     //  LWIP_DEBUGF(SLIP_DEBUG, ("slipif_output: sending %"U16_F" bytes\n", p.tot_len));
     priv_if = netif.state;
@@ -190,8 +190,8 @@ pub fn slipif_rxbyte(netif: &mut NetIfc, c: u8) -> PacketBuffer {
     let mut priv_if: &mut slipif_priv;
     let t: &mut PacketBuffer;
 
-    LWIP_ASSERT("netif != NULL", (netif != None));
-    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    // LWIP_ASSERT("netif != NULL", (netif != None));
+    // LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
     priv_if = netif.state;
 
@@ -339,7 +339,7 @@ pub fn slipif_init(netif: &mut NetIfc) {
     let mut priv_if: &mut slipif_priv;
     let sio_num: u8;
 
-    LWIP_ASSERT("slipif needs an input callback", netif.input != None);
+    // LWIP_ASSERT("slipif needs an input callback", netif.input != None);
 
     //  netif.state contains serial port number 
     sio_num = LWIP_PTR_NUMERIC_CAST(u8, netif.state);
@@ -405,8 +405,8 @@ pub fn slipif_poll(netif: &mut NetIfc) {
     let c: u8;
     let mut priv_if: &mut slipif_priv;
 
-    LWIP_ASSERT("netif != NULL", (netif != None));
-    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    // LWIP_ASSERT("netif != NULL", (netif != None));
+    // LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
     priv_if = netif.state;
 
@@ -425,8 +425,8 @@ pub fn slipif_process_rxqueue(netif: &mut NetIfc) {
     let mut priv_if: &mut slipif_priv;
     SYS_ARCH_DECL_PROTECT(old_level);
 
-    LWIP_ASSERT("netif != NULL", (netif != None));
-    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    // LWIP_ASSERT("netif != NULL", (netif != None));
+    // LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
     priv_if = netif.state;
 
@@ -495,8 +495,8 @@ pub fn slipif_rxbyte_enqueue(netif: &mut NetIfc, data: u8) {
  * @param data received character
  */
 pub fn slipif_received_byte(netif: &mut NetIfc, data: u8) {
-    LWIP_ASSERT("netif != NULL", (netif != None));
-    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    // LWIP_ASSERT("netif != NULL", (netif != None));
+    // LWIP_ASSERT("netif.state != NULL", (netif.state != None));
     slipif_rxbyte_enqueue(netif, data);
 }
 
@@ -514,8 +514,8 @@ pub fn slipif_received_byte(netif: &mut NetIfc, data: u8) {
 pub fn slipif_received_bytes(netif: &mut NetIfc, data: &mut Vec<u8>, len: u8) {
     let i: u8;
     let rxdata: &mut Vec<u8> = data;
-    LWIP_ASSERT("netif != NULL", (netif != None));
-    LWIP_ASSERT("netif.state != NULL", (netif.state != None));
+    // LWIP_ASSERT("netif != NULL", (netif != None));
+    // LWIP_ASSERT("netif.state != NULL", (netif.state != None));
 
     // for (i = 0; i < len; i+= 1, rxdata+= 1) {
     //   slipif_rxbyte_enqueue(netif, *rxdata);

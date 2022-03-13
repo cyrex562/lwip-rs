@@ -195,7 +195,7 @@ pcapif_init(netif: &mut NetIfc)
   }
 
   if(sys_sem_new(&p.sem, 0) != ERR_OK) {
-    LWIP_ASSERT("Failed to create semaphore", 0);
+    // LWIP_ASSERT("Failed to create semaphore", 0);
   }
   p.p = None;
   p.lasttime = 0;

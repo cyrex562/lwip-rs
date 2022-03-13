@@ -95,8 +95,8 @@ pub fn zepif_udp_recv(
     let netif_lowpan6: &mut NetIfc = arg;
     let mut zep: &mut zep_hdr;
 
-    LWIP_ASSERT("arg != NULL", arg != None);
-    LWIP_ASSERT("pcb != NULL", pcb != None);
+    // LWIP_ASSERT("arg != NULL", arg != None);
+    // LWIP_ASSERT("pcb != NULL", pcb != None);
     //  for LWIP_NOASSERT 
 
     if (p == None) {
@@ -152,16 +152,16 @@ pub fn zepif_linkoutput(netif: &mut NetIfc, p: &mut PacketBuffer) -> Result<(), 
     let mut zep: &mut zep_hdr;
     let mut state: &mut zepif_state;
 
-    LWIP_ASSERT("invalid netif", netif != None);
-    LWIP_ASSERT("invalid pbuf", p != None);
+    // LWIP_ASSERT("invalid netif", netif != None);
+    // LWIP_ASSERT("invalid pbuf", p != None);
 
     if (p.tot_len > ZEP_MAX_DATA_LEN) {
         return ERR_VAL;
     }
-    LWIP_ASSERT("TODO: support chained pbufs", p.next == None);
+    // LWIP_ASSERT("TODO: support chained pbufs", p.next == None);
 
     state = netif.state;
-    LWIP_ASSERT("state.pcb != NULL", state.pcb != None);
+    // LWIP_ASSERT("state.pcb != NULL", state.pcb != None);
 
     q = pbuf_alloc(PBUF_TRANSPORT, sizeof(zep_hdr) + p.tot_len, PBUF_RAM);
     if (q == None) {
@@ -207,7 +207,7 @@ pub fn zepif_init(netif: &mut NetIfc) {
     let init_state: &mut zepif_init = netif.state;
     let state: &mut zepif_state = mem_malloc(sizeof(zepif_state));
 
-    LWIP_ASSERT("zepif needs an input callback", netif.input != None);
+    // LWIP_ASSERT("zepif needs an input callback", netif.input != None);
 
     if (state == None) {
         return ERR_MEM;
@@ -246,12 +246,12 @@ pub fn zepif_init(netif: &mut NetIfc) {
     if (state.init.zep_netif != None) {
         udp_bind_netif(state.pcb, state.init.zep_netif);
     }
-    LWIP_ASSERT("udp_bind(lowpan6_broadcast_pcb) failed", err == ERR_OK);
+    // LWIP_ASSERT("udp_bind(lowpan6_broadcast_pcb) failed", err == ERR_OK);
     ip_set_option(state.pcb, SOF_BROADCAST);
     udp_recv(state.pcb, zepif_udp_recv, netif);
 
     err = lowpan6_if_init(netif);
-    LWIP_ASSERT("lowpan6_if_init set a state", netif.state == None);
+    // LWIP_ASSERT("lowpan6_if_init set a state", netif.state == None);
     if (err == ERR_OK) {
         netif.state = state;
         netif.hwaddr_len = 6;

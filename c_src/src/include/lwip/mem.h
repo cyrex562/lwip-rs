@@ -42,7 +42,7 @@
 
 
 
-#if MEM_LIBC_MALLOC
+// #if MEM_LIBC_MALLOC
 
 // #include "lwip/arch.h"
 
@@ -51,7 +51,7 @@ typedef size_t mem_size_t;
 
 #elif MEM_USE_POOLS
 
-typedef u16_t mem_size_t;
+typedef mem_size_t: u16;
 #define MEM_SIZE_F U16_F
 
 #else
@@ -59,16 +59,16 @@ typedef u16_t mem_size_t;
 /* MEM_SIZE would have to be aligned, but using 64000 here instead of
  * 65535 leaves some room for alignment...
  */
-#if MEM_SIZE > 64000L
+// #if MEM_SIZE > 64000L
 typedef u32_t mem_size_t;
 #define MEM_SIZE_F U32_F
 #else
-typedef u16_t mem_size_t;
+typedef mem_size_t: u16;
 #define MEM_SIZE_F U16_F
  /* MEM_SIZE > 64000 */
 
 
-void  mem_init(void);
+void  mem_init();
 void *mem_trim(void *mem, mem_size_t size);
 void *mem_malloc(mem_size_t size);
 void *mem_calloc(mem_size_t count, mem_size_t size);

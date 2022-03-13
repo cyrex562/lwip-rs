@@ -256,7 +256,7 @@ pub const HTTPD_LIMIT_SENDING_TO_2MSS: u32 = 1; /* Define this to a function tha
    The function have this signature: u16_t fn(struct altcp_pcb* pcb);
    The best place to define this is the hooks file (@see LWIP_HOOK_FILENAME) */
 #if !defined HTTPD_MAX_WRITE_LEN || defined __DOXYGEN__
-#if HTTPD_LIMIT_SENDING_TO_2MSS
+// #if HTTPD_LIMIT_SENDING_TO_2MSS
 #define HTTPD_MAX_WRITE_LEN(pcb)    ((u16_t)(2 * altcp_mss(pcb)))
 
 
@@ -298,7 +298,7 @@ pub const HTTPD_PRECALCULATED_CHECKSUM: u32 = 0; /** LWIP_HTTPD_FS_ASYNC_READ==1
 pub const LWIP_HTTPD_FS_ASYNC_READ: u32 = 0; /** Filename (including path) to use as FS data file */
 #if !defined HTTPD_FSDATA_FILE || defined __DOXYGEN__
 /* HTTPD_USE_CUSTOM_FSDATA: Compatibility with deprecated lwIP option */
-#if defined(HTTPD_USE_CUSTOM_FSDATA) && (HTTPD_USE_CUSTOM_FSDATA != 0)
+// #if defined(HTTPD_USE_CUSTOM_FSDATA) && (HTTPD_USE_CUSTOM_FSDATA != 0)
 #define HTTPD_FSDATA_FILE "fsdata_custom.c"
 #else
 #define HTTPD_FSDATA_FILE "fsdata.c"

@@ -32,7 +32,7 @@
 *****************************************************************************/
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -43,7 +43,7 @@
 // #include "lwip/netif.h"
 // #include "lwip/sys.h"
 // #include "lwip/timeouts.h"
-#if PPP_IPV6_SUPPORT
+// #if PPP_IPV6_SUPPORT
 // #include "lwip/ip6_addr.h"
  /* PPP_IPV6_SUPPORT */
 
@@ -134,7 +134,7 @@ typedef unsigned char  u_char;
 
 // #include "fsm.h"
 // #include "lcp.h"
-#if CCP_SUPPORT
+// #if CCP_SUPPORT
 // #include "ccp.h"
  /* CCP_SUPPORT */
 PE_SUPPORT
@@ -167,7 +167,7 @@ typedef void (*ppp_link_status_cb_fn)(ppp_pcb *pcb, int err_code, void *ctx);
  */
 typedef struct ppp_settings_s {
 
-#if PPP_SERVER && PPP_AUTH_SUPPORT
+// #if PPP_SERVER && PPP_AUTH_SUPPORT
   unsigned int  auth_required       :1;      /* Peer is required to authenticate */
   unsigned int  null_login          :1;      /* Username of "" and a password of "" are acceptable */
  /* PPP_SERVER && PPP_AUTH_SUPPORT */
@@ -191,13 +191,13 @@ IP_DNS
   unsigned int  usepeerdns          :1;      /* Ask peer for DNS adds */
  /* LWIP_DNS */
 gned int  persist             :1;      /* Persist mode, always try to open the connection */
-#if PRINTPKT_SUPPORT
+// #if PRINTPKT_SUPPORT
   unsigned int  hide_password       :1;      /* Hide password in dumped packets */
  /* PRINTPKT_SUPPORT */
 gned int  noremoteip          :1;      /* Let him have no IP address */
   unsigned int  lax_recv            :1;      /* accept control chars in asyncmap */
   unsigned int  noendpoint          :1;      /* don't send/accept endpoint discriminator */
-#if PPP_LCP_ADAPTIVE
+// #if PPP_LCP_ADAPTIVE
   unsigned int lcp_echo_adaptive    :1;      /* request echo only if the link was idle */
  /* PPP_LCP_ADAPTIVE */
 PE_SUPPORT
@@ -207,67 +207,67 @@ PE_SUPPORT
   unsigned int refuse_mppe_stateful :1;      /* Allow MPPE stateful mode? */
  /* MPPE_SUPPORT */
 
-  u16_t  listen_time;                 /* time to listen first (ms), waiting for peer to send LCP packet */
+  listen_time: u16;                 /* time to listen first (ms), waiting for peer to send LCP packet */
 
-#if PPP_IDLETIMELIMIT
-  u16_t  idle_time_limit;             /* Disconnect if idle for this many seconds */
+// #if PPP_IDLETIMELIMIT
+  idle_time_limit: u16;             /* Disconnect if idle for this many seconds */
  /* PPP_IDLETIMELIMIT */
 P_MAXCONNECT
   u32_t  maxconnect;                  /* Maximum connect time (seconds) */
  /* PPP_MAXCONNECT */
 
-#if PPP_AUTH_SUPPORT
+// #if PPP_AUTH_SUPPORT
   /* auth data */
   const char  *user;                   /* Username for PAP */
   const char  *passwd;                 /* Password for PAP, secret for CHAP */
-#if PPP_REMOTENAME
+// #if PPP_REMOTENAME
   char  remote_name[MAXNAMELEN   + 1]; /* Peer's name for authentication */
  /* PPP_REMOTENAME */
 
-#if PAP_SUPPORT
-  u8_t  pap_timeout_time;        /* Timeout (seconds) for auth-req retrans. */
-  u8_t  pap_max_transmits;       /* Number of auth-reqs sent */
-#if PPP_SERVER
-  u8_t  pap_req_timeout;         /* Time to wait for auth-req from peer */
+// #if PAP_SUPPORT
+  pap_timeout_time: u8;        /* Timeout (seconds) for auth-req retrans. */
+  pap_max_transmits: u8;       /* Number of auth-reqs sent */
+// #if PPP_SERVER
+  pap_req_timeout: u8;         /* Time to wait for auth-req from peer */
  /* PPP_SERVER */
  /* PAP_SUPPPORT */
 
-#if CHAP_SUPPORT
-#if PPP_SERVER
-  u8_t  chap_timeout_time;       /* Timeout (seconds) for retransmitting req */
-  u8_t  chap_max_transmits;      /* max # times to send challenge */
-  u8_t  chap_rechallenge_time;   /* Time to wait for auth-req from peer */
+// #if CHAP_SUPPORT
+// #if PPP_SERVER
+  chap_timeout_time: u8;       /* Timeout (seconds) for retransmitting req */
+  chap_max_transmits: u8;      /* max # times to send challenge */
+  chap_rechallenge_time: u8;   /* Time to wait for auth-req from peer */
  /* PPP_SERVER */
  /* CHAP_SUPPPORT */
 
-#if EAP_SUPPORT
-  u8_t  eap_req_time;            /* Time to wait (for retransmit/fail) */
-  u8_t  eap_allow_req;           /* Max Requests allowed */
-#if PPP_SERVER
-  u8_t  eap_timeout_time;        /* Time to wait (for retransmit/fail) */
-  u8_t  eap_max_transmits;       /* Max Requests allowed */
+// #if EAP_SUPPORT
+  eap_req_time: u8;            /* Time to wait (for retransmit/fail) */
+  eap_allow_req: u8;           /* Max Requests allowed */
+// #if PPP_SERVER
+  eap_timeout_time: u8;        /* Time to wait (for retransmit/fail) */
+  eap_max_transmits: u8;       /* Max Requests allowed */
  /* PPP_SERVER */
  /* EAP_SUPPORT */
 
  /* PPP_AUTH_SUPPORT */
 
-  u8_t  fsm_timeout_time;            /* Timeout time in seconds */
-  u8_t  fsm_max_conf_req_transmits;  /* Maximum Configure-Request transmissions */
-  u8_t  fsm_max_term_transmits;      /* Maximum Terminate-Request transmissions */
-  u8_t  fsm_max_nak_loops;           /* Maximum number of nak loops tolerated */
+  fsm_timeout_time: u8;            /* Timeout time in seconds */
+  fsm_max_conf_req_transmits: u8;  /* Maximum Configure-Request transmissions */
+  fsm_max_term_transmits: u8;      /* Maximum Terminate-Request transmissions */
+  fsm_max_nak_loops: u8;           /* Maximum number of nak loops tolerated */
 
-  u8_t  lcp_loopbackfail;     /* Number of times we receive our magic number from the peer
+  lcp_loopbackfail: u8;     /* Number of times we receive our magic number from the peer
                                  before deciding the link is looped-back. */
-  u8_t  lcp_echo_interval;    /* Interval between LCP echo-requests */
-  u8_t  lcp_echo_fails;       /* Tolerance to unanswered echo-requests */
+  lcp_echo_interval: u8;    /* Interval between LCP echo-requests */
+  lcp_echo_fails: u8;       /* Tolerance to unanswered echo-requests */
 
 } ppp_settings;
 
-#if PPP_SERVER
+// #if PPP_SERVER
 struct ppp_addrs {
-#if PPP_IPV4_SUPPORT
+// #if PPP_IPV4_SUPPORT
   ip4_addr_t our_ipaddr, his_ipaddr, netmask;
-#if LWIP_DNS
+// #if LWIP_DNS
   ip4_addr_t dns1, dns2;
  /* LWIP_DNS */
  /* PPP_IPV4_SUPPORT */
@@ -285,21 +285,21 @@ struct ppp_pcb_s {
   const struct link_callbacks *link_cb;
   void *link_ctx_cb;
   void (*link_status_cb)(ppp_pcb *pcb, int err_code, void *ctx);  /* Status change callback */
-#if PPP_NOTIFY_PHASE
+// #if PPP_NOTIFY_PHASE
   void (*notify_phase_cb)(ppp_pcb *pcb, u8_t phase, void *ctx);   /* Notify phase callback */
  /* PPP_NOTIFY_PHASE */
  *ctx_cb;                  /* Callbacks optional pointer */
   struct netif *netif;           /* PPP interface */
-  u8_t phase;                    /* where the link is at */
-  u8_t err_code;                 /* Code indicating why interface is down. */
+  phase: u8;                    /* where the link is at */
+  err_code: u8;                 /* Code indicating why interface is down. */
 
   /* flags */
-#if PPP_IPV4_SUPPORT
+// #if PPP_IPV4_SUPPORT
   unsigned int ask_for_local           :1; /* request our address from peer */
   unsigned int ipcp_is_open            :1; /* haven't called np_finished() */
   unsigned int ipcp_is_up              :1; /* have called ipcp_up() */
   unsigned int if4_up                  :1; /* True when the IPv4 interface is up. */
-#if 0 /* UNUSED - PROXY ARP */
+// #if 0 /* UNUSED - PROXY ARP */
   unsigned int proxy_arp_set           :1; /* Have created proxy arp entry */
  /* UNUSED - PROXY ARP */
  /* PPP_IPV4_SUPPORT */
@@ -308,7 +308,7 @@ P_IPV6_SUPPORT
   unsigned int if6_up                  :1; /* True when the IPv6 interface is up. */
  /* PPP_IPV6_SUPPORT */
 gned int lcp_echo_timer_running  :1; /* set if a timer is running */
-#if VJ_SUPPORT
+// #if VJ_SUPPORT
   unsigned int vj_enabled              :1; /* Flag indicating VJ compression enabled. */
  /* VJ_SUPPORT */
 P_SUPPORT
@@ -318,26 +318,26 @@ PE_SUPPORT
   unsigned int mppe_keys_set           :1; /* Have the MPPE keys been set? */
  /* MPPE_SUPPORT */
 
-#if PPP_AUTH_SUPPORT
+// #if PPP_AUTH_SUPPORT
   /* auth data */
-#if PPP_SERVER && defined(HAVE_MULTILINK)
+// #if PPP_SERVER && defined(HAVE_MULTILINK)
   char peer_authname[MAXNAMELEN + 1]; /* The name by which the peer authenticated itself to us. */
  /* PPP_SERVER && defined(HAVE_MULTILINK) */
 t auth_pending;        /* Records which authentication operations haven't completed yet. */
-  u16_t auth_done;           /* Records which authentication operations have been completed. */
+  auth_done: u16;           /* Records which authentication operations have been completed. */
 
-#if PAP_SUPPORT
+// #if PAP_SUPPORT
   upap_state upap;           /* PAP data */
  /* PAP_SUPPORT */
 
-#if CHAP_SUPPORT
+// #if CHAP_SUPPORT
   chap_client_state chap_client;  /* CHAP client data */
-#if PPP_SERVER
+// #if PPP_SERVER
   chap_server_state chap_server;  /* CHAP server data */
  /* PPP_SERVER */
  /* CHAP_SUPPORT */
 
-#if EAP_SUPPORT
+// #if EAP_SUPPORT
   eap_state eap;            /* EAP data */
  /* EAP_SUPPORT */
  /* PPP_AUTH_SUPPORT */
@@ -347,33 +347,33 @@ t auth_pending;        /* Records which authentication operations haven't comple
   lcp_options lcp_gotoptions;    /* Options that peer ack'd */
   lcp_options lcp_allowoptions;  /* Options we allow peer to request */
   lcp_options lcp_hisoptions;    /* Options that we ack'd */
-  u16_t peer_mru;                /* currently negotiated peer MRU */
-  u8_t lcp_echos_pending;        /* Number of outstanding echo msgs */
-  u8_t lcp_echo_number;          /* ID number of next echo frame */
+  peer_mru: u16;                /* currently negotiated peer MRU */
+  lcp_echos_pending: u8;        /* Number of outstanding echo msgs */
+  lcp_echo_number: u8;          /* ID number of next echo frame */
 
-  u8_t num_np_open;              /* Number of network protocols which we have opened. */
-  u8_t num_np_up;                /* Number of network protocols which have come up. */
+  num_np_open: u8;              /* Number of network protocols which we have opened. */
+  num_np_up: u8;                /* Number of network protocols which have come up. */
 
-#if VJ_SUPPORT
+// #if VJ_SUPPORT
   struct vjcompress vj_comp;     /* Van Jacobson compression header. */
  /* VJ_SUPPORT */
 
-#if CCP_SUPPORT
+// #if CCP_SUPPORT
   fsm ccp_fsm;                   /* CCP fsm structure */
   ccp_options ccp_wantoptions;   /* what to request the peer to use */
   ccp_options ccp_gotoptions;    /* what the peer agreed to do */
   ccp_options ccp_allowoptions;  /* what we'll agree to do */
   ccp_options ccp_hisoptions;    /* what we agreed to do */
-  u8_t ccp_localstate;           /* Local state (mainly for handling reset-reqs and reset-acks). */
-  u8_t ccp_receive_method;       /* Method chosen on receive path */
-  u8_t ccp_transmit_method;      /* Method chosen on transmit path */
-#if MPPE_SUPPORT
+  ccp_localstate: u8;           /* Local state (mainly for handling reset-reqs and reset-acks). */
+  ccp_receive_method: u8;       /* Method chosen on receive path */
+  ccp_transmit_method: u8;      /* Method chosen on transmit path */
+// #if MPPE_SUPPORT
   ppp_mppe_state mppe_comp;      /* MPPE "compressor" structure */
   ppp_mppe_state mppe_decomp;    /* MPPE "decompressor" structure */
  /* MPPE_SUPPORT */
  /* CCP_SUPPORT */
 
-#if PPP_IPV4_SUPPORT
+// #if PPP_IPV4_SUPPORT
   fsm ipcp_fsm;                   /* IPCP fsm structure */
   ipcp_options ipcp_wantoptions;  /* Options that we want to request */
   ipcp_options ipcp_gotoptions;   /* Options that peer ack'd */
@@ -381,7 +381,7 @@ t auth_pending;        /* Records which authentication operations haven't comple
   ipcp_options ipcp_hisoptions;   /* Options that we ack'd */
  /* PPP_IPV4_SUPPORT */
 
-#if PPP_IPV6_SUPPORT
+// #if PPP_IPV6_SUPPORT
   fsm ipv6cp_fsm;                     /* IPV6CP fsm structure */
   ipv6cp_options ipv6cp_wantoptions;  /* Options that we want to request */
   ipv6cp_options ipv6cp_gotoptions;   /* Options that peer ack'd */
@@ -399,7 +399,7 @@ t auth_pending;        /* Records which authentication operations haven't comple
  * only be called while the PPP is in the dead phase (i.e. disconnected).
  */
 
-#if PPP_AUTH_SUPPORT
+// #if PPP_AUTH_SUPPORT
 /*
  * Set PPP authentication.
  *
@@ -433,27 +433,27 @@ pub const PPPAUTHTYPE_ANY: u32 = 0xff; void ppp_set_auth(ppp_pcb *pcb, u8_t auth
  *
  * Default is false.
  */
-#define ppp_set_auth_required(ppp, boolval) (ppp->settings.auth_required = boolval)
+#define ppp_set_auth_required(ppp, boolval) ( ppp.settings.auth_required = boolval)
  /* PPP_AUTH_SUPPORT */
 
-#if PPP_IPV4_SUPPORT
+// #if PPP_IPV4_SUPPORT
 /*
  * Set PPP interface "our" and "his" IPv4 addresses. This is mostly necessary for PPP server
  * support but it can also be used on a PPP link where each side choose its own IP address.
  *
  * Default is unset (0.0.0.0).
  */
-#define ppp_set_ipcp_ouraddr(ppp, addr) do { ppp->ipcp_wantoptions.ouraddr = ip4_addr_get_u32(addr); \
-                                             ppp->ask_for_local = ppp->ipcp_wantoptions.ouraddr != 0; } while(0)
-#define ppp_set_ipcp_hisaddr(ppp, addr) (ppp->ipcp_wantoptions.hisaddr = ip4_addr_get_u32(addr))
-#if LWIP_DNS
+#define ppp_set_ipcp_ouraddr(ppp, addr) do {  ppp.ipcp_wantoptions.ouraddr = ip4_addr_get_u32(addr); \
+                                              ppp.ask_for_local =  ppp.ipcp_wantoptions.ouraddr != 0; } while(0)
+#define ppp_set_ipcp_hisaddr(ppp, addr) ( ppp.ipcp_wantoptions.hisaddr = ip4_addr_get_u32(addr))
+// #if LWIP_DNS
 /*
  * Set DNS server addresses that are sent if the peer asks for them. This is mostly necessary
  * for PPP server support.
  *
  * Default is unset (0.0.0.0).
  */
-#define ppp_set_ipcp_dnsaddr(ppp, index, addr) (ppp->ipcp_allowoptions.dnsaddr[index] = ip4_addr_get_u32(addr))
+#define ppp_set_ipcp_dnsaddr(ppp, index, addr) ( ppp.ipcp_allowoptions.dnsaddr[index] = ip4_addr_get_u32(addr))
 
 /*
  * If set, we ask the peer for up to 2 DNS server addresses. Received DNS server addresses are
@@ -461,11 +461,11 @@ pub const PPPAUTHTYPE_ANY: u32 = 0xff; void ppp_set_auth(ppp_pcb *pcb, u8_t auth
  *
  * Default is false.
  */
-#define ppp_set_usepeerdns(ppp, boolval) (ppp->settings.usepeerdns = boolval)
+#define ppp_set_usepeerdns(ppp, boolval) ( ppp.settings.usepeerdns = boolval)
  /* LWIP_DNS */
  /* PPP_IPV4_SUPPORT */
 
-#if MPPE_SUPPORT
+// #if MPPE_SUPPORT
 /* Disable MPPE (Microsoft Point to Point Encryption). This parameter is exclusive. */
 pub const PPP_MPPE_DISABLE: u32 = 0x00; /* Require the use of MPPE (Microsoft Point to Point Encryption). */
 pub const PPP_MPPE_ENABLE: u32 = 0x01; /* Allow MPPE to use stateful mode. Stateless mode is still attempted first. */
@@ -486,7 +486,7 @@ void ppp_set_mppe(ppp_pcb *pcb, u8_t flags);
  *
  * Default is 0.
  */
-#define ppp_set_listen_time(ppp, intval) (ppp->settings.listen_time = intval)
+#define ppp_set_listen_time(ppp, intval) ( ppp.settings.listen_time = intval)
 
 /*
  * If set, we will attempt to initiate a connection but if no reply is received from
@@ -494,7 +494,7 @@ void ppp_set_mppe(ppp_pcb *pcb, u8_t flags);
  *
  * Default is false.
  */
-#define ppp_set_passive(ppp, boolval) (ppp->lcp_wantoptions.passive = boolval)
+#define ppp_set_passive(ppp, boolval) ( ppp.lcp_wantoptions.passive = boolval)
 
 /*
  * If set, we will not transmit LCP packets to initiate a connection until a valid
@@ -502,7 +502,7 @@ void ppp_set_mppe(ppp_pcb *pcb, u8_t flags);
  *
  * Default is false.
  */
-#define ppp_set_silent(ppp, boolval) (ppp->lcp_wantoptions.silent = boolval)
+#define ppp_set_silent(ppp, boolval) ( ppp.lcp_wantoptions.silent = boolval)
 
 /*
  * If set, enable protocol field compression negotiation in both the receive and
@@ -510,8 +510,8 @@ void ppp_set_mppe(ppp_pcb *pcb, u8_t flags);
  *
  * Default is true.
  */
-#define ppp_set_neg_pcomp(ppp, boolval) (ppp->lcp_wantoptions.neg_pcompression = \
-                                         ppp->lcp_allowoptions.neg_pcompression = boolval)
+#define ppp_set_neg_pcomp(ppp, boolval) ( ppp.lcp_wantoptions.neg_pcompression = \
+                                          ppp.lcp_allowoptions.neg_pcompression = boolval)
 
 /*
  * If set, enable Address/Control compression in both the receive and the transmit
@@ -519,8 +519,8 @@ void ppp_set_mppe(ppp_pcb *pcb, u8_t flags);
  *
  * Default is true.
  */
-#define ppp_set_neg_accomp(ppp, boolval) (ppp->lcp_wantoptions.neg_accompression = \
-                                          ppp->lcp_allowoptions.neg_accompression = boolval)
+#define ppp_set_neg_accomp(ppp, boolval) ( ppp.lcp_wantoptions.neg_accompression = \
+                                           ppp.lcp_allowoptions.neg_accompression = boolval)
 
 /*
  * If set, enable asyncmap negotiation. Otherwise forcing all control characters to
@@ -528,8 +528,8 @@ void ppp_set_mppe(ppp_pcb *pcb, u8_t flags);
  *
  * Default is true.
  */
-#define ppp_set_neg_asyncmap(ppp, boolval) (ppp->lcp_wantoptions.neg_asyncmap = \
-                                            ppp->lcp_allowoptions.neg_asyncmap = boolval)
+#define ppp_set_neg_asyncmap(ppp, boolval) ( ppp.lcp_wantoptions.neg_asyncmap = \
+                                             ppp.lcp_allowoptions.neg_asyncmap = boolval)
 
 /*
  * This option sets the Async-Control-Character-Map (ACCM) for this end of the link.
@@ -542,15 +542,15 @@ void ppp_set_mppe(ppp_pcb *pcb, u8_t flags);
  *
  * Default is 0.
  */
-#define ppp_set_asyncmap(ppp, intval) (ppp->lcp_wantoptions.asyncmap = intval)
+#define ppp_set_asyncmap(ppp, intval) ( ppp.lcp_wantoptions.asyncmap = intval)
 
 /*
  * Set a PPP interface as the default network interface
  * (used to output all packets for which no specific route is found).
  */
-#define ppp_set_default(ppp)         netif_set_default(ppp->netif)
+#define ppp_set_default(ppp)         netif_set_default( ppp.netif)
 
-#if PPP_NOTIFY_PHASE
+// #if PPP_NOTIFY_PHASE
 /*
  * Set a PPP notify phase callback.
  *
@@ -574,7 +574,7 @@ void ppp_set_notify_phase_callback(ppp_pcb *pcb, ppp_notify_phase_cb_fn notify_p
  */
 err_t ppp_connect(ppp_pcb *pcb, u16_t holdoff);
 
-#if PPP_SERVER
+// #if PPP_SERVER
 /*
  * Listen for an incoming PPP connection.
  *
@@ -631,15 +631,15 @@ pub const PPPCTLG_FD: u32 = 2; /*
 err_t ppp_ioctl(ppp_pcb *pcb, u8_t cmd, void *arg);
 
 /* Get the PPP netif interface */
-#define ppp_netif(ppp)               (ppp->netif)
+#define ppp_netif(ppp)               ( ppp.netif)
 
 /* Set an lwIP-style status-callback for the selected PPP device */
 #define ppp_set_netif_statuscallback(ppp, status_cb)       \
-        netif_set_status_callback(ppp->netif, status_cb);
+        netif_set_status_callback( ppp.netif, status_cb);
 
 /* Set an lwIP-style link-callback for the selected PPP device */
 #define ppp_set_netif_linkcallback(ppp, link_cb)           \
-        netif_set_link_callback(ppp->netif, link_cb);
+        netif_set_link_callback( ppp.netif, link_cb);
 
 
 

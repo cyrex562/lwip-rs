@@ -34,7 +34,7 @@ static int tcp_oos_count(struct tcp_pcb* pcb)
   return num;
 }
 
-#if TCP_OOSEQ_MAX_PBUFS && (TCP_OOSEQ_MAX_PBUFS < ((TCP_WND / TCP_MSS) + 1)) && (PBUF_POOL_BUFSIZE >= (TCP_MSS + PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN))
+// #if TCP_OOSEQ_MAX_PBUFS && (TCP_OOSEQ_MAX_PBUFS < ((TCP_WND / TCP_MSS) + 1)) && (PBUF_POOL_BUFSIZE >= (TCP_MSS + PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN))
 /** Get the numbers of pbufs on the ooseq list */
 static int tcp_oos_pbuf_count(struct tcp_pcb* pcb)
 {
@@ -120,7 +120,7 @@ static struct netif *old_netif_list;
 static struct netif *old_netif_default;
 
 static void
-tcp_oos_setup(void)
+tcp_oos_setup()
 {
   old_netif_list = netif_list;
   old_netif_default = netif_default;
@@ -131,7 +131,7 @@ tcp_oos_setup(void)
 }
 
 static void
-tcp_oos_teardown(void)
+tcp_oos_teardown()
 {
   netif_list = NULL;
   netif_default = NULL;
@@ -159,7 +159,7 @@ START_TEST(test_tcp_recv_ooseq_FIN_OOSEQ)
      5,  6,  7,  8,
      9, 10, 11, 12,
     13, 14, 15, 16};
-  u16_t data_len;
+  data_len: u16;
   struct netif netif;
   LWIP_UNUSED_ARG(_i);
 
@@ -295,7 +295,7 @@ START_TEST(test_tcp_recv_ooseq_FIN_INSEQ)
      5,  6,  7,  8,
      9, 10, 11, 12,
     13, 14, 15, 16};
-  u16_t data_len;
+  data_len: u16;
   struct netif netif;
   LWIP_UNUSED_ARG(_i);
 
@@ -630,7 +630,7 @@ END_TEST
 
 START_TEST(test_tcp_recv_ooseq_max_bytes)
 {
-#if TCP_OOSEQ_MAX_BYTES && (TCP_OOSEQ_MAX_BYTES < (TCP_WND + 1)) && (PBUF_POOL_BUFSIZE >= (TCP_MSS + PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN))
+// #if TCP_OOSEQ_MAX_BYTES && (TCP_OOSEQ_MAX_BYTES < (TCP_WND + 1)) && (PBUF_POOL_BUFSIZE >= (TCP_MSS + PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN))
   int i, k;
   struct test_tcp_counters counters;
   struct tcp_pcb* pcb;
@@ -705,7 +705,7 @@ END_TEST
 
 START_TEST(test_tcp_recv_ooseq_max_pbufs)
 {
-#if TCP_OOSEQ_MAX_PBUFS && (TCP_OOSEQ_MAX_PBUFS < ((TCP_WND / TCP_MSS) + 1)) && (PBUF_POOL_BUFSIZE >= (TCP_MSS + PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN))
+// #if TCP_OOSEQ_MAX_PBUFS && (TCP_OOSEQ_MAX_PBUFS < ((TCP_WND / TCP_MSS) + 1)) && (PBUF_POOL_BUFSIZE >= (TCP_MSS + PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN))
   int i;
   struct test_tcp_counters counters;
   struct tcp_pcb* pcb;
@@ -986,7 +986,7 @@ FIN_TEST(test_tcp_recv_ooseq_double_FIN_15, 15)
 
 /** Create the suite including all tests for this module */
 Suite *
-tcp_oos_suite(void)
+tcp_oos_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_tcp_recv_ooseq_FIN_OOSEQ),

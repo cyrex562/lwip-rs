@@ -146,14 +146,14 @@ pub fn lowpan6_compress_headers(
     let ip6dst: LwipAddr;
     // LwipAddr ip6src, ip6dst;
 
-    LWIP_ASSERT("netif != NULL", netif != None);
-    LWIP_ASSERT("inbuf != NULL", inbuf != None);
-    LWIP_ASSERT("outbuf != NULL", outbuf != None);
-    LWIP_ASSERT(
+    // LWIP_ASSERT("netif != NULL", netif != None);
+    // LWIP_ASSERT("inbuf != NULL", inbuf != None);
+    // LWIP_ASSERT("outbuf != NULL", outbuf != None);
+    // LWIP_ASSERT(
         "lowpan6_header_len_out != NULL",
         lowpan6_header_len_out != None,
     );
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "hidden_header_len_out != NULL",
         hidden_header_len_out != None,
     );
@@ -415,12 +415,12 @@ pub fn lowpan6_decompress_hdr(
     let header_temp: u32;
     let ip6_offset: u16 = IP6_HLEN;
 
-    LWIP_ASSERT("lowpan6_buffer != NULL", lowpan6_buffer != None);
-    LWIP_ASSERT("decomp_buffer != NULL", decomp_buffer != None);
-    LWIP_ASSERT("src != NULL", src != None);
-    LWIP_ASSERT("dest != NULL", dest != None);
-    LWIP_ASSERT("hdr_size_comp != NULL", hdr_size_comp != None);
-    LWIP_ASSERT("dehdr_size_decompst != NULL", hdr_size_decomp != None);
+    // LWIP_ASSERT("lowpan6_buffer != NULL", lowpan6_buffer != None);
+    // LWIP_ASSERT("decomp_buffer != NULL", decomp_buffer != None);
+    // LWIP_ASSERT("src != NULL", src != None);
+    // LWIP_ASSERT("dest != NULL", dest != None);
+    // LWIP_ASSERT("hdr_size_comp != NULL", hdr_size_comp != None);
+    // LWIP_ASSERT("dehdr_size_decompst != NULL", hdr_size_decomp != None);
 
     ip6hdr = decomp_buffer;
     if (decomp_bufsize < IP6_HLEN) {

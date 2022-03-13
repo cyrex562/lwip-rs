@@ -341,19 +341,19 @@ pub fn TCP_REG(pcbs: &mut Vec<tcp_pcb>, npcb: &mut TcpContext) {
     // tcp_tmp_pcb = tcp_tmp_pcb.next) {
     //    LWIP_ASSERT("TCP_REG: already registered\n", tcp_tmp_pcb != (npcb));
     //                     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "TCP_REG: pcb.state != CLOSED",
         ((pcbs) == &tcp_bound_pcbs) || (npcb.state != CLOSED),
     );
     (npcb).next = *(pcbs);
-    LWIP_ASSERT("TCP_REG: npcb.next != npcb", (npcb).next != (npcb));
+    // LWIP_ASSERT("TCP_REG: npcb.next != npcb", (npcb).next != (npcb));
     *(pcbs) = (npcb);
-    LWIP_ASSERT("TCP_REG: tcp_pcbs sane", tcp_pcbs_sane());
+    // LWIP_ASSERT("TCP_REG: tcp_pcbs sane", tcp_pcbs_sane());
     tcp_timer_needed();
 }
 pub fn TCP_RMV(pcbs: &mut Vec<tcp_pcb>, npcb: &mut TcpContext) {
     let mut tcp_tmp_pcb: &mut TcpContext;
-    LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != None);
+    // LWIP_ASSERT("TCP_RMV: pcbs != NULL", *(pcbs) != None);
     //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removing %p from %p\n", (npcb), (*(pcbs)))); \
     if (*(pcbs) == (npcb)) {
         *(pcbs) = (*pcbs).next;
@@ -366,7 +366,7 @@ pub fn TCP_RMV(pcbs: &mut Vec<tcp_pcb>, npcb: &mut TcpContext) {
         // }
     }
     (npcb).next = None;
-    LWIP_ASSERT("TCP_RMV: tcp_pcbs sane", tcp_pcbs_sane());
+    // LWIP_ASSERT("TCP_RMV: tcp_pcbs sane", tcp_pcbs_sane());
     //                            LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (npcb), (*(pcbs)))); \
 }
 

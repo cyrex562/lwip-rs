@@ -13,13 +13,13 @@
 /* Setups/teardown functions */
 
 static void
-pbuf_setup(void)
+pbuf_setup()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-pbuf_teardown(void)
+pbuf_teardown()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
@@ -74,18 +74,18 @@ START_TEST(test_pbuf_copy_zero_pbuf)
 
   p1 = pbuf_alloc(PBUF_RAW, 1024, PBUF_RAM);
   fail_unless(p1 != NULL);
-  fail_unless(p1->ref == 1);
+  fail_unless( p1.ref == 1);
 
   p2 = pbuf_alloc(PBUF_RAW, 2, PBUF_POOL);
   fail_unless(p2 != NULL);
-  fail_unless(p2->ref == 1);
-  p2->len = p2->tot_len = 0;
+  fail_unless( p2.ref == 1);
+   p2.len =  p2.tot_len = 0;
 
   pbuf_cat(p1, p2);
-  fail_unless(p1->ref == 1);
-  fail_unless(p2->ref == 1);
+  fail_unless( p1.ref == 1);
+  fail_unless( p2.ref == 1);
 
-  p3 = pbuf_alloc(PBUF_RAW, p1->tot_len, PBUF_POOL);
+  p3 = pbuf_alloc(PBUF_RAW,  p1.tot_len, PBUF_POOL);
   err = pbuf_copy(p3, p1);
   fail_unless(err == ERR_VAL);
 
@@ -108,8 +108,8 @@ START_TEST(test_pbuf_copy_unmatched_chains)
   for (i = 0; i < 8; i++) {
     p = pbuf_alloc(PBUF_RAW, 16, PBUF_RAM);
     fail_unless(p != NULL);
-    for (j = 0; j < p->len; j++) {
-        ((u8_t*)p->payload)[j] = ((i << 4) | j);
+    for (j = 0; j <  p.len; j++) {
+        ((u8_t*) p.payload)[j] = ((i << 4) | j);
     }
     if (source) {
         pbuf_cat(source, p);
@@ -117,7 +117,7 @@ START_TEST(test_pbuf_copy_unmatched_chains)
         source = p;
     }
   }
-  for (i = 0; i < source->tot_len; i++) {
+  for (i = 0; i <  source.tot_len; i++) {
     fail_unless(pbuf_get_at(source, i) == i);
   }
 
@@ -134,7 +134,7 @@ START_TEST(test_pbuf_copy_unmatched_chains)
   /* Copy contents and verify data */
   err = pbuf_copy(dest, source);
   fail_unless(err == ERR_OK);
-  for (i = 0; i < source->tot_len; i++) {
+  for (i = 0; i <  source.tot_len; i++) {
     fail_unless(pbuf_get_at(dest, i) == i);
   }
 
@@ -153,37 +153,37 @@ START_TEST(test_pbuf_copy_partial_pbuf)
 
   a = pbuf_alloc(PBUF_RAW, 5, PBUF_REF);
   fail_unless(a != NULL);
-  a->payload = lwip;
+   a.payload = lwip;
   b = pbuf_alloc(PBUF_RAW, 7, PBUF_REF);
   fail_unless(b != NULL);
-  b->payload = packet;
+   b.payload = packet;
   pbuf_cat(a, b);
   dest = pbuf_alloc(PBUF_RAW, 14, PBUF_RAM);
-  memset(dest->payload, 0, dest->len);
+  memset( dest.payload, 0,  dest.len);
   fail_unless(dest != NULL);
 
   /* Don't copy if data will not fit */
-  err = pbuf_copy_partial_pbuf(dest, a, a->tot_len, 4);
+  err = pbuf_copy_partial_pbuf(dest, a,  a.tot_len, 4);
   fail_unless(err == ERR_ARG);
   /* Don't copy if length is longer than source */
-  err = pbuf_copy_partial_pbuf(dest, a, a->tot_len + 1, 0);
+  err = pbuf_copy_partial_pbuf(dest, a,  a.tot_len + 1, 0);
   fail_unless(err == ERR_ARG);
   /* Normal copy */
-  err = pbuf_copy_partial_pbuf(dest, a, a->tot_len, 0);
+  err = pbuf_copy_partial_pbuf(dest, a,  a.tot_len, 0);
   fail_unless(err == ERR_OK);
-  fail_unless(strcmp("lwip packet", (char*)dest->payload) == 0);
+  fail_unless(strcmp("lwip packet", (char*) dest.payload) == 0);
   /* Copy at offset */
-  err = pbuf_copy_partial_pbuf(dest, a, a->tot_len, 1);
+  err = pbuf_copy_partial_pbuf(dest, a,  a.tot_len, 1);
   fail_unless(err == ERR_OK);
-  fail_unless(strcmp("llwip packet", (char*)dest->payload) == 0);
+  fail_unless(strcmp("llwip packet", (char*) dest.payload) == 0);
   /* Copy at offset with shorter length */
   err = pbuf_copy_partial_pbuf(dest, a, 6, 6);
   fail_unless(err == ERR_OK);
-  fail_unless(strcmp("llwip lwip p", (char*)dest->payload) == 0);
+  fail_unless(strcmp("llwip lwip p", (char*) dest.payload) == 0);
   /* Copy with shorter length */
   err = pbuf_copy_partial_pbuf(dest, a, 5, 0);
   fail_unless(err == ERR_OK);
-  fail_unless(strcmp("lwip  lwip p", (char*)dest->payload) == 0);
+  fail_unless(strcmp("lwip  lwip p", (char*) dest.payload) == 0);
 
   pbuf_free(dest);
   pbuf_free(a);
@@ -197,7 +197,7 @@ START_TEST(test_pbuf_split_64k_on_small_pbufs)
 
   p = pbuf_alloc(PBUF_RAW, 1, PBUF_POOL);
   pbuf_split_64k(p, &rest);
-  fail_unless(p->tot_len == 1);
+  fail_unless( p.tot_len == 1);
   pbuf_free(p);
 }
 END_TEST
@@ -236,11 +236,11 @@ START_TEST(test_pbuf_queueing_bigger_than_64k)
   pbuf_cat(p1, p3);
 
   pbuf_split_64k(p1, &rest2);
-  fail_unless(p1->tot_len == TESTBUFSIZE_1);
-  fail_unless(rest2->tot_len == (u16_t)((TESTBUFSIZE_2+TESTBUFSIZE_3) & 0xFFFF));
+  fail_unless( p1.tot_len == TESTBUFSIZE_1);
+  fail_unless( rest2.tot_len == (u16_t)((TESTBUFSIZE_2+TESTBUFSIZE_3) & 0xFFFF));
   pbuf_split_64k(rest2, &rest3);
-  fail_unless(rest2->tot_len == TESTBUFSIZE_2);
-  fail_unless(rest3->tot_len == TESTBUFSIZE_3);
+  fail_unless( rest2.tot_len == TESTBUFSIZE_2);
+  fail_unless( rest3.tot_len == TESTBUFSIZE_3);
 
   pbuf_copy_partial(p1, testbuf_1a, TESTBUFSIZE_1, 0);
   pbuf_copy_partial(rest2, testbuf_2a, TESTBUFSIZE_2, 0);
@@ -266,44 +266,44 @@ START_TEST(test_pbuf_take_at_edge)
   int i;
   u8_t testdata[] = { 0x01, 0x08, 0x82, 0x02 };
   struct pbuf *p = pbuf_alloc(PBUF_RAW, 1024, PBUF_POOL);
-  struct pbuf *q = p->next;
+  struct pbuf *q =  p.next;
   LWIP_UNUSED_ARG(_i);
   /* alloc big enough to get a chain of pbufs */
-  fail_if(p->tot_len == p->len);
-  memset(p->payload, 0, p->len);
-  memset(q->payload, 0, q->len);
+  fail_if( p.tot_len ==  p.len);
+  memset( p.payload, 0,  p.len);
+  memset( q.payload, 0,  q.len);
 
   /* copy data to the beginning of first pbuf */
   res = pbuf_take_at(p, &testdata, sizeof(testdata), 0);
   fail_unless(res == ERR_OK);
 
-  out = (u8_t*)p->payload;
+  out = (u8_t*) p.payload;
   for (i = 0; i < (int)sizeof(testdata); i++) {
     fail_unless(out[i] == testdata[i],
       "Bad data at pos %d, was %02X, expected %02X", i, out[i], testdata[i]);
   }
 
   /* copy data to the just before end of first pbuf */
-  res = pbuf_take_at(p, &testdata, sizeof(testdata), p->len - 1);
+  res = pbuf_take_at(p, &testdata, sizeof(testdata),  p.len - 1);
   fail_unless(res == ERR_OK);
 
-  out = (u8_t*)p->payload;
-  fail_unless(out[p->len - 1] == testdata[0],
-    "Bad data at pos %d, was %02X, expected %02X", p->len - 1, out[p->len - 1], testdata[0]);
-  out = (u8_t*)q->payload;
+  out = (u8_t*) p.payload;
+  fail_unless(out[ p.len - 1] == testdata[0],
+    "Bad data at pos %d, was %02X, expected %02X",  p.len - 1, out[ p.len - 1], testdata[0]);
+  out = (u8_t*) q.payload;
   for (i = 1; i < (int)sizeof(testdata); i++) {
     fail_unless(out[i-1] == testdata[i],
-      "Bad data at pos %d, was %02X, expected %02X", p->len - 1 + i, out[i-1], testdata[i]);
+      "Bad data at pos %d, was %02X, expected %02X",  p.len - 1 + i, out[i-1], testdata[i]);
   }
 
   /* copy data to the beginning of second pbuf */
-  res = pbuf_take_at(p, &testdata, sizeof(testdata), p->len);
+  res = pbuf_take_at(p, &testdata, sizeof(testdata),  p.len);
   fail_unless(res == ERR_OK);
 
-  out = (u8_t*)p->payload;
+  out = (u8_t*) p.payload;
   for (i = 0; i < (int)sizeof(testdata); i++) {
     fail_unless(out[i] == testdata[i],
-      "Bad data at pos %d, was %02X, expected %02X", p->len+i, out[i], testdata[i]);
+      "Bad data at pos %d, was %02X, expected %02X",  p.len+i, out[i], testdata[i]);
   }
   pbuf_free(p);
 }
@@ -316,32 +316,32 @@ START_TEST(test_pbuf_get_put_at_edge)
 {
   u8_t *out;
   u8_t testdata = 0x01;
-  u8_t getdata;
+  getdata: u8;
   struct pbuf *p = pbuf_alloc(PBUF_RAW, 1024, PBUF_POOL);
-  struct pbuf *q = p->next;
+  struct pbuf *q =  p.next;
   LWIP_UNUSED_ARG(_i);
   /* alloc big enough to get a chain of pbufs */
-  fail_if(p->tot_len == p->len);
-  memset(p->payload, 0, p->len);
-  memset(q->payload, 0, q->len);
+  fail_if( p.tot_len ==  p.len);
+  memset( p.payload, 0,  p.len);
+  memset( q.payload, 0,  q.len);
 
   /* put byte at the beginning of second pbuf */
-  pbuf_put_at(p, p->len, testdata);
+  pbuf_put_at(p,  p.len, testdata);
 
-  out = (u8_t*)q->payload;
+  out = (u8_t*) q.payload;
   fail_unless(*out == testdata,
-    "Bad data at pos %d, was %02X, expected %02X", p->len, *out, testdata);
+    "Bad data at pos %d, was %02X, expected %02X",  p.len, *out, testdata);
 
-  getdata = pbuf_get_at(p, p->len);
+  getdata = pbuf_get_at(p,  p.len);
   fail_unless(*out == getdata,
-    "pbuf_get_at() returned bad data at pos %d, was %02X, expected %02X", p->len, getdata, *out);
+    "pbuf_get_at() returned bad data at pos %d, was %02X, expected %02X",  p.len, getdata, *out);
   pbuf_free(p);
 }
 END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-pbuf_suite(void)
+pbuf_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_pbuf_alloc_zero_pbufs),

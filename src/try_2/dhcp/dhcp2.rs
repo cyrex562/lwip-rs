@@ -208,7 +208,7 @@ pub fn dhcp_get_option_value(dhcp: &dhcp, idx: usize) -> u32 {
 //  Ensure DHCP PCB is allocated and bound
 pub fn dhcp_inc_pcb_refcount() -> Result<(), LwipError> {
     if (dhcp_pcb_refcount == 0) {
-        LWIP_ASSERT("dhcp_inc_pcb_refcount(): memory leak", dhcp_pcb == None);
+        // LWIP_ASSERT("dhcp_inc_pcb_refcount(): memory leak", dhcp_pcb == None);
 
         //  allocate UDP PCB
         dhcp_pcb = udp_new();
@@ -232,7 +232,7 @@ pub fn dhcp_inc_pcb_refcount() -> Result<(), LwipError> {
 
 //  Free DHCP PCB if the last netif stops using it
 pub fn dhcp_dec_pcb_refcount() {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "dhcp_pcb_refcount(): refcount error",
         (dhcp_pcb_refcount > 0),
     );
@@ -704,10 +704,10 @@ pub fn dhcp_handle_ack(netif: &mut NetIfc, msg_in: &mut dhcp_msg) {
  * @param dhcp (uninitialised) dhcp struct allocated by the application
  */
 pub fn dhcp_set_struct(netif: &mut NetIfc, dhcp: &mut dhcp) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("netif != NULL", netif != None);
-    LWIP_ASSERT("dhcp != NULL", dhcp != None);
-    LWIP_ASSERT(
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("netif != NULL", netif != None);
+    // LWIP_ASSERT("dhcp != NULL", dhcp != None);
+    // LWIP_ASSERT(
         "netif already has a struct dhcp set",
         netif_dhcp_data(netif) == None,
     );
@@ -728,8 +728,8 @@ pub fn dhcp_set_struct(netif: &mut NetIfc, dhcp: &mut dhcp) {
  * @param netif the netif from which to remove the struct dhcp
  */
 pub fn dhcp_cleanup(netif: &mut NetIfc) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("netif != NULL", netif != None);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("netif != NULL", netif != None);
 
     if (netif_dhcp_data(netif) != None) {
         mem_free(netif_dhcp_data(netif));
@@ -754,7 +754,7 @@ pub fn dhcp_start(netif: &mut NetIfc) {
     let dhcp: &mut dhcp;
     let result: err_t;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     // LWIP_ERROR("netif != NULL", (netif != NULL), return ERR_ARG;);
     // LWIP_ERROR("netif is not up, old style port?", netif_is_up(netif), return ERR_ARG;);
     dhcp = netif_dhcp_data(netif);
@@ -842,7 +842,7 @@ pub fn dhcp_inform(netif: &mut NetIfc) {
     let p_out: &mut PacketBuffer;
     let options_out_len: u16;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     // LWIP_ERROR("netif != NULL", (netif != NULL), return;);
 
     if (dhcp_inc_pcb_refcount() != ERR_OK) {
@@ -922,7 +922,7 @@ pub fn dhcp_network_changed(netif: &mut NetIfc) {
         DHCP_STATE_OFF => {}
         //  stay off
         _ => {
-            LWIP_ASSERT("invalid dhcp.state", dhcp.state <= DHCP_STATE_BACKING_OFF);
+            // LWIP_ASSERT("invalid dhcp.state", dhcp.state <= DHCP_STATE_BACKING_OFF);
             /* INIT/REQUESTING/CHECKING/BACKING_OFF restart with new 'rid' because the
             state changes, SELECTING: continue with current 'rid' as we stay in the
             same state */
@@ -1258,7 +1258,7 @@ pub fn dhcp_renew(netif: &mut NetIfc) {
     let p_out: &mut PacketBuffer;
     let options_out_len: u16;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_renew()\n"));
     dhcp_set_state(dhcp, DHCP_STATE_RENEWING);
 
@@ -1533,7 +1533,7 @@ pub fn dhcp_release_and_stop(netif: &mut NetIfc) {
     let dhcp: &mut dhcp = netif_dhcp_data(netif);
     let server_ip_addr: LwipAddr;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     //    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_release_and_stop()\n"));
     if (dhcp == None) {
         return;
@@ -1663,7 +1663,7 @@ pub fn dhcp_option(
     option_type: u8,
     option_len: u8,
 ) -> u16 {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "dhcp_option: options_out_len + 2 + option_len <= DHCP_OPTIONS_LEN",
         options_out_len + 2 + option_len <= DHCP_OPTIONS_LEN,
     );
@@ -1676,7 +1676,7 @@ pub fn dhcp_option(
  *
  */
 pub fn dhcp_option_byte(options_out_len: u16, options: &mut Vec<u8>, value: u8) -> u16 {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "dhcp_option_byte: options_out_len < DHCP_OPTIONS_LEN",
         options_out_len < DHCP_OPTIONS_LEN,
     );
@@ -1685,7 +1685,7 @@ pub fn dhcp_option_byte(options_out_len: u16, options: &mut Vec<u8>, value: u8) 
 }
 
 pub fn dhcp_option_short(options_out_len: u16, options: &mut Vec<u8>, value: u16) -> u16 {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "dhcp_option_short: options_out_len + 2 <= DHCP_OPTIONS_LEN",
         options_out_len + 2 <= DHCP_OPTIONS_LEN,
     );
@@ -1695,7 +1695,7 @@ pub fn dhcp_option_short(options_out_len: u16, options: &mut Vec<u8>, value: u16
 }
 
 pub fn dhcp_option_long(options_out_len: u16, options: &mut Vec<u8>, value: u32) -> u16 {
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "dhcp_option_long: options_out_len + 4 <= DHCP_OPTIONS_LEN",
         options_out_len + 4 <= DHCP_OPTIONS_LEN,
     );
@@ -1715,9 +1715,9 @@ pub fn dhcp_option_hostname(options_out_len: u16, options: &mut Vec<u8>, netif: 
             /* Shrink len to available bytes (need 2 bytes for OPTION_HOSTNAME
             and 1 byte for trailer) */
             let available: usize = DHCP_OPTIONS_LEN - options_out_len - 3;
-            LWIP_ASSERT("DHCP: hostname is too long!", namelen <= available);
+            // LWIP_ASSERT("DHCP: hostname is too long!", namelen <= available);
             len = LWIP_MIN(namelen, available);
-            LWIP_ASSERT("DHCP: hostname is too long!", len <= 0xFF);
+            // LWIP_ASSERT("DHCP: hostname is too long!", len <= 0xFF);
             options_out_len = dhcp_option(options_out_len, options, DHCP_OPTION_HOSTNAME, len);
             // while (len--) {
             //   options_out_len = dhcp_option_byte(options_out_len, options, *p+= 1);
@@ -1882,7 +1882,7 @@ pub fn dhcp_parse_reply(p: &mut PacketBuffer, dhcp: &mut dhcp) -> Result<(), Lwi
                 let value: u32 = 0;
                 let copy_len: u16;
                 // decode_next:
-                LWIP_ASSERT(
+                // LWIP_ASSERT(
                     "check decode_idx",
                     decode_idx >= 0 && decode_idx < DHCP_OPTION_IDX_MAX,
                 );
@@ -2010,7 +2010,7 @@ pub fn dhcp_recv(
         // goto free_pbuf_and_return;
     }
 
-    LWIP_ASSERT("invalid server address type", IP_IS_V4(addr));
+    // LWIP_ASSERT("invalid server address type", IP_IS_V4(addr));
 
     // LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("dhcp_recv(pbuf = %p) from DHCP server %"U16_F".%"U16_F".%"U16_F".%"U16_F" port %"U16_F"\n", p,
     // ip4_addr1_16(ip_2_ip4(addr)), ip4_addr2_16(ip_2_ip4(addr)), ip4_addr3_16(ip_2_ip4(addr)), ip4_addr4_16(ip_2_ip4(addr)), port));
@@ -2155,7 +2155,7 @@ pub fn dhcp_create_msg(
         );*/
         return None;
     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "dhcp_create_msg: check that first pbuf can hold struct dhcp_msg",
         (p_out.len >= sizeof(dhcp_msg)),
     );

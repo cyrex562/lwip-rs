@@ -52,18 +52,18 @@ struct smtp_send_request {
    * but used from the pointers supplied in this struct.
    * This means less memory usage, but data must stay untouched until
    * the callback function is called. */
-  u8_t static_data;
+  static_data: u8;
 };
 
 
-#if SMTP_BODYDH
+// #if SMTP_BODYDH
 
 
 pub const SMTP_BODYDH_BUFFER_SIZE: u32 = 256; /* SMTP_BODYDH_BUFFER_SIZE */
 
 struct smtp_bodydh {
-  u16_t state;
-  u16_t length; /* Length of content in buffer */
+  state: u16;
+  length: u16; /* Length of content in buffer */
   char buffer[SMTP_BODYDH_BUFFER_SIZE]; /* buffer for generated content */
 #ifdef SMTP_BODYDH_USER_SIZE
   u8_t user[SMTP_BODYDH_USER_SIZE];
@@ -96,7 +96,7 @@ err_t smtp_send_mail_bodycback(const char *from, const char* to, const char* sub
 
 err_t smtp_set_server_addr(const char* server);
 void smtp_set_server_port(u16_t port);
-#if LWIP_ALTCP && LWIP_ALTCP_TLS
+// #if LWIP_ALTCP && LWIP_ALTCP_TLS
 struct altcp_tls_config;
 void smtp_set_tls_config(struct altcp_tls_config *tls_config);
 

@@ -41,7 +41,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_DNS
+// #if LWIP_DNS
 
 // #include "lwip/ip_addr.h"
 // #include "lwip/err.h"
@@ -64,7 +64,7 @@ LWIP_IPV4
 #define LWIP_DNS_ADDRTYPE_DEFAULT   LWIP_DNS_ADDRTYPE_IPV6
 
 
-#if DNS_LOCAL_HOSTLIST
+// #if DNS_LOCAL_HOSTLIST
 /** struct used for local host-list */
 struct local_hostlist_entry {
   /** static hostname */
@@ -74,7 +74,7 @@ struct local_hostlist_entry {
   struct local_hostlist_entry *next;
 };
 #define DNS_LOCAL_HOSTLIST_ELEM(name, addr_init) {name, addr_init, NULL}
-#if DNS_LOCAL_HOSTLIST_IS_DYNAMIC
+// #if DNS_LOCAL_HOSTLIST_IS_DYNAMIC
 
 #define DNS_LOCAL_HOSTLIST_MAX_NAMELEN  DNS_MAX_NAME_LENGTH
 
@@ -98,8 +98,8 @@ extern const ip_addr_t dns_mquery_v6group;
 */
 typedef void (*dns_found_callback)(const char *name, const ip_addr_t *ipaddr, void *callback_arg);
 
-void             dns_init(void);
-void             dns_tmr(void);
+void             dns_init();
+void             dns_tmr();
 void             dns_setserver(u8_t numdns, const ip_addr_t *dnsserver);
 const ip_addr_t* dns_getserver(u8_t numdns);
 err_t            dns_gethostbyname(const char *hostname, ip_addr_t *addr,
@@ -109,10 +109,10 @@ err_t            dns_gethostbyname_addrtype(const char *hostname, ip_addr_t *add
                                    u8_t dns_addrtype);
 
 
-#if DNS_LOCAL_HOSTLIST
+// #if DNS_LOCAL_HOSTLIST
 size_t         dns_local_iterate(dns_found_callback iterator_fn, void *iterator_arg);
 err_t          dns_local_lookup(const char *hostname, ip_addr_t *addr, u8_t dns_addrtype);
-#if DNS_LOCAL_HOSTLIST_IS_DYNAMIC
+// #if DNS_LOCAL_HOSTLIST_IS_DYNAMIC
 int            dns_local_removehost(const char *hostname, const ip_addr_t *addr);
 err_t          dns_local_addhost(const char *hostname, const ip_addr_t *addr);
  /* DNS_LOCAL_HOSTLIST_IS_DYNAMIC */

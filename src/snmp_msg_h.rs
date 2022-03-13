@@ -40,7 +40,7 @@
 
 // #include "lwip/apps/snmp_opts.h"
 
-#if LWIP_SNMP
+// #if LWIP_SNMP
 
 // #include "lwip/apps/snmp.h"
 // #include "lwip/apps/snmp_core.h"
@@ -48,7 +48,7 @@
 // #include "lwip/ip_addr.h"
 // #include "lwip/err.h"
 
-#if LWIP_SNMP_V3
+// #if LWIP_SNMP_V3
 // #include "snmpv3_priv.h"
 
 
@@ -60,7 +60,7 @@
 pub const SNMP_VERSION_1: u32 = 0; #define SNMP_VERSION_2c 1
 pub const SNMP_VERSION_3: u32 = 3; struct snmp_varbind_enumerator {
   struct snmp_pbuf_stream pbuf_stream;
-  u16_t varbind_count;
+  varbind_count: u16;
 };
 
 typedef enum {
@@ -79,15 +79,15 @@ struct snmp_request {
   /* source IP address */
   const ip_addr_t *source_ip;
   /* source UDP port */
-  u16_t source_port;
+  source_port: u16;
   /* incoming snmp version */
-  u8_t version;
+  version: u8;
   /* community name (zero terminated) */
   u8_t community[SNMP_MAX_COMMUNITY_STR_LEN + 1];
   /* community string length (exclusive zero term) */
-  u16_t community_strlen;
+  community_strlen: u16;
   /* request type */
-  u8_t request_type;
+  request_type: u8;
   /* request ID */
   s32_t request_id;
   /* error status */
@@ -100,50 +100,50 @@ struct snmp_request {
   s32_t max_repetitions;
 
   /* Usually response-pdu (2). When snmpv3 errors are detected report-pdu(8) */
-  u8_t request_out_type;
+  request_out_type: u8;
 
-#if LWIP_SNMP_V3
+// #if LWIP_SNMP_V3
   s32_t msg_id;
   s32_t msg_max_size;
-  u8_t  msg_flags;
+  msg_flags: u8;
   s32_t msg_security_model;
   u8_t  msg_authoritative_engine_id[SNMP_V3_MAX_ENGINE_ID_LENGTH];
-  u8_t  msg_authoritative_engine_id_len;
+  msg_authoritative_engine_id_len: u8;
   s32_t msg_authoritative_engine_boots;
   s32_t msg_authoritative_engine_time;
   u8_t  msg_user_name[SNMP_V3_MAX_USER_LENGTH];
-  u8_t  msg_user_name_len;
+  msg_user_name_len: u8;
   u8_t  msg_authentication_parameters[SNMP_V3_MAX_AUTH_PARAM_LENGTH];
-  u8_t  msg_authentication_parameters_len;
+  msg_authentication_parameters_len: u8;
   u8_t  msg_privacy_parameters[SNMP_V3_MAX_PRIV_PARAM_LENGTH];
-  u8_t  msg_privacy_parameters_len;
+  msg_privacy_parameters_len: u8;
   u8_t  context_engine_id[SNMP_V3_MAX_ENGINE_ID_LENGTH];
-  u8_t  context_engine_id_len;
+  context_engine_id_len: u8;
   u8_t  context_name[SNMP_V3_MAX_ENGINE_ID_LENGTH];
-  u8_t  context_name_len;
+  context_name_len: u8;
 
 
   struct pbuf *inbound_pbuf;
   struct snmp_varbind_enumerator inbound_varbind_enumerator;
-  u16_t inbound_varbind_offset;
-  u16_t inbound_varbind_len;
-  u16_t inbound_padding_len;
+  inbound_varbind_offset: u16;
+  inbound_varbind_len: u16;
+  inbound_padding_len: u16;
 
   struct pbuf *outbound_pbuf;
   struct snmp_pbuf_stream outbound_pbuf_stream;
-  u16_t outbound_pdu_offset;
-  u16_t outbound_error_status_offset;
-  u16_t outbound_error_index_offset;
-  u16_t outbound_varbind_offset;
-#if LWIP_SNMP_V3
-  u16_t outbound_msg_global_data_offset;
-  u16_t outbound_msg_global_data_end;
-  u16_t outbound_msg_security_parameters_str_offset;
-  u16_t outbound_msg_security_parameters_seq_offset;
-  u16_t outbound_msg_security_parameters_end;
-  u16_t outbound_msg_authentication_parameters_offset;
-  u16_t outbound_scoped_pdu_seq_offset;
-  u16_t outbound_scoped_pdu_string_offset;
+  outbound_pdu_offset: u16;
+  outbound_error_status_offset: u16;
+  outbound_error_index_offset: u16;
+  outbound_varbind_offset: u16;
+// #if LWIP_SNMP_V3
+  outbound_msg_global_data_offset: u16;
+  outbound_msg_global_data_end: u16;
+  outbound_msg_security_parameters_str_offset: u16;
+  outbound_msg_security_parameters_seq_offset: u16;
+  outbound_msg_security_parameters_end: u16;
+  outbound_msg_authentication_parameters_offset: u16;
+  outbound_scoped_pdu_seq_offset: u16;
+  outbound_scoped_pdu_string_offset: u16;
 
 
   u8_t value_buffer[SNMP_MAX_VALUE_SIZE];
@@ -151,12 +151,12 @@ struct snmp_request {
 
 /** A helper struct keeping length information about varbinds */
 struct snmp_varbind_len {
-  u8_t  vb_len_len;
-  u16_t vb_value_len;
-  u8_t  oid_len_len;
-  u16_t oid_value_len;
-  u8_t  value_len_len;
-  u16_t value_value_len;
+  vb_len_len: u8;
+  vb_value_len: u16;
+  oid_len_len: u8;
+  oid_value_len: u16;
+  value_len_len: u8;
+  value_value_len: u16;
 };
 
 /** Agent community string */

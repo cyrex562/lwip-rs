@@ -38,10 +38,10 @@
 
 void init_default_netif(const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw);
 #else
-void init_default_netif(void);
+void init_default_netif();
 
 
-void default_netif_poll(void);
-void default_netif_shutdown(void);
+void default_netif_poll();
+void default_netif_shutdown();
 
 

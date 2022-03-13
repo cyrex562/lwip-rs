@@ -45,7 +45,7 @@
 
 
 
-#if LWIP_MDNS_RESPONDER
+// #if LWIP_MDNS_RESPONDER
 
 /* Domain methods - also visible for unit tests */
 
@@ -64,7 +64,7 @@ err_t mdns_build_reverse_v6_domain(struct mdns_domain *domain, const ip6_addr_t 
 mdns_build_host_domain(struct mdns_domain *domain, struct mdns_host *mdns);
 err_t mdns_build_dnssd_domain(struct mdns_domain *domain);
 err_t mdns_build_service_domain(struct mdns_domain *domain, struct mdns_service *service, int include_name);
-#if LWIP_MDNS_SEARCH
+// #if LWIP_MDNS_SEARCH
 err_t mdns_build_request_domain(struct mdns_domain *domain, struct mdns_request *request, int include_name);
 
 mdns_compress_domain(struct pbuf *pbuf, u16_t *offset, struct mdns_domain *domain);

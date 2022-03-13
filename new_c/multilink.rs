@@ -29,7 +29,7 @@
  */
 
 
-#if PPP_SUPPORT && defined(HAVE_MULTILINK) /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && defined(HAVE_MULTILINK) /* don't build if not configured for use in lwipopts.h */
 
 /* Multilink support
  *
@@ -65,7 +65,7 @@ extern TDB_CONTEXT *pppdb;
 extern char db_key[];
 
 static void make_bundle_links (int append);
-static void remove_bundle_link (void);
+static void remove_bundle_link ();
 static void iterate_bundle_links (void (*func) (char *));
 
 static int get_default_epdisc (struct epdisc *);
@@ -73,11 +73,11 @@ static int parse_num (char *str, const char *key, int *valp);
 static int owns_unit (TDB_DATA pid, int unit);
 
 #define set_ip_epdisc(ep, addr) do {	\
-	ep->length = 4;			\
-	ep->value[0] = addr >> 24;	\
-	ep->value[1] = addr >> 16;	\
-	ep->value[2] = addr >> 8;	\
-	ep->value[3] = addr;		\
+	 ep.length = 4;			\
+	 ep.value[0] = addr >> 24;	\
+	 ep.value[1] = addr >> 16;	\
+	 ep.value[2] = addr >> 8;	\
+	 ep.value[3] = addr;		\
 } while (0)
 
 #define LOCAL_IP_ADDR(addr)						  \
@@ -97,17 +97,17 @@ mp_check_options()
 	if (!multilink)
 		return;
 	/* if we're doing multilink, we have to negotiate MRRU */
-	if (!wo->neg_mrru) {
+	if (! wo.neg_mrru) {
 		/* mrru not specified, default to mru */
-		wo->mrru = wo->mru;
-		wo->neg_mrru = 1;
+		 wo.mrru =  wo.mru;
+		 wo.neg_mrru = 1;
 	}
-	ao->mrru = ao->mru;
-	ao->neg_mrru = 1;
+	 ao.mrru =  ao.mru;
+	 ao.neg_mrru = 1;
 
-	if (!wo->neg_endpoint && !noendpoint) {
+	if (! wo.neg_endpoint && !noendpoint) {
 		/* get a default endpoint value */
-		wo->neg_endpoint = get_default_epdisc(&wo->endpoint);
+		 wo.neg_endpoint = get_default_epdisc(& wo.endpoint);
 	}
 }
 
@@ -128,23 +128,23 @@ mp_join_bundle()
 
 	if (doing_multilink) {
 		/* have previously joined a bundle */
-		if (!go->neg_mrru || !ho->neg_mrru) {
+		if (! go.neg_mrru || ! ho.neg_mrru) {
 			notice("oops, didn't get multilink on renegotiation");
 			lcp_close(pcb, "multilink required");
 			return 0;
 		}
-		/* XXX should check the peer_authname and ho->endpoint
+		/* XXX should check the peer_authname and  ho.endpoint
 		   are the same as previously */
 		return 0;
 	}
 
-	if (!go->neg_mrru || !ho->neg_mrru) {
+	if (! go.neg_mrru || ! ho.neg_mrru) {
 		/* not doing multilink */
-		if (go->neg_mrru)
+		if ( go.neg_mrru)
 			notice("oops, multilink negotiated only for receive");
-		mtu = ho->neg_mru? ho->mru: PPP_DEFMRU;
-		if (mtu > ao->mru)
-			mtu = ao->mru;
+		mtu =  ho.neg_mru?  ho.mru: PPP_DEFMRU;
+		if (mtu >  ao.mru)
+			mtu =  ao.mru;
 		if (demand) {
 			/* already have a bundle */
 			cfg_bundle(0, 0, 0, 0);
@@ -166,8 +166,8 @@ mp_join_bundle()
 	 * character has to be quoted.
 	 */
 	l = 4 * strlen(peer_authname) + 10;
-	if (ho->neg_endpoint)
-		l += 3 * ho->endpoint.length + 8;
+	if ( ho.neg_endpoint)
+		l += 3 *  ho.endpoint.length + 8;
 	if (bundle_name)
 		l += 3 * strlen(bundle_name) + 2;
 	bundle_id = malloc(l);
@@ -176,11 +176,11 @@ mp_join_bundle()
 
 	p = bundle_id;
 	p += slprintf(p, l-1, "BUNDLE=\"%q\"", peer_authname);
-	if (ho->neg_endpoint || bundle_name)
+	if ( ho.neg_endpoint || bundle_name)
 		*p++ = '/';
-	if (ho->neg_endpoint)
+	if ( ho.neg_endpoint)
 		p += slprintf(p, bundle_id+l-p, "%s",
-			      epdisc_to_str(&ho->endpoint));
+			      epdisc_to_str(& ho.endpoint));
 	if (bundle_name)
 		p += slprintf(p, bundle_id+l-p, "/%v", bundle_name);
 
@@ -195,9 +195,9 @@ mp_join_bundle()
 	 * For demand mode, we only need to configure the bundle
 	 * and attach the link.
 	 */
-	mtu = LWIP_MIN(ho->mrru, ao->mru);
+	mtu = LWIP_MIN( ho.mrru,  ao.mru);
 	if (demand) {
-		cfg_bundle(go->mrru, ho->mrru, go->neg_ssnhf, ho->neg_ssnhf);
+		cfg_bundle( go.mrru,  ho.mrru,  go.neg_ssnhf,  ho.neg_ssnhf);
 		ppp_netif_set_mtu(pcb, mtu);
 		script_setenv("BUNDLE", bundle_id + 7, 1);
 		return 0;
@@ -243,7 +243,7 @@ mp_join_bundle()
 	}
 
 	/* we have to make a new bundle */
-	make_new_bundle(go->mrru, ho->mrru, go->neg_ssnhf, ho->neg_ssnhf);
+	make_new_bundle( go.mrru,  ho.mrru,  go.neg_ssnhf,  ho.neg_ssnhf);
 	set_ifunit(1);
 	ppp_netif_set_mtu(pcb, mtu);
 	script_setenv("BUNDLE", bundle_id + 7, 1);
@@ -279,9 +279,9 @@ void mp_bundle_terminated()
 	bundle_terminating = 1;
 	upper_layers_down(pcb);
 	notice("Connection terminated.");
-#if PPP_STATS_SUPPORT
+// #if PPP_STATS_SUPPORT
 	print_link_stats();
-#endif /* PPP_STATS_SUPPORT */
+// #endif /* PPP_STATS_SUPPORT */
 	if (!demand) {
 		remove_pidfiles();
 		script_unsetenv("IFNAME");
@@ -458,20 +458,20 @@ get_default_epdisc(ep)
 
 	/* First try for an ethernet MAC address */
 	p = get_first_ethernet();
-	if (p != 0 && get_if_hwaddr(ep->value, p) >= 0) {
-		ep->class = EPD_MAC;
-		ep->length = 6;
+	if (p != 0 && get_if_hwaddr( ep.value, p) >= 0) {
+		 ep.class = EPD_MAC;
+		 ep.length = 6;
 		return 1;
 	}
 
 	/* see if our hostname corresponds to a reasonable IP address */
 	hp = gethostbyname(hostname);
 	if (hp != NULL) {
-		addr = *(u32_t *)hp->h_addr;
+		addr = *(u32_t *) hp.h_addr;
 		if (!bad_ip_adrs(addr)) {
 			addr = lwip_ntohl(addr);
 			if (!LOCAL_IP_ADDR(addr)) {
-				ep->class = EPD_IP;
+				 ep.class = EPD_IP;
 				set_ip_epdisc(ep, addr);
 				return 1;
 			}
@@ -494,13 +494,13 @@ epdisc_to_str(ep)
      struct epdisc *ep;
 {
 	static char str[MAX_ENDP_LEN*3+8];
-	u_char *p = ep->value;
+	u_char *p =  ep.value;
 	int i, mask = 0;
 	char *q, c, c2;
 
-	if (ep->class == EPD_NULL && ep->length == 0)
+	if ( ep.class == EPD_NULL &&  ep.length == 0)
 		return "null";
-	if (ep->class == EPD_IP && ep->length == 4) {
+	if ( ep.class == EPD_IP &&  ep.length == 4) {
 		u32_t addr;
 
 		GETLONG(addr, p);
@@ -510,23 +510,23 @@ epdisc_to_str(ep)
 
 	c = ':';
 	c2 = '.';
-	if (ep->class == EPD_MAC && ep->length == 6)
+	if ( ep.class == EPD_MAC &&  ep.length == 6)
 		c2 = ':';
-	else if (ep->class == EPD_MAGIC && (ep->length % 4) == 0)
+	else if ( ep.class == EPD_MAGIC && ( ep.length % 4) == 0)
 		mask = 3;
 	q = str;
-	if (ep->class <= EPD_PHONENUM)
+	if ( ep.class <= EPD_PHONENUM)
 		q += slprintf(q, sizeof(str)-1, "%s",
-			      endp_class_names[ep->class]);
+			      endp_class_names[ ep.class]);
 	else
-		q += slprintf(q, sizeof(str)-1, "%d", ep->class);
+		q += slprintf(q, sizeof(str)-1, "%d",  ep.class);
 	c = ':';
-	for (i = 0; i < ep->length && i < MAX_ENDP_LEN; ++i) {
+	for (i = 0; i <  ep.length && i < MAX_ENDP_LEN; ++i) {
 		if ((i & mask) == 0) {
 			*q++ = c;
 			c = c2;
 		}
-		q += slprintf(q, str + sizeof(str) - q, "%.2x", ep->value[i]);
+		q += slprintf(q, str + sizeof(str) - q, "%.2x",  ep.value[i]);
 	}
 	return str;
 }
@@ -562,9 +562,9 @@ str_to_epdisc(ep, str)
 			return 0;	/* can't parse class number */
 		str = endp;
 	}
-	ep->class = i;
+	 ep.class = i;
 	if (*str == 0) {
-		ep->length = 0;
+		 ep.length = 0;
 		return 1;
 	}
 	if (*str != ':' && *str != '.')
@@ -579,8 +579,8 @@ str_to_epdisc(ep, str)
 		set_ip_epdisc(ep, addr);
 		return 1;
 	}
-	if (i == EPD_MAC && get_if_hwaddr(ep->value, str) >= 0) {
-		ep->length = 6;
+	if (i == EPD_MAC && get_if_hwaddr( ep.value, str) >= 0) {
+		 ep.length = 6;
 		return 1;
 	}
 
@@ -594,16 +594,16 @@ str_to_epdisc(ep, str)
 		i = p - str;
 		if (i == 0)
 			return 0;
-		ep->value[l] = hexc_val(*str++);
+		 ep.value[l] = hexc_val(*str++);
 		if ((i & 1) == 0)
-			ep->value[l] = (ep->value[l] << 4) + hexc_val(*str++);
+			 ep.value[l] = ( ep.value[l] << 4) + hexc_val(*str++);
 		if (*str == ':' || *str == '.')
 			++str;
 	}
-	if (*str != 0 || (ep->class == EPD_MAC && l != 6))
+	if (*str != 0 || ( ep.class == EPD_MAC && l != 6))
 		return 0;
-	ep->length = l;
+	 ep.length = l;
 	return 1;
 }
 
-#endif /* PPP_SUPPORT && HAVE_MULTILINK */
+// #endif /* PPP_SUPPORT && HAVE_MULTILINK */

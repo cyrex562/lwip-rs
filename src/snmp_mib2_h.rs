@@ -42,14 +42,14 @@
 
 
 
-#if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
-#if SNMP_LWIP_MIB2
+// #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
+// #if SNMP_LWIP_MIB2
 
 // #include "lwip/apps/snmp_core.h"
 
 extern const struct snmp_mib mib2;
 
-#if SNMP_USE_NETCONN
+// #if SNMP_USE_NETCONN
 // #include "lwip/apps/snmp_threadsync.h"
 void snmp_mib2_lwip_synchronizer(snmp_threadsync_called_fn fn, void* arg);
 extern struct snmp_threadsync_instance snmp_mib2_lwip_locks;

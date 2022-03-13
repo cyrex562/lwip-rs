@@ -43,7 +43,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/ip_addr.h"
 
@@ -52,7 +52,7 @@
 
 struct altcp_proxyconnect_config {
   ip_addr_t proxy_addr;
-  u16_t proxy_port;
+  proxy_port: u16;
 };
 
 
@@ -61,7 +61,7 @@ struct altcp_pcb *altcp_proxyconnect_new_tcp(struct altcp_proxyconnect_config *c
 
 struct altcp_pcb *altcp_proxyconnect_alloc(void *arg, u8_t ip_type);
 
-#if LWIP_ALTCP_TLS
+// #if LWIP_ALTCP_TLS
 struct altcp_proxyconnect_tls_config {
   struct altcp_proxyconnect_config proxy;
   struct altcp_tls_config *tls_config;

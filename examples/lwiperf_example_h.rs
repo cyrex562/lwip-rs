@@ -33,7 +33,7 @@
 
 
 
-pub fn  lwiperf_example_init(void);
+pub fn  lwiperf_example_init();
 
 
 }

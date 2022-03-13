@@ -52,7 +52,7 @@ pub const _MSC_VER: u32 = 1500; // #include "pcap.h"
 
 // #include "lwip/opt.h"
 
-#if LWIP_ETHERNET
+// #if LWIP_ETHERNET
 
 // #include "pcapif.h"
 
@@ -122,7 +122,7 @@ pub const PCAPIF_RX_READONLY: u32 = 0; #if PCAPIF_HANDLE_LINKSTATE
 pub const PCAPIF_LINKUP_DELAY: u32 = 0; #define PCAPIF_LINKCHECK_INTERVAL_MS 500
 
 /* link state notification macro */
-#if PCAPIF_LINKUP_DELAY
+// #if PCAPIF_LINKUP_DELAY
 #define PCAPIF_NOTIFY_LINKSTATE(netif, linkfunc) sys_timeout(PCAPIF_LINKUP_DELAY, (sys_timeout_handler)linkfunc, netif)
 #else /* PHY_LINKUP_DELAY */
 #define PCAPIF_NOTIFY_LINKSTATE(netif, linkfunc) linkfunc(netif)
@@ -144,11 +144,11 @@ pub const PCAPIF_LINKUP_DELAY: u32 = 0; #define PCAPIF_LINKCHECK_INTERVAL_MS 500
 
 pub const ADAPTER_NAME_LEN: u32 = 128; #define ADAPTER_DESC_LEN       128
 
-#if PCAPIF_RECEIVE_PROMISCUOUS
+// #if PCAPIF_RECEIVE_PROMISCUOUS
 
 pub const PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS: u32 = 128; struct pcapipf_pending_packet {
   struct pcapipf_pending_packet *next;
-  u16_t len;
+  len: u16;
   u8_t data[ETH_MAX_FRAME_LEN];
 };
  /* PCAPIF_RECEIVE_PROMISCUOUS */
@@ -160,22 +160,22 @@ struct pcapif_private {
   char             name[ADAPTER_NAME_LEN];
   char             description[ADAPTER_DESC_LEN];
   int              shutdown_called;
-#if PCAPIF_RX_USE_THREAD
+// #if PCAPIF_RX_USE_THREAD
   volatile int     rx_run;
   volatile int     rx_running;
  /* PCAPIF_RX_USE_THREAD */
-#if PCAPIF_HANDLE_LINKSTATE
+// #if PCAPIF_HANDLE_LINKSTATE
   struct pcapifh_linkstate *link_state;
   enum pcapifh_link_event last_link_event;
  /* PCAPIF_HANDLE_LINKSTATE */
-#if PCAPIF_RECEIVE_PROMISCUOUS
+// #if PCAPIF_RECEIVE_PROMISCUOUS
   struct pcapipf_pending_packet packets[PCAPIF_LOOPBACKFILTER_NUM_TX_PACKETS];
   struct pcapipf_pending_packet *tx_packets;
   struct pcapipf_pending_packet *free_packets;
  /* PCAPIF_RECEIVE_PROMISCUOUS */
 };
 
-#if PCAPIF_RECEIVE_PROMISCUOUS
+// #if PCAPIF_RECEIVE_PROMISCUOUS
 static void
 pcapif_init_tx_packets(struct pcapif_private *priv)
 {
@@ -205,7 +205,7 @@ pcapif_add_tx_packet(struct pcapif_private *priv, unsigned char *buf, u16_t tot_
     pack = priv->tx_packets;
     priv->tx_packets = pack->next;
   }
-  LWIP_ASSERT("no free packet", pack != NULL);
+  // LWIP_ASSERT("no free packet", pack != NULL);
   priv->free_packets = pack->next;
   pack->next = NULL;
   SYS_ARCH_UNPROTECT(lev);
@@ -218,7 +218,7 @@ pcapif_add_tx_packet(struct pcapif_private *priv, unsigned char *buf, u16_t tot_
   SYS_ARCH_PROTECT(lev);
   if (priv->tx_packets != NULL) {
     for (tx = priv->tx_packets; tx->next != NULL; tx = tx->next);
-    LWIP_ASSERT("bug", tx != NULL);
+    // LWIP_ASSERT("bug", tx != NULL);
     tx->next = pack;
   } else {
     priv->tx_packets = pack;
@@ -252,7 +252,7 @@ pcaipf_is_tx_packet(struct netif *netif, const void *packet, int packet_len)
   /* compare the first packet */
   if (pcapif_compare_packets(last, packet, packet_len)) {
     SYS_ARCH_PROTECT(lev);
-    LWIP_ASSERT("list has changed", last == priv->tx_packets);
+    // LWIP_ASSERT("list has changed", last == priv->tx_packets);
     priv->tx_packets = last->next;
     last->next = priv->free_packets;
     priv->free_packets = last;
@@ -267,7 +267,7 @@ pcaipf_is_tx_packet(struct netif *netif, const void *packet, int packet_len)
     SYS_ARCH_UNPROTECT(lev);
     if (pcapif_compare_packets(iter, packet, packet_len)) {
       SYS_ARCH_PROTECT(lev);
-      LWIP_ASSERT("last != NULL", last != NULL);
+      // LWIP_ASSERT("last != NULL", last != NULL);
       last->next = iter->next;
       iter->next = priv->free_packets;
       priv->free_packets = iter;
@@ -297,11 +297,11 @@ pcaipf_is_tx_packet(struct netif *netif, const void *packet, int packet_len)
 }
  /* PCAPIF_RECEIVE_PROMISCUOUS */
 
-#if PCAPIF_RX_REF
+// #if PCAPIF_RX_REF
 struct pcapif_pbuf_custom
 {
    struct pbuf_custom pc;
-#if PCAPIF_RX_READONLY
+// #if PCAPIF_RX_READONLY
    void *ro_mem;
 #else
    struct pbuf* p;
@@ -374,7 +374,7 @@ get_adapter_index_from_addr(struct in_addr *netaddr, char *guid, size_t guid_len
 }
  /* PACKET_LIB_GET_ADAPTER_NETADDRESS */
 
-#if defined(PACKET_LIB_GET_ADAPTER_NETADDRESS) || defined(PACKET_LIB_ADAPTER_GUID)
+// #if defined(PACKET_LIB_GET_ADAPTER_NETADDRESS) || defined(PACKET_LIB_ADAPTER_GUID)
 /** Get the index of an adapter by its GUID
  *
  * @param adapter_guid GUID of the adapter
@@ -417,7 +417,7 @@ pcapif_open_adapter(const char* adapter_name, char* errbuf)
                                65536,             /* portion of the packet to capture */
                                                   /* 65536 guarantees that the whole packet will be captured on all the link layers */
                                PCAP_OPENFLAG_PROMISCUOUS,/* promiscuous mode */
-#if PCAPIF_RX_USE_THREAD
+// #if PCAPIF_RX_USE_THREAD
                                /*-*/1,                /* don't wait at all for lower latency */
 #else
                                1,                /* wait 1 ms in ethernetif_poll */
@@ -493,7 +493,7 @@ pcapif_init_adapter(int adapter_num, void *arg)
       size_t len;
 
       len = strlen(d->name);
-      LWIP_ASSERT("len < ADAPTER_NAME_LEN", len < ADAPTER_NAME_LEN);
+      // LWIP_ASSERT("len < ADAPTER_NAME_LEN", len < ADAPTER_NAME_LEN);
       strcpy(pa->name, d->name);
 
       used_adapter = d;
@@ -583,7 +583,7 @@ pcapif_init_adapter(int adapter_num, void *arg)
  /* PCAPIF_LIB_QUIET */
   /* set up the selected adapter */
 
-  LWIP_ASSERT("used_adapter != NULL", used_adapter != NULL);
+  // LWIP_ASSERT("used_adapter != NULL", used_adapter != NULL);
 
   /* Open the device */
   pa->adapter = pcapif_open_adapter(used_adapter->name, errbuf);
@@ -597,7 +597,7 @@ pcapif_init_adapter(int adapter_num, void *arg)
   printf("Using adapter: \"%s\"\n", pa->description);
   pcap_freealldevs(alldevs);
 
-#if PCAPIF_HANDLE_LINKSTATE
+// #if PCAPIF_HANDLE_LINKSTATE
   pa->link_state = pcapifh_linkstate_init(pa->name);
   pa->last_link_event = PCAPIF_LINKEVENT_UNKNOWN;
  /* PCAPIF_HANDLE_LINKSTATE */
@@ -605,7 +605,7 @@ pcapif_init_adapter(int adapter_num, void *arg)
   return pa;
 }
 
-#if PCAPIF_HANDLE_LINKSTATE
+// #if PCAPIF_HANDLE_LINKSTATE
 static void
 pcapif_check_linkstate(void *netif_ptr)
 {
@@ -646,25 +646,25 @@ pcapif_shutdown(struct netif *netif)
 {
   struct pcapif_private *pa = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
   if (pa) {
-#if PCAPIF_RX_USE_THREAD
+// #if PCAPIF_RX_USE_THREAD
     pa->rx_run = 0;
  /* PCAPIF_RX_USE_THREAD */
     if (pa->adapter) {
       pcap_breakloop(pa->adapter);
       pcap_close(pa->adapter);
     }
-#if PCAPIF_RX_USE_THREAD
+// #if PCAPIF_RX_USE_THREAD
     /* wait for rxthread to end */
     while(pa->rx_running);
  /* PCAPIF_RX_USE_THREAD */
-#if PCAPIF_HANDLE_LINKSTATE
+// #if PCAPIF_HANDLE_LINKSTATE
     pcapifh_linkstate_close(pa->link_state);
  /* PCAPIF_HANDLE_LINKSTATE */
     free(pa);
   }
 }
 
-#if PCAPIF_RX_USE_THREAD
+// #if PCAPIF_RX_USE_THREAD
 /** RX running in its own thread */
 static void
 pcapif_input_thread(void *arg)
@@ -703,7 +703,7 @@ pub const GUID_LEN: u32 = 128; char guid[GUID_LEN + 1];
     adapter_num = (LWIP_PTR_NUMERIC_CAST(int, netif->state)) - 1;
     if (adapter_num < 0) {
       printf("ERROR: invalid adapter index \"%d\"!\n", adapter_num);
-      LWIP_ASSERT("ERROR initializing network adapter!", 0);
+      // LWIP_ASSERT("ERROR initializing network adapter!", 0);
       return;
     }
   }
@@ -713,13 +713,13 @@ pub const GUID_LEN: u32 = 128; char guid[GUID_LEN + 1];
   PACKET_LIB_GET_ADAPTER_NETADDRESS(&netaddr);
   if (get_adapter_index_from_addr((struct in_addr *)&netaddr, guid, GUID_LEN) < 0) {
      printf("ERROR initializing network adapter, failed to get GUID for network address %s\n", ip4addr_ntoa(&netaddr));
-     LWIP_ASSERT("ERROR initializing network adapter, failed to get GUID for network address!", 0);
+     // LWIP_ASSERT("ERROR initializing network adapter, failed to get GUID for network address!", 0);
      return;
   }
   adapter_num = get_adapter_index(guid);
   if (adapter_num < 0) {
      printf("ERROR finding network adapter with GUID \"%s\"!\n", guid);
-     LWIP_ASSERT("ERROR finding network adapter with expected GUID!", 0);
+     // LWIP_ASSERT("ERROR finding network adapter with expected GUID!", 0);
      return;
   }
 
@@ -729,7 +729,7 @@ pub const GUID_LEN: u32 = 128; char guid[GUID_LEN + 1];
   adapter_num = get_adapter_index(PACKET_LIB_ADAPTER_GUID);
   if (adapter_num < 0) {
     printf("ERROR finding network adapter with GUID \"%s\"!\n", PACKET_LIB_ADAPTER_GUID);
-    LWIP_ASSERT("ERROR initializing network adapter!", 0);
+    // LWIP_ASSERT("ERROR initializing network adapter!", 0);
     return;
   }
  /* PACKET_LIB_ADAPTER_GUID */
@@ -739,7 +739,7 @@ pub const GUID_LEN: u32 = 128; char guid[GUID_LEN + 1];
   pa = pcapif_init_adapter(adapter_num, netif);
   if (pa == NULL) {
     printf("ERROR initializing network adapter %d!\n", adapter_num);
-    LWIP_ASSERT("ERROR initializing network adapter!", 0);
+    // LWIP_ASSERT("ERROR initializing network adapter!", 0);
     return;
   }
   netif->state = pa;
@@ -752,7 +752,7 @@ pub const GUID_LEN: u32 = 128; char guid[GUID_LEN + 1];
   SMEMCPY(&netif->hwaddr, my_mac_addr, ETH_HWADDR_LEN);
 
   /* get the initial link state of the selected interface */
-#if PCAPIF_HANDLE_LINKSTATE
+// #if PCAPIF_HANDLE_LINKSTATE
   pa->last_link_event = pcapifh_linkstate_get(pa->link_state);
   if (pa->last_link_event == PCAPIF_LINKEVENT_DOWN) {
     netif_set_link_down(netif);
@@ -765,7 +765,7 @@ pub const GUID_LEN: u32 = 128; char guid[GUID_LEN + 1];
   netif_set_link_up(netif);
  /* PCAPIF_HANDLE_LINKSTATE */
 
-#if PCAPIF_RX_USE_THREAD
+// #if PCAPIF_RX_USE_THREAD
   pa->rx_run = 1;
   pa->rx_running = 1;
   sys_thread_new("pcapif_rxthread", pcapif_input_thread, netif, 0, 0);
@@ -789,8 +789,8 @@ pcapif_low_level_output(struct netif *netif, struct pbuf *p)
   u16_t tot_len = p->tot_len - ETH_PAD_SIZE;
   struct pcapif_private *pa = (struct pcapif_private*)PCAPIF_GET_STATE_PTR(netif);
 
-#if defined(LWIP_DEBUG) && LWIP_NETIF_TX_SINGLE_PBUF && !(LWIP_IPV4 && IP_FRAG) && (LWIP_IPV6 && LWIP_IPV6_FRAG)
-  LWIP_ASSERT("p->next == NULL && p->len == p->tot_len", p->next == NULL && p->len == p->tot_len);
+// #if defined(LWIP_DEBUG) && LWIP_NETIF_TX_SINGLE_PBUF && !(LWIP_IPV4 && IP_FRAG) && (LWIP_IPV6 && LWIP_IPV6_FRAG)
+  // LWIP_ASSERT("p->next == NULL && p->len == p->tot_len", p->next == NULL && p->len == p->tot_len);
 
 
   /* initiate transfer */
@@ -863,7 +863,7 @@ pcapif_low_level_input(struct netif *netif, const void *packet, int packet_len)
   int length = packet_len;
   const struct eth_addr *dest = (const struct eth_addr*)packet;
   int unicast;
-#if PCAPIF_FILTER_GROUP_ADDRESSES && !PCAPIF_RECEIVE_PROMISCUOUS
+// #if PCAPIF_FILTER_GROUP_ADDRESSES && !PCAPIF_RECEIVE_PROMISCUOUS
   const u8_t bcast[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
   const u8_t ipv4mcast[] = {0x01, 0x00, 0x5e};
   const u8_t ipv6mcast[] = {0x33, 0x33};
@@ -878,7 +878,7 @@ pcapif_low_level_input(struct netif *netif, const void *packet, int packet_len)
 #if !PCAPIF_RECEIVE_PROMISCUOUS
   /* MAC filter: only let my MAC or non-unicast through (pcap receives loopback traffic, too) */
   if (memcmp(dest, &netif->hwaddr, ETH_HWADDR_LEN) &&
-#if PCAPIF_FILTER_GROUP_ADDRESSES
+// #if PCAPIF_FILTER_GROUP_ADDRESSES
     (memcmp(dest, ipv4mcast, 3) || ((dest->addr[3] & 0x80) != 0)) &&
     memcmp(dest, ipv6mcast, 2) &&
     memcmp(dest, bcast, 6)
@@ -907,8 +907,8 @@ pcapif_low_level_input(struct netif *netif, const void *packet, int packet_len)
       /* read data into(q->payload, q->len); */
       LWIP_DEBUGF(NETIF_DEBUG, ("netif: recv start %i length %i q->payload %p q->len %i q->next %p\n", start, length, q->payload, (int)q->len, (void*)q->next));
       if (q == p) {
-#if ETH_PAD_SIZE
-        LWIP_ASSERT("q->len >= ETH_PAD_SIZE", q->len >= ETH_PAD_SIZE);
+// #if ETH_PAD_SIZE
+        // LWIP_ASSERT("q->len >= ETH_PAD_SIZE", q->len >= ETH_PAD_SIZE);
         copy_len -= ETH_PAD_SIZE;
  /* ETH_PAD_SIZE*/
         MEMCPY(&((char*)q->payload)[ETH_PAD_SIZE], &((const char*)packet)[start], copy_len);
@@ -938,19 +938,19 @@ pcapif_low_level_input(struct netif *netif, const void *packet, int packet_len)
   return p;
 }
 
-#if PCAPIF_RX_REF
+// #if PCAPIF_RX_REF
 static void
 pcapif_rx_pbuf_free_custom(struct pbuf *p)
 {
   struct pcapif_pbuf_custom* ppc;
-  LWIP_ASSERT("NULL pointer", p != NULL);
+  // LWIP_ASSERT("NULL pointer", p != NULL);
   ppc = (struct pcapif_pbuf_custom*)p;
-#if PCAPIF_RX_READONLY
-  LWIP_ASSERT("NULL pointer", ppc->ro_mem != NULL);
+// #if PCAPIF_RX_READONLY
+  // LWIP_ASSERT("NULL pointer", ppc->ro_mem != NULL);
   pcapifh_free_readonly_mem(ppc->ro_mem);
   ppc->ro_mem = NULL;
 #else
-  LWIP_ASSERT("NULL pointer", ppc->p != NULL);
+  // LWIP_ASSERT("NULL pointer", ppc->p != NULL);
   pbuf_free(ppc->p);
   ppc->p = NULL;
 
@@ -962,19 +962,19 @@ pcapif_rx_ref(struct pbuf* p)
 {
   struct pcapif_pbuf_custom* ppc;
   struct pbuf* q;
-  u16_t len;
+  len: u16;
   void *payload_mem;
 
-  LWIP_ASSERT("NULL pointer", p != NULL);
-  LWIP_ASSERT("chained pbuf not supported here", p->next == NULL);
+  // LWIP_ASSERT("NULL pointer", p != NULL);
+  // LWIP_ASSERT("chained pbuf not supported here", p->next == NULL);
 
   ppc = (struct pcapif_pbuf_custom*)mem_malloc(sizeof(struct pcapif_pbuf_custom));
-  LWIP_ASSERT("out of memory for RX", ppc != NULL);
+  // LWIP_ASSERT("out of memory for RX", ppc != NULL);
   ppc->pc.custom_free_function = pcapif_rx_pbuf_free_custom;
   len = p->tot_len;
-#if PCAPIF_RX_READONLY
+// #if PCAPIF_RX_READONLY
   payload_mem = pcapifh_alloc_readonly_copy(p->payload, len);
-  LWIP_ASSERT("out of readonly memory for RX", payload_mem != NULL);
+  // LWIP_ASSERT("out of readonly memory for RX", payload_mem != NULL);
   pbuf_free(p);
   ppc->ro_mem = payload_mem;
 #else
@@ -983,7 +983,7 @@ pcapif_rx_ref(struct pbuf* p)
 
 
   q = pbuf_alloced_custom(PBUF_RAW, len, PBUF_REF, &ppc->pc, payload_mem, len);
-  LWIP_ASSERT("pbuf_alloced_custom returned NULL", q != NULL);
+  // LWIP_ASSERT("pbuf_alloced_custom returned NULL", q != NULL);
   return q;
 }
  /* PCAPIF_RX_REF */
@@ -1006,7 +1006,7 @@ pcapif_input(u_char *user, const struct pcap_pkthdr *pkt_header, const u_char *p
   p = pcapif_low_level_input(netif, packet, packet_len);
   /* if no packet could be read, silently ignore this */
   if (p != NULL) {
-#if PCAPIF_RX_REF
+// #if PCAPIF_RX_REF
     p = pcapif_rx_ref(p);
 
     /* pass all packets to ethernet_input, which decides what packets it supports */
@@ -1032,13 +1032,13 @@ pcapif_init(struct netif *netif)
   local_index = ethernetif_index++;
   SYS_ARCH_UNPROTECT(lev);
 
-  LWIP_ASSERT("pcapif needs an input callback", netif->input != NULL);
+  // LWIP_ASSERT("pcapif needs an input callback", netif->input != NULL);
 
   netif->name[0] = IFNAME0;
   netif->name[1] = (char)(IFNAME1 + local_index);
   netif->linkoutput = pcapif_low_level_output;
 
-#if LWIP_ARP
+// #if LWIP_ARP
   netif->output = etharp_output;
 #else /* LWIP_ARP */
   netif->output = NULL; /* not used for PPPoE */
@@ -1047,7 +1047,7 @@ pcapif_init(struct netif *netif)
 
   netif->output_ip6 = ethip6_output;
  /* LWIP_IPV6 */
-#if LWIP_NETIF_HOSTNAME
+// #if LWIP_NETIF_HOSTNAME
   /* Initialize interface hostname */
   netif_set_hostname(netif, "lwip");
  /* LWIP_NETIF_HOSTNAME */

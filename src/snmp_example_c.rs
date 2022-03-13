@@ -37,11 +37,11 @@
 // #include "examples/snmp/snmp_private_mib/private_mib.h"
 // #include "snmp_example.h"
 
-#if LWIP_SNMP
+// #if LWIP_SNMP
 static const struct snmp_mib *mibs[] = {
   &mib2,
   &mib_private
-#if LWIP_SNMP_V3
+// #if LWIP_SNMP_V3
   , &snmpframeworkmib
   , &snmpusmmib
 
@@ -49,13 +49,13 @@ static const struct snmp_mib *mibs[] = {
  /* LWIP_SNMP */
 
 void
-snmp_example_init(void)
+snmp_example_init()
 {
-#if LWIP_SNMP
+// #if LWIP_SNMP
   s32_t req_nr;
   lwip_privmib_init();
-#if SNMP_LWIP_MIB2
-#if SNMP_USE_NETCONN
+// #if SNMP_LWIP_MIB2
+// #if SNMP_USE_NETCONN
   snmp_threadsync_init(&snmp_mib2_lwip_locks, snmp_mib2_lwip_synchronizer);
  /* SNMP_USE_NETCONN */
   snmp_mib2_set_syscontact_readonly((const u8_t*)"root", NULL);
@@ -63,14 +63,14 @@ snmp_example_init(void)
   snmp_mib2_set_sysdescr((const u8_t*)"lwIP example", NULL);
  /* SNMP_LWIP_MIB2 */
 
-#if LWIP_SNMP_V3
+// #if LWIP_SNMP_V3
   snmpv3_dummy_init();
 
 
   snmp_set_mibs(mibs, LWIP_ARRAYSIZE(mibs));
   snmp_init();
 
-  snmp_trap_dst_ip_set(0, &netif_default->gw);
+  snmp_trap_dst_ip_set(0, & netif_default.gw);
   snmp_trap_dst_enable(0, 1);
 
   snmp_send_inform_generic(SNMP_GENTRAP_COLDSTART, NULL, &req_nr);

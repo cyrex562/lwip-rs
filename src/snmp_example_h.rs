@@ -33,7 +33,7 @@
 
 
 
-void snmp_example_init(void);
+void snmp_example_init();
 
 
 

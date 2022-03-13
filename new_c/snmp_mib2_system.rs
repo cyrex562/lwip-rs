@@ -43,16 +43,16 @@
 
 
 
-#if LWIP_SNMP && SNMP_LWIP_MIB2
+// #if LWIP_SNMP && SNMP_LWIP_MIB2
 
-#if SNMP_USE_NETCONN
+// #if SNMP_USE_NETCONN
 #define SYNC_NODE_NAME(node_name) node_name ## _synced
 #define CREATE_LWIP_SYNC_NODE(oid, node_name) \
    static const struct snmp_threadsync_node node_name ## _synced = SNMP_CREATE_THREAD_SYNC_NODE(oid, &node_name.node, &snmp_mib2_lwip_locks);
 #else
 #define SYNC_NODE_NAME(node_name) node_name
 #define CREATE_LWIP_SYNC_NODE(oid, node_name)
-#endif
+// #endif
 
 /* --- system .1.3.6.1.2.1.1 ----------------------------------------------------- */
 
@@ -231,17 +231,17 @@ system_get_value(const struct snmp_scalar_array_node_def *node, void *value)
 {
   const u8_t  *var = NULL;
   const s16_t *var_len;
-  u16_t result;
+  result: u16;
 
-  switch (node->oid) {
+  switch ( node.oid) {
     case 1: /* sysDescr */
       var     = sysdescr;
       var_len = (const s16_t *)sysdescr_len;
       break;
     case 2: { /* sysObjectID */
       const struct snmp_obj_id *dev_enterprise_oid = snmp_get_device_enterprise_oid();
-      MEMCPY(value, dev_enterprise_oid->id, dev_enterprise_oid->len * sizeof(u32_t));
-      return dev_enterprise_oid->len * sizeof(u32_t);
+      MEMCPY(value,  dev_enterprise_oid.id,  dev_enterprise_oid.len * sizeof(u32_t));
+      return  dev_enterprise_oid.len * sizeof(u32_t);
     }
     case 3: /* sysUpTime */
       MIB2_COPY_SYSUPTIME_TO((u32_t *)value);
@@ -262,12 +262,12 @@ system_get_value(const struct snmp_scalar_array_node_def *node, void *value)
       *(s32_t *)value = SNMP_SYSSERVICES;
       return sizeof(s32_t);
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_get_value(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_get_value(): unknown id: %"S32_F"\n",  node.oid));
       return 0;
   }
 
   /* handle string values (OID 1,4,5 and 6) */
-  LWIP_ASSERT("", (value != NULL));
+  // LWIP_ASSERT("", (value != NULL));
   if (var_len == NULL) {
     result = (s16_t)strlen((const char *)var);
   } else {
@@ -286,7 +286,7 @@ system_set_test(const struct snmp_scalar_array_node_def *node, u16_t len, void *
 
   LWIP_UNUSED_ARG(value);
 
-  switch (node->oid) {
+  switch ( node.oid) {
     case 4: /* sysContact */
       var_bufsize  = &syscontact_bufsize;
       var_wr_len   = syscontact_wr_len;
@@ -300,7 +300,7 @@ system_set_test(const struct snmp_scalar_array_node_def *node, u16_t len, void *
       var_wr_len   = syslocation_wr_len;
       break;
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_test(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_test(): unknown id: %"S32_F"\n",  node.oid));
       return ret;
   }
 
@@ -329,7 +329,7 @@ system_set_value(const struct snmp_scalar_array_node_def *node, u16_t len, void 
   u8_t  *var_wr = NULL;
   u16_t *var_wr_len;
 
-  switch (node->oid) {
+  switch ( node.oid) {
     case 4: /* sysContact */
       var_wr     = syscontact_wr;
       var_wr_len = syscontact_wr_len;
@@ -343,12 +343,12 @@ system_set_value(const struct snmp_scalar_array_node_def *node, u16_t len, void 
       var_wr_len = syslocation_wr_len;
       break;
     default:
-      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_value(): unknown id: %"S32_F"\n", node->oid));
+      LWIP_DEBUGF(SNMP_MIB_DEBUG, ("system_set_value(): unknown id: %"S32_F"\n",  node.oid));
       return SNMP_ERR_GENERROR;
   }
 
   /* no need to check size of target buffer, this was already done in set_test method */
-  LWIP_ASSERT("", var_wr != NULL);
+  // LWIP_ASSERT("", var_wr != NULL);
   MEMCPY(var_wr, value, len);
 
   if (var_wr_len == NULL) {
@@ -373,4 +373,4 @@ static const struct snmp_scalar_array_node_def system_nodes[] = {
 
 const struct snmp_scalar_array_node snmp_mib2_system_node = SNMP_SCALAR_CREATE_ARRAY_NODE(1, system_nodes, system_get_value, system_set_test, system_set_value);
 
-#endif /* LWIP_SNMP && SNMP_LWIP_MIB2 */
+// #endif /* LWIP_SNMP && SNMP_LWIP_MIB2 */

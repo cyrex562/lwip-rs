@@ -34,7 +34,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_NETCONN && LWIP_TCP
+// #if LWIP_NETCONN && LWIP_TCP
 
 
 
@@ -45,7 +45,7 @@
 // #include "lwip/api.h"
 // #include "lwip/stats.h"
 
-#if LWIP_SOCKET
+// #if LWIP_SOCKET
 // #include "lwip/errno.h"
 // #include "lwip/if_api.h"
 
@@ -66,7 +66,7 @@ static unsigned char buffer[BUFSIZE];
 struct command {
   struct netconn *conn;
   s8_t (* exec)(struct command *);
-  u8_t nargs;
+  nargs: u8;
   char *args[10];
 };
 
@@ -101,57 +101,57 @@ static char help_msg3[] =
 "gethostnm [name]: outputs IP address of host."NEWLINE"\
 quit: quits"NEWLINE"";
 
-#if LWIP_STATS
+// #if LWIP_STATS
 static char padding_10spaces[] = "          ";
 
 #define PROTOCOL_STATS (LINK_STATS && ETHARP_STATS && IPFRAG_STATS && IP_STATS && ICMP_STATS && UDP_STATS && TCP_STATS)
 
-#if PROTOCOL_STATS
+// #if PROTOCOL_STATS
 static const char* shell_stat_proto_names[] = {
-#if LINK_STATS
+// #if LINK_STATS
   "LINK      ",
 
-#if ETHARP_STATS
+// #if ETHARP_STATS
   "ETHARP    ",
 
-#if IPFRAG_STATS
+// #if IPFRAG_STATS
   "IP_FRAG   ",
 
-#if IP_STATS
+// #if IP_STATS
   "IP        ",
 
-#if ICMP_STATS
+// #if ICMP_STATS
   "ICMP      ",
 
-#if UDP_STATS
+// #if UDP_STATS
   "UDP       ",
 
-#if TCP_STATS
+// #if TCP_STATS
   "TCP       ",
 
   "last"
 };
 
 static struct stats_proto* shell_stat_proto_stats[] = {
-#if LINK_STATS
+// #if LINK_STATS
   &lwip_stats.link,
 
-#if ETHARP_STATS
+// #if ETHARP_STATS
   &lwip_stats.etharp,
 
-#if IPFRAG_STATS
+// #if IPFRAG_STATS
   &lwip_stats.ip_frag,
 
-#if IP_STATS
+// #if IP_STATS
   &lwip_stats.ip,
 
-#if ICMP_STATS
+// #if ICMP_STATS
   &lwip_stats.icmp,
 
-#if UDP_STATS
+// #if UDP_STATS
   &lwip_stats.udp,
 
-#if TCP_STATS
+// #if TCP_STATS
   &lwip_stats.tcp,
 
 };
@@ -185,7 +185,7 @@ static s8_t
 com_open(struct command *com)
 {
   ip_addr_t ipaddr;
-  u16_t port;
+  port: u16;
   int i;
   err_t err;
   long tmp;
@@ -245,7 +245,7 @@ com_open(struct command *com)
 static s8_t
 com_lstn(struct command *com)
 {
-  u16_t port;
+  port: u16;
   int i;
   err_t err;
   long tmp;
@@ -391,11 +391,11 @@ com_acpt(struct command *com)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-#if LWIP_STATS
+// #if LWIP_STATS
 static void
 com_stat_write_mem(struct netconn *conn, struct stats_mem *elem, int i)
 {
-  u16_t len;
+  len: u16;
   char buf[100];
   size_t slen;
 
@@ -426,7 +426,7 @@ com_stat_write_mem(struct netconn *conn, struct stats_mem *elem, int i)
 static void
 com_stat_write_sys(struct netconn *conn, struct stats_syselem *elem, const char *name)
 {
-  u16_t len;
+  len: u16;
   char buf[100];
   size_t slen = strlen(name);
 
@@ -445,19 +445,19 @@ com_stat_write_sys(struct netconn *conn, struct stats_syselem *elem, const char 
 static s8_t
 com_stat(struct command *com)
 {
-#if PROTOCOL_STATS || MEMP_STATS
+// #if PROTOCOL_STATS || MEMP_STATS
   size_t i;
  /* PROTOCOL_STATS || MEMP_STATS */
-#if PROTOCOL_STATS
+// #if PROTOCOL_STATS
   size_t k;
   char buf[100];
-  u16_t len;
+  len: u16;
 
   /* protocol stats, @todo: add IGMP */
   for(i = 0; i < num_protostats; i++) {
     size_t s = sizeof(struct stats_proto)/sizeof(STAT_COUNTER);
     STAT_COUNTER *c = &shell_stat_proto_stats[i]->xmit;
-    LWIP_ASSERT("stats not in sync", s == sizeof(stat_msgs_proto)/sizeof(char*));
+    // LWIP_ASSERT("stats not in sync", s == sizeof(stat_msgs_proto)/sizeof(char*));
     netconn_write(com->conn, shell_stat_proto_names[i], strlen(shell_stat_proto_names[i]), NETCONN_COPY);
     for(k = 0; k < s; k++) {
       len = (u16_t)sprintf(buf, "%s%"STAT_COUNTER_F NEWLINE, stat_msgs_proto[k], c[k]);
@@ -465,15 +465,15 @@ com_stat(struct command *com)
     }
   }
  /* PROTOCOL_STATS */
-#if MEM_STATS
+// #if MEM_STATS
   com_stat_write_mem(com->conn, &lwip_stats.mem, -1);
  /* MEM_STATS */
-#if MEMP_STATS
+// #if MEMP_STATS
   for(i = 0; i < MEMP_MAX; i++) {
     com_stat_write_mem(com->conn, lwip_stats.memp[i], -1);
   }
  /* MEMP_STATS */
-#if SYS_STATS
+// #if SYS_STATS
   com_stat_write_sys(com->conn, &lwip_stats.sys.sem,   "SEM       ");
   com_stat_write_sys(com->conn, &lwip_stats.sys.mutex, "MUTEX     ");
   com_stat_write_sys(com->conn, &lwip_stats.sys.mbox,  "MBOX      ");
@@ -529,7 +529,7 @@ com_recv(struct command *com)
   int i;
   err_t err;
   struct netbuf *buf;
-  u16_t len;
+  len: u16;
 
   i = strtol(com->args[0], NULL, 10);
 
@@ -822,9 +822,9 @@ com_udpb(struct command *com)
 {
   ip_addr_t ipaddr;
 
-  u16_t lport;
+  lport: u16;
  /* LWIP_IPV4 */
-  u16_t rport;
+  rport: u16;
   int i;
   err_t err;
   long tmp;
@@ -914,7 +914,7 @@ com_usnd(struct command *com)
   err_t err;
   struct netbuf *buf;
   char *mem;
-  u16_t len;
+  len: u16;
   size_t tmp;
 
   i = strtol(com->args[0], NULL, 10);
@@ -959,7 +959,7 @@ com_usnd(struct command *com)
   return ESUCCESS;
 }
 /*-----------------------------------------------------------------------------------*/
-#if LWIP_SOCKET
+// #if LWIP_SOCKET
 /*-----------------------------------------------------------------------------------*/
 static s8_t
 com_idxtoname(struct command *com)
@@ -991,7 +991,7 @@ com_nametoidx(struct command *com)
 }
  /* LWIP_SOCKET */
 /*-----------------------------------------------------------------------------------*/
-#if LWIP_DNS
+// #if LWIP_DNS
 static s8_t
 com_gethostbyname(struct command *com)
 {
@@ -1025,8 +1025,8 @@ com_help(struct command *com)
 static s8_t
 parse_command(struct command *com, u32_t len)
 {
-  u16_t i;
-  u16_t bufp;
+  i: u16;
+  bufp: u16;
 
   if (strncmp((const char *)buffer, "open", 4) == 0) {
     com->exec = com_open;
@@ -1040,7 +1040,7 @@ parse_command(struct command *com, u32_t len)
   } else if (strncmp((const char *)buffer, "clos", 4) == 0) {
     com->exec = com_clos;
     com->nargs = 1;
-#if LWIP_STATS
+// #if LWIP_STATS
   } else if (strncmp((const char *)buffer, "stat", 4) == 0) {
     com->exec = com_stat;
     com->nargs = 0;
@@ -1066,7 +1066,7 @@ parse_command(struct command *com, u32_t len)
   } else if (strncmp((const char *)buffer, "usnd", 4) == 0) {
     com->exec = com_usnd;
     com->nargs = 2;
-#if LWIP_SOCKET
+// #if LWIP_SOCKET
   } else if (strncmp((const char *)buffer, "idxtoname", 9) == 0) {
     com->exec = com_idxtoname;
     com->nargs = 1;
@@ -1074,7 +1074,7 @@ parse_command(struct command *com, u32_t len)
     com->exec = com_nametoidx;
     com->nargs = 1;
  /* LWIP_SOCKET */
-#if LWIP_DNS
+// #if LWIP_DNS
   } else if (strncmp((const char *)buffer, "gethostnm", 9) == 0) {
     com->exec = com_gethostbyname;
     com->nargs = 1;
@@ -1168,7 +1168,7 @@ shell_main(struct netconn *conn)
   s8_t err;
   int i;
   err_t ret;
-#if SHELL_ECHO
+// #if SHELL_ECHO
   void *echomem;
  /* SHELL_ECHO */
 
@@ -1181,7 +1181,7 @@ shell_main(struct netconn *conn)
       if ((len < cur_len) || (len > BUFSIZE)) {
         len = BUFSIZE;
       }
-#if SHELL_ECHO
+// #if SHELL_ECHO
       echomem = mem_malloc(cur_len);
       if (echomem != NULL) {
         pbuf_copy_partial(p, echomem, cur_len, 0);
@@ -1264,7 +1264,7 @@ shell_thread(void *arg)
 }
 /*-----------------------------------------------------------------------------------*/
 void
-shell_init(void)
+shell_init()
 {
   sys_thread_new("shell_thread", shell_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 }

@@ -41,8 +41,8 @@
 
 
 #ifdef _MSC_VER
-#if _MSC_VER >= 1910
-#include <errno.h> /* use MSVC errno for >= 2017 */
+// #if _MSC_VER >= 1910
+
 #else
 #define LWIP_PROVIDE_ERRNO /* provide errno for MSVC pre-2017 */
 
@@ -87,7 +87,7 @@ pub const LWIP_NO_INTTYPES_H: u32 = 1; /* Define (sn)printf formatters for these
 
 #ifdef _MSC_VER
 /* C runtime functions redefined */
-#if _MSC_VER < 1910
+// #if _MSC_VER < 1910
 #define snprintf _snprintf
 
 #define strdup   _strdup
@@ -102,7 +102,7 @@ void lwip_win32_platform_diag(const char *format, ...);
 #define LWIP_PLATFORM_DIAG(x) lwip_win32_platform_diag x
 
 
-extern unsigned int lwip_port_rand(void);
+extern unsigned int lwip_port_rand();
 #define LWIP_RAND() ((uint32_t)lwip_port_rand())
 
 #define PPP_INCLUDE_SETTINGS_HEADER

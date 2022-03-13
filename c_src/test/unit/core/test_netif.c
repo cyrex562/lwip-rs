@@ -15,13 +15,13 @@ static struct netif net_test;
 /* Setups/teardown functions */
 
 static void
-netif_setup(void)
+netif_setup()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-netif_teardown(void)
+netif_teardown()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
@@ -273,7 +273,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-netif_suite(void)
+netif_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_netif_extcallbacks),

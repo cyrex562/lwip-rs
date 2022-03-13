@@ -12,7 +12,7 @@
 
 
 static int
-test_sockets_get_used_count(void)
+test_sockets_get_used_count()
 {
   int used = 0;
   int i;
@@ -32,14 +32,14 @@ test_sockets_get_used_count(void)
 /* Setups/teardown functions */
 
 static void
-sockets_setup(void)
+sockets_setup()
 {
   /* expect full free heap */
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-sockets_teardown(void)
+sockets_teardown()
 {
   fail_unless(test_sockets_get_used_count() == 0);
   /* poll until all memory is released... */
@@ -57,7 +57,7 @@ sockets_teardown(void)
 #define NUM_SOCKETS MEMP_NUM_NETCONN
 
 
-#if LWIP_SOCKET
+// #if LWIP_SOCKET
 static int
 test_sockets_alloc_socket_nonblocking(int domain, int type)
 {
@@ -293,7 +293,7 @@ static void test_sockets_msgapi_tcp(int domain)
   u8_t * rcv_buf;
   int    rcv_off;
   int    rcv_trailer = 0;
-  u8_t val;
+  val: u8;
 
   test_sockets_init_loopback_addr(domain, &addr_storage, &addr_size);
 
@@ -364,7 +364,7 @@ static void test_sockets_msgapi_tcp(int domain)
     riovs[i].iov_len = BUF_SZ/4;
   }
   /* handling trailing bytes if buffer doesn't evenly divide by 4 */
-#if NEED_TRAILER
+// #if NEED_TRAILER
   if ((BUF_SZ % 4) != 0) {
     riovs[5].iov_base = &rcv_buf[4*(BUF_SZ/4)];
     riovs[5].iov_len = BUF_SZ - (4*(BUF_SZ/4));
@@ -651,7 +651,7 @@ END_TEST
 
 START_TEST(test_sockets_select)
 {
-#if LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET_SELECT
   int s;
   int ret;
   fd_set readset;
@@ -830,7 +830,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-sockets_suite(void)
+sockets_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_sockets_basics),
@@ -845,7 +845,7 @@ sockets_suite(void)
 #else /* LWIP_SOCKET */
 
 Suite *
-sockets_suite(void)
+sockets_suite()
 {
   return create_suite("SOCKETS", NULL, 0, NULL, NULL);
 }

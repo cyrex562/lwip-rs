@@ -460,7 +460,7 @@ pub fn netbiosns_recv(
 pub fn netbiosns_init() {
     //  LWIP_ASSERT_CORE_LOCKED(); is checked by udp_new() 
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "NetBIOS name is too long!",
         strlen(NETBIOS_LWIP_NAME) < NETBIOS_NAME_LEN,
     );
@@ -482,8 +482,8 @@ pub fn netbiosns_init() {
 pub fn netbiosns_set_name(hostname: &String) {
     let i: usize;
     let copy_len: usize = strlen(hostname);
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("NetBIOS name is too long!", copy_len < NETBIOS_NAME_LEN);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("NetBIOS name is too long!", copy_len < NETBIOS_NAME_LEN);
     if (copy_len >= NETBIOS_NAME_LEN) {
         copy_len = NETBIOS_NAME_LEN - 1;
     }
@@ -500,7 +500,7 @@ pub fn netbiosns_set_name(hostname: &String) {
  * Stop netbios responder
  */
 pub fn netbiosns_stop() {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (netbiosns_pcb != None) {
         udp_remove(netbiosns_pcb);
         netbiosns_pcb = None;

@@ -46,7 +46,7 @@
 // #include "lwip/mem.h"
 // #include "lwip/priv/mem_priv.h"
 
-#if MEMP_OVERFLOW_CHECK
+// #if MEMP_OVERFLOW_CHECK
 
 
 /* MEMP_SIZE: save space for struct memp and for sanity check */
@@ -66,14 +66,14 @@ pub const MEMP_SIZE: u32 = 0; #define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x)
 #if !MEMP_MEM_MALLOC || MEMP_OVERFLOW_CHECK
 struct memp {
   struct memp *next;
-#if MEMP_OVERFLOW_CHECK
+// #if MEMP_OVERFLOW_CHECK
   const char *file;
   int line;
  /* MEMP_OVERFLOW_CHECK */
 
  /* !MEMP_MEM_MALLOC || MEMP_OVERFLOW_CHECK */
 
-#if MEM_USE_POOLS && MEMP_USE_CUSTOM_POOLS
+// #if MEM_USE_POOLS && MEMP_USE_CUSTOM_POOLS
 /* Use a helper type to get the start and end of the user "memory pools" for mem_malloc */
 typedef enum {
     /* Get the first (via:
@@ -102,7 +102,7 @@ pub const LWIP_MALLOC_MEMPOOL_END: u32 = 1; #include "lwip/priv/memp_std.h"
 
 /** Memory pool descriptor */
 struct memp_desc {
-#if defined(LWIP_DEBUG) || MEMP_OVERFLOW_CHECK || LWIP_STATS_DISPLAY
+// #if defined(LWIP_DEBUG) || MEMP_OVERFLOW_CHECK || LWIP_STATS_DISPLAY
   /** Textual description */
   const char *desc;
  /* LWIP_DEBUG || MEMP_OVERFLOW_CHECK || LWIP_STATS_DISPLAY */
@@ -112,11 +112,11 @@ MP_STATS
 
 
   /** Element size */
-  u16_t size;
+  size: u16;
 
 #if !MEMP_MEM_MALLOC
   /** Number of elements */
-  u16_t num;
+  num: u16;
 
   /** Base address */
   u8_t *base;
@@ -126,13 +126,13 @@ MP_STATS
  /* MEMP_MEM_MALLOC */
 
 
-#if defined(LWIP_DEBUG) || MEMP_OVERFLOW_CHECK || LWIP_STATS_DISPLAY
+// #if defined(LWIP_DEBUG) || MEMP_OVERFLOW_CHECK || LWIP_STATS_DISPLAY
 #define DECLARE_LWIP_MEMPOOL_DESC(desc) (desc),
 #else
 #define DECLARE_LWIP_MEMPOOL_DESC(desc)
 
 
-#if MEMP_STATS
+// #if MEMP_STATS
 #define LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(name) static struct stats_mem name;
 #define LWIP_MEMPOOL_DECLARE_STATS_REFERENCE(name) &name,
 #else
@@ -142,7 +142,7 @@ MP_STATS
 
 void memp_init_pool(const struct memp_desc *desc);
 
-#if MEMP_OVERFLOW_CHECK
+// #if MEMP_OVERFLOW_CHECK
 void *memp_malloc_pool_fn(const struct memp_desc* desc, const char* file, const int line);
 #define memp_malloc_pool(d) memp_malloc_pool_fn((d), __FILE__, __LINE__)
 #else

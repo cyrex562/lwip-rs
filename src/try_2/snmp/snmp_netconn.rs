@@ -99,7 +99,7 @@ pub fn snmp_get_local_ip_for_dst(
  * Starts SNMP Agent.
  */
 pub fn snmp_init() {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     sys_thread_new(
         "snmp_netconn",
         snmp_netconn_thread,

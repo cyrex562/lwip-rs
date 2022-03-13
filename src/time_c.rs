@@ -1,7 +1,7 @@
 
 
 
-#if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
+// #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
   #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
 #else
   #define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
@@ -31,8 +31,8 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
     /*converting file time to unix epoch*/
     tmpres -= DELTA_EPOCH_IN_MICROSECS;
     tmpres /= 10;  /*convert into microseconds*/
-    tv->tv_sec = (long)(tmpres / 1000000UL);
-    tv->tv_usec = (long)(tmpres % 1000000UL);
+     tv.tv_sec = (long)(tmpres / 1000000UL);
+     tv.tv_usec = (long)(tmpres % 1000000UL);
   }
 
   if (NULL != tz) {
@@ -40,8 +40,8 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
       _tzset();
       tzflag++;
     }
-    tz->tz_minuteswest = _timezone / 60;
-    tz->tz_dsttime = _daylight;
+     tz.tz_minuteswest = _timezone / 60;
+     tz.tz_dsttime = _daylight;
   }
 
   return 0;

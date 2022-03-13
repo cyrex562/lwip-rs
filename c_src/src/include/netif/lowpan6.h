@@ -56,7 +56,7 @@
 
 
 /** 1 second period for reassembly */
-pub const LOWPAN6_TMR_INTERVAL: u32 = 1000; void lowpan6_tmr(void);
+pub const LOWPAN6_TMR_INTERVAL: u32 = 1000; void lowpan6_tmr();
 
 err_t lowpan6_set_context(u8_t idx, const ip6_addr_t * context);
 err_t lowpan6_set_short_addr(u8_t addr_high, u8_t addr_low);

@@ -56,7 +56,7 @@
 
 // #include "chargen.h"
 
-#if LWIP_SOCKET && LWIP_SOCKET_SELECT
+// #if LWIP_SOCKET && LWIP_SOCKET_SELECT
 
 pub const MAX_SERV: u32 = 5; /* Maximum number of chargen services. Don't need too many */
 #define CHARGEN_THREAD_NAME      "chargen"
@@ -86,14 +86,14 @@ close_chargen(struct charcb *p_charcb)
 
   /* Either an error or tcp connection closed on other
    * end. Close here */
-  lwip_close(p_charcb->socket);
+  lwip_close( p_charcb.socket);
   /* Free charcb */
   if (charcb_list == p_charcb) {
-    charcb_list = p_charcb->next;
+    charcb_list =  p_charcb.next;
   } else {
-    for (p_search_charcb = charcb_list; p_search_charcb; p_search_charcb = p_search_charcb->next) {
-      if (p_search_charcb->next == p_charcb) {
-        p_search_charcb->next = p_charcb->next;
+    for (p_search_charcb = charcb_list; p_search_charcb; p_search_charcb =  p_search_charcb.next) {
+      if ( p_search_charcb.next == p_charcb) {
+         p_search_charcb.next =  p_charcb.next;
         break;
       }
     }
@@ -115,7 +115,7 @@ do_read(struct charcb *p_charcb)
   int readcount;
 
   /* Read some data */
-  readcount = lwip_read(p_charcb->socket, &buffer, 80);
+  readcount = lwip_read( p_charcb.socket, &buffer, 80);
   if (readcount <= 0) {
     close_chargen(p_charcb);
     return -1;
@@ -160,15 +160,15 @@ chargen_thread(void *arg)
   chargen_saddr.sin_port = lwip_htons(19); /* Chargen server port */
  /* LWIP_IPV6 */
 
-  LWIP_ASSERT("chargen_thread(): Socket create failed.", listenfd >= 0);
+  // LWIP_ASSERT("chargen_thread(): Socket create failed.", listenfd >= 0);
 
   if (lwip_bind(listenfd, (struct sockaddr *) &chargen_saddr, sizeof (chargen_saddr)) == -1) {
-    LWIP_ASSERT("chargen_thread(): Socket bind failed.", 0);
+    // LWIP_ASSERT("chargen_thread(): Socket bind failed.", 0);
   }
 
   /* Put socket into listening mode */
   if (lwip_listen(listenfd, MAX_SERV) == -1) {
-    LWIP_ASSERT("chargen_thread(): Listen failed.", 0);
+    // LWIP_ASSERT("chargen_thread(): Listen failed.", 0);
   }
 
 
@@ -180,12 +180,12 @@ chargen_thread(void *arg)
     FD_ZERO(&readset);
     FD_ZERO(&writeset);
     FD_SET(listenfd, &readset);
-    for (p_charcb = charcb_list; p_charcb; p_charcb = p_charcb->next) {
-      if (maxfdp1 < p_charcb->socket + 1) {
-        maxfdp1 = p_charcb->socket + 1;
+    for (p_charcb = charcb_list; p_charcb; p_charcb =  p_charcb.next) {
+      if (maxfdp1 <  p_charcb.socket + 1) {
+        maxfdp1 =  p_charcb.socket + 1;
       }
-      FD_SET(p_charcb->socket, &readset);
-      FD_SET(p_charcb->socket, &writeset);
+      FD_SET( p_charcb.socket, &readset);
+      FD_SET( p_charcb.socket, &writeset);
     }
 
     /* Wait for data or a new connection */
@@ -200,16 +200,16 @@ chargen_thread(void *arg)
       /* Lets create a new control block */
       p_charcb = (struct charcb *) mem_malloc(sizeof (struct charcb));
       if (p_charcb) {
-        p_charcb->socket = lwip_accept(listenfd,
-                (struct sockaddr *) &p_charcb->cliaddr,
-                &p_charcb->clilen);
-        if (p_charcb->socket < 0) {
+         p_charcb.socket = lwip_accept(listenfd,
+                (struct sockaddr *) & p_charcb.cliaddr,
+                & p_charcb.clilen);
+        if ( p_charcb.socket < 0) {
           mem_free(p_charcb);
         } else {
           /* Keep this tecb in our list */
-          p_charcb->next = charcb_list;
+           p_charcb.next = charcb_list;
           charcb_list = p_charcb;
-          p_charcb->nextchar = 0x21;
+           p_charcb.nextchar = 0x21;
         }
       } else {
         /* No memory to accept connection. Just accept and then close */
@@ -224,8 +224,8 @@ chargen_thread(void *arg)
       }
     }
     /* Go through list of connected clients and process data */
-    for (p_charcb = charcb_list; p_charcb; p_charcb = p_charcb->next) {
-      if (FD_ISSET(p_charcb->socket, &readset)) {
+    for (p_charcb = charcb_list; p_charcb; p_charcb =  p_charcb.next) {
+      if (FD_ISSET( p_charcb.socket, &readset)) {
         /* This socket is ready for reading. This could be because someone typed
          * some characters or it could be because the socket is now closed. Try reading
          * some data to see. */
@@ -233,9 +233,9 @@ chargen_thread(void *arg)
           break;
         }
       }
-      if (FD_ISSET(p_charcb->socket, &writeset)) {
+      if (FD_ISSET( p_charcb.socket, &writeset)) {
         char line[80];
-        char setchar = p_charcb->nextchar;
+        char setchar =  p_charcb.nextchar;
 
         for (i = 0; i < 59; i++) {
           line[i] = setchar;
@@ -245,12 +245,12 @@ chargen_thread(void *arg)
         }
         line[i] = 0;
         strcat(line, "\n\r");
-        if (lwip_write(p_charcb->socket, line, strlen(line)) < 0) {
+        if (lwip_write( p_charcb.socket, line, strlen(line)) < 0) {
           close_chargen(p_charcb);
           break;
         }
-        if (++p_charcb->nextchar == 0x7f) {
-          p_charcb->nextchar = 0x21;
+        if (++ p_charcb.nextchar == 0x7f) {
+           p_charcb.nextchar = 0x21;
         }
       }
     }
@@ -259,13 +259,13 @@ chargen_thread(void *arg)
 
 
 /**************************************************************
- * void chargen_init(void)
+ * void chargen_init()
  *
  * This function initializes the chargen service. This function
  * may only be called either before or after tasking has started.
  **************************************************************/
 void
-chargen_init(void)
+chargen_init()
 {
   sys_thread_new(CHARGEN_THREAD_NAME, chargen_thread, NULL, CHARGEN_THREAD_STACKSIZE, CHARGEN_PRIORITY);
 }

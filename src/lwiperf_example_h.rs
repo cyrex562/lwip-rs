@@ -33,7 +33,7 @@
 
 
 
-void lwiperf_example_init(void);
+void lwiperf_example_init();
 
 
 

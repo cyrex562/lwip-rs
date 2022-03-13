@@ -29,17 +29,17 @@
 #define MAKEFS_SUPPORT_DEFLATE 0
 #ifndef MAKEFS_SUPPORT_DEFLATE_ZLIB
 #define MAKEFS_SUPPORT_DEFLATE_ZLIB 0
-#endif /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
-#endif /* MAKEFS_SUPPORT_DEFLATE */
+// #endif /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
+// #endif /* MAKEFS_SUPPORT_DEFLATE */
 
 #define COPY_BUFSIZE (1024*1024) /* 1 MByte */
 
-#if MAKEFS_SUPPORT_DEFLATE
-#if MAKEFS_SUPPORT_DEFLATE_ZLIB
+// #if MAKEFS_SUPPORT_DEFLATE
+// #if MAKEFS_SUPPORT_DEFLATE_ZLIB
 
 #else
 
-#endif /* MAKEFS_SUPPORT_DEFLATE */
+// #endif /* MAKEFS_SUPPORT_DEFLATE */
 
 typedef unsigned char uint8;
 typedef unsigned short uint16;
@@ -62,13 +62,13 @@ static uint8 s_checkbuf[OUT_BUF_SIZE];
 /* tdefl_compressor contains all the state needed by the low-level compressor so it's a pretty big struct (~300k).
    This example makes it a global vs. putting it on the stack, of course in real-world usage you'll probably malloc() or new it. */
 tdefl_compressor g_deflator;
-#endif /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
+// #endif /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
 
 static int deflate_level; /* default compression level, can be changed via command line */
 #define USAGE_ARG_DEFLATE " [-defl<:compr_level>]"
 #else /* MAKEFS_SUPPORT_DEFLATE */
 #define USAGE_ARG_DEFLATE ""
-#endif /* MAKEFS_SUPPORT_DEFLATE */
+// #endif /* MAKEFS_SUPPORT_DEFLATE */
 
 #ifdef WIN32
 
@@ -88,7 +88,7 @@ static int deflate_level; /* default compression level, can be changed via comma
 
 #error makefsdata not supported on this platform
 
-#endif
+// #endif
 
 #define NEWLINE     "\r\n"
 #define NEWLINE_LEN 2
@@ -154,11 +154,11 @@ static unsigned char useHttp11 = 0;
 static unsigned char supportSsi = 1;
 static unsigned char precalcChksum = 0;
 static unsigned char includeLastModified = 0;
-#if MAKEFS_SUPPORT_DEFLATE
+// #if MAKEFS_SUPPORT_DEFLATE
 static unsigned char deflateNonSsiFiles = 0;
 static size_t deflatedBytesReduced = 0;
 static size_t overallDataBytes = 0;
-#endif
+// #endif
 static const char *exclude_list = NULL;
 static const char *ncompress_list = NULL;
 
@@ -169,7 +169,7 @@ static char *ssi_file_buffer;
 static char **ssi_file_lines;
 static size_t ssi_file_num_lines;
 
-static void print_usage(void)
+static void print_usage()
 {
   printf(" Usage: htmlgen [targetdir] [-s] [-e] [-11] [-nossi] [-ssi:<filename>] [-c] [-f:<filename>] [-m] [-svr:<name>] [-x:<ext_list>] [-xc:<ext_list>" USAGE_ARG_DEFLATE NEWLINE NEWLINE);
   printf("   targetdir: relative or absolute path to files to convert" NEWLINE);
@@ -184,10 +184,10 @@ static void print_usage(void)
   printf("   switch -svr: server identifier sent in HTTP response header ('Server' field)" NEWLINE);
   printf("   switch -x: comma separated list of extensions of files to exclude (e.g., -x:json,txt)" NEWLINE);
   printf("   switch -xc: comma separated list of extensions of files to not compress (e.g., -xc:mp3,jpg)" NEWLINE);
-#if MAKEFS_SUPPORT_DEFLATE
+// #if MAKEFS_SUPPORT_DEFLATE
   printf("   switch -defl: deflate-compress all non-SSI files (with opt. compr.-level, default=10)" NEWLINE);
   printf("                 ATTENTION: browser has to support \"Content-Encoding: deflate\"!" NEWLINE);
-#endif
+// #endif
   printf("   if targetdir not specified, htmlgen will attempt to" NEWLINE);
   printf("   process files in subdirectory 'fs'" NEWLINE);
 }
@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
   printf("     by Jim Pettinato               - circa 2003 " NEWLINE);
   printf("     extended by Simon Goldschmidt  - 2009 " NEWLINE NEWLINE);
 
-  LWIP_ASSERT("sizeof(hdr_buf) must fit into an u16_t", sizeof(hdr_buf) <= 0xffff);
+  // LWIP_ASSERT("sizeof(hdr_buf) must fit into an u16_t", sizeof(hdr_buf) <= 0xffff);
 
   strcpy(path, "fs");
   for (i = 1; i < argc; i++) {
@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
       } else if (!strcmp(argv[i], "-m")) {
         includeLastModified = 1;
       } else if (strstr(argv[i], "-defl") == argv[i]) {
-#if MAKEFS_SUPPORT_DEFLATE
+// #if MAKEFS_SUPPORT_DEFLATE
         const char *colon = &argv[i][5];
         if (*colon == ':') {
           int defl_level = atoi(&colon[1]);
@@ -264,7 +264,7 @@ int main(int argc, char *argv[])
         printf("Deflating all non-SSI files with level %d (but only if size is reduced)" NEWLINE, deflate_level);
 #else
         printf("WARNING: Deflate support is disabled\n");
-#endif
+// #endif
       } else if (strstr(argv[i], "-x:") == argv[i]) {
         exclude_list = &argv[i][3];
         printf("Excluding files with extensions %s" NEWLINE, exclude_list);
@@ -344,14 +344,14 @@ int main(int argc, char *argv[])
   fprintf(data_file, "#ifndef FS_FILE_FLAGS_HEADER_PERSISTENT" NEWLINE "#define FS_FILE_FLAGS_HEADER_PERSISTENT 0" NEWLINE "#endif" NEWLINE);
 
   /* define alignment defines */
-#if ALIGN_PAYLOAD
+// #if ALIGN_PAYLOAD
   fprintf(data_file, "/* FSDATA_FILE_ALIGNMENT: 0=off, 1=by variable, 2=by include */" NEWLINE "#ifndef FSDATA_FILE_ALIGNMENT" NEWLINE "#define FSDATA_FILE_ALIGNMENT 0" NEWLINE "#endif" NEWLINE);
-#endif
+// #endif
   fprintf(data_file, "#ifndef FSDATA_ALIGN_PRE"  NEWLINE "#define FSDATA_ALIGN_PRE"  NEWLINE "#endif" NEWLINE);
   fprintf(data_file, "#ifndef FSDATA_ALIGN_POST" NEWLINE "#define FSDATA_ALIGN_POST" NEWLINE "#endif" NEWLINE);
-#if ALIGN_PAYLOAD
+// #if ALIGN_PAYLOAD
   fprintf(data_file, "#if FSDATA_FILE_ALIGNMENT==2" NEWLINE "#include \"fsdata_alignment.h\"" NEWLINE "#endif" NEWLINE);
-#endif
+// #endif
 
   sprintf(lastFileVar, "NULL");
 
@@ -384,17 +384,17 @@ int main(int argc, char *argv[])
   }
 
   printf(NEWLINE "Processed %d files - done." NEWLINE, filesProcessed);
-#if MAKEFS_SUPPORT_DEFLATE
+// #if MAKEFS_SUPPORT_DEFLATE
   if (deflateNonSsiFiles) {
     printf("(Deflated total byte reduction: %d bytes -> %d bytes (%.02f%%)" NEWLINE,
            (int)overallDataBytes, (int)deflatedBytesReduced, (float)((deflatedBytesReduced * 100.0) / overallDataBytes));
   }
-#endif
+// #endif
   printf(NEWLINE);
 
   while (first_file != NULL) {
     struct file_entry *fe = first_file;
-    first_file = fe->next;
+    first_file =  fe.next;
     free(fe);
   }
 
@@ -472,7 +472,7 @@ int process_sub(FILE *data_file, FILE *struct_file)
     size_t sublen = strlen(curSubdir);
     size_t freelen = sizeof(curSubdir) - sublen - 1;
     int ret;
-    LWIP_ASSERT("sublen < sizeof(curSubdir)", sublen < sizeof(curSubdir));
+    // LWIP_ASSERT("sublen < sizeof(curSubdir)", sublen < sizeof(curSubdir));
 
     ret = tinydir_open_sorted(&dir, TINYDIR_STRING("."));
 
@@ -490,7 +490,7 @@ int process_sub(FILE *data_file, FILE *struct_file)
           wcstombs_s(&num_char_converted, currName, sizeof(currName), file.name, sizeof(currName));
 #else
           const char *currName = file.name;
-#endif
+// #endif
 
           if (currName[0] == '.') {
             continue;
@@ -536,7 +536,7 @@ int process_sub(FILE *data_file, FILE *struct_file)
             wcstombs_s(&num_char_converted, curName, sizeof(curName), file.name, sizeof(curName));
 #else
             const char *curName = file.name;
-#endif
+// #endif
 
             if (strcmp(curName, "fsdata.tmp") == 0) {
               continue;
@@ -587,12 +587,12 @@ static u8_t *get_file_data(const char *filename, int *file_size, int can_be_comp
   fsize = (size_t)rs;
   fseek(inFile, 0, SEEK_SET);
   buf = (u8_t *)malloc(fsize);
-  LWIP_ASSERT("buf != NULL", buf != NULL);
+  // LWIP_ASSERT("buf != NULL", buf != NULL);
   r = fread(buf, 1, fsize, inFile);
-  LWIP_ASSERT("r == fsize", r == fsize);
+  // LWIP_ASSERT("r == fsize", r == fsize);
   *file_size = fsize;
   *is_compressed = 0;
-#if MAKEFS_SUPPORT_DEFLATE
+// #if MAKEFS_SUPPORT_DEFLATE
   overallDataBytes += fsize;
   if (deflateNonSsiFiles) {
     if (can_be_compressed) {
@@ -602,7 +602,7 @@ static u8_t *get_file_data(const char *filename, int *file_size, int can_be_comp
         tdefl_status status;
 #else /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
         int status;
-#endif /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
+// #endif /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
         size_t in_bytes = fsize;
         size_t out_bytes = OUT_BUF_SIZE;
         const void *next_in = buf;
@@ -630,11 +630,11 @@ static u8_t *get_file_data(const char *filename, int *file_size, int can_be_comp
           printf("deflate failed: %d\n", status);
           exit(-1);
         }
-#endif /*  MAKEFS_SUPPORT_DEFLATE_ZLIB */
-        LWIP_ASSERT("out_bytes <= COPY_BUFSIZE", out_bytes <= OUT_BUF_SIZE);
+// #endif /*  MAKEFS_SUPPORT_DEFLATE_ZLIB */
+        // LWIP_ASSERT("out_bytes <= COPY_BUFSIZE", out_bytes <= OUT_BUF_SIZE);
         if (out_bytes < fsize) {
           ret_buf = (u8_t *)malloc(out_bytes);
-          LWIP_ASSERT("ret_buf != NULL", ret_buf != NULL);
+          // LWIP_ASSERT("ret_buf != NULL", ret_buf != NULL);
           memcpy(ret_buf, s_outbuf, out_bytes);
           {
             /* sanity-check compression be inflating and comparing to the original */
@@ -648,14 +648,14 @@ static u8_t *get_file_data(const char *filename, int *file_size, int can_be_comp
 
             tinfl_init(&inflator);
             dec_status = tinfl_decompress(&inflator, (const mz_uint8 *)ret_buf, &dec_in_bytes, s_checkbuf, (mz_uint8 *)next_out, &dec_out_bytes, 0);
-            LWIP_ASSERT("tinfl_decompress failed", dec_status == TINFL_STATUS_DONE);
+            // LWIP_ASSERT("tinfl_decompress failed", dec_status == TINFL_STATUS_DONE);
 #else /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
             int dec_status;
             dec_status = uncompress2 (s_checkbuf, &dec_out_bytes, ret_buf, &dec_in_bytes);
-            LWIP_ASSERT("tinfl_decompress failed", dec_status == Z_OK);
-#endif /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
-            LWIP_ASSERT("tinfl_decompress size mismatch", fsize == dec_out_bytes);
-            LWIP_ASSERT("decompressed memcmp failed", !memcmp(s_checkbuf, buf, fsize));
+            // LWIP_ASSERT("tinfl_decompress failed", dec_status == Z_OK);
+// #endif /* MAKEFS_SUPPORT_DEFLATE_ZLIB */
+            // LWIP_ASSERT("tinfl_decompress size mismatch", fsize == dec_out_bytes);
+            // LWIP_ASSERT("decompressed memcmp failed", !memcmp(s_checkbuf, buf, fsize));
           }
           /* free original buffer, use compressed data + size */
           free(buf);
@@ -676,7 +676,7 @@ static u8_t *get_file_data(const char *filename, int *file_size, int can_be_comp
   }
 #else
   LWIP_UNUSED_ARG(can_be_compressed);
-#endif
+// #endif
   fclose(inFile);
   return buf;
 }
@@ -687,22 +687,22 @@ static void process_file_data(FILE *data_file, u8_t *file_data, size_t file_size
   size_t off = 0;
   LWIP_UNUSED_ARG(written); /* for LWIP_NOASSERT */
   for (i = 0; i < file_size; i++) {
-    LWIP_ASSERT("file_buffer_c overflow", off < sizeof(file_buffer_c) - 5);
+    // LWIP_ASSERT("file_buffer_c overflow", off < sizeof(file_buffer_c) - 5);
     sprintf(&file_buffer_c[off], "0x%02x,", file_data[i]);
     off += 5;
     if ((++src_off % HEX_BYTES_PER_LINE) == 0) {
-      LWIP_ASSERT("file_buffer_c overflow", off < sizeof(file_buffer_c) - NEWLINE_LEN);
+      // LWIP_ASSERT("file_buffer_c overflow", off < sizeof(file_buffer_c) - NEWLINE_LEN);
       memcpy(&file_buffer_c[off], NEWLINE, NEWLINE_LEN);
       off += NEWLINE_LEN;
     }
     if (off + 20 >= sizeof(file_buffer_c)) {
       written = fwrite(file_buffer_c, 1, off, data_file);
-      LWIP_ASSERT("written == off", written == off);
+      // LWIP_ASSERT("written == off", written == off);
       off = 0;
     }
   }
   written = fwrite(file_buffer_c, 1, off, data_file);
-  LWIP_ASSERT("written == off", written == off);
+  // LWIP_ASSERT("written == off", written == off);
 }
 
 static int write_checksums(FILE *struct_file, const char *varname,
@@ -712,10 +712,10 @@ static int write_checksums(FILE *struct_file, const char *varname,
   int offset, src_offset;
   size_t len;
   int i = 0;
-#if LWIP_TCP_TIMESTAMPS
+// #if LWIP_TCP_TIMESTAMPS
   /* when timestamps are used, usable space is 12 bytes less per segment */
   chunk_size -= 12;
-#endif
+// #endif
 
   fprintf(struct_file, "#if HTTPD_PRECALCULATED_CHECKSUM" NEWLINE);
   fprintf(struct_file, "const struct fsdata_chksum chksums_%s[] = {" NEWLINE, varname);
@@ -774,8 +774,8 @@ static void fix_filename_for_c(char *qualifiedName, size_t max_len)
   }
   do {
     filename_ok = 1;
-    for (f = first_file; f != NULL; f = f->next) {
-      if (!strcmp(f->filename_c, new_name)) {
+    for (f = first_file; f != NULL; f =  f.next) {
+      if (!strcmp( f.filename_c, new_name)) {
         filename_ok = 0;
         cnt++;
         /* try next unique file name */
@@ -795,12 +795,12 @@ static void fix_filename_for_c(char *qualifiedName, size_t max_len)
 static void register_filename(const char *qualifiedName)
 {
   struct file_entry *fe = (struct file_entry *)malloc(sizeof(struct file_entry));
-  fe->filename_c = strdup(qualifiedName);
-  fe->next = NULL;
+   fe.filename_c = strdup(qualifiedName);
+   fe.next = NULL;
   if (first_file == NULL) {
     first_file = last_file = fe;
   } else {
-    last_file->next = fe;
+     last_file.next = fe;
     last_file = fe;
   }
 }
@@ -869,14 +869,14 @@ static int checkSsiByFilelist(const char* filename_listfile)
       } else {
         /* waiting for beginning of new string */
         if (buf[i] != 0) {
-          LWIP_ASSERT("lines array overflow", l < num_lines);
+          // LWIP_ASSERT("lines array overflow", l < num_lines);
           lines[l] = &buf[i];
           state = 1;
           l++;
         }
       }
     }
-    LWIP_ASSERT("lines array overflow", l < num_lines);
+    // LWIP_ASSERT("lines array overflow", l < num_lines);
 
     ssi_file_buffer = buf;
     ssi_file_lines = lines;
@@ -907,7 +907,7 @@ static int is_ssi_file(const char *filename)
       }
       curSubdir[sublen] = 0;
       return ret;
-#if LWIP_HTTPD_SSI_BY_FILE_EXTENSION
+// #if LWIP_HTTPD_SSI_BY_FILE_EXTENSION
     } else {
       /* check file extension */
       size_t loop;
@@ -916,7 +916,7 @@ static int is_ssi_file(const char *filename)
           return 1;
         }
       }
-#endif /* LWIP_HTTPD_SSI_BY_FILE_EXTENSION */
+// #endif /* LWIP_HTTPD_SSI_BY_FILE_EXTENSION */
     }
   }
   return 0;
@@ -968,7 +968,7 @@ int process_file(FILE *data_file, FILE *struct_file, const char *filename)
   u16_t http_hdr_len = 0;
   int chksum_count = 0;
   u8_t flags = 0;
-  u8_t has_content_len;
+  has_content_len: u8;
   u8_t *file_data;
   int is_ssi;
   int can_be_compressed;
@@ -982,23 +982,23 @@ int process_file(FILE *data_file, FILE *struct_file, const char *filename)
   /* convert slashes & dots to underscores */
   fix_filename_for_c(varname, MAX_PATH_LEN);
   register_filename(varname);
-#if ALIGN_PAYLOAD
+// #if ALIGN_PAYLOAD
   /* to force even alignment of array, type 1 */
   fprintf(data_file, "#if FSDATA_FILE_ALIGNMENT==1" NEWLINE);
   fprintf(data_file, "static const " PAYLOAD_ALIGN_TYPE " dummy_align_%s = %d;" NEWLINE, varname, payload_alingment_dummy_counter++);
   fprintf(data_file, "#endif" NEWLINE);
-#endif /* ALIGN_PAYLOAD */
+// #endif /* ALIGN_PAYLOAD */
   fprintf(data_file, "static const unsigned char FSDATA_ALIGN_PRE data_%s[] FSDATA_ALIGN_POST = {" NEWLINE, varname);
   /* encode source file name (used by file system, not returned to browser) */
   fprintf(data_file, "/* %s (%"SZT_F" chars) */" NEWLINE, qualifiedName, strlen(qualifiedName) + 1);
   file_put_ascii(data_file, qualifiedName, strlen(qualifiedName) + 1, &i);
-#if ALIGN_PAYLOAD
+// #if ALIGN_PAYLOAD
   /* pad to even number of bytes to assure payload is on aligned boundary */
   while (i % PAYLOAD_ALIGNMENT != 0) {
     fprintf(data_file, "0x%02x,", 0);
     i++;
   }
-#endif /* ALIGN_PAYLOAD */
+// #endif /* ALIGN_PAYLOAD */
   fprintf(data_file, NEWLINE);
 
   is_ssi = is_ssi_file(filename);
@@ -1086,7 +1086,7 @@ int file_write_http_header(FILE *data_file, const char *filename, int file_size,
   size_t cur_len;
   int written = 0;
   size_t hdr_len = 0;
-  u16_t acc;
+  acc: u16;
   const char *file_ext;
   size_t j;
   u8_t provide_last_modified = includeLastModified;
@@ -1240,10 +1240,10 @@ int file_write_http_header(FILE *data_file, const char *filename, int file_size,
     }
   }
 
-#if MAKEFS_SUPPORT_DEFLATE
+// #if MAKEFS_SUPPORT_DEFLATE
   if (is_compressed) {
     /* tell the client about the deflate encoding */
-    LWIP_ASSERT("error", deflateNonSsiFiles);
+    // LWIP_ASSERT("error", deflateNonSsiFiles);
     cur_string = "Content-Encoding: deflate\r\n";
     cur_len = strlen(cur_string);
     fprintf(data_file, NEWLINE "/* \"%s\" (%d bytes) */" NEWLINE, cur_string, cur_len);
@@ -1252,7 +1252,7 @@ int file_write_http_header(FILE *data_file, const char *filename, int file_size,
   }
 #else
   LWIP_UNUSED_ARG(is_compressed);
-#endif
+// #endif
 
   /* write content-type, ATTENTION: this includes the double-CRLF! */
   cur_string = file_type;
@@ -1264,11 +1264,11 @@ int file_write_http_header(FILE *data_file, const char *filename, int file_size,
   /* ATTENTION: headers are done now (double-CRLF has been written!) */
 
   if (precalcChksum) {
-    LWIP_ASSERT("hdr_len + cur_len <= sizeof(hdr_buf)", hdr_len + cur_len <= sizeof(hdr_buf));
+    // LWIP_ASSERT("hdr_len + cur_len <= sizeof(hdr_buf)", hdr_len + cur_len <= sizeof(hdr_buf));
     memcpy(&hdr_buf[hdr_len], cur_string, cur_len);
     hdr_len += cur_len;
 
-    LWIP_ASSERT("strlen(hdr_buf) == hdr_len", strlen(hdr_buf) == hdr_len);
+    // LWIP_ASSERT("strlen(hdr_buf) == hdr_len", strlen(hdr_buf) == hdr_len);
     acc = ~inet_chksum(hdr_buf, (u16_t)hdr_len);
     *http_hdr_len = (u16_t)hdr_len;
     *http_hdr_chksum = acc;

@@ -40,7 +40,7 @@
 
 // #include "lwip/apps/snmp_opts.h"
 
-#if LWIP_SNMP
+// #if LWIP_SNMP
 
 // #include "lwip/err.h"
 // #include "lwip/pbuf.h"
@@ -50,8 +50,8 @@
 
 struct snmp_pbuf_stream {
   struct pbuf *pbuf;
-  u16_t offset;
-  u16_t length;
+  offset: u16;
+  length: u16;
 };
 
 err_t snmp_pbuf_stream_init(struct snmp_pbuf_stream *pbuf_stream, struct pbuf *p, u16_t offset, u16_t length);

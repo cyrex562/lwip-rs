@@ -44,7 +44,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_ARP || LWIP_ETHERNET /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ARP || LWIP_ETHERNET /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/pbuf.h"
 // #include "lwip/ip4_addr.h"
@@ -62,7 +62,7 @@
 /** 1 seconds period */
 pub const ARP_TMR_INTERVAL: u32 = 1000;
 
-#if ARP_QUEUEING
+// #if ARP_QUEUEING
 /** struct for queueing outgoing packets for unknown address
   * defined here to be accessed by memp.h
   */
@@ -73,7 +73,7 @@ struct etharp_q_entry {
  /* ARP_QUEUEING */
 
 #define etharp_init() /* Compatibility define, no init needed. */
-void etharp_tmr(void);
+void etharp_tmr();
 ssize_t etharp_find_addr(struct netif *netif, const ip4_addr_t *ipaddr,
          struct eth_addr **eth_ret, const ip4_addr_t **ip_ret);
 int etharp_get_entry(size_t i, ip4_addr_t **ipaddr, struct netif **netif, struct eth_addr **eth_ret);
@@ -87,12 +87,12 @@ err_t etharp_request(struct netif *netif, const ip4_addr_t *ipaddr);
 #define etharp_gratuitous(netif) etharp_request((netif), netif_ip4_addr(netif))
 void etharp_cleanup_netif(struct netif *netif);
 
-#if LWIP_ACD
+// #if LWIP_ACD
 err_t etharp_acd_probe(struct netif *netif, const ip4_addr_t *ipaddr);
 err_t etharp_acd_announce(struct netif *netif, const ip4_addr_t *ipaddr);
  /* LWIP_ACD */
 
-#if ETHARP_SUPPORT_STATIC_ENTRIES
+// #if ETHARP_SUPPORT_STATIC_ENTRIES
 err_t etharp_add_static_entry(const ip4_addr_t *ipaddr, struct eth_addr *ethaddr);
 err_t etharp_remove_static_entry(const ip4_addr_t *ipaddr);
  /* ETHARP_SUPPORT_STATIC_ENTRIES */

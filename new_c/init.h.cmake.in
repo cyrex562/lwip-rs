@@ -41,7 +41,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+// #endif
 
 /**
  * @defgroup lwip_version Version
@@ -72,13 +72,13 @@ extern "C" {
 /* Some helper defines to get a version string */
 #define LWIP_VERSTR2(x) #x
 #define LWIP_VERSTR(x) LWIP_VERSTR2(x)
-#if LWIP_VERSION_IS_RELEASE
+// #if LWIP_VERSION_IS_RELEASE
 #define LWIP_VERSION_STRING_SUFFIX ""
 #elif LWIP_VERSION_IS_DEVELOPMENT
 #define LWIP_VERSION_STRING_SUFFIX "d"
 #else
 #define LWIP_VERSION_STRING_SUFFIX "rc" LWIP_VERSTR(LWIP_VERSION_RC)
-#endif
+// #endif
 
 /** Provides the version of the stack */
 #define LWIP_VERSION   ((LWIP_VERSION_MAJOR) << 24   | (LWIP_VERSION_MINOR) << 16 | \
@@ -91,10 +91,10 @@ extern "C" {
  */
 
 /* Modules initialization */
-void lwip_init(void);
+void lwip_init();
 
 #ifdef __cplusplus
 }
-#endif
+// #endif
 
-#endif /* LWIP_HDR_INIT_H */
+// #endif /* LWIP_HDR_INIT_H */

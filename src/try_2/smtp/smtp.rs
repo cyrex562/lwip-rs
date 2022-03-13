@@ -307,7 +307,7 @@ pub fn smtp_pbuf_str(p: &mut PacketBuffer) -> String {
 pub fn smtp_set_server_addr(server: &mut String) {
     let len: usize = 0;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     if (server != None) {
         //  strlen: returns length WITHOUT terminating 0 byte 
@@ -329,7 +329,7 @@ pub fn smtp_set_server_addr(server: &mut String) {
  * @param port TCP port
  */
 pub fn smtp_set_server_port(port: u16) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     smtp_server_port = port;
 }
 
@@ -339,7 +339,7 @@ pub fn smtp_set_server_port(port: u16) {
  * @param tls_config TLS configuration
  */
 pub fn smtp_set_tls_config(tls_config: &mut altcp_tls_config) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     smtp_server_tls_config = tls_config;
 }
 
@@ -353,7 +353,7 @@ pub fn smtp_set_auth(username: &mut String, pass: &mut String) {
     let uname_len: usize = 0;
     let pass_len: usize = 0;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //memset(smtp_auth_plain, 0xfa, 64);
     if (username != None) {
@@ -423,7 +423,7 @@ pub fn smtp_send_mail_alloced(s: &mut smtp_session) -> Result<(), LwipError> {
     let pcb: &mut AlTcpPcb;
     let addr: LwipAddr;
 
-    LWIP_ASSERT("no smtp_session supplied", s != None);
+    // LWIP_ASSERT("no smtp_session supplied", s != None);
 
     /* check that body conforms to RFC:
      * - convert all single-CR or -LF in body to CRLF
@@ -533,7 +533,7 @@ pub fn smtp_send_mail(
     let ssubject: &mut String;
     let sbody: &mut String;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     mem_len += from_len + to_len + subject_len + body_len + 4;
     if (mem_len > 0xffff) {
@@ -587,7 +587,7 @@ pub fn smtp_send_mail_static(
     let s: &mut smtp_session;
     let len: usize;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     s = SMTP_STATE_MALLOC(sizeof(smtp_session));
     if (s == None) {
@@ -597,19 +597,19 @@ pub fn smtp_send_mail_static(
     //  initialize the structure 
     s.from = from;
     len = strlen(from);
-    LWIP_ASSERT("string is too long", len <= 0xffff);
+    // LWIP_ASSERT("string is too long", len <= 0xffff);
     s.from_len = len;
     s.to = to;
     len = strlen(to);
-    LWIP_ASSERT("string is too long", len <= 0xffff);
+    // LWIP_ASSERT("string is too long", len <= 0xffff);
     s.to_len = len;
     s.subject = subject;
     len = strlen(subject);
-    LWIP_ASSERT("string is too long", len <= 0xffff);
+    // LWIP_ASSERT("string is too long", len <= 0xffff);
     s.subject_len = len;
     s.body = body;
     len = strlen(body);
-    LWIP_ASSERT("string is too long", len <= 0xffff);
+    // LWIP_ASSERT("string is too long", len <= 0xffff);
     s.body_len = len;
     s.callback_fn = callback_fn;
     s.callback_arg = callback_arg;
@@ -638,8 +638,8 @@ pub fn smtp_send_mail_int(arg: &mut Vec<u8>) {
     let req: &mut smtp_send_request = arg;
     let err: err_t;
 
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT("smtp_send_mail_int: no argument given", arg != None);
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT("smtp_send_mail_int: no argument given", arg != None);
 
     if (req.static_data) {
         err = smtp_send_mail_static(
@@ -855,7 +855,7 @@ pub fn smtp_base64_encode(
     let x: u8 = 5;
     let current: u8 = 0;
 
-    LWIP_ASSERT("target_len is too short", target_len >= len);
+    // LWIP_ASSERT("target_len is too short", target_len >= len);
 
     // TODO
     // for (i = 0; i < source_len_b64; i+= 1) {
@@ -963,15 +963,15 @@ pub fn smtp_prepare_helo(
 ) -> smtp_session_state {
     let ipa_len: usize;
     let ipa: &String = ipaddr_ntoa(altcp_get_ip(pcb, 1));
-    LWIP_ASSERT("ipaddr_ntoa returned NULL", ipa != None);
+    // LWIP_ASSERT("ipaddr_ntoa returned NULL", ipa != None);
     ipa_len = strlen(ipa);
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "string too long",
         ipa_len <= (SMTP_TX_BUF_LEN - SMTP_CMD_EHLO_1_LEN - SMTP_CMD_EHLO_2_LEN),
     );
 
     *tx_buf_len = (SMTP_CMD_EHLO_1_LEN + ipa_len + SMTP_CMD_EHLO_2_LEN);
-    LWIP_ASSERT("tx_buf overflow detected", *tx_buf_len <= SMTP_TX_BUF_LEN);
+    // LWIP_ASSERT("tx_buf overflow detected", *tx_buf_len <= SMTP_TX_BUF_LEN);
 
     SMEMCPY(s.tx_buf, SMTP_CMD_EHLO_1, SMTP_CMD_EHLO_1_LEN);
     MEMCPY(&s.tx_buf[SMTP_CMD_EHLO_1_LEN], ipa, ipa_len);
@@ -1015,7 +1015,7 @@ pub fn smtp_prepare_auth_or_mail(s: &mut smtp_session, tx_buf_len: &mut u16) -> 
                         SMTP_AUTH_PLAIN_DATA(s),
                         SMTP_AUTH_PLAIN_LEN(s),
                     );
-                    LWIP_ASSERT(
+                    // LWIP_ASSERT(
                         "string too long",
                         auth_len
                             <= (SMTP_TX_BUF_LEN
@@ -1056,8 +1056,8 @@ pub fn smtp_prepare_auth_login_uname(
         strlen(SMTP_USERNAME(s)),
     );
     //  @todo: support base64-encoded longer than 64k 
-    LWIP_ASSERT("string too long", base64_len <= 0xffff);
-    LWIP_ASSERT(
+    // LWIP_ASSERT("string too long", base64_len <= 0xffff);
+    // LWIP_ASSERT(
         "tx_buf overflow detected",
         base64_len <= SMTP_TX_BUF_LEN - SMTP_CRLF_LEN,
     );
@@ -1080,8 +1080,8 @@ pub fn smtp_prepare_auth_login_pass(
         strlen(SMTP_PASS(s)),
     );
     //  @todo: support base64-encoded longer than 64k 
-    LWIP_ASSERT("string too long", base64_len <= 0xffff);
-    LWIP_ASSERT(
+    // LWIP_ASSERT("string too long", base64_len <= 0xffff);
+    // LWIP_ASSERT(
         "tx_buf overflow detected",
         base64_len <= SMTP_TX_BUF_LEN - SMTP_CRLF_LEN,
     );
@@ -1095,7 +1095,7 @@ pub fn smtp_prepare_auth_login_pass(
 //  Prepare MAIL message 
 pub fn smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_session_state {
     let target: &mut String = s.tx_buf;
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "tx_buf overflow detected",
         s.from_len <= (SMTP_TX_BUF_LEN - SMTP_CMD_MAIL_1_LEN - SMTP_CMD_MAIL_2_LEN),
     );
@@ -1113,7 +1113,7 @@ pub fn smtp_prepare_mail(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_ses
 //  Prepare RCPT message 
 pub fn smtp_prepare_rcpt(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_session_state {
     let target: &mut String = s.tx_buf;
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "tx_buf overflow detected",
         s.to_len <= (SMTP_TX_BUF_LEN - SMTP_CMD_RCPT_1_LEN - SMTP_CMD_RCPT_2_LEN),
     );
@@ -1138,7 +1138,7 @@ pub fn smtp_prepare_header(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_s
         + s.from_len
         + s.to_len
         + s.subject_len;
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "tx_buf overflow detected",
         len > 0 && len <= SMTP_TX_BUF_LEN,
     );
@@ -1167,7 +1167,7 @@ pub fn smtp_prepare_quit(s: &mut smtp_session, tx_buf_len: &mut u16) -> smtp_ses
     *tx_buf_len = SMTP_CMD_QUIT_LEN;
     s.tx_buf[*tx_buf_len] = 0;
     SMEMCPY(s.tx_buf, SMTP_CMD_QUIT, SMTP_CMD_QUIT_LEN);
-    LWIP_ASSERT("tx_buf overflow detected", *tx_buf_len <= SMTP_TX_BUF_LEN);
+    // LWIP_ASSERT("tx_buf overflow detected", *tx_buf_len <= SMTP_TX_BUF_LEN);
     return SMTP_CLOSED;
 }
 
@@ -1424,7 +1424,7 @@ pub fn smtp_send_mail_bodycback(
     let s: &mut smtp_session;
     let len: usize;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     s = SMTP_STATE_MALLOC(sizeof(smtp_session));
     if (s == None) {
@@ -1440,18 +1440,18 @@ pub fn smtp_send_mail_bodycback(
     //  initialize the structure 
     s.from = from;
     len = strlen(from);
-    LWIP_ASSERT("string is too long", len <= 0xffff);
+    // LWIP_ASSERT("string is too long", len <= 0xffff);
     s.from_len = len;
     s.to = to;
     len = strlen(to);
-    LWIP_ASSERT("string is too long", len <= 0xffff);
+    // LWIP_ASSERT("string is too long", len <= 0xffff);
     s.to_len = len;
     s.subject = subject;
     len = strlen(subject);
-    LWIP_ASSERT("string is too long", len <= 0xffff);
+    // LWIP_ASSERT("string is too long", len <= 0xffff);
     s.subject_len = len;
     s.body = None;
-    LWIP_ASSERT("string is too long", len <= 0xffff);
+    // LWIP_ASSERT("string is too long", len <= 0xffff);
     s.callback_fn = callback_fn;
     s.callback_arg = callback_arg;
     s.bodydh.callback_fn = bodycback_fn;
@@ -1464,9 +1464,9 @@ pub fn smtp_send_body_data_handler(s: &mut smtp_session, pcb: &mut AlTcpPcb) {
     let mut bdh: &mut smtp_bodydh_state;
     let res: i32 = 0;
     let ret;
-    LWIP_ASSERT("s != NULL", s != None);
+    // LWIP_ASSERT("s != NULL", s != None);
     bdh = &mut s.bodydh;
-    LWIP_ASSERT("bodydh != NULL", bdh != None);
+    // LWIP_ASSERT("bodydh != NULL", bdh != None);
 
     //  resume any leftovers from prior memory constraints 
     if (s.body_len) {

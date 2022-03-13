@@ -44,7 +44,7 @@ lwiperf_report(void *arg, enum lwiperf_report_type report_type,
 }
 
 void
-lwiperf_example_init(void)
+lwiperf_example_init()
 {
   lwiperf_start_tcp_server_default(lwiperf_report, NULL);
 }

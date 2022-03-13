@@ -88,7 +88,7 @@ pub const LWIP_FREERTOS_CHECK_CORE_LOCKING: u32 = 0;
 pub fn sys_init() {
     //  initialize sys_arch_protect global mutex
     sys_arch_protect_mutex = xSemaphoreCreateRecursiveMutex();
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "failed to create sys_arch_protect mutex",
         sys_arch_protect_mutex != None,
     );
@@ -106,13 +106,13 @@ pub fn sys_jiffies() -> u32 {
 
 pub fn sys_arch_protect() -> sys_prot_t {
     let ret: BaseType_t;
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "sys_arch_protect_mutex != NULL",
         sys_arch_protect_mutex != None,
     );
 
     ret = xSemaphoreTakeRecursive(sys_arch_protect_mutex, portMAX_DELAY);
-    LWIP_ASSERT("sys_arch_protect failed to take the mutex", ret == pdTRUE);
+    // LWIP_ASSERT("sys_arch_protect failed to take the mutex", ret == pdTRUE);
     //  LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX
     taskENTER_CRITICAL();
 
@@ -120,7 +120,7 @@ pub fn sys_arch_protect() -> sys_prot_t {
         //  every nested call to sys_arch_protect() returns an increased number
         let ret: sys_prot_t = sys_arch_protect_nesting;
         sys_arch_protect_nesting += 1;
-        LWIP_ASSERT("sys_arch_protect overflow", sys_arch_protect_nesting > ret);
+        // LWIP_ASSERT("sys_arch_protect overflow", sys_arch_protect_nesting > ret);
         return ret;
     }
 
@@ -129,23 +129,23 @@ pub fn sys_arch_protect() -> sys_prot_t {
 
 pub fn sys_arch_unprotect(pval: sys_prot_t) {
     let ret: BaseType_t;
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "unexpected sys_arch_protect_nesting",
         sys_arch_protect_nesting > 0,
     );
     sys_arch_protect_nesting -= 1;
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "unexpected sys_arch_protect_nesting",
         sys_arch_protect_nesting == pval,
     );
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "sys_arch_protect_mutex != NULL",
         sys_arch_protect_mutex != None,
     );
 
     ret = xSemaphoreGiveRecursive(sys_arch_protect_mutex);
-    LWIP_ASSERT("sys_arch_unprotect failed to give the mutex", ret == pdTRUE);
+    // LWIP_ASSERT("sys_arch_unprotect failed to give the mutex", ret == pdTRUE);
     //  LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX
     taskEXIT_CRITICAL();
 }
@@ -157,7 +157,7 @@ pub fn sys_arch_msleep(delay_ms: u32) {
 
 //  Create a new mutex
 pub fn sys_mutex_new(mutex: &mut sys_mutex_t) {
-    LWIP_ASSERT("mutex != NULL", mutex != None);
+    // LWIP_ASSERT("mutex != NULL", mutex != None);
 
     mutex.val = xSemaphoreCreateRecursiveMutex();
     if (mutex.val == None) {
@@ -170,25 +170,25 @@ pub fn sys_mutex_new(mutex: &mut sys_mutex_t) {
 
 pub fn sys_mutex_lock(mutex: &mut sys_mutex_t) {
     let ret: BaseType_t;
-    LWIP_ASSERT("mutex != NULL", mutex != None);
-    LWIP_ASSERT("mutex.mut != NULL", mutex.val != None);
+    // LWIP_ASSERT("mutex != NULL", mutex != None);
+    // LWIP_ASSERT("mutex.mut != NULL", mutex.val != None);
 
     ret = xSemaphoreTakeRecursive(mutex.val, portMAX_DELAY);
-    LWIP_ASSERT("failed to take the mutex", ret == pdTRUE);
+    // LWIP_ASSERT("failed to take the mutex", ret == pdTRUE);
 }
 
 pub fn sys_mutex_unlock(mutex: &mut sys_mutex_t) {
     let ret: BaseType_t;
-    LWIP_ASSERT("mutex != NULL", mutex != None);
-    LWIP_ASSERT("mutex.mut != NULL", mutex.val != None);
+    // LWIP_ASSERT("mutex != NULL", mutex != None);
+    // LWIP_ASSERT("mutex.mut != NULL", mutex.val != None);
 
     ret = xSemaphoreGiveRecursive(mutex.val);
-    LWIP_ASSERT("failed to give the mutex", ret == pdTRUE);
+    // LWIP_ASSERT("failed to give the mutex", ret == pdTRUE);
 }
 
 pub fn sys_mutex_free(mutex: &mut sys_mutex_t) {
-    LWIP_ASSERT("mutex != NULL", mutex != None);
-    LWIP_ASSERT("mutex.mut != NULL", mutex.val != None);
+    // LWIP_ASSERT("mutex != NULL", mutex != None);
+    // LWIP_ASSERT("mutex.mut != NULL", mutex.val != None);
 
     SYS_STATS_DEC(mutex.used);
     vSemaphoreDelete(mutex.val);
@@ -196,8 +196,8 @@ pub fn sys_mutex_free(mutex: &mut sys_mutex_t) {
 }
 
 pub fn sys_sem_new(sem: &mut sys_sem_t, initial_count: u8) {
-    LWIP_ASSERT("sem != NULL", sem != None);
-    LWIP_ASSERT(
+    // LWIP_ASSERT("sem != NULL", sem != None);
+    // LWIP_ASSERT(
         "initial_count invalid (not 0 or 1)",
         (initial_count == 0) || (initial_count == 1),
     );
@@ -211,19 +211,19 @@ pub fn sys_sem_new(sem: &mut sys_sem_t, initial_count: u8) {
 
     if (initial_count == 1) {
         let ret: BaseType_t = xSemaphoreGive(sem.sem);
-        LWIP_ASSERT("sys_sem_new: initial give failed", ret == pdTRUE);
+        // LWIP_ASSERT("sys_sem_new: initial give failed", ret == pdTRUE);
     }
     return Ok(());
 }
 
 pub fn sys_sem_signal(sem: &mut sys_sem_t) {
     let ret: BaseType_t;
-    LWIP_ASSERT("sem != NULL", sem != None);
-    LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
+    // LWIP_ASSERT("sem != NULL", sem != None);
+    // LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
 
     ret = xSemaphoreGive(sem.sem);
     //  queue full is OK, this is a signal only...
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "sys_sem_signal: sane return value",
         (ret == pdTRUE) || (ret == errQUEUE_FULL),
     );
@@ -231,13 +231,13 @@ pub fn sys_sem_signal(sem: &mut sys_sem_t) {
 
 pub fn sys_arch_sem_wait(sem: sys_sem_t, timeout_ms: u32) -> u32 {
     let ret: BaseType_t;
-    LWIP_ASSERT("sem != NULL", sem != None);
-    LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
+    // LWIP_ASSERT("sem != NULL", sem != None);
+    // LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
 
     if (!timeout_ms) {
         //  wait infinite
         ret = xSemaphoreTake(sem.sem, portMAX_DELAY);
-        LWIP_ASSERT("taking semaphore failed", ret == pdTRUE);
+        // LWIP_ASSERT("taking semaphore failed", ret == pdTRUE);
     } else {
         let timeout_ticks: TickType_t = timeout_ms / portTICK_RATE_MS;
         ret = xSemaphoreTake(sem.sem, timeout_ticks);
@@ -245,7 +245,7 @@ pub fn sys_arch_sem_wait(sem: sys_sem_t, timeout_ms: u32) -> u32 {
             //  timed out
             return SYS_ARCH_TIMEOUT;
         }
-        LWIP_ASSERT("taking semaphore failed", ret == pdTRUE);
+        // LWIP_ASSERT("taking semaphore failed", ret == pdTRUE);
     }
 
     /* Old versions of lwIP required us to return the time waited.
@@ -255,8 +255,8 @@ pub fn sys_arch_sem_wait(sem: sys_sem_t, timeout_ms: u32) -> u32 {
 }
 
 pub fn sys_sem_free(sem: &mut sys_sem_t) {
-    LWIP_ASSERT("sem != NULL", sem != None);
-    LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
+    // LWIP_ASSERT("sem != NULL", sem != None);
+    // LWIP_ASSERT("sem.sem != NULL", sem.sem != None);
 
     SYS_STATS_DEC(sem.used);
     vSemaphoreDelete(sem.sem);
@@ -264,8 +264,8 @@ pub fn sys_sem_free(sem: &mut sys_sem_t) {
 }
 
 pub fn sys_mbox_new(mbox: &mut sys_mbox_t, size: i32) {
-    LWIP_ASSERT("mbox != NULL", mbox != None);
-    LWIP_ASSERT("size > 0", size > 0);
+    // LWIP_ASSERT("mbox != NULL", mbox != None);
+    // LWIP_ASSERT("size > 0", size > 0);
 
     // mbox.mbx = xQueueCreate((UBaseType_t)size, sizeof);
     if (mbox.mbx == None) {
@@ -278,23 +278,23 @@ pub fn sys_mbox_new(mbox: &mut sys_mbox_t, size: i32) {
 
 pub fn sys_mbox_post(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
     let ret: BaseType_t;
-    LWIP_ASSERT("mbox != NULL", mbox != None);
-    LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
+    // LWIP_ASSERT("mbox != NULL", mbox != None);
+    // LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
     ret = xQueueSendToBack(mbox.mbx, &msg, portMAX_DELAY);
-    LWIP_ASSERT("mbox post failed", ret == pdTRUE);
+    // LWIP_ASSERT("mbox post failed", ret == pdTRUE);
 }
 
 pub fn sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
     let ret: BaseType_t;
-    LWIP_ASSERT("mbox != NULL", mbox != None);
-    LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
+    // LWIP_ASSERT("mbox != NULL", mbox != None);
+    // LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
     ret = xQueueSendToBack(mbox.mbx, &msg, 0);
     if (ret == pdTRUE) {
         return Ok(());
     } else {
-        LWIP_ASSERT("mbox trypost failed", ret == errQUEUE_FULL);
+        // LWIP_ASSERT("mbox trypost failed", ret == errQUEUE_FULL);
         SYS_STATS_INC(mbox.err);
         return ERR_MEM;
     }
@@ -303,8 +303,8 @@ pub fn sys_mbox_trypost(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
 pub fn sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
     let ret: BaseType_t;
     let xHigherPriorityTaskWoken: BaseType_t = pdFALSE;
-    LWIP_ASSERT("mbox != NULL", mbox != None);
-    LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
+    // LWIP_ASSERT("mbox != NULL", mbox != None);
+    // LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
     ret = xQueueSendToBackFromISR(mbox.mbx, &msg, &xHigherPriorityTaskWoken);
     if (ret == pdTRUE) {
@@ -313,7 +313,7 @@ pub fn sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
         }
         return Ok(());
     } else {
-        LWIP_ASSERT("mbox trypost failed", ret == errQUEUE_FULL);
+        // LWIP_ASSERT("mbox trypost failed", ret == errQUEUE_FULL);
         SYS_STATS_INC(mbox.err);
         return ERR_MEM;
     }
@@ -322,8 +322,8 @@ pub fn sys_mbox_trypost_fromisr(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) {
 pub fn sys_arch_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout_ms: u32) -> u32 {
     let ret: BaseType_t;
     let msg_dummy: &mut Vec<u8>;
-    LWIP_ASSERT("mbox != NULL", mbox != None);
-    LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
+    // LWIP_ASSERT("mbox != NULL", mbox != None);
+    // LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
     if (!msg) {
         msg = &msg_dummy;
@@ -332,7 +332,7 @@ pub fn sys_arch_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout_ms:
     if (!timeout_ms) {
         //  wait infinite
         ret = xQueueReceive(mbox.mbx, &(*msg), portMAX_DELAY);
-        LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
+        // LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
     } else {
         let timeout_ticks: TickType_t = timeout_ms / portTICK_RATE_MS;
         ret = xQueueReceive(mbox.mbx, &(*msg), timeout_ticks);
@@ -341,7 +341,7 @@ pub fn sys_arch_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout_ms:
             *msg = None;
             return SYS_ARCH_TIMEOUT;
         }
-        LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
+        // LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
     }
 
     /* Old versions of lwIP required us to return the time waited.
@@ -353,8 +353,8 @@ pub fn sys_arch_mbox_fetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>, timeout_ms:
 pub fn sys_arch_mbox_tryfetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) -> u32 {
     let ret: BaseType_t;
     let msg_dummy: &mut Vec<u8>;
-    LWIP_ASSERT("mbox != NULL", mbox != None);
-    LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
+    // LWIP_ASSERT("mbox != NULL", mbox != None);
+    // LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
     if (!msg) {
         msg = &msg_dummy;
@@ -365,7 +365,7 @@ pub fn sys_arch_mbox_tryfetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) -> u32 {
         *msg = None;
         return SYS_MBOX_EMPTY;
     }
-    LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
+    // LWIP_ASSERT("mbox fetch failed", ret == pdTRUE);
 
     /* Old versions of lwIP required us to return the time waited.
     This is not the case any more. Just returning != SYS_ARCH_TIMEOUT
@@ -374,12 +374,12 @@ pub fn sys_arch_mbox_tryfetch(mbox: &mut sys_mbox_t, msg: &mut Vec<u8>) -> u32 {
 }
 
 pub fn sys_mbox_free(mbox: &mut sys_mbox_t) {
-    LWIP_ASSERT("mbox != NULL", mbox != None);
-    LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
+    // LWIP_ASSERT("mbox != NULL", mbox != None);
+    // LWIP_ASSERT("mbox.mbx != NULL", mbox.mbx != None);
 
     {
         let msgs_waiting: UBaseType_t = uxQueueMessagesWaiting(mbox.mbx);
-        LWIP_ASSERT("mbox quence not empty", msgs_waiting == 0);
+        // LWIP_ASSERT("mbox quence not empty", msgs_waiting == 0);
 
         if (msgs_waiting != 0) {
             SYS_STATS_INC(mbox.err);
@@ -403,7 +403,7 @@ pub fn sys_thread_new(
     let lwip_thread: sys_thread_t;
     let rtos_stacksize: usize;
 
-    LWIP_ASSERT("invalid stacksize", stacksize > 0);
+    // LWIP_ASSERT("invalid stacksize", stacksize > 0);
 
     rtos_stacksize = stacksize;
 
@@ -412,7 +412,7 @@ pub fn sys_thread_new(
     /* lwIP's lwip_thread_fn matches FreeRTOS' TaskFunction_t, so we can pass the
     thread function without adaption here. */
     ret = xTaskCreate(thread, name, rtos_stacksize, arg, prio, &rtos_task);
-    LWIP_ASSERT("task creation failed", ret == pdTRUE);
+    // LWIP_ASSERT("task creation failed", ret == pdTRUE);
     lwip_thread.thread_handle = rtos_task;
     return lwip_thread;
 }
@@ -420,7 +420,7 @@ pub fn sys_thread_new(
 pub fn sys_arch_netconn_sem_get() -> sys_sem_t {
     let ret: &mut Vec<u8>;
     let task: TaskHandle_t = xTaskGetCurrentTaskHandle();
-    LWIP_ASSERT("task != NULL", task != None);
+    // LWIP_ASSERT("task != NULL", task != None);
 
     ret = pvTaskGetThreadLocalStoragePointer(task, 0);
     return ret;
@@ -429,7 +429,7 @@ pub fn sys_arch_netconn_sem_get() -> sys_sem_t {
 pub fn sys_arch_netconn_sem_alloc() {
     let ret: &mut Vec<u8>;
     let task: TaskHandle_t = xTaskGetCurrentTaskHandle();
-    LWIP_ASSERT("task != NULL", task != None);
+    // LWIP_ASSERT("task != NULL", task != None);
 
     ret = pvTaskGetThreadLocalStoragePointer(task, 0);
     if (ret == None) {
@@ -437,10 +437,10 @@ pub fn sys_arch_netconn_sem_alloc() {
         let err: err_t;
         //  need to allocate the memory for this semaphore
         sem = mem_malloc(sizeof(sys_sem_t));
-        LWIP_ASSERT("sem != NULL", sem != None);
+        // LWIP_ASSERT("sem != NULL", sem != None);
         err = sys_sem_new(sem, 0);
-        LWIP_ASSERT("err == ERR_OK", err == ERR_OK);
-        LWIP_ASSERT("sem invalid", sys_sem_valid(sem));
+        // LWIP_ASSERT("err == ERR_OK", err == ERR_OK);
+        // LWIP_ASSERT("sem invalid", sys_sem_valid(sem));
         vTaskSetThreadLocalStoragePointer(task, 0, sem);
     }
 }
@@ -448,7 +448,7 @@ pub fn sys_arch_netconn_sem_alloc() {
 pub fn sys_arch_netconn_sem_free() {
     let ret: &mut Vec<u8>;
     let task: TaskHandle_t = xTaskGetCurrentTaskHandle();
-    LWIP_ASSERT("task != NULL", task != None);
+    // LWIP_ASSERT("task != NULL", task != None);
 
     ret = pvTaskGetThreadLocalStoragePointer(task, 0);
     if (ret != None) {
@@ -500,12 +500,12 @@ pub fn sys_check_core_locking() {
     if (lwip_tcpip_thread != 0) {
         let current_thread: TaskHandle_t = xTaskGetCurrentTaskHandle();
 
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "Function called without core lock",
             current_thread == lwip_core_lock_holder_thread && lwip_core_lock_count > 0,
         );
         //  LWIP_TCPIP_CORE_LOCKING
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "Function called from wrong thread",
             current_thread == lwip_tcpip_thread,
         );

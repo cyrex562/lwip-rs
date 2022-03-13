@@ -36,7 +36,7 @@
  */
 
 
-#if PPP_SUPPORT && PPP_IPV6_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && PPP_IPV6_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -53,4 +53,4 @@ char *eui64_ntoa(eui64_t e) {
     return buf;
 }
 
-#endif /* PPP_SUPPORT && PPP_IPV6_SUPPORT */
+// #endif /* PPP_SUPPORT && PPP_IPV6_SUPPORT */

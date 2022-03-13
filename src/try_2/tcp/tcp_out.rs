@@ -153,8 +153,8 @@ pub fn tcp_create_segment(
     let mut seg: &mut tcp_seg;
     let optlen: u8;
 
-    LWIP_ASSERT("tcp_create_segment: invalid pcb", pcb != None);
-    LWIP_ASSERT("tcp_create_segment: invalid pbuf", p != None);
+    // LWIP_ASSERT("tcp_create_segment: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_create_segment: invalid pbuf", p != None);
 
     optlen = LWIP_TCP_OPT_LENGTH_SEGMENT(optflags, pcb);
 
@@ -166,7 +166,7 @@ pub fn tcp_create_segment(
     seg.flags = optflags;
     seg.next = None;
     seg.p = p;
-    LWIP_ASSERT("p.tot_len >= optlen", p.tot_len >= optlen);
+    // LWIP_ASSERT("p.tot_len >= optlen", p.tot_len >= optlen);
     seg.len = p.tot_len - optlen;
 
     seg.oversize_left = 0;
@@ -174,7 +174,7 @@ pub fn tcp_create_segment(
     seg.chksum = 0;
     seg.chksum_swapped = 0;
     //  check optflags 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "invalid optflags passed: TF_SEG_DATA_CHECKSUMMED",
         (optflags & TF_SEG_DATA_CHECKSUMMED) == 0,
     );
@@ -225,8 +225,8 @@ pub fn tcp_pbuf_prealloc(
 ) -> PacketBuffer {
     let p: &mut PacketBuffer;
 
-    LWIP_ASSERT("tcp_pbuf_prealloc: invalid oversize", oversize != None);
-    LWIP_ASSERT("tcp_pbuf_prealloc: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_pbuf_prealloc: invalid oversize", oversize != None);
+    // LWIP_ASSERT("tcp_pbuf_prealloc: invalid pcb", pcb != None);
 
     let mut alloc = max_length;
     //  LWIP_NETIF_TX_SINGLE_PBUF 
@@ -257,7 +257,7 @@ pub fn tcp_pbuf_prealloc(
     if p == None {
         return None;
     }
-    LWIP_ASSERT("need unchained pbuf", p.next == None);
+    // LWIP_ASSERT("need unchained pbuf", p.next == None);
     *oversize = p.len - length;
     //  trim p.len to the currently used size 
     p.len = p.tot_len = length;
@@ -294,7 +294,7 @@ pub fn tcp_seg_add_chksum(
  * @return ERR_OK if tcp_write is allowed to proceed, another otherwise: err_t
  */
 pub fn tcp_write_checks(pcb: &mut TcpContext, len: usize) -> Result<(), LwipError> {
-    LWIP_ASSERT("tcp_write_checks: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_write_checks: invalid pcb", pcb != None);
 
     //  connection is in invalid state for data transmission? 
     if ((pcb.state != ESTABLISHED)
@@ -329,12 +329,12 @@ pub fn tcp_write_checks(pcb: &mut TcpContext, len: usize) -> Result<(), LwipErro
         return ERR_MEM;
     }
     if (pcb.snd_queuelen != 0) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "tcp_write: PacketBuffers on queue => at least one queue non-empty",
             pcb.unacked != None || pcb.unsent != None,
         );
     } else {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "tcp_write: no pbufs on queue => both queues empty",
             pcb.unacked == None && pcb.unsent == None,
         );
@@ -412,7 +412,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
     mss_local = LWIP_MIN(pcb.mss, TCPWND_MIN16(pcb.snd_wnd_max / 2));
     // mss_local = mss_local ? mss_local : pcb.mss;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     //  Always copy to try to create single pbufs for TX 
     apiflags |= TCP_WRITE_FLAG_COPY;
@@ -471,7 +471,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
 
         //  Usable space at the end of the last unsent segment 
         unsent_optlen = LWIP_TCP_OPT_LENGTH_SEGMENT(last_unsent.flags, pcb);
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "mss_local is too small",
             mss_local >= last_unsent.len + unsent_optlen,
         );
@@ -486,14 +486,14 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
          */
 
         //  check that pcb.unsent_oversize matches last_unsent.oversize_left 
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "unsent_oversize mismatch (pcb vs. last_unsent)",
             pcb.unsent_oversize == last_unsent.oversize_left,
         );
 
         oversize = pcb.unsent_oversize;
         if (oversize > 0) {
-            LWIP_ASSERT("inconsistent oversize vs. space", oversize <= space);
+            // LWIP_ASSERT("inconsistent oversize vs. space", oversize <= space);
             seg = last_unsent;
             oversize_used = LWIP_MIN(space, LWIP_MIN(oversize, len));
             pos += oversize_used;
@@ -501,7 +501,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
             space -= oversize_used;
         }
         //  now we are either finished or oversize is zero 
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "inconsistent oversize vs. len",
             (oversize == 0) || (pos == len),
         );
@@ -563,7 +563,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
                     == 0)
                     && p.payload + p.len == arg)
                 {
-                    LWIP_ASSERT("tcp_write: ROM pbufs cannot be oversized", pos == 0);
+                    // LWIP_ASSERT("tcp_write: ROM pbufs cannot be oversized", pos == 0);
                     extendlen = seglen;
                 } else {
                     if ((concat_p = pbuf_alloc(PBUF_RAW, seglen, PBUF_ROM)) == None) {
@@ -589,7 +589,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
             pos += seglen;
         }
     } else {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "unsent_oversize mismatch (pcb.unsent is NULL)",
             pcb.unsent_oversize == 0,
         );
@@ -626,7 +626,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
                 //        LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("tcp_write : could not allocate memory for pbuf copy size %"U16_F"\n", seglen));
                 // goto memerr;
             }
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "tcp_write: check that first pbuf can hold the complete seglen",
                 (p.len >= seglen),
             );
@@ -645,7 +645,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
              */
             let p2: &mut PacketBuffer;
 
-            LWIP_ASSERT("oversize == 0", oversize == 0);
+            // LWIP_ASSERT("oversize == 0", oversize == 0);
 
             if ((p2 = pbuf_alloc(PBUF_TRANSPORT, seglen, PBUF_ROM)) == None) {
                 //        LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("tcp_write: could not allocate memory for zero-copy pbuf\n"));
@@ -701,7 +701,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
             queue = seg;
         } else {
             //  Attach the segment to the end of the queued segments 
-            LWIP_ASSERT("prev_seg != NULL", prev_seg != None);
+            // LWIP_ASSERT("prev_seg != NULL", prev_seg != None);
             prev_seg.next = seg;
         }
         //  remember last segment of to-be-queued data for next iteration 
@@ -739,7 +739,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
         // }
         last_unsent.len += oversize_used;
 
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "last_unsent.oversize_left >= oversize_used",
             last_unsent.oversize_left >= oversize_used,
         );
@@ -752,7 +752,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
      * determined that the last ROM pbuf can be extended to include the new data.
      */
     if (concat_p != None) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "tcp_write: cannot concatenate when pcb.unsent is empty",
             (last_unsent != None),
         );
@@ -760,7 +760,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
         last_unsent.len += concat_p.tot_len;
     } else if (extendlen > 0) {
         let p: &mut PacketBuffer;
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "tcp_write: extension of reference requires reference",
             last_unsent != None && last_unsent.p != None,
         );
@@ -773,7 +773,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
     }
 
     if (concat_chksummed) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "tcp_write: concat checksum needs concatenated data",
             concat_p != None || extendlen > 0,
         );
@@ -809,7 +809,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
     /*LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_write: %"S16_F" (after enqueued)\n",
     pcb.snd_queuelen));*/
     if (pcb.snd_queuelen != 0) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "tcp_write: valid queue length",
             pcb.unacked != None || pcb.unsent != None,
         );
@@ -832,7 +832,7 @@ pub fn tcp_write(pcb: &mut TcpContext, arg: &mut Vec<u8>, len: usize, apiflags: 
         tcp_segs_free(queue);
     }
     if (pcb.snd_queuelen != 0) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "tcp_write: valid queue length",
             pcb.unacked != None || pcb.unsent != None,
         );
@@ -867,7 +867,7 @@ pub fn tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16) {
     let chksum_swapped: u8 = 0;
     let q: &mut PacketBuffer;
 
-    LWIP_ASSERT("tcp_split_unsent_seg: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_split_unsent_seg: invalid pcb", pcb != None);
 
     useg = pcb.unsent;
     if (useg == None) {
@@ -875,7 +875,7 @@ pub fn tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16) {
     }
 
     if (split == 0) {
-        LWIP_ASSERT("Can't split segment into length 0", 0);
+        // LWIP_ASSERT("Can't split segment into length 0", 0);
         return ERR_VAL;
     }
 
@@ -883,8 +883,8 @@ pub fn tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16) {
         return Ok(());
     }
 
-    LWIP_ASSERT("split <= mss", split <= pcb.mss);
-    LWIP_ASSERT("useg.len > 0", useg.len > 0);
+    // LWIP_ASSERT("split <= mss", split <= pcb.mss);
+    // LWIP_ASSERT("useg.len > 0", useg.len > 0);
 
     /* We should check that we don't exceed TCP_SND_QUEUELEN but we need
      * to split this packet so we may actually exceed the max value by
@@ -984,7 +984,7 @@ pub fn tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16) {
         offset -= q.len;
         q = q.next;
     }
-    LWIP_ASSERT("Found start of payload pbuf", q != None);
+    // LWIP_ASSERT("Found start of payload pbuf", q != None);
     //  Checksum the first payload pbuf accounting for offset, then other pbufs are all payload 
     // for (; q != None; offset = 0, q = q.next) {
     //   tcp_seg_add_chksum(!inet_chksum(q.payload + offset, q.len - offset), q.len - offset,
@@ -1010,7 +1010,7 @@ pub fn tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16) {
     // memerr:
     TCP_STATS_INC(tcp.memerr);
 
-    LWIP_ASSERT("seg == NULL", seg == None);
+    // LWIP_ASSERT("seg == NULL", seg == None);
     if (p != None) {
         pbuf_free(p);
     }
@@ -1027,7 +1027,7 @@ pub fn tcp_split_unsent_seg(pcb: &mut TcpContext, split: u16) {
  * @return ERR_OK if sent, another otherwise: err_t
  */
 pub fn tcp_send_fin(pcb: &mut TcpContext) {
-    LWIP_ASSERT("tcp_send_fin: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_send_fin: invalid pcb", pcb != None);
 
     //  first, try to add the fin to the last unsent segment 
     if (pcb.unsent != None) {
@@ -1063,11 +1063,11 @@ pub fn tcp_enqueue_flags(pcb: &mut TcpContext, flags: u8) {
 
     //  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_enqueue_flags: queuelen: %"U16_F"\n", pcb.snd_queuelen));
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "tcp_enqueue_flags: need either TCP_SYN or TCP_FIN in flags (programmer violates API)",
         (flags & (TCP_SYN | TCP_FIN)) != 0,
     );
-    LWIP_ASSERT("tcp_enqueue_flags: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_enqueue_flags: invalid pcb", pcb != None);
 
     //  No need to check pcb.snd_queuelen if only SYN or FIN are allowed! 
 
@@ -1103,7 +1103,7 @@ pub fn tcp_enqueue_flags(pcb: &mut TcpContext, flags: u8) {
         TCP_STATS_INC(tcp.memerr);
         return ERR_MEM;
     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "tcp_enqueue_flags: check that first pbuf can hold optlen",
         (p.len >= optlen),
     );
@@ -1114,11 +1114,11 @@ pub fn tcp_enqueue_flags(pcb: &mut TcpContext, flags: u8) {
         TCP_STATS_INC(tcp.memerr);
         return ERR_MEM;
     }
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "seg.tcphdr not aligned",
         (seg.tcphdr % LWIP_MIN(MEM_ALIGNMENT, 4)) == 0,
     );
-    LWIP_ASSERT("tcp_enqueue_flags: invalid segment length", seg.len == 0);
+    // LWIP_ASSERT("tcp_enqueue_flags: invalid segment length", seg.len == 0);
     /*LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_TRACE,
     ("tcp_enqueue_flags: queueing %"U32_F":%"U32_F" (0x%"X16_F")\n",
      lwip_ntohl(seg.tcphdr.seqno),
@@ -1150,7 +1150,7 @@ pub fn tcp_enqueue_flags(pcb: &mut TcpContext, flags: u8) {
     pcb.snd_queuelen += pbuf_clen(seg.p);
     //  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_enqueue_flags: %"S16_F" (after enqueued)\n", pcb.snd_queuelen));
     if (pcb.snd_queuelen != 0) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "tcp_enqueue_flags: invalid queue length",
             pcb.unacked != None || pcb.unsent != None,
         );
@@ -1165,7 +1165,7 @@ pub fn tcp_enqueue_flags(pcb: &mut TcpContext, flags: u8) {
  * @param opts option pointer where to store the timestamp option
  */
 pub fn tcp_build_timestamp_option(pcb: &mut TcpContext, opts: &u32) {
-    LWIP_ASSERT("tcp_build_timestamp_option: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_build_timestamp_option: invalid pcb", pcb != None);
 
     //  Pad with two NOP options to make everything nicely aligned 
     opts[0] = PP_HTONL(0x0101080A);
@@ -1186,7 +1186,7 @@ pub fn tcp_build_timestamp_option(pcb: &mut TcpContext, opts: &u32) {
 pub fn tcp_get_num_sacks(pcb: &mut TcpContext, optlen: usize) -> Result<usize, LwipError> {
     let mut num_sacks: usize = 0;
 
-    LWIP_ASSERT("tcp_get_num_sacks: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_get_num_sacks: invalid pcb", pcb != None);
 
     if pcb.flags & TF_SACK {
         let i: u8;
@@ -1220,8 +1220,8 @@ pub fn tcp_get_num_sacks(pcb: &mut TcpContext, optlen: usize) -> Result<usize, L
 pub fn tcp_build_sack_option(pcb: &mut TcpContext, opts: &u32, num_sacks: u8) {
     let i: u8;
 
-    LWIP_ASSERT("tcp_build_sack_option: invalid pcb", pcb != None);
-    LWIP_ASSERT("tcp_build_sack_option: invalid opts", opts != None);
+    // LWIP_ASSERT("tcp_build_sack_option: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_build_sack_option: invalid opts", opts != None);
 
     /* Pad with two NOP options to make everything nicely aligned.
     We add the length (of just the SACK option, not the NOPs in front of it),
@@ -1239,7 +1239,7 @@ pub fn tcp_build_sack_option(pcb: &mut TcpContext, opts: &u32, num_sacks: u8) {
  * @param opts option pointer where to store the window scale option
  */
 pub fn tcp_build_wnd_scale_option(opts: &mut u32) {
-    LWIP_ASSERT("tcp_build_wnd_scale_option: invalid opts", opts != None);
+    // LWIP_ASSERT("tcp_build_wnd_scale_option: invalid opts", opts != None);
 
     //  Pad with one NOP option to make everything nicely aligned 
     opts[0] = PP_HTONL(0x01030300 | TCP_RCV_SCALE);
@@ -1262,11 +1262,11 @@ pub fn tcp_output(pcb: &mut TcpContext) -> Result<(), LwipError> {
     let mut netif: &mut NetworkInterfaceCtx;
     let i: i16 = 0;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
-    LWIP_ASSERT("tcp_output: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_output: invalid pcb", pcb != None);
     //  pcb.state LISTEN not allowed here 
-    LWIP_ASSERT("don't call tcp_output for listen-pcbs", pcb.state != LISTEN);
+    // LWIP_ASSERT("don't call tcp_output for listen-pcbs", pcb.state != LISTEN);
 
     /* First, check if we are invoked by the TCP input processing
     code. If so, we do not output anything. Instead, we rely on the
@@ -1346,7 +1346,7 @@ pub fn tcp_output(pcb: &mut TcpContext) -> Result<(), LwipError> {
     }
     //  data available and window allows it to be sent? 
     while (seg != None && lwip_ntohl(seg.tcphdr.seqno) - pcb.lastack + seg.len <= wnd) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "RST not expected here!",
             (TCPH_FLAGS(seg.tcphdr) & TCP_RST) == 0,
         );
@@ -1446,7 +1446,7 @@ pub fn tcp_output(pcb: &mut TcpContext) -> Result<(), LwipError> {
  * @return 1 if ref != 1, 0 if ref == 1
  */
 pub fn tcp_output_segment_busy(seg: &mut tcp_seg) {
-    LWIP_ASSERT("tcp_output_segment_busy: invalid seg", seg != None);
+    // LWIP_ASSERT("tcp_output_segment_busy: invalid seg", seg != None);
 
     /* We only need to check the first pbuf here:
     If a pbuf is queued for transmission, a driver calls pbuf_ref(),
@@ -1475,9 +1475,9 @@ pub fn tcp_output_segment(
     let len: usize;
     let opts: &mut u32;
     let seg_chksum_was_swapped: i32 = 0;
-    LWIP_ASSERT("tcp_output_segment: invalid seg", seg != None);
-    LWIP_ASSERT("tcp_output_segment: invalid pcb", pcb != None);
-    LWIP_ASSERT("tcp_output_segment: invalid netif", netif != None);
+    // LWIP_ASSERT("tcp_output_segment: invalid seg", seg != None);
+    // LWIP_ASSERT("tcp_output_segment: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_output_segment: invalid netif", netif != None);
 
     if (tcp_output_segment_busy(seg)) {
         /* This should not happen: rexmit functions should have checked this.
@@ -1569,7 +1569,7 @@ pub fn tcp_output_segment(
 
     opts = LWIP_HOOK_TCP_OUT_ADD_TCPOPTS(seg.p, seg.tcphdr, pcb, opts);
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "options not filled",
         opts == (seg.tcphdr + 1) + LWIP_TCP_OPT_LENGTH_SEGMENT(seg.flags, pcb),
     );
@@ -1587,7 +1587,7 @@ pub fn tcp_output_segment(
         );
 
         if ((seg.flags & TF_SEG_DATA_CHECKSUMMED) == 0) {
-            LWIP_ASSERT(
+            // LWIP_ASSERT(
                 "data included but not checksummed",
                 seg.p.tot_len == TCPH_HDRLEN_BYTES(seg.tcphdr),
             );
@@ -1662,7 +1662,7 @@ pub fn tcp_output_segment(
 pub fn tcp_rexmit_rto_prepare(pcb: &mut TcpContext) {
     let mut seg: &mut tcp_seg;
 
-    LWIP_ASSERT("tcp_rexmit_rto_prepare: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_rexmit_rto_prepare: invalid pcb", pcb != None);
 
     if (pcb.unacked == None) {
         return ERR_VAL;
@@ -1713,7 +1713,7 @@ pub fn tcp_rexmit_rto_prepare(pcb: &mut TcpContext) {
  * @param pcb the tcp_pcb for which to re-enqueue all unacked segments
  */
 pub fn tcp_rexmit_rto_commit(pcb: &mut TcpContext) {
-    LWIP_ASSERT("tcp_rexmit_rto_commit: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_rexmit_rto_commit: invalid pcb", pcb != None);
 
     //  increment number of retransmissions 
     if (pcb.nrtx < 0xFF) {
@@ -1732,7 +1732,7 @@ pub fn tcp_rexmit_rto_commit(pcb: &mut TcpContext) {
  * @param pcb the tcp_pcb for which to re-enqueue all unacked segments
  */
 pub fn tcp_rexmit_rto(pcb: &mut TcpContext) {
-    LWIP_ASSERT("tcp_rexmit_rto: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_rexmit_rto: invalid pcb", pcb != None);
 
     if (tcp_rexmit_rto_prepare(pcb) == ERR_OK) {
         tcp_rexmit_rto_commit(pcb);
@@ -1750,7 +1750,7 @@ pub fn tcp_rexmit(pcb: &mut TcpContext) {
     let mut seg: &mut tcp_seg;
     let cur_seg: tcp_seg;
 
-    LWIP_ASSERT("tcp_rexmit: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_rexmit: invalid pcb", pcb != None);
 
     if (pcb.unacked == None) {
         return ERR_VAL;
@@ -1806,7 +1806,7 @@ pub fn tcp_rexmit(pcb: &mut TcpContext) {
  * @param pcb the tcp_pcb for which to retransmit the first unacked segment
  */
 pub fn tcp_rexmit_fast(pcb: &mut TcpContext) {
-    LWIP_ASSERT("tcp_rexmit_fast: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_rexmit_fast: invalid pcb", pcb != None);
 
     if (pcb.unacked != None && !(pcb.flags & TF_INFR)) {
         //  This is fast retransmit. Retransmit the first unacked segment. 
@@ -1853,7 +1853,7 @@ pub fn tcp_output_alloc_header_common(
 
     p = pbuf_alloc(PBUF_IP, TCP_HLEN + optlen + datalen, PBUF_RAM);
     if (p != None) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "check that first pbuf can hold struct tcp_hdr",
             (p.len >= TCP_HLEN + optlen),
         );
@@ -1888,7 +1888,7 @@ pub fn tcp_output_alloc_header(
 ) -> PacketBuffer {
     let p: &mut PacketBuffer;
 
-    LWIP_ASSERT("tcp_output_alloc_header: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_output_alloc_header: invalid pcb", pcb != None);
 
     p = tcp_output_alloc_header_common(
         pcb.rcv_nxt,
@@ -1913,7 +1913,7 @@ pub fn tcp_output_fill_options(pcb: &mut TcpContext, p: &mut PacketBuffer, optfl
     let opts: &mut u32;
     let sacks_len: u16 = 0;
 
-    LWIP_ASSERT("tcp_output_fill_options: invalid pbuf", p != None);
+    // LWIP_ASSERT("tcp_output_fill_options: invalid pbuf", p != None);
 
     tcphdr = p.payload;
     opts = (tcphdr + 1);
@@ -1934,7 +1934,7 @@ pub fn tcp_output_fill_options(pcb: &mut TcpContext, p: &mut PacketBuffer, optfl
 
     opts = LWIP_HOOK_TCP_OUT_ADD_TCPOPTS(p, tcphdr, pcb, opts);
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "options not filled",
         opts == (tcphdr + 1) + sacks_len * 4 + LWIP_TCP_OPT_LENGTH_SEGMENT(optflags, pcb),
     );
@@ -1957,7 +1957,7 @@ pub fn tcp_output_control_segment(
     let err: err_t;
     let mut netif: &mut NetworkInterfaceCtx;
 
-    LWIP_ASSERT("tcp_output_control_segment: invalid pbuf", p != None);
+    // LWIP_ASSERT("tcp_output_control_segment: invalid pbuf", p != None);
 
     netif = tcp_route(pcb, src, dst);
     if (netif == None) {
@@ -2023,8 +2023,8 @@ pub fn tcp_rst(
     let wnd: u16;
     let optlen: u8;
 
-    LWIP_ASSERT("tcp_rst: invalid local_ip", local_ip != None);
-    LWIP_ASSERT("tcp_rst: invalid remote_ip", remote_ip != None);
+    // LWIP_ASSERT("tcp_rst: invalid local_ip", local_ip != None);
+    // LWIP_ASSERT("tcp_rst: invalid remote_ip", remote_ip != None);
 
     optlen = LWIP_TCP_OPT_LENGTH_SEGMENT(0, pcb);
 
@@ -2066,7 +2066,7 @@ pub fn tcp_send_empty_ack(pcb: &mut TcpContext) -> Result<(), LwipError> {
     let mut optflags: u32  = 0;
     let mut num_sacks: u32 = 0;
 
-    LWIP_ASSERT("tcp_send_empty_ack: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_send_empty_ack: invalid pcb", pcb != None);
 
     if pcb.flags & TF_TIMESTAMP {
         optflags = TF_SEG_OPTS_TS;
@@ -2116,7 +2116,7 @@ pub fn tcp_keepalive(pcb: &mut TcpContext) {
     let p: &mut PacketBuffer;
     let optlen: u8 = LWIP_TCP_OPT_LENGTH_SEGMENT(0, pcb);
 
-    LWIP_ASSERT("tcp_keepalive: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_keepalive: invalid pcb", pcb != None);
 
     //  LWIP_DEBUGF(TCP_DEBUG, ("tcp_keepalive: sending KEEPALIVE probe to "));
     ip_addr_debug_print_val(TCP_DEBUG, pcb.remote_ip);
@@ -2155,7 +2155,7 @@ pub fn tcp_zero_window_probe(pcb: &mut TcpContext) {
     let snd_nxt: u32;
     let optlen: u8 = LWIP_TCP_OPT_LENGTH_SEGMENT(0, pcb);
 
-    LWIP_ASSERT("tcp_zero_window_probe: invalid pcb", pcb != None);
+    // LWIP_ASSERT("tcp_zero_window_probe: invalid pcb", pcb != None);
 
     //  LWIP_DEBUGF(TCP_DEBUG, ("tcp_zero_window_probe: sending ZERO WINDOW probe to "));
     ip_addr_debug_print_val(TCP_DEBUG, pcb.remote_ip);

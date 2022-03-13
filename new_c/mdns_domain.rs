@@ -43,11 +43,11 @@
 
 
 
-#if LWIP_IPV6
+// #if LWIP_IPV6
 
-#endif
+// #endif
 
-#if LWIP_MDNS_RESPONDER
+// #if LWIP_MDNS_RESPONDER
 
 /* Stored offsets to beginning of domain names
  * Used for compression.
@@ -82,15 +82,15 @@ mdns_domain_add_label_base(struct mdns_domain *domain, u8_t len)
   if (len > MDNS_LABEL_MAXLEN) {
     return ERR_VAL;
   }
-  if (len > 0 && (1 + len + domain->length >= MDNS_DOMAIN_MAXLEN)) {
+  if (len > 0 && (1 + len +  domain.length >= MDNS_DOMAIN_MAXLEN)) {
     return ERR_VAL;
   }
   /* Allow only zero marker on last byte */
-  if (len == 0 && (1 + domain->length > MDNS_DOMAIN_MAXLEN)) {
+  if (len == 0 && (1 +  domain.length > MDNS_DOMAIN_MAXLEN)) {
     return ERR_VAL;
   }
-  domain->name[domain->length] = len;
-  domain->length++;
+   domain.name[ domain.length] = len;
+   domain.length++;
   return ERR_OK;
 }
 
@@ -109,8 +109,8 @@ mdns_domain_add_label(struct mdns_domain *domain, const char *label, u8_t len)
     return err;
   }
   if (len) {
-    MEMCPY(&domain->name[domain->length], label, len);
-    domain->length += len;
+    MEMCPY(& domain.name[ domain.length], label, len);
+     domain.length += len;
   }
   return ERR_OK;
 }
@@ -126,12 +126,12 @@ mdns_domain_add_label_pbuf(struct mdns_domain *domain, const struct pbuf *p, u16
     return err;
   }
   if (len) {
-    if (pbuf_copy_partial(p, &domain->name[domain->length], len, offset) != len) {
+    if (pbuf_copy_partial(p, & domain.name[ domain.length], len, offset) != len) {
       /* take back the ++ done before */
-      domain->length--;
+       domain.length--;
       return ERR_ARG;
     }
-    domain->length += len;
+     domain.length += len;
   }
   return ERR_OK;
 }
@@ -145,22 +145,22 @@ mdns_domain_add_label_pbuf(struct mdns_domain *domain, const struct pbuf *p, u16
 err_t
 mdns_domain_add_domain(struct mdns_domain *domain, struct mdns_domain *source)
 {
-  u16_t len = source->length;
-  if (len > 0 && (1 + len + domain->length >= MDNS_DOMAIN_MAXLEN)) {
+  u16_t len =  source.length;
+  if (len > 0 && (1 + len +  domain.length >= MDNS_DOMAIN_MAXLEN)) {
     return ERR_VAL;
   }
   /* Allow only zero marker on last byte */
-  if (len == 0 && (1 + domain->length > MDNS_DOMAIN_MAXLEN)) {
+  if (len == 0 && (1 +  domain.length > MDNS_DOMAIN_MAXLEN)) {
     return ERR_VAL;
   }
   if (len) {
     /* Copy partial domain */
-    MEMCPY(&domain->name[domain->length], source->name, len);
-    domain->length += len;
+    MEMCPY(& domain.name[ domain.length],  source.name, len);
+     domain.length += len;
   } else {
     /* Add zero marker */
-    domain->name[domain->length] = 0;
-    domain->length++;
+     domain.name[ domain.length] = 0;
+     domain.length++;
   }
   return ERR_OK;
 }
@@ -174,8 +174,8 @@ mdns_domain_add_domain(struct mdns_domain *domain, struct mdns_domain *source)
 err_t
 mdns_domain_add_string(struct mdns_domain *domain, const char *source)
 {
-  u8_t *len = &domain->name[domain->length];
-  u8_t *end = &domain->name[MDNS_DOMAIN_MAXLEN];
+  u8_t *len = & domain.name[ domain.length];
+  u8_t *end = & domain.name[MDNS_DOMAIN_MAXLEN];
   u8_t *start = len + 1;
   *len = 0;
   while (*source && start < end) {
@@ -191,7 +191,7 @@ mdns_domain_add_string(struct mdns_domain *domain, const char *source)
   if (start == end) {
       return ERR_VAL;
   }
-  domain->length = (u16_t)(start - &domain->name[0]);
+   domain.length = (u16_t)(start - & domain.name[0]);
   return ERR_OK;
 }
 
@@ -203,7 +203,7 @@ mdns_domain_add_string(struct mdns_domain *domain, const char *source)
 static u16_t
 mdns_readname_loop(struct pbuf *p, u16_t offset, struct mdns_domain *domain, unsigned depth)
 {
-  u8_t c;
+  c: u8;
 
   do {
     if (depth > 5) {
@@ -216,15 +216,15 @@ mdns_readname_loop(struct pbuf *p, u16_t offset, struct mdns_domain *domain, uns
 
     /* is this a compressed label? */
     if ((c & 0xc0) == 0xc0) {
-      u16_t jumpaddr;
-      if (offset >= p->tot_len) {
+      jumpaddr: u16;
+      if (offset >=  p.tot_len) {
         /* Make sure both jump bytes fit in the packet */
         return MDNS_READNAME_ERROR;
       }
       jumpaddr = (((c & 0x3f) << 8) | (pbuf_get_at(p, offset) & 0xff));
       offset++;
-      if (jumpaddr >= SIZEOF_DNS_HDR && jumpaddr < p->tot_len) {
-        u16_t res;
+      if (jumpaddr >= SIZEOF_DNS_HDR && jumpaddr <  p.tot_len) {
+        res: u16;
         /* Recursive call, maximum depth will be checked */
         res = mdns_readname_loop(p, jumpaddr, domain, depth + 1);
         /* Don't return offset since new bytes were not read (jumped to somewhere in packet) */
@@ -241,7 +241,7 @@ mdns_readname_loop(struct pbuf *p, u16_t offset, struct mdns_domain *domain, uns
     if (c <= MDNS_LABEL_MAXLEN) {
       err_t res;
 
-      if (c + domain->length >= MDNS_DOMAIN_MAXLEN) {
+      if (c +  domain.length >= MDNS_DOMAIN_MAXLEN) {
         return MDNS_READNAME_ERROR;
       }
       res = mdns_domain_add_label_pbuf(domain, p, offset, c);
@@ -280,8 +280,8 @@ mdns_readname(struct pbuf *p, u16_t offset, struct mdns_domain *domain)
 void
 mdns_domain_debug_print(struct mdns_domain *domain)
 {
-  u8_t *src = domain->name;
-  u8_t i;
+  u8_t *src =  domain.name;
+  i: u8;
 
   while (*src) {
     u8_t label_len = *src;
@@ -304,16 +304,16 @@ int
 mdns_domain_eq(struct mdns_domain *a, struct mdns_domain *b)
 {
   u8_t *ptra, *ptrb;
-  u8_t len;
+  len: u8;
   int res;
 
-  if (a->length != b->length) {
+  if ( a.length !=  b.length) {
     return 0;
   }
 
-  ptra = a->name;
-  ptrb = b->name;
-  while (*ptra && *ptrb && ptra < &a->name[a->length]) {
+  ptra =  a.name;
+  ptrb =  b.name;
+  while (*ptra && *ptrb && ptra < & a.name[ a.length]) {
     if (*ptra != *ptrb) {
       return 0;
     }
@@ -327,13 +327,13 @@ mdns_domain_eq(struct mdns_domain *a, struct mdns_domain *b)
     ptra += len;
     ptrb += len;
   }
-  if (*ptra != *ptrb && ptra < &a->name[a->length]) {
+  if (*ptra != *ptrb && ptra < & a.name[ a.length]) {
     return 0;
   }
   return 1;
 }
 
-#if LWIP_IPV4
+// #if LWIP_IPV4
 /**
  * Build domain for reverse lookup of IPv4 address
  * like 12.0.168.192.in-addr.arpa. for 192.168.0.12
@@ -371,9 +371,9 @@ mdns_build_reverse_v4_domain(struct mdns_domain *domain, const ip4_addr_t *addr)
 
   return ERR_OK;
 }
-#endif
+// #endif
 
-#if LWIP_IPV6
+// #if LWIP_IPV6
 /**
  * Build domain for reverse lookup of IP address
  * like b.a.9.8.7.6.5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa. for 2001:db8::567:89ab
@@ -417,7 +417,7 @@ mdns_build_reverse_v6_domain(struct mdns_domain *domain, const ip6_addr_t *addr)
 
   return ERR_OK;
 }
-#endif
+// #endif
 
 /* Add .local. to domain */
 static err_t
@@ -442,7 +442,7 @@ mdns_build_host_domain(struct mdns_domain *domain, struct mdns_host *mdns)
   LWIP_UNUSED_ARG(res);
   memset(domain, 0, sizeof(struct mdns_domain));
   LWIP_ERROR("mdns_build_host_domain: mdns != NULL", (mdns != NULL), return ERR_VAL);
-  res = mdns_domain_add_label(domain, mdns->name, strlen(mdns->name));
+  res = mdns_domain_add_label(domain,  mdns.name, strlen( mdns.name));
   LWIP_ERROR("mdns_build_host_domain: Failed to add label", (res == ERR_OK), return res);
   return mdns_add_dotlocal(domain);
 }
@@ -483,17 +483,17 @@ mdns_build_service_domain(struct mdns_domain *domain, struct mdns_service *servi
   LWIP_UNUSED_ARG(res);
   memset(domain, 0, sizeof(struct mdns_domain));
   if (include_name) {
-    res = mdns_domain_add_label(domain, service->name, strlen(service->name));
+    res = mdns_domain_add_label(domain,  service.name, strlen( service.name));
     LWIP_ERROR("mdns_build_service_domain: Failed to add label", (res == ERR_OK), return res);
   }
-  res = mdns_domain_add_label(domain, service->service, strlen(service->service));
+  res = mdns_domain_add_label(domain,  service.service, strlen( service.service));
   LWIP_ERROR("mdns_build_service_domain: Failed to add label", (res == ERR_OK), return res);
-  res = mdns_domain_add_label(domain, dnssd_protos[service->proto], strlen(dnssd_protos[service->proto]));
+  res = mdns_domain_add_label(domain, dnssd_protos[ service.proto], strlen(dnssd_protos[ service.proto]));
   LWIP_ERROR("mdns_build_service_domain: Failed to add label", (res == ERR_OK), return res);
   return mdns_add_dotlocal(domain);
 }
 
-#if LWIP_MDNS_SEARCH
+// #if LWIP_MDNS_SEARCH
 /**
  * Build domain name for a request
  * @param domain Where to write the domain name
@@ -509,16 +509,16 @@ mdns_build_request_domain(struct mdns_domain *domain, struct mdns_request *reque
   err_t res;
   memset(domain, 0, sizeof(struct mdns_domain));
   if (include_name) {
-    res = mdns_domain_add_label(domain, request->name, strlen(request->name));
+    res = mdns_domain_add_label(domain,  request.name, strlen( request.name));
     LWIP_ERROR("mdns_build_request_domain: Failed to add label", (res == ERR_OK), return res);
   }
-  res = mdns_domain_add_domain(domain, &request->service);
+  res = mdns_domain_add_domain(domain, & request.service);
   LWIP_ERROR("mdns_build_request_domain: Failed to add domain", (res == ERR_OK), return res);
-  res = mdns_domain_add_label(domain, dnssd_protos[request->proto], strlen(dnssd_protos[request->proto]));
+  res = mdns_domain_add_label(domain, dnssd_protos[ request.proto], strlen(dnssd_protos[ request.proto]));
   LWIP_ERROR("mdns_build_request_domain: Failed to add label", (res == ERR_OK), return res);
   return mdns_add_dotlocal(domain);
 }
-#endif
+// #endif
 
 /**
  * Return bytes needed to write before jump for best result of compressing supplied domain
@@ -536,22 +536,22 @@ u16_t
 mdns_compress_domain(struct pbuf *pbuf, u16_t *offset, struct mdns_domain *domain)
 {
   struct mdns_domain target;
-  u16_t target_end;
-  u8_t target_len;
+  target_end: u16;
+  target_len: u8;
   u8_t writelen = 0;
   u8_t *ptr;
   if (pbuf == NULL) {
-    return domain->length;
+    return  domain.length;
   }
   target_end = mdns_readname(pbuf, *offset, &target);
   if (target_end == MDNS_READNAME_ERROR) {
-    return domain->length;
+    return  domain.length;
   }
   target_len = (target_end - *offset);
-  ptr = domain->name;
-  while (writelen < domain->length) {
-    u8_t domainlen = (domain->length - writelen);
-    u8_t labellen;
+  ptr =  domain.name;
+  while (writelen <  domain.length) {
+    u8_t domainlen = ( domain.length - writelen);
+    labellen: u8;
     if (domainlen <= target.length && domainlen > DOMAIN_JUMP_SIZE) {
       /* Compare domains if target is long enough, and we have enough left of the domain */
       u8_t targetpos = (target.length - domainlen);
@@ -560,7 +560,7 @@ mdns_compress_domain(struct pbuf *pbuf, u16_t *offset, struct mdns_domain *domai
         break;
       }
       if (target.length >= domainlen &&
-          memcmp(&domain->name[writelen], &target.name[targetpos], domainlen) == 0) {
+          memcmp(& domain.name[writelen], &target.name[targetpos], domainlen) == 0) {
         *offset += targetpos;
         return writelen;
       }
@@ -571,12 +571,12 @@ mdns_compress_domain(struct pbuf *pbuf, u16_t *offset, struct mdns_domain *domai
     ptr += 1 + labellen;
   }
   /* Nothing found */
-  return domain->length;
+  return  domain.length;
 }
 
 /**
  * Write domain to outpacket. Compression will be attempted,
- * unless domain->skip_compression is set.
+ * unless  domain.skip_compression is set.
  * @param outpkt The outpacket to write to
  * @param domain The domain name to write
  * @return ERR_OK on success, an err_t otherwise
@@ -586,15 +586,15 @@ mdns_write_domain(struct mdns_outpacket *outpkt, struct mdns_domain *domain)
 {
   int i;
   err_t res;
-  u16_t writelen = domain->length;
+  u16_t writelen =  domain.length;
   u16_t jump_offset = 0;
-  u16_t jump;
+  jump: u16;
 
-  if (!domain->skip_compression) {
+  if (! domain.skip_compression) {
     for (i = 0; i < NUM_DOMAIN_OFFSETS; i++) {
-      u16_t offset = outpkt->domain_offsets[i];
+      u16_t offset =  outpkt.domain_offsets[i];
       if (offset) {
-        u16_t len = mdns_compress_domain(outpkt->pbuf, &offset, domain);
+        u16_t len = mdns_compress_domain( outpkt.pbuf, &offset, domain);
         if (len < writelen) {
           writelen = len;
           jump_offset = offset;
@@ -605,31 +605,31 @@ mdns_write_domain(struct mdns_outpacket *outpkt, struct mdns_domain *domain)
 
   if (writelen) {
     /* Write uncompressed part of name */
-    res = pbuf_take_at(outpkt->pbuf, domain->name, writelen, outpkt->write_offset);
+    res = pbuf_take_at( outpkt.pbuf,  domain.name, writelen,  outpkt.write_offset);
     if (res != ERR_OK) {
       return res;
     }
 
     /* Store offset of this new domain */
     for (i = 0; i < NUM_DOMAIN_OFFSETS; i++) {
-      if (outpkt->domain_offsets[i] == 0) {
-        outpkt->domain_offsets[i] = outpkt->write_offset;
+      if ( outpkt.domain_offsets[i] == 0) {
+         outpkt.domain_offsets[i] =  outpkt.write_offset;
         break;
       }
     }
 
-    outpkt->write_offset += writelen;
+     outpkt.write_offset += writelen;
   }
   if (jump_offset) {
     /* Write jump */
     jump = lwip_htons(DOMAIN_JUMP | jump_offset);
-    res = pbuf_take_at(outpkt->pbuf, &jump, DOMAIN_JUMP_SIZE, outpkt->write_offset);
+    res = pbuf_take_at( outpkt.pbuf, &jump, DOMAIN_JUMP_SIZE,  outpkt.write_offset);
     if (res != ERR_OK) {
       return res;
     }
-    outpkt->write_offset += DOMAIN_JUMP_SIZE;
+     outpkt.write_offset += DOMAIN_JUMP_SIZE;
   }
   return ERR_OK;
 }
 
-#endif /* LWIP_MDNS_RESPONDER */
+// #endif /* LWIP_MDNS_RESPONDER */

@@ -22,7 +22,7 @@ struct test_tcp_counters {
 struct test_tcp_txcounters {
   u32_t num_tx_calls;
   u32_t num_tx_bytes;
-  u8_t  copy_tx_packets;
+  copy_tx_packets: u8;
   struct pbuf *tx_packets;
 };
 
@@ -33,7 +33,7 @@ pub const TEST_REMOTE_PORT: u32 = 0x100;
 pub const TEST_LOCAL_PORT: u32 = 0x101;
 
 /* Helper functions */
-void tcp_remove_all(void);
+void tcp_remove_all();
 
 struct pbuf* tcp_create_segment(ip_addr_t* src_ip, ip_addr_t* dst_ip,
                    u16_t src_port, u16_t dst_port, void* data, size_t data_len,

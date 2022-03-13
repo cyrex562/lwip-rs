@@ -107,7 +107,7 @@ timeout(void *arg)
       /* IP or ARP packet? */
       case ETHTYPE_IP:
       case ETHTYPE_ARP:
-#if PPPOE_SUPPORT
+// #if PPPOE_SUPPORT
       /* PPPoE packet? */
       case ETHTYPE_PPPOEDISC:
       case ETHTYPE_PPPOE:
@@ -195,7 +195,7 @@ pcapif_init(struct netif *netif)
   }
 
   if(sys_sem_new(&p->sem, 0) != ERR_OK) {
-    LWIP_ASSERT("Failed to create semaphore", 0);
+    // LWIP_ASSERT("Failed to create semaphore", 0);
   }
   p->p = NULL;
   p->lasttime = 0;

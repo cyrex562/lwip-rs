@@ -39,7 +39,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_NETCONN || LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_NETCONN || LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 /* Note: Netconn API is always available when sockets are enabled -
  * sockets are implemented on top of them */
 
@@ -172,7 +172,7 @@ enum netconn_evt {
   NETCONN_EVT_ERROR
 };
 
-#if LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD)
+// #if LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD)
 /** Used for netconn_join_leave_group() */
 enum netconn_igmp {
   NETCONN_JOIN,
@@ -180,7 +180,7 @@ enum netconn_igmp {
 };
  /* LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD) */
 
-#if LWIP_DNS
+// #if LWIP_DNS
 /* Used for netconn_gethostbyname_addrtype(), these should match the DNS_ADDRTYPE defines in dns.h */
 #define NETCONN_DNS_DEFAULT   NETCONN_DNS_IPV4_IPV6
 pub const NETCONN_DNS_IPV4: u32 = 0; #define NETCONN_DNS_IPV6      1
@@ -221,7 +221,7 @@ struct netconn {
 mbox where received packets are stored until they are fetched
       by the netconn application thread (can grow quite big) */
   sys_mbox_t recvmbox;
-#if LWIP_TCP
+// #if LWIP_TCP
   /** mbox where new connections are stored until processed
       by the application thread */
   sys_mbox_t acceptmbox;
@@ -235,7 +235,7 @@ n {
     int socket;
     void *ptr;
   } callback_arg;
-#if LWIP_SO_SNDTIMEO
+// #if LWIP_SO_SNDTIMEO
   /** timeout to wait for sending data (which means enqueueing data for sending
       in internal buffers) in milliseconds */
   s32_t send_timeout;
@@ -259,8 +259,8 @@ IP_SO_LINGER
   s16_t linger;
  /* LWIP_SO_LINGER */
 flags holding more netconn-internal state, see NETCONN_FLAG_* defines */
-  u8_t flags;
-#if LWIP_TCP
+  flags: u8;
+// #if LWIP_TCP
   /** TCP: when data passed to netconn_write doesn't fit into the send buffer,
       this temporarily stores the message.
       Also used during connect and close. */
@@ -335,7 +335,7 @@ err_t   netconn_write_vectors_partly(struct netconn *conn, struct netvector *vec
 err_t   netconn_close(struct netconn *conn);
 err_t   netconn_shutdown(struct netconn *conn, u8_t shut_rx, u8_t shut_tx);
 
-#if LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD)
+// #if LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD)
 err_t   netconn_join_leave_group(struct netconn *conn, const ip_addr_t *multiaddr,
                              const ip_addr_t *netif_addr, enum netconn_igmp join_or_leave);
 err_t   netconn_join_leave_group_netif(struct netconn *conn, const ip_addr_t *multiaddr,
@@ -383,7 +383,7 @@ err_t   netconn_err(struct netconn *conn);
 #define netconn_get_ipv6only(conn)        (((conn)->flags & NETCONN_FLAG_IPV6_V6ONLY) != 0)
  /* LWIP_IPV6 */
 
-#if LWIP_SO_SNDTIMEO
+// #if LWIP_SO_SNDTIMEO
 /** Set the send timeout in milliseconds */
 #define netconn_set_sendtimeout(conn, timeout)      ((conn)->send_timeout = (timeout))
 /** Get the send timeout in milliseconds */
@@ -402,9 +402,9 @@ IP_SO_RCVBUF
 #define netconn_get_recvbufsize(conn)               ((conn)->recv_bufsize)
  /* LWIP_SO_RCVBUF*/
 
-#if LWIP_NETCONN_SEM_PER_THREAD
-void netconn_thread_init(void);
-void netconn_thread_cleanup(void);
+// #if LWIP_NETCONN_SEM_PER_THREAD
+void netconn_thread_init();
+void netconn_thread_cleanup();
 #else /* LWIP_NETCONN_SEM_PER_THREAD */
 #define netconn_thread_init()
 #define netconn_thread_cleanup()

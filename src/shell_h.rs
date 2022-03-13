@@ -32,6 +32,6 @@
 
 
 
-void shell_init(void);
+void shell_init();
 
  /* LWIP_SHELL_H */

@@ -40,7 +40,7 @@
 
 // #include "lwip/opt.h"
 
-#if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/pbuf.h"
 // #include "lwip/def.h"
@@ -77,14 +77,14 @@ struct raw_pcb {
 
   struct raw_pcb *next;
 
-  u8_t protocol;
-  u8_t flags;
+  protocol: u8;
+  flags: u8;
 
-#if LWIP_MULTICAST_TX_OPTIONS
+// #if LWIP_MULTICAST_TX_OPTIONS
   /** outgoing network interface for multicast packets, by interface index (if nonzero) */
-  u8_t mcast_ifindex;
+  mcast_ifindex: u8;
   /** TTL for outgoing multicast packets */
-  u8_t mcast_ttl;
+  mcast_ttl: u8;
  /* LWIP_MULTICAST_TX_OPTIONS */
 
   /** receive callback function */
@@ -93,8 +93,8 @@ struct raw_pcb {
   void *recv_arg;
 
   /* fields for handling checksum computations as per RFC3542. */
-  u16_t chksum_offset;
-  u8_t  chksum_reqd;
+  chksum_offset: u16;
+  chksum_reqd: u8;
 
 
 
@@ -126,7 +126,7 @@ void             raw_recv       (struct raw_pcb *pcb, raw_recv_fn recv, void *re
 /* for compatibility with older implementation */
 #define raw_new_ip6(proto) raw_new_ip_type(IPADDR_TYPE_V6, proto)
 
-#if LWIP_MULTICAST_TX_OPTIONS
+// #if LWIP_MULTICAST_TX_OPTIONS
 #define raw_set_multicast_netif_index(pcb, idx) ((pcb)->mcast_ifindex = (idx))
 #define raw_get_multicast_netif_index(pcb)      ((pcb)->mcast_ifindex)
 #define raw_set_multicast_ttl(pcb, value)       ((pcb)->mcast_ttl = (value))

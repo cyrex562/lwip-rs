@@ -35,7 +35,7 @@
 
 // #include "lwip/apps/snmp_opts.h"
 
-#if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
 // #include "lwip/apps/snmp_core.h"
 // #include "snmp_asn1.h"
@@ -44,7 +44,7 @@
 
 
 #if !defined LWIP_ASSERT_SNMP_LOCKED
-#if SNMP_USE_RAW
+// #if SNMP_USE_RAW
 #define LWIP_ASSERT_SNMP_LOCKED() LWIP_ASSERT_CORE_LOCKED()
 #else
 #define LWIP_ASSERT_SNMP_LOCKED()

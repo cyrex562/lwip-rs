@@ -47,7 +47,7 @@
 
 
 
-#if LWIP_MDNS_RESPONDER
+// #if LWIP_MDNS_RESPONDER
 
 /** Bitmasks outmsg generation */
 /* Probe for ALL types with hostname */

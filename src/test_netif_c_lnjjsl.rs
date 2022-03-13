@@ -15,13 +15,13 @@ static struct netif net_test;
 /* Setups/teardown functions */
 
 static void
-netif_setup(void)
+netif_setup()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
-netif_teardown(void)
+netif_teardown()
 {
   lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
@@ -39,20 +39,20 @@ testif_tx_func(struct netif *netif, struct pbuf *p)
 static err_t
 testif_init(struct netif *netif)
 {
-  netif->name[0] = 'c';
-  netif->name[1] = 'h';
-  netif->output = etharp_output;
-  netif->linkoutput = testif_tx_func;
-  netif->mtu = 1500;
-  netif->hwaddr_len = 6;
-  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6;
+   netif.name[0] = 'c';
+   netif.name[1] = 'h';
+   netif.output = etharp_output;
+   netif.linkoutput = testif_tx_func;
+   netif.mtu = 1500;
+   netif.hwaddr_len = 6;
+   netif.flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6;
 
-  netif->hwaddr[0] = 0x02;
-  netif->hwaddr[1] = 0x03;
-  netif->hwaddr[2] = 0x04;
-  netif->hwaddr[3] = 0x05;
-  netif->hwaddr[4] = 0x06;
-  netif->hwaddr[5] = 0x07;
+   netif.hwaddr[0] = 0x02;
+   netif.hwaddr[1] = 0x03;
+   netif.hwaddr[2] = 0x04;
+   netif.hwaddr[3] = 0x05;
+   netif.hwaddr[4] = 0x06;
+   netif.hwaddr[5] = 0x07;
 
   return ERR_OK;
 }
@@ -273,7 +273,7 @@ END_TEST
 
 /** Create the suite including all tests for this module */
 Suite *
-netif_suite(void)
+netif_suite()
 {
   testfunc tests[] = {
     TESTFUNC(test_netif_extcallbacks),

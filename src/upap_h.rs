@@ -43,7 +43,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT && PAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT && PAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -91,7 +91,7 @@ pub const UPAPSS_BADAUTH: u32 = 5;	/* We've sent a Nak */
 /*
  * Timeouts.
  */
-#if 0 /* moved to ppp_opts.h */
+// #if 0 /* moved to ppp_opts.h */
 pub const UPAP_DEFTIMEOUT: u32 = 3;	/* Timeout (seconds) for retransmitting req */
 pub const UPAP_DEFREQTIME: u32 = 30;	/* Time to wait for auth-req from peer */
  /* moved to ppp_opts.h */
@@ -99,24 +99,24 @@ pub const UPAP_DEFREQTIME: u32 = 30;	/* Time to wait for auth-req from peer */
 /*
  * Each interface is described by upap structure.
  */
-#if PAP_SUPPORT
+// #if PAP_SUPPORT
 typedef struct upap_state {
     const char *us_user;	/* User */
-    u8_t us_userlen;		/* User length */
+    us_userlen: u8;		/* User length */
     const char *us_passwd;	/* Password */
-    u8_t us_passwdlen;		/* Password length */
-    u8_t us_clientstate;	/* Client state */
-#if PPP_SERVER
-    u8_t us_serverstate;	/* Server state */
+    us_passwdlen: u8;		/* Password length */
+    us_clientstate: u8;	/* Client state */
+// #if PPP_SERVER
+    us_serverstate: u8;	/* Server state */
  /* PPP_SERVER */
 _t us_id;		        /* Current id */
-    u8_t us_transmits;		/* Number of auth-reqs sent */
+    us_transmits: u8;		/* Number of auth-reqs sent */
 } upap_state;
  /* PAP_SUPPORT */
 
 
 void upap_authwithpeer(ppp_pcb *pcb, const char *user, const char *password);
-#if PPP_SERVER
+// #if PPP_SERVER
 void upap_authpeer(ppp_pcb *pcb);
  /* PPP_SERVER */
 

@@ -30,11 +30,11 @@ pub const PACKET_LIB_ADAPTER_NR: u32 = 1; /* Define this to the GUID of the wind
 /* #define USE_SLIPIF 0 */
 /* #define SIO_USE_COMPORT 0 */
 #ifdef USE_SLIPIF
-#if USE_SLIPIF
+// #if USE_SLIPIF
 #define LWIP_PORT_INIT_SLIP1_IPADDR(addr)   IP4_ADDR((addr), 192, 168,   2, 2)
 #define LWIP_PORT_INIT_SLIP1_GW(addr)       IP4_ADDR((addr), 192, 168,   2, 1)
 #define LWIP_PORT_INIT_SLIP1_NETMASK(addr)  IP4_ADDR((addr), 255, 255, 255, 0)
-#if USE_SLIPIF > 1
+// #if USE_SLIPIF > 1
 #define LWIP_PORT_INIT_SLIP2_IPADDR(addr)   IP4_ADDR((addr), 192, 168,   2, 1)
 #define LWIP_PORT_INIT_SLIP2_GW(addr)       IP4_ADDR((addr), 0,     0,   0, 0)
 #define LWIP_PORT_INIT_SLIP2_NETMASK(addr)  IP4_ADDR((addr), 255, 255, 255, 0)*/

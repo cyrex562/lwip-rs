@@ -190,12 +190,12 @@ pub fn sys_check_core_locking() {
     if (lwip_tcpip_thread_id != 0) {
         let current_thread_id: pthread_t = pthread_self();
 
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "Function called without core lock",
             current_thread_id == lwip_core_lock_holder_thread_id,
         );
         //  LWIP_TCPIP_CORE_LOCKING
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "Function called from wrong thread",
             current_thread_id == lwip_tcpip_thread_id,
         );
@@ -240,7 +240,7 @@ pub fn sys_mbox_free(mb: &mut sys_mbox) {
 pub fn sys_mbox_trypost(mb: &mut sys_mbox, msg: &mut Vec<u8>) {
     let first: u8;
     let mut mbox: &mut sys_mbox;
-    LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
+    // LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
     mbox = mb;
 
     sys_arch_sem_wait(&mbox.mutex, 0);
@@ -278,7 +278,7 @@ pub fn sys_mbox_trypost_fromisr(q: &mut sys_mbox_t, msg: &mut Vec<u8>) {
 pub fn sys_mbox_post(mb: &mut sys_mbox, msg: &mut Vec<u8>) {
     let first: u8;
     let mut mbox: &mut sys_mbox;
-    LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
+    // LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
     mbox = mb;
 
     sys_arch_sem_wait(&mbox.mutex, 0);
@@ -312,7 +312,7 @@ pub fn sys_mbox_post(mb: &mut sys_mbox, msg: &mut Vec<u8>) {
 
 pub fn sys_arch_mbox_tryfetch(mb: &mut sys_mbox, msg: &mut Vec<u8>) -> u32 {
     let mut mbox: &mut sys_mbox;
-    LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
+    // LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
     mbox = mb;
 
     sys_arch_sem_wait(&mbox.mutex, 0);
@@ -343,7 +343,7 @@ pub fn sys_arch_mbox_tryfetch(mb: &mut sys_mbox, msg: &mut Vec<u8>) -> u32 {
 pub fn sys_arch_mbox_fetch(mb: &mut sys_mbox, msg: &mut Vec<u8>, timeout: u32) -> u32 {
     let time_needed: u32 = 0;
     let mut mbox: &mut sys_mbox;
-    LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
+    // LWIP_ASSERT("invalid mbox", (mb != None) && (*mb != None));
     mbox = mb;
 
     /* The mutex lock is quick so we don't bother with the timeout
@@ -462,7 +462,7 @@ pub fn cond_wait(cond: &mut pthread_cond_t, mutex: &mut pthread_mutex_t, timeout
 pub fn sys_arch_sem_wait(s: sys_sem, timeout: u32) -> u32 {
     let time_needed: u32 = 0;
     let mut sem: &mut sys_sem;
-    LWIP_ASSERT("invalid sem", (s != None) && (*s != None));
+    // LWIP_ASSERT("invalid sem", (s != None) && (*s != None));
     sem = *s;
 
     pthread_mutex_lock(&(sem.mutex));
@@ -487,7 +487,7 @@ pub fn sys_arch_sem_wait(s: sys_sem, timeout: u32) -> u32 {
 
 pub fn sys_sem_signal(s: sys_sem) {
     let mut sem: &mut sys_sem;
-    LWIP_ASSERT("invalid sem", (s != None) && (*s != None));
+    // LWIP_ASSERT("invalid sem", (s != None) && (*s != None));
     sem = *s;
 
     pthread_mutex_lock(&(sem.mutex));

@@ -41,7 +41,7 @@
 
 
 
-#if LWIP_ICMP6 && LWIP_IPV6 /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_ICMP6 && LWIP_IPV6 /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -60,7 +60,7 @@
 #if !LWIP_ICMP6_DATASIZE || (LWIP_ICMP6_DATASIZE > (IP6_MIN_MTU_LENGTH - IP6_HLEN - ICMP6_HLEN))
 #undef LWIP_ICMP6_DATASIZE
 #define LWIP_ICMP6_DATASIZE   (IP6_MIN_MTU_LENGTH - IP6_HLEN - ICMP6_HLEN)
-#endif
+// #endif
 
 /* Forward declarations */
 static void icmp6_send_response(struct pbuf *p, u8_t code, u32_t data, u8_t type);
@@ -76,7 +76,7 @@ static void icmp6_send_response_with_addrs_and_netif(struct pbuf *p, u8_t code, 
  * Will generate a reply for echo requests. Other messages are forwarded
  * to nd6_input, or mld6_input.
  *
- * @param p the mld packet, p->payload pointing to the icmpv6 header
+ * @param p the mld packet,  p.payload pointing to the icmpv6 header
  * @param inp the netif on which this packet was received
  */
 void
@@ -89,7 +89,7 @@ icmp6_input(struct pbuf *p, struct netif *inp)
   ICMP6_STATS_INC(icmp6.recv);
 
   /* Check that ICMPv6 header fits in payload */
-  if (p->len < sizeof(struct icmp6_hdr)) {
+  if ( p.len < sizeof(struct icmp6_hdr)) {
     /* drop short packets */
     pbuf_free(p);
     ICMP6_STATS_INC(icmp6.lenerr);
@@ -97,11 +97,11 @@ icmp6_input(struct pbuf *p, struct netif *inp)
     return;
   }
 
-  icmp6hdr = (struct icmp6_hdr *)p->payload;
+  icmp6hdr = (struct icmp6_hdr *) p.payload;
 
-#if CHECKSUM_CHECK_ICMP6
+// #if CHECKSUM_CHECK_ICMP6
   IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_ICMP6) {
-    if (ip6_chksum_pseudo(p, IP6_NEXTH_ICMP6, p->tot_len, ip6_current_src_addr(),
+    if (ip6_chksum_pseudo(p, IP6_NEXTH_ICMP6,  p.tot_len, ip6_current_src_addr(),
                           ip6_current_dest_addr()) != 0) {
       /* Checksum failed */
       pbuf_free(p);
@@ -110,9 +110,9 @@ icmp6_input(struct pbuf *p, struct netif *inp)
       return;
     }
   }
-#endif /* CHECKSUM_CHECK_ICMP6 */
+// #endif /* CHECKSUM_CHECK_ICMP6 */
 
-  switch (icmp6hdr->type) {
+  switch ( icmp6hdr.type) {
   case ICMP6_TYPE_NA: /* Neighbor advertisement */
   case ICMP6_TYPE_NS: /* Neighbor solicitation */
   case ICMP6_TYPE_RA: /* Router advertisement */
@@ -121,17 +121,17 @@ icmp6_input(struct pbuf *p, struct netif *inp)
     nd6_input(p, inp);
     return;
   case ICMP6_TYPE_RS:
-#if LWIP_IPV6_FORWARD
+// #if LWIP_IPV6_FORWARD
     /* @todo implement router functionality */
-#endif
+// #endif
     break;
-#if LWIP_IPV6_MLD
+// #if LWIP_IPV6_MLD
   case ICMP6_TYPE_MLQ:
   case ICMP6_TYPE_MLR:
   case ICMP6_TYPE_MLD:
     mld6_input(p, inp);
     return;
-#endif
+// #endif
   case ICMP6_TYPE_EREQ:
 #if !LWIP_MULTICAST_PING
     /* multicast destination address? */
@@ -141,10 +141,10 @@ icmp6_input(struct pbuf *p, struct netif *inp)
       ICMP6_STATS_INC(icmp6.drop);
       return;
     }
-#endif /* LWIP_MULTICAST_PING */
+// #endif /* LWIP_MULTICAST_PING */
 
     /* Allocate reply. */
-    r = pbuf_alloc(PBUF_IP, p->tot_len, PBUF_RAM);
+    r = pbuf_alloc(PBUF_IP,  p.tot_len, PBUF_RAM);
     if (r == NULL) {
       /* drop */
       pbuf_free(p);
@@ -162,7 +162,7 @@ icmp6_input(struct pbuf *p, struct netif *inp)
     }
 
     /* Determine reply source IPv6 address. */
-#if LWIP_MULTICAST_PING
+// #if LWIP_MULTICAST_PING
     if (ip6_addr_ismulticast(ip6_current_dest_addr())) {
       reply_src = ip_2_ip6(ip6_select_source_address(inp, ip6_current_src_addr()));
       if (reply_src == NULL) {
@@ -174,20 +174,20 @@ icmp6_input(struct pbuf *p, struct netif *inp)
       }
     }
     else
-#endif /* LWIP_MULTICAST_PING */
+// #endif /* LWIP_MULTICAST_PING */
     {
       reply_src = ip6_current_dest_addr();
     }
 
     /* Set fields in reply. */
-    ((struct icmp6_echo_hdr *)(r->payload))->type = ICMP6_TYPE_EREP;
-    ((struct icmp6_echo_hdr *)(r->payload))->chksum = 0;
-#if CHECKSUM_GEN_ICMP6
+    ((struct icmp6_echo_hdr *)( r.payload))->type = ICMP6_TYPE_EREP;
+    ((struct icmp6_echo_hdr *)( r.payload))->chksum = 0;
+// #if CHECKSUM_GEN_ICMP6
     IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_GEN_ICMP6) {
-      ((struct icmp6_echo_hdr *)(r->payload))->chksum = ip6_chksum_pseudo(r,
-          IP6_NEXTH_ICMP6, r->tot_len, reply_src, ip6_current_src_addr());
+      ((struct icmp6_echo_hdr *)( r.payload))->chksum = ip6_chksum_pseudo(r,
+          IP6_NEXTH_ICMP6,  r.tot_len, reply_src, ip6_current_src_addr());
     }
-#endif /* CHECKSUM_GEN_ICMP6 */
+// #endif /* CHECKSUM_GEN_ICMP6 */
 
     /* Send reply. */
     ICMP6_STATS_INC(icmp6.xmit);
@@ -213,7 +213,7 @@ icmp6_input(struct pbuf *p, struct netif *inp)
  * received right now. Otherwise, address zones would be lost.
  *
  * @param p the input packet for which the 'unreachable' should be sent,
- *          p->payload pointing to the IPv6 header
+ *           p.payload pointing to the IPv6 header
  * @param c ICMPv6 code for the unreachable type
  */
 void
@@ -229,7 +229,7 @@ icmp6_dest_unreach(struct pbuf *p, enum icmp6_dur_code c)
  * received right now. Otherwise, address zones would be lost.
  *
  * @param p the input packet for which the 'packet too big' should be sent,
- *          p->payload pointing to the IPv6 header
+ *           p.payload pointing to the IPv6 header
  * @param mtu the maximum mtu that we can accept
  */
 void
@@ -245,7 +245,7 @@ icmp6_packet_too_big(struct pbuf *p, u32_t mtu)
  * received right now. Otherwise, address zones would be lost.
  *
  * @param p the input packet for which the 'time exceeded' should be sent,
- *          p->payload pointing to the IPv6 header
+ *           p.payload pointing to the IPv6 header
  * @param c ICMPv6 code for the time exceeded type
  */
 void
@@ -263,7 +263,7 @@ icmp6_time_exceeded(struct pbuf *p, enum icmp6_te_code c)
  * addresses are used primarily to retain their zone information.
  *
  * @param p the input packet for which the 'time exceeded' should be sent,
- *          p->payload pointing to the IPv6 header
+ *           p.payload pointing to the IPv6 header
  * @param c ICMPv6 code for the time exceeded type
  * @param src_addr source address of the original packet, with zone information
  * @param dest_addr destination address of the original packet, with zone
@@ -284,7 +284,7 @@ icmp6_time_exceeded_with_addrs(struct pbuf *p, enum icmp6_te_code c,
  * offset would be wrong (calculated against ip6_current_header()).
  *
  * @param p the input packet for which the 'param problem' should be sent,
- *          p->payload pointing to the IP header
+ *           p.payload pointing to the IP header
  * @param c ICMPv6 code for the param problem type
  * @param pointer the pointer to the byte where the parameter is found
  */
@@ -300,7 +300,7 @@ icmp6_param_problem(struct pbuf *p, enum icmp6_pp_code c, const void *pointer)
  * The packet is sent *to* ip_current_src_addr() on ip_current_netif().
  *
  * @param p the input packet for which the response should be sent,
- *          p->payload pointing to the IPv6 header
+ *           p.payload pointing to the IPv6 header
  * @param code Code of the ICMPv6 header
  * @param data Additional 32-bit parameter in the ICMPv6 header
  * @param type Type of the ICMPv6 header
@@ -311,7 +311,7 @@ icmp6_send_response(struct pbuf *p, u8_t code, u32_t data, u8_t type)
   const struct ip6_addr *reply_src, *reply_dest;
   struct netif *netif = ip_current_netif();
 
-  LWIP_ASSERT("icmpv6 packet not a direct response", netif != NULL);
+  // LWIP_ASSERT("icmpv6 packet not a direct response", netif != NULL);
   reply_dest = ip6_current_src_addr();
 
   /* Select an address to use as source. */
@@ -335,7 +335,7 @@ icmp6_send_response(struct pbuf *p, u8_t code, u32_t data, u8_t type)
  * in a link-local response being sent over the wrong link.
  *
  * @param p the input packet for which the response should be sent,
- *          p->payload pointing to the IPv6 header
+ *           p.payload pointing to the IPv6 header
  * @param code Code of the ICMPv6 header
  * @param data Additional 32-bit parameter in the ICMPv6 header
  * @param type Type of the ICMPv6 header
@@ -350,8 +350,8 @@ icmp6_send_response_with_addrs(struct pbuf *p, u8_t code, u32_t data, u8_t type,
   struct netif *netif;
 
   /* Get the destination address and netif for this ICMP message. */
-  LWIP_ASSERT("must provide both source and destination", src_addr != NULL);
-  LWIP_ASSERT("must provide both source and destination", dest_addr != NULL);
+  // LWIP_ASSERT("must provide both source and destination", src_addr != NULL);
+  // LWIP_ASSERT("must provide both source and destination", dest_addr != NULL);
 
   /* Special case, as ip6_current_xxx is either NULL, or points
      to a different packet than the one that expired. */
@@ -373,7 +373,7 @@ icmp6_send_response_with_addrs(struct pbuf *p, u8_t code, u32_t data, u8_t type,
  * Send an ICMPv6 packet (with srd/dst address and netif given).
  *
  * @param p the input packet for which the response should be sent,
- *          p->payload pointing to the IPv6 header
+ *           p.payload pointing to the IPv6 header
  * @param code Code of the ICMPv6 header
  * @param data Additional 32-bit parameter in the ICMPv6 header
  * @param type Type of the ICMPv6 header
@@ -387,7 +387,7 @@ icmp6_send_response_with_addrs_and_netif(struct pbuf *p, u8_t code, u32_t data, 
 {
   struct pbuf *q;
   struct icmp6_hdr *icmp6hdr;
-  u16_t datalen = LWIP_MIN(p->tot_len, LWIP_ICMP6_DATASIZE);
+  u16_t datalen = LWIP_MIN( p.tot_len, LWIP_ICMP6_DATASIZE);
 
   /* ICMPv6 header + datalen (as much of the offending packet as possible) */
   q = pbuf_alloc(PBUF_IP, sizeof(struct icmp6_hdr) + datalen,
@@ -397,29 +397,29 @@ icmp6_send_response_with_addrs_and_netif(struct pbuf *p, u8_t code, u32_t data, 
     ICMP6_STATS_INC(icmp6.memerr);
     return;
   }
-  LWIP_ASSERT("check that first pbuf can hold icmp6 header",
-             (q->len >= (sizeof(struct icmp6_hdr))));
+  // LWIP_ASSERT("check that first pbuf can hold icmp6 header",
+             ( q.len >= (sizeof(struct icmp6_hdr))));
 
-  icmp6hdr = (struct icmp6_hdr *)q->payload;
-  icmp6hdr->type = type;
-  icmp6hdr->code = code;
-  icmp6hdr->data = lwip_htonl(data);
+  icmp6hdr = (struct icmp6_hdr *) q.payload;
+   icmp6hdr.type = type;
+   icmp6hdr.code = code;
+   icmp6hdr.data = lwip_htonl(data);
 
   /* copy fields from original packet */
   pbuf_copy_partial_pbuf(q, p, datalen, sizeof(struct icmp6_hdr));
 
   /* calculate checksum */
-  icmp6hdr->chksum = 0;
-#if CHECKSUM_GEN_ICMP6
+   icmp6hdr.chksum = 0;
+// #if CHECKSUM_GEN_ICMP6
   IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_ICMP6) {
-    icmp6hdr->chksum = ip6_chksum_pseudo(q, IP6_NEXTH_ICMP6, q->tot_len,
+     icmp6hdr.chksum = ip6_chksum_pseudo(q, IP6_NEXTH_ICMP6,  q.tot_len,
       reply_src, reply_dest);
   }
-#endif /* CHECKSUM_GEN_ICMP6 */
+// #endif /* CHECKSUM_GEN_ICMP6 */
 
   ICMP6_STATS_INC(icmp6.xmit);
   ip6_output_if(q, reply_src, reply_dest, LWIP_ICMP6_HL, 0, IP6_NEXTH_ICMP6, netif);
   pbuf_free(q);
 }
 
-#endif /* LWIP_ICMP6 && LWIP_IPV6 */
+// #endif /* LWIP_ICMP6 && LWIP_IPV6 */

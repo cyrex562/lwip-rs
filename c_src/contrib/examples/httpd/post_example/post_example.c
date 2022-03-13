@@ -88,7 +88,7 @@ httpd_post_receive_data(void *connection, struct pbuf *p)
 {
   err_t ret;
 
-  LWIP_ASSERT("NULL pbuf", p != NULL);
+  // LWIP_ASSERT("NULL pbuf", p != NULL);
 
   if (current_connection == connection) {
     u16_t token_user = pbuf_memfind(p, "user=", 5, 0);
@@ -98,7 +98,7 @@ httpd_post_receive_data(void *connection, struct pbuf *p)
       u16_t value_pass = token_pass + 5;
       u16_t len_user = 0;
       u16_t len_pass = 0;
-      u16_t tmp;
+      tmp: u16;
       /* find user len */
       tmp = pbuf_memfind(p, "&", 1, value_user);
       if (tmp != 0xFFFF) {

@@ -57,14 +57,14 @@
 /** Helper define for a link layer address, which can be encoded as 0, 2 or 8 bytes */
 struct lowpan6_link_addr {
   /* encoded length of the address */
-  u8_t addr_len;
+  addr_len: u8;
   /* address bytes */
   u8_t addr[8];
 };
 
 s8_t lowpan6_get_address_mode(const ip6_addr_t *ip6addr, const struct lowpan6_link_addr *mac_addr);
 
-#if LWIP_6LOWPAN_IPHC
+// #if LWIP_6LOWPAN_IPHC
 err_t lowpan6_compress_headers(struct netif *netif, u8_t *inbuf, size_t inbuf_size, u8_t *outbuf, size_t outbuf_size,
                                u8_t *lowpan6_header_len_out, u8_t *hidden_header_len_out, ip6_addr_t *lowpan6_contexts,
                                const struct lowpan6_link_addr *src, const struct lowpan6_link_addr *dst);

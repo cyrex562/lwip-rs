@@ -43,7 +43,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 
 
@@ -93,7 +93,7 @@ pub const TIMEREM: u32 = 13; /* Time Remaining */
 /* Value used as data for CI_CALLBACK option */
 pub const CBCP_OPT: u32 = 6; /* Use callback control protocol */
 
-#if 0 /* moved to ppp_opts.h */
+// #if 0 /* moved to ppp_opts.h */
 pub const DEFMRU: u32 = 1500; /* Try for this */
 pub const MINMRU: u32 = 128; /* No MRUs below this */
 pub const MAXMRU: u32 = 16384; /* Normally limit MRU to this */
@@ -113,12 +113,12 @@ struct epdisc {
 typedef struct lcp_options {
     unsigned int passive           :1; /* Don't die if we don't get a response */
     unsigned int silent            :1; /* Wait for the other end to start first */
-#if 0 /* UNUSED */
+// #if 0 /* UNUSED */
     unsigned int restart           :1; /* Restart vs. exit after close */
  /* UNUSED */
 signed int neg_mru           :1; /* Negotiate the MRU? */
     unsigned int neg_asyncmap      :1; /* Negotiate the async map? */
-#if PAP_SUPPORT
+// #if PAP_SUPPORT
     unsigned int neg_upap          :1; /* Ask for UPAP authentication? */
  /* PAP_SUPPORT */
 AP_SUPPORT
@@ -130,7 +130,7 @@ P_SUPPORT
 signed int neg_magicnumber   :1; /* Ask for magic number? */
     unsigned int neg_pcompression  :1; /* HDLC Protocol Field Compression? */
     unsigned int neg_accompression :1; /* HDLC Address/Control Field Compression? */
-#if LQR_SUPPORT
+// #if LQR_SUPPORT
     unsigned int neg_lqr           :1; /* Negotiate use of Link Quality Reports */
  /* LQR_SUPPORT */
 signed int neg_cbcp          :1; /* Negotiate use of CBCP */
@@ -140,17 +140,17 @@ signed int neg_cbcp          :1; /* Negotiate use of CBCP */
 signed int neg_ssnhf         :1; /* negotiate short sequence numbers */
     unsigned int neg_endpoint      :1; /* negotiate endpoint discriminator */
 
-    u16_t mru;			/* Value of MRU */
+    mru: u16;			/* Value of MRU */
 #ifdef HAVE_MULTILINK
-    u16_t mrru;			/* Value of MRRU, and multilink enable */
+    mrru: u16;			/* Value of MRRU, and multilink enable */
  /* MULTILINK */
 AP_SUPPORT
-    u8_t chap_mdtype;		/* which MD types (hashing algorithm) */
+    chap_mdtype: u8;		/* which MD types (hashing algorithm) */
  /* CHAP_SUPPORT */
 2_t asyncmap;		/* Value of async map */
     u32_t magicnumber;
-    u8_t  numloops;		/* Number of loops during magic number neg. */
-#if LQR_SUPPORT
+    numloops: u8;		/* Number of loops during magic number neg. */
+// #if LQR_SUPPORT
     u32_t lqr_period;	/* Reporting period for LQR 1/100ths second */
  /* LQR_SUPPORT */
 ruct epdisc endpoint;	/* endpoint discriminator */
@@ -164,7 +164,7 @@ void lcp_sprotrej(ppp_pcb *pcb, u_char *p, int len);    /* send protocol reject 
 
 extern const struct protent lcp_protent;
 
-#if 0 /* moved to ppp_opts.h */
+// #if 0 /* moved to ppp_opts.h */
 /* Default number of times we receive our magic number from the peer
    before deciding the link is looped-back. */
 pub const DEFLOOPBACKFAIL: u32 = 10; /* moved to ppp_opts.h */

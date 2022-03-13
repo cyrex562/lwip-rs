@@ -313,7 +313,7 @@ pub fn interfaces_Table_set_test(
 
     /* stack should never call this method for another column,
     because all other columns are set to readonly */
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "Invalid column",
         (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id) == 7),
     );
@@ -335,7 +335,7 @@ pub fn interfaces_Table_set_value(
 
     /* stack should never call this method for another column,
     because all other columns are set to readonly */
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "Invalid column",
         (SNMP_TABLE_GET_COLUMN_FROM_OID(instance.instance_oid.id) == 7),
     );

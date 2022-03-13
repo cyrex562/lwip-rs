@@ -31,7 +31,7 @@
  */
 
 // #include "netif/ppp/ppp_opts.h"
-#if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
+// #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 /* This header file is included in all PPP modules needing hashes and/or ciphers */
 
@@ -95,7 +95,7 @@
 /*
  * Map hashes and ciphers functions to mbed TLS
  */
-#if LWIP_USE_EXTERNAL_MBEDTLS
+// #if LWIP_USE_EXTERNAL_MBEDTLS
 
 #define lwip_md4_context mbedtls_md4_context
 #define lwip_md4_init mbedtls_md4_init

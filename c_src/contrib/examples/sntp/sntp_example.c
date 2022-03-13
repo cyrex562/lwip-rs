@@ -41,7 +41,7 @@ sntp_set_system_time(u32_t sec)
   struct tm current_time_val;
   time_t current_time = (time_t)sec;
 
-#if defined(_WIN32) || defined(WIN32)
+// #if defined(_WIN32) || defined(WIN32)
   localtime_s(&current_time_val, &current_time);
 #else
   localtime_r(&current_time, &current_time_val);
@@ -52,10 +52,10 @@ sntp_set_system_time(u32_t sec)
 }
 
 void
-sntp_example_init(void)
+sntp_example_init()
 {
   sntp_setoperatingmode(SNTP_OPMODE_POLL);
-#if LWIP_DHCP
+// #if LWIP_DHCP
   sntp_servermode_dhcp(1); /* get SNTP server via DHCP */
 #else /* LWIP_DHCP */
 

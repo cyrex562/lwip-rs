@@ -88,7 +88,7 @@ cgi_ex_init()
 static const char *
 cgi_handler_basic(iIndex: i32, iNumParams: i32, pcParam: &mut String[], pcValue: &mut String[])
 {
-  LWIP_ASSERT("check index", iIndex < LWIP_ARRAYSIZE(cgi_handlers));
+  // LWIP_ASSERT("check index", iIndex < LWIP_ARRAYSIZE(cgi_handlers));
 
   if (iNumParams == 2) {
     if (!strcmp(pcParam[0], "foo")) {

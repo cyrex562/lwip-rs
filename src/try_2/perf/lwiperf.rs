@@ -251,7 +251,7 @@ pub fn lwiperf_tcp_close(conn: lwiperf_state_tcp_t, report_type: lwiperf_report_
     } else {
         //  no conn pcb, this is the listener pcb 
         err = tcp_close(conn.server_pcb);
-        LWIP_ASSERT("error", err == ERR_OK);
+        // LWIP_ASSERT("error", err == ERR_OK);
     }
     LWIPERF_FREE(lwiperf_state_tcp_t, conn);
 }
@@ -265,7 +265,7 @@ pub fn lwiperf_tcp_client_send_more(conn: lwiperf_state_tcp_t) -> Result<(), Lwi
     let txptr: &mut Vec<u8>;
     let apiflags: u8;
 
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "conn invalid",
         (conn != None) && conn.base.tcp && (conn.base.server == 0),
     );
@@ -350,7 +350,7 @@ pub fn lwiperf_tcp_client_sent(
 ) -> Result<(), LwipError> {
     lwiperf_state_tcp_t * conn = arg;
     //  @todo: check 'len' (e.g. to time ACK of all data)? for now, we just send more... 
-    LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
+    // LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
 
     conn.poll_count = 0;
 
@@ -364,7 +364,7 @@ pub fn lwiperf_tcp_client_connected(
     err: err_t,
 ) -> Result<(), LwipError> {
     lwiperf_state_tcp_t * conn = arg;
-    LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
+    // LWIP_ASSERT("invalid conn", conn.conn_pcb == tpcb);
 
     if (err != ERR_OK) {
         lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
@@ -392,9 +392,9 @@ pub fn lwiperf_tx_start_impl(
     let newpcb: &mut TcpContext;
     let remote_addr: LwipAddr;
 
-    LWIP_ASSERT("remote_ip != NULL", remote_ip != None);
-    LWIP_ASSERT("remote_ip != NULL", settings != None);
-    LWIP_ASSERT("new_conn != NULL", new_conn != None);
+    // LWIP_ASSERT("remote_ip != NULL", remote_ip != None);
+    // LWIP_ASSERT("remote_ip != NULL", settings != None);
+    // LWIP_ASSERT("new_conn != NULL", new_conn != None);
     *new_conn = None;
 
     client_conn = LWIPERF_ALLOC(lwiperf_state_tcp_t);
@@ -455,7 +455,7 @@ pub fn lwiperf_tx_start_passive(conn: lwiperf_state_tcp_t) -> Result<(), LwipErr
         &new_conn,
     );
     if (ret == ERR_OK) {
-        LWIP_ASSERT("new_conn != NULL", new_conn != None);
+        // LWIP_ASSERT("new_conn != NULL", new_conn != None);
         new_conn.settings.flags = 0; //  prevent the remote side starting back as client again 
     }
     return ret;
@@ -474,7 +474,7 @@ pub fn lwiperf_tcp_recv(
     let q: &mut PacketBuffer;
     lwiperf_state_tcp_t * conn = arg;
 
-    LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
+    // LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
 
     if (err != ERR_OK) {
         lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_REMOTE);
@@ -540,7 +540,7 @@ pub fn lwiperf_tcp_recv(
         }
         conn.next_num = 4; //  24 bytes received... 
         tmp = pbuf_remove_header(p, 24);
-        LWIP_ASSERT("pbuf_remove_header failed", tmp == 0);
+        // LWIP_ASSERT("pbuf_remove_header failed", tmp == 0);
         //  for LWIP_NOASSERT 
     }
 
@@ -566,7 +566,7 @@ pub fn lwiperf_tcp_recv(
 
     //   packet_idx += q.len;
     // }
-    LWIP_ASSERT("count mismatch", packet_idx == p.tot_len);
+    // LWIP_ASSERT("count mismatch", packet_idx == p.tot_len);
     conn.bytes_transferred += packet_idx;
     tcp_recved(tpcb, tot_len);
     pbuf_free(p);
@@ -583,7 +583,7 @@ pub fn lwiperf_tcp_err(arg: &mut Vec<u8>, err: err_t) {
 //  TCP poll callback, try to send more data 
 pub fn lwiperf_tcp_poll(arg: &mut Vec<u8>, tpcb: &mut TcpContext) -> Result<(), LwipError> {
     lwiperf_state_tcp_t * conn = arg;
-    LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
+    // LWIP_ASSERT("pcb mismatch", conn.conn_pcb == tpcb);
 
     if (conn.poll_count += 1 >= LWIPERF_TCP_MAX_IDLE_SEC) {
         lwiperf_tcp_close(conn, LWIPERF_TCP_ABORTED_LOCAL);
@@ -610,11 +610,11 @@ pub fn lwiperf_tcp_accept(
     }
 
     s = arg;
-    LWIP_ASSERT("invalid session", s.base.server);
-    LWIP_ASSERT("invalid listen pcb", s.server_pcb != None);
-    LWIP_ASSERT("invalid conn pcb", s.conn_pcb == None);
+    // LWIP_ASSERT("invalid session", s.base.server);
+    // LWIP_ASSERT("invalid listen pcb", s.server_pcb != None);
+    // LWIP_ASSERT("invalid conn pcb", s.conn_pcb == None);
     if (s.specific_remote) {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "s.base.related_master_state != NULL",
             s.base.related_master_state != None,
         );
@@ -623,7 +623,7 @@ pub fn lwiperf_tcp_accept(
             return ERR_VAL;
         }
     } else {
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "s.base.related_master_state == NULL",
             s.base.related_master_state == None,
         );
@@ -711,9 +711,9 @@ pub fn lwiperf_start_tcp_server_impl(
     let pcb: &mut TcpContext;
     let s: lwiperf_state_tcp_t;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
-    LWIP_ASSERT("state != NULL", state != None);
+    // LWIP_ASSERT("state != NULL", state != None);
 
     if (local_addr == None) {
         return ERR_ARG;
@@ -833,7 +833,7 @@ pub fn lwiperf_start_tcp_client(
         &state,
     );
     if (ret == ERR_OK) {
-        LWIP_ASSERT("state != NULL", state != None);
+        // LWIP_ASSERT("state != NULL", state != None);
         if (client_type != LWIPERF_CLIENT) {
             //  start corresponding server now 
             lwiperf_state_tcp_t * server = None;
@@ -873,7 +873,7 @@ pub fn lwiperf_abort(lwiperf_session: &mut Vec<u8>) {
     let dealloc: lwiperf_state_base_t;
     let last: lwiperf_state_base_t;
 
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
 
     // for (i = lwiperf_all_connections; i != NULL; ) {
     //   if ((i == lwiperf_session) || (i.related_master_state == lwiperf_session)) {

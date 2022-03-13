@@ -30,6 +30,6 @@
 
 
 
-void tcpecho_raw_init(void);
+void tcpecho_raw_init();
 
  /* LWIP_TCPECHO_RAW_H */

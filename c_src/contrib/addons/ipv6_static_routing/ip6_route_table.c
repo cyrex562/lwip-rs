@@ -240,7 +240,7 @@ ip6_get_gateway(struct netif *netif, const ip6_addr_t *dest)
  * @return the top of the route table.
  */
 const struct ip6_route_entry *
-ip6_get_route_table(void)
+ip6_get_route_table()
 {
     return static_route_table;
 }

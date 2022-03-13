@@ -469,7 +469,7 @@ pub fn sntp_recv(
 pub fn sntp_send_request(server_addr: &mut LwipAddr) {
     let p: &mut PacketBuffer;
 
-    LWIP_ASSERT("server_addr != NULL", server_addr != None);
+    // LWIP_ASSERT("server_addr != NULL", server_addr != None);
 
     p = pbuf_alloc(PBUF_TRANSPORT, SNTP_MSG_LEN, PBUF_RAM);
     if (p != None) {
@@ -571,7 +571,7 @@ pub fn sntp_init() {
 
     if (sntp_pcb == None) {
         sntp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
-        LWIP_ASSERT(
+        // LWIP_ASSERT(
             "Failed to allocate udp pcb for sntp client",
             sntp_pcb != None,
         );
@@ -597,7 +597,7 @@ pub fn sntp_init() {
  * Stop this module.
  */
 pub fn sntp_stop() {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (sntp_pcb != None) {
         let i: u8;
         // TODO:
@@ -626,12 +626,12 @@ pub fn sntp_enabled() -> u8 {
  * @param operating_mode one of the available operating modes
  */
 pub fn sntp_setoperatingmode(operating_mode: u8) {
-    LWIP_ASSERT_CORE_LOCKED();
-    LWIP_ASSERT(
+    // LWIP_ASSERT_CORE_LOCKED()
+    // LWIP_ASSERT(
         "Invalid operating mode",
         operating_mode <= SNTP_OPMODE_LISTENONLY,
     );
-    LWIP_ASSERT(
+    // LWIP_ASSERT(
         "Operating mode must not be set while SNTP client is running",
         sntp_pcb == None,
     );
@@ -665,7 +665,7 @@ pub fn sntp_getreachability(idx: u8) -> u8 {
  */
 pub fn sntp_servermode_dhcp(set_servers_from_dhcp: i32) {
     let new_mode: u8 = set_servers_from_dhcp;
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (sntp_set_servers_from_dhcp != new_mode) {
         sntp_set_servers_from_dhcp = new_mode;
     }
@@ -679,7 +679,7 @@ pub fn sntp_servermode_dhcp(set_servers_from_dhcp: i32) {
  * @param server IP address of the NTP server to set
  */
 pub fn sntp_setserver(idx: u8, server: &mut LwipAddr) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (idx < SNTP_MAX_SERVERS) {
         if (server != None) {
             sntp_servers[idx].addr = (*server);
@@ -737,7 +737,7 @@ pub fn sntp_getserver(idx: u8) -> LwipAddr {
  * @param server DNS name of the NTP server to set, to be resolved at contact time
  */
 pub fn sntp_setservername(idx: u8, server: &String) {
-    LWIP_ASSERT_CORE_LOCKED();
+    // LWIP_ASSERT_CORE_LOCKED()
     if (idx < SNTP_MAX_SERVERS) {
         sntp_servers[idx].name = server;
     }

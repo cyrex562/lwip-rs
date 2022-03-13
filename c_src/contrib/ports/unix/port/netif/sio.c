@@ -7,7 +7,7 @@ pub const _XOPEN_SOURCE: u32 = 600; #define _GNU_SOURCE
    we can't use LWIP_UNIX_MACH because extensions need to be turned
    on before any system headers (which are pulled in through cc.h)
    are included */
-#if defined(__APPLE__)
+// #if defined(__APPLE__)
 #define _DARWIN_C_SOURCE
 
 
@@ -34,7 +34,7 @@ pub const _XOPEN_SOURCE: u32 = 600; #define _GNU_SOURCE
 
 
 
-#if defined(LWIP_UNIX_OPENBSD)
+// #if defined(LWIP_UNIX_OPENBSD)
 
 
 
@@ -259,7 +259,7 @@ s16_t sio_poll(sio_status_t * siostat)
 void sio_expect_string( u8_t *str, sio_status_t * siostat )
 {
     /*	sio_status_t * siostat = ((siostruct_t*)netif->state)->sio;*/
-	u8_t c;
+	c: u8;
  	int finger=0;
 
 	LWIP_DEBUGF(SIO_DEBUG, ("sio_expect_string[%d]: %s\n", siostat->fd, str));
@@ -339,7 +339,7 @@ sio_fd_t sio_open(u8_t devnum)
 		}
 		LWIP_DEBUGF(SIO_DEBUG, ("sio_open[%d]: dev=%s open.\n", siostate->fd, dev));
 	}
-#if PPP_SUPPORT
+// #if PPP_SUPPORT
 	else if (devnum == 2) {
 	    pid_t childpid;
 	    char name[256];
@@ -374,7 +374,7 @@ sio_fd_t sio_open(u8_t devnum)
 
 	}
 
-#if LWIP_HAVE_SLIPIF
+// #if LWIP_HAVE_SLIPIF
 	else if (devnum == 3) {
 	    pid_t childpid;
 	    /* create PTY pair */

@@ -1118,7 +1118,7 @@ pub const TCP_OOSEQ_MAX_BYTES: u32 = 0; /**
  * Use this to override TCP_OOSEQ_MAX_BYTES to a dynamic value per pcb.
  */
 #if !defined TCP_OOSEQ_BYTES_LIMIT
-#if TCP_OOSEQ_MAX_BYTES
+// #if TCP_OOSEQ_MAX_BYTES
 #define TCP_OOSEQ_BYTES_LIMIT(pcb)      TCP_OOSEQ_MAX_BYTES
 #elif defined __DOXYGEN__
 #define TCP_OOSEQ_BYTES_LIMIT(pcb)
@@ -1138,7 +1138,7 @@ pub const TCP_OOSEQ_MAX_PBUFS: u32 = 0; /**
  * Use this to override TCP_OOSEQ_MAX_PBUFS to a dynamic value per pcb.
  */
 #if !defined TCP_OOSEQ_PBUFS_LIMIT
-#if TCP_OOSEQ_MAX_PBUFS
+// #if TCP_OOSEQ_MAX_PBUFS
 #define TCP_OOSEQ_PBUFS_LIMIT(pcb)      TCP_OOSEQ_MAX_PBUFS
 #elif defined __DOXYGEN__
 #define TCP_OOSEQ_PBUFS_LIMIT(pcb)

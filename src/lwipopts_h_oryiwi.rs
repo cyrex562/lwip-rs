@@ -205,7 +205,7 @@ pub const LWIP_RAW: u32 = 1; /* ---------- Statistics options ---------- */
 
 pub const LWIP_STATS: u32 = 1; #define LWIP_STATS_DISPLAY      1
 
-#if LWIP_STATS
+// #if LWIP_STATS
 pub const LINK_STATS: u32 = 1; #define IP_STATS                1
 pub const ICMP_STATS: u32 = 1; #define IGMP_STATS              1
 pub const IPFRAG_STATS: u32 = 1; #define UDP_STATS               1
@@ -218,7 +218,7 @@ pub const LWIP_NETBIOS_RESPOND_NAME_QUERY: u32 = 1; /* ---------- PPP options --
 
 pub const PPP_SUPPORT: u32 = 1; /* Set > 0 for PPP */
 
-#if PPP_SUPPORT
+// #if PPP_SUPPORT
 
 pub const NUM_PPP: u32 = 1; /* Max PPP sessions. */
 
@@ -244,7 +244,7 @@ pub const MD5_SUPPORT: u32 = 1; /* Set > 0 for MD5 (see also CHAP) */
 /* The following defines must be done even in OPTTEST mode: */
 
 #if !defined(NO_SYS) || !NO_SYS /* default is 0 */
-void sys_check_core_locking(void);
+void sys_check_core_locking();
 #define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
 
 

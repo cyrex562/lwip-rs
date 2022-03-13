@@ -52,7 +52,7 @@ struct netif;
  */
 
 /* MIB2 statistics functions */
-#if MIB2_STATS  /* don't build if not configured for use in lwipopts.h */
+// #if MIB2_STATS  /* don't build if not configured for use in lwipopts.h */
 /**
  * @ingroup netif_mib2
  * @see RFC1213, "MIB-II, 6. Definitions"
@@ -140,7 +140,7 @@ e MIB2_INIT_NETIF(netif, type, speed)
  /* MIB2_STATS */
 
 /* LWIP MIB2 callbacks */
-#if LWIP_MIB2_CALLBACKS /* don't build if not configured for use in lwipopts.h */
+// #if LWIP_MIB2_CALLBACKS /* don't build if not configured for use in lwipopts.h */
 /* network interface */
 void mib2_netif_added(struct netif *ni);
 void mib2_netif_removed(struct netif *ni);
@@ -163,7 +163,7 @@ void mib2_remove_route_ip4(u8_t dflt, struct netif *ni);
  /* LWIP_IPV4 */
 
 /* UDP */
-#if LWIP_UDP
+// #if LWIP_UDP
 void mib2_udp_bind(struct udp_pcb *pcb);
 void mib2_udp_unbind(struct udp_pcb *pcb);
  /* LWIP_UDP */

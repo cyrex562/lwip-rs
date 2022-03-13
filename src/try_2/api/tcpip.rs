@@ -121,7 +121,7 @@ pub fn tcpip_thread(arg: &mut Vec<u8>) {
         TCPIP_MBOX_FETCH(&tcpip_mbox, &msg);
         if (msg == None) {
             //      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
-            LWIP_ASSERT("tcpip_thread: invalid message", 0);
+            // LWIP_ASSERT("tcpip_thread: invalid message", 0);
             continue;
         }
         tcpip_thread_handle_msg(msg);
@@ -177,7 +177,7 @@ pub fn tcpip_thread_handle_msg(msg: &mut tcpip_msg) {
 
         _ => {
             //      LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: %d\n", msg.msg_type));
-            LWIP_ASSERT("tcpip_thread: invalid message", 0);
+            // LWIP_ASSERT("tcpip_thread: invalid message", 0);
         }
     }
 }
@@ -215,7 +215,7 @@ pub fn tcpip_inpkt(p: &mut PacketBuffer, inp: &mut NetIfc, input_fn: netif_input
     //  LWIP_TCPIP_CORE_LOCKING_INPUT 
     let msg: &mut tcpip_msg;
 
-    LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+    // LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
     msg = memp_malloc(MEMP_TCPIP_MSG_INPKT);
     if (msg == None) {
@@ -270,7 +270,7 @@ pub fn tcpip_input(p: &mut PacketBuffer, inp: &mut NetIfc) {
 pub fn tcpip_callback(function: tcpip_callback_fn, ctx: &mut Vec<u8>) {
     let msg: &mut tcpip_msg;
 
-    LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+    // LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
     msg = memp_malloc(MEMP_TCPIP_MSG_API);
     if (msg == None) {
@@ -304,7 +304,7 @@ pub fn tcpip_callback(function: tcpip_callback_fn, ctx: &mut Vec<u8>) {
 pub fn tcpip_try_callback(function: tcpip_callback_fn, ctx: &mut Vec<u8>) {
     let msg: &mut tcpip_msg;
 
-    LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+    // LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
     msg = memp_malloc(MEMP_TCPIP_MSG_API);
     if (msg == None) {
@@ -333,7 +333,7 @@ pub fn tcpip_try_callback(function: tcpip_callback_fn, ctx: &mut Vec<u8>) {
 pub fn tcpip_timeout(msecs: u32, h: sys_timeout_handler, arg: &mut Vec<u8>) {
     let msg: &mut tcpip_msg;
 
-    LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+    // LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
     msg = memp_malloc(MEMP_TCPIP_MSG_API);
     if (msg == None) {
@@ -358,7 +358,7 @@ pub fn tcpip_timeout(msecs: u32, h: sys_timeout_handler, arg: &mut Vec<u8>) {
 pub fn tcpip_untimeout(h: sys_timeout_handler, arg: &mut Vec<u8>) {
     let msg: &mut tcpip_msg;
 
-    LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+    // LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
     msg = memp_malloc(MEMP_TCPIP_MSG_API);
     if (msg == None) {
@@ -392,8 +392,8 @@ pub fn tcpip_send_msg_wait_sem(func: tcpip_callback_fn, apimsg: &mut Vec<u8>, se
     //  LWIP_TCPIP_CORE_LOCKING 
     TCPIP_MSG_VAR_DECLARE(msg);
 
-    LWIP_ASSERT("semaphore not initialized", sys_sem_valid(sem));
-    LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+    // LWIP_ASSERT("semaphore not initialized", sys_sem_valid(sem));
+    // LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
 
     TCPIP_MSG_VAR_ALLOC(msg);
     TCPIP_MSG_VAR_REFmsg.msg_type = TCPIP_MSG_API;
@@ -429,7 +429,7 @@ pub fn tcpip_api_call(func: tcpip_api_call_fn, call: &mut tcpip_api_call_data) {
         return err;
     }
 
-    LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+    // LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
     TCPIP_MSG_VAR_ALLOC(msg);
     TCPIP_MSG_VAR_REFmsg.msg_type = TCPIP_MSG_API_CALL;
     TCPIP_MSG_VAR_REFmsg.msg.api_call.arg = call;
@@ -497,7 +497,7 @@ pub fn tcpip_callbackmsg_delete(msg: &mut tcpip_callback_msg) {
  * @see tcpip_callbackmsg_new()
  */
 pub fn tcpip_callbackmsg_trycallback(msg: &mut tcpip_callback_msg) {
-    LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+    // LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
     return sys_mbox_trypost(&tcpip_mbox, msg);
 }
 
@@ -514,7 +514,7 @@ pub fn tcpip_callbackmsg_trycallback(msg: &mut tcpip_callback_msg) {
  * @see tcpip_callbackmsg_new()
  */
 pub fn tcpip_callbackmsg_trycallback_fromisr(msg: &mut tcpip_callback_msg) {
-    LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
+    // LWIP_ASSERT("Invalid mbox", sys_mbox_valid_val(tcpip_mbox));
     return sys_mbox_trypost_fromisr(&tcpip_mbox, msg);
 }
 
@@ -533,11 +533,11 @@ pub fn tcpip_init(initfunc: tcpip_init_done_fn, arg: &mut Vec<u8>) {
     tcpip_init_done = initfunc;
     tcpip_init_done_arg = arg;
     if (sys_mbox_new(&tcpip_mbox, TCPIP_MBOX_SIZE) != ERR_OK) {
-        LWIP_ASSERT("failed to create tcpip_thread mbox", 0);
+        // LWIP_ASSERT("failed to create tcpip_thread mbox", 0);
     }
 
     if (sys_mutex_new(&lock_tcpip_core) != ERR_OK) {
-        LWIP_ASSERT("failed to create lock_tcpip_core", 0);
+        // LWIP_ASSERT("failed to create lock_tcpip_core", 0);
     }
 
     sys_thread_new(
