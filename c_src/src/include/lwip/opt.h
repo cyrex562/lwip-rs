@@ -536,7 +536,7 @@ pub const ARP_QUEUE_LEN: u32 = 3; /**
  * Additionally, you can define ETHARP_VLAN_CHECK to an u16_t VLAN ID to check.
  * If ETHARP_VLAN_CHECK is defined, only VLAN-traffic for this VLAN is accepted.
  * If ETHARP_VLAN_CHECK is not defined, all traffic is accepted.
- * Alternatively, define a function/define ETHARP_VLAN_CHECK_FN(eth_hdr, vlan)
+ * Alternatively, define a function/define ETHARP_VLAN_CHECK_FN(EthHdr, vlan)
  * that returns 1 to accept a packet or 0 to drop a packet.
  */
 #if !defined ETHARP_SUPPORT_VLAN || defined __DOXYGEN__
@@ -2473,21 +2473,21 @@ pub const LWIP_DHCP6_MAX_NTP_SERVERS: u32 = 1; /**
 
 
 /**
- * LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr):
+ * LWIP_HOOK_VLAN_CHECK(netif, EthHdr, vlan_hdr):
  * Called from ethernet_input() if VLAN support is enabled
  * Signature:\code{.c}
- *   int my_hook(struct netif *netif, struct eth_hdr *eth_hdr, struct eth_vlan_hdr *vlan_hdr);
+ *   int my_hook(struct netif *netif, struct EthHdr *EthHdr, struct eth_vlan_hdr *vlan_hdr);
  * \endcode
  * Arguments:
  * - netif: struct netif on which the packet has been received
- * - eth_hdr: struct eth_hdr of the packet
+ * - EthHdr: struct EthHdr of the packet
  * - vlan_hdr: struct eth_vlan_hdr of the packet
  * Return values:
  * - 0: Packet must be dropped.
  * - != 0: Packet must be accepted.
  */
 #ifdef __DOXYGEN__
-#define LWIP_HOOK_VLAN_CHECK(netif, eth_hdr, vlan_hdr)
+#define LWIP_HOOK_VLAN_CHECK(netif, EthHdr, vlan_hdr)
 
 
 /**
@@ -2496,7 +2496,7 @@ pub const LWIP_DHCP6_MAX_NTP_SERVERS: u32 = 1; /**
  * on per-netif basis to implement this callback, see @ref netif_cd.
  * Called from ethernet_output() if VLAN support (@ref ETHARP_SUPPORT_VLAN) is enabled.<br>
  * Signature:\code{.c}
- *   s32_t my_hook_vlan_set(struct netif* netif, struct pbuf* pbuf, const struct eth_addr* src, const struct eth_addr* dst, u16_t eth_type);
+ *   s32_t my_hook_vlan_set(struct netif* netif, struct pbuf* pbuf, const struct EthAddr* src, const struct EthAddr* dst, u16_t eth_type);
  * \endcode
  * Arguments:
  * - netif: struct netif that the packet will be sent through

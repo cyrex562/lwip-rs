@@ -1,4 +1,5 @@
 use crate::netif_hint::NetifHint;
+use crate::ip_address::{IpAddress};
 
 /**
  * @file
@@ -63,16 +64,16 @@ pub const SOF_INHERITED: u8 = SOF_REUSEADDR | SOF_KEEPALIVE;
 
 
 
-pub struct IPPCB {
-    local_ip: ip_addr_t,
-    remote_ip: ip_addr_t,
+pub struct IpContext {
+    local_ip: IpAddress,
+    remote_ip: IpAddress,
     netif_idx: u8,
     so_options: u8,
     tos: u8,
     ttl: u8,
 }
 
-impl IPPCB {
+impl IpContext {
     pub fn get_option(&self, opt: u8) -> u8 {
         self.so_options & opt
     }
@@ -88,7 +89,7 @@ impl IPPCB {
 
 pub const OBJ_ID_NOT_SET: u32 = 0xFFFFFFFF;
 
-pub struct IPGlobals {
+pub struct IpGlobals {
     // interface that accepted packet for current callback invocation
     current_netif_id: u32,
     // interface that received the packet for the current callback invocation
@@ -100,12 +101,12 @@ pub struct IPGlobals {
     // total header length of the current ip4/ip6 header
     current_ip_header_tot_len: usize,
     // source ip address of current header
-    current_ip_header_src: ip_addr_t,
+    current_ip_header_src: IpAddress,
     // destination ip address of the current header
-    current_ip_header_dst: ip_addr_t
+    current_ip_header_dst: IpAddress
 }
 
-impl IPGlobals {
+impl IpGlobals {
     pub fn ip_current_is_v6(&self) -> bool {
         self.current_ip6_header_id != OBJ_ID_NOT_SET
     }
@@ -121,16 +122,15 @@ impl IPGlobals {
         // get the transport layer header
         unimplemented!()
     }
-
 }
 
-pub fn ip_output(p: &mut PacketBuffer, src: &ip_addr_t, dst: &ip_addr_t, ttl: u8, tos: u8, proto: u16) {
+pub fn ip_output(p: &mut PacketBuffer, src: &IpAddress, dst: &IpAddress, ttl: u8, tos: u8, proto: u16) {
     if IP_IS_V6(dst) { ip6_output(p, src, dst, ttl, tos, proto)} else { ip4_output(p, src, dst, ttl, tos, proto)}
 }
 
 pub fn ip_output_if_src(p: &mut PacketBuffer,
-                        src: &ip_addr_t,
-                        dst: &ip_addr_t,
+                        src: &IpAddress,
+                        dst: &IpAddress,
                         ttl: u8,
                         tos: u8,
                         proto: u8,
@@ -142,7 +142,7 @@ pub fn ip_output_if_src(p: &mut PacketBuffer,
     }
 }
 
-pub fn ip_output_if_hdrincl(p: &mut PacketBuffer, src: &ip_addr_t, dst: &ip_addr_t, netif: &mut NetworkInterface) {
+pub fn ip_output_if_hdrincl(p: &mut PacketBuffer, src: &IpAddress, dst: &IpAddress, netif: &mut NetworkInterface) {
     if IP_IS_V6(dst) {
         ip6_output_if_src(p, src, dst, 0, 0, 0, netif)
     } else {
@@ -150,7 +150,7 @@ pub fn ip_output_if_hdrincl(p: &mut PacketBuffer, src: &ip_addr_t, dst: &ip_addr
     }
 }
 
-pub fn ip_output_hinted(p: &mut PacketBuffer, src: &ip_addr_t, dst: &ip_addr_t, ttl: u8, tos: u8, proto: u8, netif_hint: &NetifHint) {
+pub fn ip_output_hinted(p: &mut PacketBuffer, src: &IpAddress, dst: &IpAddress, ttl: u8, tos: u8, proto: u8, netif_hint: &NetifHint) {
     if IP_IS_V6(dst) {
         ip6_output_hinted(p, src, dst, ttl, tos, proto, netif_hint)
     } else {

@@ -803,7 +803,7 @@ pub fn pppoe_send_padi(sc: &mut pppoe_softc) -> Result<(), LwipError> {
     }
 
     // LWIP_ASSERT(
-        "sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
+        "sizeof(EthHdr) + PPPOE_HEADERLEN + len <= 0xffff",
         sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff,
     );
 
@@ -1017,7 +1017,7 @@ pub fn pppoe_send_padr(sc: &mut pppoe_softc) -> Result<(), LwipError> {
         len += 2 + 2 + sc.sc_ac_cookie_len; //  AC cookie 
     }
     // LWIP_ASSERT(
-        "sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
+        "sizeof(EthHdr) + PPPOE_HEADERLEN + len <= 0xffff",
         sizeof(eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff,
     );
     pb = pbuf_alloc(PBUF_LINK, (PPPOE_HEADERLEN + len), PBUF_RAM);

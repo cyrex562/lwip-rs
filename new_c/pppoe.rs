@@ -791,7 +791,7 @@ pppoe_send_padi(struct pppoe_softc *sc)
     len += 2 + 2 + l2;
   }
 // #endif /* PPPOE_SCNAME_SUPPORT */
-  // LWIP_ASSERT("sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
+  // LWIP_ASSERT("sizeof(struct EthHdr) + PPPOE_HEADERLEN + len <= 0xffff",
     sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff);
 
   /* allocate a buffer */
@@ -1012,7 +1012,7 @@ pppoe_send_padr(struct pppoe_softc *sc)
   if ( sc.sc_ac_cookie_len > 0) {
     len += 2 + 2 +  sc.sc_ac_cookie_len;  /* AC cookie */
   }
-  // LWIP_ASSERT("sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff",
+  // LWIP_ASSERT("sizeof(struct EthHdr) + PPPOE_HEADERLEN + len <= 0xffff",
     sizeof(struct eth_hdr) + PPPOE_HEADERLEN + len <= 0xffff);
   pb = pbuf_alloc(PBUF_LINK, (u16_t)(PPPOE_HEADERLEN + len), PBUF_RAM);
   if (!pb) {

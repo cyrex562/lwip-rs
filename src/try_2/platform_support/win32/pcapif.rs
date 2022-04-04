@@ -782,7 +782,7 @@ pub const GUID_LEN: u32 = 128;
   sys_thread_new("pcapif_rxthread", pcapif_input_thread, netif, 0, 0);
 
 
-//  LWIP_DEBUGF(NETIF_DEBUG, ("pcapif: eth_addr %02X%02X%02X%02X%02X%02X\n",netif.hwaddr[0],netif.hwaddr[1],netif.hwaddr[2],netif.hwaddr[3],netif.hwaddr[4],netif.hwaddr[5]));
+//  LWIP_DEBUGF(NETIF_DEBUG, ("pcapif: EthAddr %02X%02X%02X%02X%02X%02X\n",netif.hwaddr[0],netif.hwaddr[1],netif.hwaddr[2],netif.hwaddr[3],netif.hwaddr[4],netif.hwaddr[5]));
 }
 
 /* low_level_output():

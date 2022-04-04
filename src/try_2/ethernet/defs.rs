@@ -1,5 +1,5 @@
-// const struct eth_addr ethbroadcast = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
-// const struct eth_addr ethzero = {{0, 0, 0, 0, 0, 0}};
+// const struct EthAddr ethbroadcast = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
+// const struct EthAddr ethzero = {{0, 0, 0, 0, 0, 0}};
 
 use core::fmt;
 use crate::core::defines::{LwipAddr, LwipAddrType};

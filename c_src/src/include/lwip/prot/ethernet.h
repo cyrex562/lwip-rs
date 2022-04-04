@@ -60,7 +60,7 @@ PACK_STRUCT_END
 #  include "arch/epstruct.h"
 
 
-/** Initialize a struct eth_addr with its 6 bytes (takes care of correct braces) */
+/** Initialize a struct EthAddr with its 6 bytes (takes care of correct braces) */
 #define ETH_ADDR(b0, b1, b2, b3, b4, b5) {{b0, b1, b2, b3, b4, b5}}
 
 #ifdef PACK_STRUCT_USE_INCLUDES
@@ -68,12 +68,12 @@ PACK_STRUCT_END
 
 TRUCT_BEGIN
 /** Ethernet header */
-struct eth_hdr {
+struct EthHdr {
 // #if ETH_PAD_SIZE
   PACK_STRUCT_FLD_8(u8_t padding[ETH_PAD_SIZE]);
 
-_STRUCT_FLD_S(struct eth_addr dest);
-  PACK_STRUCT_FLD_S(struct eth_addr src);
+_STRUCT_FLD_S(struct EthAddr dest);
+  PACK_STRUCT_FLD_S(struct EthAddr src);
   PACK_STRUCT_FIELD(u16_t type);
 } PACK_STRUCT_STRUCT;
 PACK_STRUCT_END

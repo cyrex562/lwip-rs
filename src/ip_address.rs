@@ -18,7 +18,6 @@ pub const IPV6_ANY_ADDR_U128: u128 = 0;
 // IPv6 loopback 0:0:0:0:0:0:0:1/128
 pub const IPV6_LOOPBACK_BYTES: [u8; 16] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ];
 
-
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct IpAddress {
     address_bytes: Vec<u8>,

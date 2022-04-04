@@ -469,7 +469,7 @@ pub fn autoip_arp_reply(netif: &mut NetIfc, hdr: &mut etharp_hdr) {
          */
         // ip4_addr
         // sipaddr, dipaddr;
-        // struct eth_addr
+        // struct EthAddr
         // netifaddr;
         // SMEMCPY(netifaddr.addr, netif.hwaddr, ETH_HWADDR_LEN);
         let mut sipaddr: ip4_addr;

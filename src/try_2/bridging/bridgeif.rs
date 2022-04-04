@@ -133,7 +133,7 @@ pub fn bridgeif_fdb_add(bridgeif: &mut NetIfc, addr: &mut MacAddress, ports: bri
     //     if (!br.fdbs[i].used) {
     //       br.fdbs[i].used = 1;
     //       br.fdbs[i].dst_ports = ports;
-    //       memcpy(&br.fdbs[i].addr, addr, sizeof(eth_addr));
+    //       memcpy(&br.fdbs[i].addr, addr, sizeof(EthAddr));
     //       BRIDGEIF_WRITE_UNPROTECT(lev);
     //       BRIDGEIF_READ_UNPROTECT(lev);
     //      return Ok(());
@@ -159,9 +159,9 @@ pub fn bridgeif_fdb_remove(bridgeif: &mut NetIfc, addr: &mut MacAddress) {
 
     BRIDGEIF_READ_PROTECT(lev);
     // for (i = 0; i < br.max_fdbs_entries; i+= 1) {
-    //   if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(eth_addr))) {
+    //   if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(EthAddr))) {
     //     BRIDGEIF_WRITE_PROTECT(lev);
-    //     if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(eth_addr))) {
+    //     if (br.fdbs[i].used && !memcmp(&br.fdbs[i].addr, addr, sizeof(EthAddr))) {
     //       //memset(&br.fdbs[i], 0, sizeof(bridgeif_fdb_static_entry_t));
     //       BRIDGEIF_WRITE_UNPROTECT(lev);
     //       BRIDGEIF_READ_UNPROTECT(lev);
@@ -182,7 +182,7 @@ pub fn bridgeif_find_dst_ports(br: &mut bridgeif_private_t, dst_addr: &mut MacAd
     //  first check for static entries 
     // for (i = 0; i < br.max_fdbs_entries; i+= 1) {
     //   if (br.fdbs[i].used) {
-    //     if (!memcmp(&br.fdbs[i].addr, dst_addr, sizeof(eth_addr))) {
+    //     if (!memcmp(&br.fdbs[i].addr, dst_addr, sizeof(EthAddr))) {
     //       bridgeif_portmask_t ret = br.fdbs[i].dst_ports;
     //       BRIDGEIF_READ_UNPROTECT(lev);
     //       return ret;
@@ -213,7 +213,7 @@ pub fn bridgeif_is_local_mac(br: &mut bridgeif_private_t, addr: &mut MacAddress)
     // for (i = 0; i < br.num_ports; i+= 1) {
     //   portif: &mut NetIfc = br.ports[i].port_netif;
     //   if (portif != None) {
-    //     if (!memcmp(portif.hwaddr, addr, sizeof(eth_addr))) {
+    //     if (!memcmp(portif.hwaddr, addr, sizeof(EthAddr))) {
     //       BRIDGEIF_READ_UNPROTECT(lev);
     //       return 1;
     //     }

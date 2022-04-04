@@ -7,11 +7,52 @@ pub const ETHARP_HWADDR_LEN: usize = ETH_HWADDR_LEN;
 pub const ETH_PAD_SIZE: usize = 0;
 
 #[derive(Default,Debug,Clone)]
-pub struct eth_addr {
+pub struct EthAddr {
     addr: [u8; ETH_HWADDR_LEN as usize],
 }
 
-impl eth_addr {
+// TPID: 16 bits: (0x8100)
+// TCI:
+//     PCP: 3 bits: class-of-service
+//     DEI: 1 bit: drop-eligible indicator
+//     VID: 12-bits VLAN tag
+#[derive(Default,Debug,Clone)]
+pub struct VlanTag {
+    pub tpid: u16,
+    pub tci: u16,
+}
+
+impl VlanTag {
+    pub fn set_pcp(&mut self, new_pcp_val: u8) -> Result<(), LwipError> {
+        if new_pcp_val > 0b111 {
+            return Err(LwipError::new())
+        }
+    }
+
+    pub fn get_pcp(&self) -> u8 {
+        let mut out = 0u8;
+        out = self.tci & 0b1110000000000000;
+        out
+    }
+
+    pub fn set_dei(&mut self, dei: u8) {
+
+    }
+
+    pub fn get_dei(&self) -> u8 {
+
+    }
+
+    pub fn set_vid(&mut self, vid: u16) {
+
+    }
+
+    pub fn get_ivd(&self) -> u16 {
+
+    }
+}
+
+impl EthAddr {
     pub fn new(a: u8, b: u8, c: u8, d: u8, e: u8, f: u8) -> Self {
         Self {
             addr: [a, b, c, d, e, f],
@@ -19,17 +60,18 @@ impl eth_addr {
     }
 }
 
-impl PartialEq for eth_addr {
+impl PartialEq for EthAddr {
     fn eq(&self, other: &Self) -> bool {
         self.addr == other.addr
     }
 }
 
 #[derive(Default,Debug,Clone)]
-pub struct eth_hdr {
+pub struct EthHdr {
     padding: [u8; ETH_PAD_SIZE],
-    dest: eth_addr,
-    src: eth_addr,
+    dest: EthAddr,
+    src: EthAddr,
+    vlan_tags: Vec<u8>,
     ether_type: u16,
 }
 
@@ -65,7 +107,7 @@ pub const LL_IP6_MULTICAST_ADDR_1: u8 = 0x33;
  * But this is only an example, anyway...
  */
 pub struct ethernetif {
-    ethaddr: eth_addr,
+    ethaddr: EthAddr,
     /* Add whatever per-interface state that is needed here. */
 }
 
