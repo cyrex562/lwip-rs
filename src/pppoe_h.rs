@@ -89,7 +89,7 @@ struct pppoehdr {
   PACK_STRUCT_FIELD(u16_t session);
   PACK_STRUCT_FIELD(u16_t plen);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -102,7 +102,7 @@ struct pppoetag {
   PACK_STRUCT_FIELD(u16_t tag);
   PACK_STRUCT_FIELD(u16_t len);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

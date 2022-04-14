@@ -60,7 +60,7 @@ struct tcp_hdr {
   PACK_STRUCT_FIELD(u16_t chksum);
   PACK_STRUCT_FIELD(u16_t urgp);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

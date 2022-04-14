@@ -66,7 +66,7 @@ struct ieee_802154_hdr {
   PACK_STRUCT_FLD_8(u8_t source_address[8]);
   /* The rest is variable */
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

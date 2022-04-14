@@ -88,13 +88,13 @@
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct ip6_reass_helper {
   PACK_STRUCT_FIELD(struct pbuf *next_pbuf);
   PACK_STRUCT_FIELD(u16_t start);
   PACK_STRUCT_FIELD(u16_t end);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif

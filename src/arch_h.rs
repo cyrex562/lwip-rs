@@ -278,8 +278,8 @@ pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
   * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
   */
 
-#define PACK_STRUCT_BEGIN
- /* PACK_STRUCT_BEGIN */
+#define 
+ /*  */
 
 /** Packed structs support.
   * Placed AFTER declaration of a packed struct.<br>
@@ -287,8 +287,8 @@ pub const LWIP_NO_CTYPE_H: u32 = 0; #if LWIP_NO_CTYPE_H
   * A port to GCC/clang is included in lwIP, if you use these compilers there is nothing to do here.
   */
 
-#define PACK_STRUCT_END
- /* PACK_STRUCT_END */
+#define 
+ /*  */
 
 /** Packed structs support.
   * Placed between end of declaration of a packed struct and trailing semicolon.<br>

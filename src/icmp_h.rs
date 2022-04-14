@@ -60,14 +60,14 @@ pub const ICMP_AMR: u32 = 18; /* address mask reply */
 #  include "arch/bpstruct.h"
 
 e standard ICMP header (unspecified 32 bit data) */
-PACK_STRUCT_BEGIN
+
 struct icmp_hdr {
   PACK_STRUCT_FLD_8(u8_t type);
   PACK_STRUCT_FLD_8(u8_t code);
   PACK_STRUCT_FIELD(u16_t chksum);
   PACK_STRUCT_FIELD(u32_t data);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -84,7 +84,7 @@ PACK_STRUCT_END
 is is the standard ICMP header only that the u32_t data
  *  is split to two u16_t like ICMP echo needs it.
  */
-PACK_STRUCT_BEGIN
+
 struct icmp_echo_hdr {
   PACK_STRUCT_FLD_8(u8_t type);
   PACK_STRUCT_FLD_8(u8_t code);
@@ -92,7 +92,7 @@ struct icmp_echo_hdr {
   PACK_STRUCT_FIELD(u16_t id);
   PACK_STRUCT_FIELD(u16_t seqno);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

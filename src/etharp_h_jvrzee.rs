@@ -58,7 +58,7 @@ TRUCT_BEGIN
 struct ip4_addr_wordaligned {
   PACK_STRUCT_FIELD(u16_t addrw[2]);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -93,7 +93,7 @@ struct etharp_hdr {
   PACK_STRUCT_FLD_S(struct eth_addr dhwaddr);
   PACK_STRUCT_FLD_S(struct ip4_addr_wordaligned dipaddr);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

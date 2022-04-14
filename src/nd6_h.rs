@@ -57,7 +57,7 @@ struct ns_header {
   PACK_STRUCT_FLD_S(ip6_addr_p_t target_address);
   /* Options follow. */
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -76,7 +76,7 @@ struct na_header {
   PACK_STRUCT_FLD_S(ip6_addr_p_t target_address);
   /* Options follow. */
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -96,7 +96,7 @@ struct rs_header {
   PACK_STRUCT_FIELD(u32_t reserved);
   /* Options follow. */
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -125,7 +125,7 @@ struct ra_header {
   PACK_STRUCT_FIELD(u32_t retrans_timer);
   /* Options follow. */
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -144,7 +144,7 @@ struct redirect_header {
   PACK_STRUCT_FLD_S(ip6_addr_p_t destination_address);
   /* Options follow. */
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -161,7 +161,7 @@ struct lladdr_option {
   PACK_STRUCT_FLD_8(u8_t length);
   PACK_STRUCT_FLD_8(u8_t addr[NETIF_MAX_HWADDR_LEN]);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -187,7 +187,7 @@ struct prefix_option {
   PACK_STRUCT_FLD_8(u8_t site_prefix_length);
   PACK_STRUCT_FLD_S(ip6_addr_p_t prefix);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -205,7 +205,7 @@ struct redirected_header_option {
   /* Portion of redirected packet follows. */
   /* PACK_STRUCT_FLD_8(u8_t redirected[8]); */
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -222,7 +222,7 @@ struct mtu_option {
   PACK_STRUCT_FIELD(u16_t reserved);
   PACK_STRUCT_FIELD(u32_t mtu);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -241,7 +241,7 @@ struct route_option {
   PACK_STRUCT_FIELD(u32_t route_lifetime);
   PACK_STRUCT_FLD_S(ip6_addr_p_t prefix);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -259,7 +259,7 @@ struct rdnss_option {
   PACK_STRUCT_FIELD(u32_t lifetime);
   PACK_STRUCT_FLD_S(ip6_addr_p_t rdnss_address[1]);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

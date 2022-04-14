@@ -460,11 +460,11 @@ err_t pppos_input_sys(struct pbuf *p, struct netif *inp) {
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct pppos_input_header {
   PACK_STRUCT_FIELD(ppp_pcb *ppp);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif

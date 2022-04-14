@@ -49,24 +49,9 @@
 
 
 
-// #if LWIP_IPV6 && LWIP_UDP
+pub const  ZEP_MAX_DATA_LEN: usize = 127;
 
 
-
-
-
-
-/** Define this to 1 to loop back TX packets for testing */
-#ifndef ZEPIF_LOOPBACK
-#define ZEPIF_LOOPBACK    0
-// #endif
-
-#define ZEP_MAX_DATA_LEN  127
-
-#ifdef PACK_STRUCT_USE_INCLUDES
-#  include "arch/bpstruct.h"
-// #endif
-PACK_STRUCT_BEGIN
 struct zep_hdr {
   PACK_STRUCT_FLD_8(u8_t prot_id[2]);
   PACK_STRUCT_FLD_8(u8_t prot_version);
@@ -80,7 +65,7 @@ struct zep_hdr {
   PACK_STRUCT_FLD_8(u8_t unknown_2[10]);
   PACK_STRUCT_FLD_8(u8_t len);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif

@@ -52,7 +52,7 @@ TRUCT_BEGIN
 struct ip4_addr_packed {
   PACK_STRUCT_FIELD(u32_t addr);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 
@@ -91,7 +91,7 @@ struct ip_hdr {
   PACK_STRUCT_FLD_S(ip4_addr_p_t src);
   PACK_STRUCT_FLD_S(ip4_addr_p_t dest);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

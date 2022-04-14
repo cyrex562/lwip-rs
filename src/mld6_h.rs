@@ -57,7 +57,7 @@ struct mld_header {
   PACK_STRUCT_FLD_S(ip6_addr_p_t multicast_address);
   /* Options follow. */
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

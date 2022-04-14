@@ -88,7 +88,7 @@ low this to be configured in lwipopts.h, but not too small */
 
 _STRUCT_FLD_8(u8_t options[DHCP_OPTIONS_LEN]);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

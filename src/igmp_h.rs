@@ -71,7 +71,7 @@ struct igmp_msg {
   PACK_STRUCT_FIELD(u16_t        igmp_checksum);
   PACK_STRUCT_FLD_S(ip4_addr_p_t igmp_group_address);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

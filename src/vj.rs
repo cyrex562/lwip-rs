@@ -128,11 +128,11 @@ vj_compress_init(struct vjcompress *comp)
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct vj_u32_t {
   PACK_STRUCT_FIELD(u32_t v);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif
@@ -140,11 +140,11 @@ PACK_STRUCT_END
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct vj_u16_t {
   PACK_STRUCT_FIELD(u16_t v);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif

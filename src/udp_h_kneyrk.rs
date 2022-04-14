@@ -53,7 +53,7 @@ struct udp_hdr {
   PACK_STRUCT_FIELD(u16_t len);
   PACK_STRUCT_FIELD(u16_t chksum);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

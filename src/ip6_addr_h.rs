@@ -57,7 +57,6 @@
     used as local variable, on the stack, etc. */
 struct ip6_addr {
   u32_t addr[4];
-_SCOPES
   zone: u8;
  /* LWIP_IPV6_SCOPES */
 
@@ -65,9 +64,7 @@ _SCOPES
 /** IPv6 address */
 typedef struct ip6_addr ip6_addr_t;
 
-/** Set an IPv6 partial address given by byte-parts */
-#define IP6_ADDR_PART(ip6addr, index, a,b,c,d) \
-  (ip6addr)->addr[index] = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
+
 
 /** Set a full IPv6 address by passing the 4 u32_t indices in network byte order
     (use PP_HTONL() for constants) */

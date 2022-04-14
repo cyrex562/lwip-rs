@@ -97,7 +97,7 @@
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct netbios_hdr {
   PACK_STRUCT_FIELD(u16_t trans_id);
   PACK_STRUCT_FIELD(u16_t flags);
@@ -106,7 +106,7 @@ struct netbios_hdr {
   PACK_STRUCT_FIELD(u16_t authorityRRs);
   PACK_STRUCT_FIELD(u16_t additionalRRs);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif
@@ -115,14 +115,14 @@ PACK_STRUCT_END
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct netbios_question_hdr {
   PACK_STRUCT_FLD_8(u8_t  nametype);
   PACK_STRUCT_FLD_8(u8_t  encname[(NETBIOS_NAME_LEN * 2) + 1]);
   PACK_STRUCT_FIELD(u16_t type);
   PACK_STRUCT_FIELD(u16_t cls);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif
@@ -131,7 +131,7 @@ PACK_STRUCT_END
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct netbios_name_hdr {
   PACK_STRUCT_FLD_8(u8_t  nametype);
   PACK_STRUCT_FLD_8(u8_t  encname[(NETBIOS_NAME_LEN * 2) + 1]);
@@ -142,7 +142,7 @@ struct netbios_name_hdr {
   PACK_STRUCT_FIELD(u16_t flags);
   PACK_STRUCT_FLD_S(ip4_addr_p_t addr);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif
@@ -151,12 +151,12 @@ PACK_STRUCT_END
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct netbios_resp {
   struct netbios_hdr      resp_hdr;
   struct netbios_name_hdr resp_name;
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif
@@ -165,7 +165,7 @@ PACK_STRUCT_END
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct netbios_answer {
   struct netbios_hdr      answer_hdr;
   /** the length of the next string */
@@ -224,7 +224,7 @@ struct netbios_answer {
   /** Statistics */
   PACK_STRUCT_FIELD(u16_t session_data_packet_size);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif

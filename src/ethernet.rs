@@ -1,6 +1,9 @@
 // #define IFNAME0 'e'
 // #define IFNAME1 'n'
 
+use crate::errors::LwipError;
+use crate::errors::LwipErrorCode::InvalidArgument;
+
 pub const LWIP_ARP_FILTER_NETIF: u32 = 0;
 pub const ETH_HWADDR_LEN: usize = 6;
 pub const ETHARP_HWADDR_LEN: usize = ETH_HWADDR_LEN;
@@ -25,30 +28,36 @@ pub struct VlanTag {
 impl VlanTag {
     pub fn set_pcp(&mut self, new_pcp_val: u8) -> Result<(), LwipError> {
         if new_pcp_val > 0b111 {
-            return Err(LwipError::new())
+            return Err(LwipError::new(InvalidArgument, format!("invalid value for new pcp val: {}", new_pcp_val).as_str()))
         }
+        self.tci = self.tci & new_pcp_val << 13;
+        Ok(())
     }
 
-    pub fn get_pcp(&self) -> u8 {
-        let mut out = 0u8;
-        out = self.tci & 0b1110000000000000;
-        out
+    pub fn get_pcp(&self) -> u16 {
+        self.tci & 0xe000 //0b1110000000000000
     }
 
-    pub fn set_dei(&mut self, dei: u8) {
+    pub fn set_dei(&mut self, dei: u8) -> Result<(), LwipError> {
+        if dei > 1 {
+            return Err(LwipError::new(InvalidArgument, format!("invalid value for new dei val: {}", dei).as_str()))
+        }
 
+        self.tci = self.tci & dei << 12;
+
+        Ok(())
     }
 
-    pub fn get_dei(&self) -> u8 {
-
+    pub fn get_dei(&self) -> u16 {
+        self.tci & 0x1000 // 0b0001000000000000
     }
 
     pub fn set_vid(&mut self, vid: u16) {
-
+        self.tci = self.tci | vid;
     }
 
-    pub fn get_ivd(&self) -> u16 {
-
+    pub fn get_vid(&self) -> u16 {
+        self.tci & 0x0fff
     }
 }
 
@@ -71,19 +80,19 @@ pub struct EthHdr {
     padding: [u8; ETH_PAD_SIZE],
     dest: EthAddr,
     src: EthAddr,
-    vlan_tags: Vec<u8>,
+    // TODO: 802.1 q-in-q
+    vlan_tags: VlanTag,
     ether_type: u16,
 }
 
-
 pub const SIZEOF_ETH_HDR: usize = 14 + ETH_PAD_SIZE;
 
-pub struct eth_vlan_hdr {
+pub struct EthVlanHdr {
     prio_vid: u16,
     tpid: u16,
 }
 
-impl eth_vlan_hdr {
+impl EthVlanHdr {
     pub fn vlan_id(&self) -> u16 {
         self.prio_vid.to_be() & 0xFFF
     }
@@ -106,10 +115,10 @@ pub const LL_IP6_MULTICAST_ADDR_1: u8 = 0x33;
  * as it is already kept in the struct netif.
  * But this is only an example, anyway...
  */
-pub struct ethernetif {
-    ethaddr: EthAddr,
-    /* Add whatever per-interface state that is needed here. */
-}
+// pub struct ethernetif {
+//     ethaddr: EthAddr,
+//     /* Add whatever per-interface state that is needed here. */
+// }
 
 pub fn low_level_init(&mut netif: netif) {
     

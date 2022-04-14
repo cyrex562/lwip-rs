@@ -82,7 +82,7 @@ pub const RTP_MARKER_MASK: u32 = 0x80; /** RTP message header */
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 
-PACK_STRUCT_BEGIN
+
 struct rtp_hdr {
   PACK_STRUCT_FLD_8(u8_t  version);
   PACK_STRUCT_FLD_8(u8_t  payloadtype);
@@ -90,7 +90,7 @@ struct rtp_hdr {
   PACK_STRUCT_FIELD(u32_t timestamp);
   PACK_STRUCT_FIELD(u32_t ssrc);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 

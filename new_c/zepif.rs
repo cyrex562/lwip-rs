@@ -66,7 +66,7 @@
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/bpstruct.h"
 // #endif
-PACK_STRUCT_BEGIN
+
 struct zep_hdr {
   PACK_STRUCT_FLD_8(u8_t prot_id[2]);
   PACK_STRUCT_FLD_8(u8_t prot_version);
@@ -80,7 +80,7 @@ struct zep_hdr {
   PACK_STRUCT_FLD_8(u8_t unknown_2[10]);
   PACK_STRUCT_FLD_8(u8_t len);
 } PACK_STRUCT_STRUCT;
-PACK_STRUCT_END
+
 #ifdef PACK_STRUCT_USE_INCLUDES
 #  include "arch/epstruct.h"
 // #endif
