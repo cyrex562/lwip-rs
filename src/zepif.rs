@@ -52,35 +52,30 @@
 pub const  ZEP_MAX_DATA_LEN: usize = 127;
 
 
-struct zep_hdr {
-  PACK_STRUCT_FLD_8(u8_t prot_id[2]);
-  PACK_STRUCT_FLD_8(u8_t prot_version);
-  PACK_STRUCT_FLD_8(u8_t type);
-  PACK_STRUCT_FLD_8(u8_t channel_id);
-  PACK_STRUCT_FIELD(u16_t device_id);
-  PACK_STRUCT_FLD_8(u8_t crc_mode);
-  PACK_STRUCT_FLD_8(u8_t unknown_1);
-  PACK_STRUCT_FIELD(u32_t timestamp[2]);
-  PACK_STRUCT_FIELD(u32_t seq_num);
-  PACK_STRUCT_FLD_8(u8_t unknown_2[10]);
-  PACK_STRUCT_FLD_8(u8_t len);
-} PACK_STRUCT_STRUCT;
+pub struct zep_hdr {
+  pub prod_id: [u8;2],
+  pub prot_version: u8,
+  pub prot_type: u8,
+  pub channel_id: u8,
+  pub device_id: u16,
+  pub crc_mode: u8,
+  pub unknown_1: u8,
+  pub timestamp: [u32;2],
+  pub seq_num: u32,
+  pub unknown_2: [u8;10],
+  pub len: u8
+}
 
-#ifdef PACK_STRUCT_USE_INCLUDES
-#  include "arch/epstruct.h"
-// #endif
+pub struct zepif_state {
+  pub init: zepif_init,
+  pub pcb: udp_pcb,
+  pub seqno: u32,
+}
 
-struct zepif_state {
-  struct zepif_init init;
-  struct udp_pcb *pcb;
-  u32_t seqno;
-};
-
-static zep_lowpan_timer_running: u8;
+pub const zep_lowpan_timer_running: u8;
 
 /* Helper function that calls the 6LoWPAN timer and reschedules itself */
-static void
-zep_lowpan_timer(void *arg)
+pub fn zep_lowpan_timer(arg: &mut Vec<u8>)
 {
   lowpan6_tmr();
   if (zep_lowpan_timer_running) {
@@ -89,22 +84,23 @@ zep_lowpan_timer(void *arg)
 }
 
 /* Pass received pbufs into 6LowPAN netif */
-static void
-zepif_udp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p,
-               const ip_addr_t *addr, u16_t port)
+pub fn zepif_udp_recv(arg: &mut Vec<u8>, 
+  pcb: &mut udp_pcb, 
+  p: Option<&mut pbuf>,
+  addr: &mut ip_addr_t,
+  port: u16)
 {
-  err_t err;
-  struct netif *netif_lowpan6 = (struct netif *)arg;
-  struct zep_hdr *zep;
+  let mut err: err_t;
+  let mut netif_lowpan6: netif = netif::from(arg);
+  let mut zep: zep_hdr;
 
   // LWIP_ASSERT("arg != NULL", arg != NULL);
   // LWIP_ASSERT("pcb != NULL", pcb != NULL);
-  LWIP_UNUSED_ARG(pcb); /* for LWIP_NOASSERT */
-  LWIP_UNUSED_ARG(addr);
-  LWIP_UNUSED_ARG(port);
-  if (p == NULL) {
+  // LWIP_UNUSED_ARG(pcb); /* for LWIP_NOASSERT */
+  // LWIP_UNUSED_ARG(addr);
+  // LWIP_UNUSED_ARG(port);
+  if p.is_none() {
     return;
-  }
 
   /* Parse and hide the ZEP header */
   if ( p.len < sizeof(struct zep_hdr)) {
