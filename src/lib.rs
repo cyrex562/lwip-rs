@@ -16,3 +16,4 @@ pub mod network_interface;
 pub mod mac_address;
 pub mod netif_ops;
 pub mod ip6_addr;
+pub mod zigbee_encap_proto;

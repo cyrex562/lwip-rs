@@ -1,67 +1,70 @@
-use log::debug;
-/**
- * @file
- *
- * ACD IPv4 Address Conflict Detection
- *
- * This is an IPv4 address conflict detection implementation for the lwIP TCP/IP
- * stack. It aims to be conform to RFC5227.
- *
- * @defgroup acd ACD
- * @ingroup ip4
- * ACD related functions
- * USAGE:
- *
- * define @ref LWIP_ACD 1 in your lwipopts.h
- * Options:
- * ACD_TMR_INTERVAL msecs,
- *   I recommend a value of 100. The value must divide 1000 with a remainder almost 0.
- *   Possible values are 1000, 500, 333, 250, 200, 166, 142, 125, 111, 100 ....
- *
- * For fixed IP:
- * - call acd_start after selecting an IP address. The caller will be informed
- *   on conflict status via the callback function.
- *
- * With AUTOIP:
- * - will be called from the autoip module. No extra's needed.
- *
- * With DHCP:
- * - enable LWIP_DHCP_DOES_ACD_CHECK. Then it will be called from the dhcp module.
- *   No extra's needed.
- */
+use std::net::Ipv4Addr;
+
+use log::{debug, warn};
+///
+/// @file
+///
+/// ACD IPv4 Address Conflict Detection
+///
+/// This is an IPv4 address conflict detection implementation for the lwIP TCP/IP
+/// stack. It aims to be conform to RFC5227.
+///
+/// @defgroup acd ACD
+/// @ingroup ip4
+/// ACD related functions
+/// USAGE:
+///
+/// define @ref LWIP_ACD 1 in your lwipopts.h
+/// Options:
+/// ACD_TMR_INTERVAL msecs,
+///   I recommend a value of 100. The value must divide 1000 with a remainder almost 0.
+///   Possible values are 1000, 500, 333, 250, 200, 166, 142, 125, 111, 100 ....
+///
+/// For fixed IP:
+/// - call acd_start after selecting an IP address. The caller will be informed
+///   on conflict status via the callback function.
+///
+/// With AUTOIP:
+/// - will be called from the autoip module. No extra's needed.
+///
+/// With DHCP:
+/// - enable LWIP_DHCP_DOES_ACD_CHECK. Then it will be called from the dhcp module.
+///   No extra's needed.
+////
 
 /*
- *
- * Copyright (c) 2007 Dominik Spies <kontakt@dspies.de>
- * Copyright (c) 2018 Jasper Verschueren <jasper.verschueren@apart-audio.com>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- *
- * Author: Jasper Verschueren <jasper.verschueren@apart-audio.com>
- * Author: Dominik Spies <kontakt@dspies.de>
- */
+///
+/// Copyright (c) 2007 Dominik Spies <kontakt@dspies.de>
+/// Copyright (c) 2018 Jasper Verschueren <jasper.verschueren@apart-audio.com>
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///
+/// 1. Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+/// 2. Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+/// 3. The name of the author may not be used to endorse or promote products
+///    derived from this software without specific prior written permission.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+/// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+/// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+/// SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+/// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+/// OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+/// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+/// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+/// IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+/// OF SUCH DAMAGE.
+///
+/// Author: Jasper Verschueren <jasper.verschueren@apart-audio.com>
+/// Author: Dominik Spies <kontakt@dspies.de>
+////
 
+use crate::mac_address::MacAddress;
 use crate::utils::LWIP_RAND;
 use rnd::Rng;
 use crate::acd::AcdState::ProbeWait;
@@ -124,10 +127,10 @@ pub enum AcdCallbackResult {
 //  * @param netif   network interface to handle conflict information on
 //  * @param state   acd_callback_enum_t
 //  */
-// typedef void (*acd_conflict_callback_t)(struct netif *netif, acd_callback_enum_t state);
+// typedef void (*acd_conflict_callback_t)(netif: &mut NetworkInterface, acd_callback_enum_t state);
 type acd_conflict_callback = fn(netif: &NetworkInterface, state: AcdCallbackResult);
 
-/** ACD state information per netif */
+/// ACD state information per netif */
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct AcdStateInfo {
     /** next acd module */
@@ -193,9 +196,9 @@ pub fn ACD_RANDOM_PROBE_INTERVAL(netif: &NetworkInterface, acd: ACD) -> u32 {
 }
 
 /* Function definitions */
-// static void acd_restart(struct netif *netif, struct acd *acd);
-// static void acd_handle_arp_conflict(struct netif *netif, struct acd *acd);
-// static void acd_put_in_passive_mode(struct netif *netif, struct acd *acd);
+// static void acd_restart(netif: &mut NetworkInterface, acd: &mut AcdStateInfo);
+// static void acd_handle_arp_conflict(netif: &mut NetworkInterface, acd: &mut AcdStateInfo);
+// static void acd_put_in_passive_mode(netif: &mut NetworkInterface, acd: &mut AcdStateInfo);
 
 
 pub fn acd_add_to_list(netif: &mut NetworkInterface, acd: &mut AcdContext,
@@ -260,9 +263,9 @@ pub fn acd_network_changed_link_down(netif: &mut NetworkInterface)
 
 }
 
-/**
- * Has to be called in loop every ACD_TMR_INTERVAL milliseconds
- */
+///
+/// Has to be called in loop every ACD_TMR_INTERVAL milliseconds
+////
 pub fn acd_tmr(netif_list: &mut Vec<NetworkInterface>) {
     for netif in netif_list.iter_mut() {
         for acd in netif.acd_list.iter_mut() {
@@ -350,27 +353,27 @@ pub fn acd_restart(netif: &mut NetworkInterface, acd: &mut AcdStateInfo) {
     }
 }
 
-/**
- * Handles every incoming ARP Packet, called by etharp_input().
- *
- * @param netif network interface to use for acd processing
- * @param hdr   Incoming ARP packet
- */
+///
+/// Handles every incoming ARP Packet, called by etharp_input().
+///
+/// @param netif network interface to use for acd processing
+/// @param hdr   Incoming ARP packet
+////
 pub fn acd_arp_reply(netif: &mut NetworkInterface, hdr: &mut etharp_hdr)
 {
+  let mut acd: AcdStateInfo;
+  let mut sipaddr: Ipv4Addr;
+  let mut dipaddr: Ipv4Addr;
+  let mut netifaddr: MacAddress;
 
-
-  struct acd *acd;
-  ip4_addr_t sipaddr, dipaddr;
-  struct eth_addr netifaddr;
-  SMEMCPY(netifaddr.addr,  netif.mac_address, MAC_ADDR_LEN);
+  netifaddr.address = netif.mac_address;
 
   /* Copy struct ip4_addr_wordaligned to aligned ip4_addr, to support
    * compilers without structure packing (not using structure copy which
    * breaks strict-aliasing rules).
    */
-  IPADDR_WORDALIGNED_COPY_TO_IP4_ADDR_T(&sipaddr, & hdr.sipaddr);
-  IPADDR_WORDALIGNED_COPY_TO_IP4_ADDR_T(&dipaddr, & hdr.dipaddr);
+    sipaddr = hdr.sipaddr.clone();
+    dipaddr = hdr.dipaddr.clone();
 
   /* loop over the acd's*/
     for acd in netif.acd_list.iter_mut()  {
@@ -384,121 +387,94 @@ pub fn acd_arp_reply(netif: &mut NetworkInterface, hdr: &mut etharp_hdr)
              * OR
              * ip.dst == ipaddr && hw.src != own hwaddr (someone else is probing it)
              */
-            if ((ip4_addr_eq(&sipaddr, &acd.ipaddr)) || (ip4_addr_isany_val(sipaddr) && ip4_addr_eq(&dipaddr, &acd.ipaddr) && !eth_addr_eq(&netifaddr, &hdr.shwaddr))) {
-                LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE | LWIP_DBG_LEVEL_WARNING,
-                            ("acd_arp_reply(): Probe Conflict detected\n"));
+            if ((sipaddr == acd.ipaddr) || (sipaddr == IPV4_ADDRESS_ANY && dipaddr == acd.ipaddr && netifaddr != hdr.shwaddr)) {
+              warn!("probe conflict detected");
                 acd_restart(netif, acd);
             }
         }
-      case ACD_STATE_ANNOUNCING:
-      case ACD_STATE_ONGOING:
-      case ACD_STATE_PASSIVE_ONGOING:
+        AcdState::Announcing | AcdState::Ongoing | AcdState::PassiveOngoing =>{
         /* RFC 5227 Section 2.4:
          * in any state we have a conflict if
          * ip.src == ipaddr && hw.src != own hwaddr (someone is using our address)
          */
-        if (ip4_addr_eq(&sipaddr, & acd.ipaddr) &&
-            !eth_addr_eq(&netifaddr, & hdr.shwaddr)) {
-          LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE | LWIP_DBG_LEVEL_WARNING,
-                      ("acd_arp_reply(): Conflicting ARP-Packet detected\n"));
-          acd_handle_arp_conflict(netif, acd);
-        }
-        break;
+          if sipaddr == acd.ipaddr && netifaddr == hdr.shwadr {
+            warn!("conflicting arp packet detected");
+            acd_handle_arp_conflict(netifc, acd);
+          }}
+        
     }
   }
 }
 
-/**
- * Handle a IP address conflict after an ARP conflict detection
- */
-static void
-acd_handle_arp_conflict(struct netif *netif, struct acd *acd)
+/// Handle a IP address conflict after an ARP conflict detection
+///  RFC5227, 2.4 "Ongoing Address Conflict Detection and Address Defense"
+/// allows three options where:
+/// a) means retreat on the first conflict,
+/// b) allows to keep an already configured address when having only one
+///    conflict in DEFEND_INTERVAL seconds and
+/// c) the host will not give up it's address and defend it indefinitely
+/// 
+/// We use option b) when the acd module represents the netif address, since it
+/// helps to improve the chance that one of the two conflicting hosts may be
+/// able to retain its address. while we are flexible enough to help network
+/// performance
+/// 
+/// We use option a) when the acd module does not represent the netif address,
+/// since we cannot have the acd module announcing or restarting. This
+/// situation occurs for the LL acd module when a routable address is used on
+///     the netif but the LL address is still open in the background
+pub fn acd_handle_arp_conflict(netif: &mut NetworkInterface, acd: &mut AcdStateInfo)
 {
-  /* RFC5227, 2.4 "Ongoing Address Conflict Detection and Address Defense"
-     allows three options where:
-     a) means retreat on the first conflict,
-     b) allows to keep an already configured address when having only one
-        conflict in DEFEND_INTERVAL seconds and
-     c) the host will not give up it's address and defend it indefinitely
-
-     We use option b) when the acd module represents the netif address, since it
-     helps to improve the chance that one of the two conflicting hosts may be
-     able to retain its address. while we are flexible enough to help network
-     performance
-
-     We use option a) when the acd module does not represent the netif address,
-     since we cannot have the acd module announcing or restarting. This
-     situation occurs for the LL acd module when a routable address is used on
-     the netif but the LL address is still open in the background. */
-
   if ( acd.state == ACD_STATE_PASSIVE_ONGOING) {
-    /* Immediately back off on a conflict. */
-    LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-      ("acd_handle_arp_conflict(): conflict when we are in passive mode -> back off\n"));
+    // Immediately back off on a conflict
+    debug!("conflict when we are in passive mode -> back off");
     acd_stop(acd);
      acd.acd_conflict_callback(netif, ACD_DECLINE);
   }
   else {
     if ( acd.lastconflict > 0) {
-      /* retreat, there was a conflicting ARP in the last DEFEND_INTERVAL seconds */
-      LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-        ("acd_handle_arp_conflict(): conflict within DEFEND_INTERVAL -> retreating\n"));
+      // retreat, there was a conflicting ARP in the last DEFEND_INTERVAL seconds
+      debug!("conflict withing DEFEND INTERVAL: retreating");
 
-      /* Active TCP sessions are aborted when removing the ip address but a bad
-       * connection was inevitable anyway with conflicting hosts */
+      // Active TCP sessions are aborted when removing the ip address but a bad
+      // connection was inevitable anyway with conflicting hosts
        acd_restart(netif, acd);
     } else {
-      LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-          ("acd_handle_arp_conflict(): we are defending, send ARP Announce\n"));
+     debug!("we are defending, send ARP Announce");
       etharp_acd_announce(netif, & acd.ipaddr);
        acd.lastconflict = DEFEND_INTERVAL * ACD_TICKS_PER_SECOND;
     }
   }
 }
 
-/**
- * Put the acd module in passive ongoing conflict detection.
- */
-static void
-acd_put_in_passive_mode(struct netif *netif, struct acd *acd)
+/// Put the acd module in passive ongoing conflict detection.
+pub fn acd_put_in_passive_mode(netif: &mut NetworkInterface, acd: &mut AcdStateInfo)
 {
-  switch( acd.state) {
-    case ACD_STATE_OFF:
-    case ACD_STATE_PASSIVE_ONGOING:
-    default:
-      /* do nothing */
-      break;
-
-    case ACD_STATE_PROBE_WAIT:
-    case ACD_STATE_PROBING:
-    case ACD_STATE_ANNOUNCE_WAIT:
-    case ACD_STATE_RATE_LIMIT:
+  match acd.state {
+    AcdState::Off | AcdState::PassiveOngoing => {}
+    AcdState::ProbeWait | AcdState::Probing | AcdState::AnnounceWait | AcdState::RateLimit => {
       acd_stop(acd);
-       acd.acd_conflict_callback(netif, ACD_DECLINE);
-      break;
-
-    case ACD_STATE_ANNOUNCING:
-    case ACD_STATE_ONGOING:
-       acd.state = ACD_STATE_PASSIVE_ONGOING;
-      LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-        ("acd_put_in_passive_mode()\n"));
-      break;
+      acd.acd_conflict_callback(netif, AcdCallbackResult::AcdDecline);
+    }
+    AcdState::Announcing | AcdState::Ongoing => {
+      acd.state = AcdState::PassiveOngoing;
+      debug!("acd put in passive mode");
+    }
   }
 }
 
-/**
- * @ingroup acd
- * Inform the ACD modules of address changes
- *
- * @param netif     network interface on which the address is changing
- * @param old_addr  old ip address
- * @param new_addr  new ip address
- */
-void
-acd_netif_ip_addr_changed(struct netif *netif, const ip_addr_t *old_addr,
+///
+/// @ingroup acd
+/// Inform the ACD modules of address changes
+///
+/// @param netif     network interface on which the address is changing
+/// @param old_addr  old ip address
+/// @param new_addr  new ip address
+///
+pub fn acd_netif_ip_addr_changed(netif: &mut NetworkInterface, const ip_addr_t *old_addr,
                           const ip_addr_t *new_addr)
 {
-  struct acd *acd;
+  let mut acd: &mut AcdStateInfo;
 
   LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
     ("acd_netif_ip_addr_changed(): Address changed\n"));
