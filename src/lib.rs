@@ -1,5 +1,5 @@
 pub mod errors;
-pub mod ethernet;
+
 pub mod netif_h;
 pub mod ip_h;
 pub mod netif_hint;
@@ -15,5 +15,8 @@ pub mod ip_address;
 pub mod network_interface;
 pub mod mac_address;
 pub mod netif_ops;
-pub mod ip6_addr;
 pub mod zigbee_encap_proto;
+pub mod ethernet;
+pub mod common;
+pub mod ipv4;
+pub mod ipv6;

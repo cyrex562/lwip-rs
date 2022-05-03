@@ -1,18 +1,44 @@
+// #define IFNAME0 'e'
+// #define IFNAME1 'n'
 
+mod defines;
+
+use std::mem::size_of;
+use crate::common::mac_address::MacAddress;
+use crate::errors::LwipError;
+use crate::errors::LwipErrorCode::InvalidArgument;
+
+
+
+#[derive(Default,Debug,Clone)]
+pub struct EthernetHeader {
+    dest: MacAddress,
+    src: MacAddress,
+    // TODO: 802.1 q-in-q
+    vlan_tags: VlanTag,
+    ether_type: u16,
+}
 
 /**
- * In this function, the hardware should be initialized.
- * Called from ethernetif_init().
- *
- * @param netif the already initialized lwip network interface structure
- *        for this ethernetif
+ * Helper struct to hold private data used to operate your ethernet interface.
+ * Keeping the ethernet address of the MAC in this struct is not necessary
+ * as it is already kept in the struct netif.
+ * But this is only an example, anyway...
  */
+// pub struct ethernetif {
+//     ethaddr: EthAddr,
+//     /* Add whatever per-interface state that is needed here. */
+// }
+
+
+/// In this function, the hardware should be initialized. Called from ethernetif_init().
+/// netif: the already initialized lwip network interface structure for this ethernetif
 pub fn low_level_init(netif: &mut NetworkInterface)
 {
   // struct ethernetif *ethernetif =  netif.state;
 
   /* set MAC hardware address length */
-   netif.hwaddr_len = ETHARP_HWADDR_LEN;
+   netif.hwaddr_len = size_of::<MacAddress>();
 
   /* set MAC hardware address */
    netif.hwaddr[0] = ;

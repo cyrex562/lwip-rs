@@ -268,6 +268,7 @@ pub struct NetifIpv4NetInfo {
 /** Generic data structure used for all lwIP network interfaces.
  *  The following fields should be filled in by the initialization
  *  function for the device driver: hwaddr_len, hwaddr[], mtu, flags */
+#[derive(Debug, Clone, Default)]
 pub struct NetworkInterface {
     // /** pointer to next in linked list */
     // struct netif *next;
@@ -379,7 +380,7 @@ pub struct NetworkInterface {
     // IP_IPV6 && LWIP_IPV6_MLD
     /** This function could be called to add or delete an entry in the IPv6 multicast
          filter table of the ethernet MAC. */
-    mld_mac_filter: netif_mld_mac_filter_fn,
+    mld_mac_filter: Option<netif_mld_mac_filter_fn>,
     /* LWIP_IPV6 && LWIP_IPV6_MLD */
     // IP_ACD
 //   struct acd *acd_list;
@@ -407,6 +408,20 @@ pub struct NetworkInterface {
     ethernet: bool,
     etharp: bool,
     igmp: bool,
+}
+
+impl NetworkInterface {
+    pub fn low_level_init(&mut self, hwaddr: &MacAddress, mtu: u16, ) {
+        self.mac_address = hwaddr.clone();
+        self.mtu = mtu;
+        self.flags |= NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
+        if self.mld_mac_filter.is_some() {
+            let func = self.mld_mac_filter.unwrap();
+            let mut ip6_allnodes_ll = Ipv6Address::new();
+            ip6_addr_set_allnodes_linklocal(&mut ip6_allnodes_ll);
+            func(self, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
+        }
+    }
 }
 
 pub enum LwipNetifStateChange {

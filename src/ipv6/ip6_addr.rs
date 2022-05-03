@@ -68,9 +68,34 @@ impl Ipv6Address {
         }
     }
 
+    fn get_u32_chunk(&self, index: usize) -> Result< u32, LwipError> {
+        if index + 1 > 4 {
+            return Err(LwipError::new(LwipErrorCode::InvalidArgument, "index must be <= 3"));
+        }
+        let byte_index = index * 4;
+        let mut bytes: [u8;4] = [self.raw[byte_index], self.raw[byte_index+1], self.raw[byte_index+2], self.raw[byte_index+3]];
+        Ok(u32::from_ne_bytes(bytes))
+    }
+
+    pub fn get_u32_chunk_0(&self) -> u32 {
+        self.get_u32_chunk(0).unwrap()
+    }
+
+    pub fn get_u32_chunk_1(&self) -> u32 {
+        self.get_u32_chunk(1).unwrap()
+    }
+
+    pub fn get_u32_chunk_2(&self) -> u32 {
+        self.get_u32_chunk(2).unwrap()
+    }
+
+    pub fn get_u32_chunk_3(&self) -> u32 {
+        self.get_u32_chunk(3).unwrap()
+    }
+
     pub fn get_u16_chunk(&self, index: usize) -> Result<u16, LwipError> {
         if index + 1 > 15 {
-            return Err(LwipError::new(LwipErrorCode::InvalidArgument, "index must be <= 14"));
+            return Err(LwipError::new(LwipErrorCode::InvalidArgument, "index must be <= 15"));
         }
         let result: [u8;2] = [self.raw[index], self.raw[index+1]];
         Ok(u16::from_ne_bytes(result))
@@ -81,12 +106,98 @@ impl Ipv6Address {
         self.zone = 0;
     }
 
-    pub fn cmp_zoneless(&self, b: &Self) -> bool {
+    pub fn zones_eq(&self, b: &Self) -> bool {
+        self.zone == b.zone
+    }
+
+    pub fn eq_zoneless(&self, b: &Self) -> bool {
         self.raw == b.raw
+    }
+
+    pub fn net_eq_zoneless(&self, b: &Self) -> bool {
+       let a_0 = self.get_u32_chunk_0();
+        let b_0 = b.get_u32_chunk_0();
+        let a_1 = self.get_u32_chunk(1).unwrap();
+        let b_1 = self.get_u32_chunk(1).unwrap();
+        a_0 == b_0 && a_1 == b_1
+    }
+
+    pub fn net_eq(&self, b: &Self) -> bool {
+        self.net_eq_zoneless(b) && self.zones_eq(b)
+    }
+
+    pub fn nethost_eq(&self, b: &Self) -> bool {
+        let a_2 = self.get_u32_chunk(2).unwrap();
+        let a_3 = self.get_u32_chunk(3).unwrap();
+        let b_2 = self.get_u32_chunk(2).unwrap();
+        let b_3 = self.get_u32_chunk(3).unwrap();
+        a_2 == b_2 && a_3 == b_3
+    }
+
+    pub fn addr_zone_eq(&self, b: &Self) -> bool {
+        self.eq_zoneless(b) && self.zones_eq(b)
+    }
+
+    pub fn compare(&self, b: &Self) -> bool {
+        self.addr_zone_eq(b)
+    }
+
+    pub fn get_subnet_id(&self) -> u32 {
+        self.get_u32_chunk(2).unwrap() & 0x0000ffff
+    }
+
+    pub fn is_any(&self) -> bool {
+        self.raw == IP6_ADDR_ANY.raw
+    }
+
+    pub fn is_loopback(&self) -> bool {
+        self.raw == IP6_ADDR_LOOPBACK.raw
+    }
+
+    pub fn is_global(&self) -> bool {
+        let a_0 = self.get_u32_chunk(0).unwrap();
+        a_0 & 0xe0000000 == 0x20000000
+    }
+
+    pub fn is_link_local(&self) -> bool {
+         let a_0 = self.get_u32_chunk(0).unwrap();
+        a_0 & 0xffc00000 == 0xfe800000
+    }
+
+    pub fn is_site_local(&self) -> bool {
+        let a_0 = self.get_u32_chunk(0).unwrap();
+        a_0 & 0xffc00000 == 0xfec00000
+    }
+
+    pub fn is_unique_local(&self) -> bool {
+        let a_0 = self.get_u32_chunk(0).unwrap();
+        a_0 & 0xfe000000 == 0xfc000000
+    }
+
+    pub fn is_ipv4_mapped_ipv6(&self) -> bool {
+        let a_0 = self.get_u32_chunk(0).unwrap();
+        let a_1 = self.get_u32_chunk(1).unwrap();
+        let a_2 = self.get_u32_chunk(2).unwrap();
+        a_0 == 0 && a_1 == 0 && a_2 == 0x0000FFFF
+    }
+
+    pub fn is_ipv4_compatible(&self) -> bool {
+        let a_0 = self.get_u32_chunk(0).unwrap();
+        let a_1 = self.get_u32_chunk(1).unwrap();
+        let a_2 = self.get_u32_chunk(2).unwrap();
+        let a_3 = self.get_u32_chunk(3).unwrap();
+        a_0 == 0 && a_1 == 0 && a_2 == 0 && a_3 > 1
+    }
+
+    pub fn is_multicast(&self) -> bool {
+            let a_0 = self.get_u32_chunk(0).unwrap();
+        a_0 & 0xff000000 == 0xff000000
     }
 }
 
 pub const IP6_ADDR_ANY: Ipv6Address = Ipv6Address::new_from_u32(0,0,0,0);
+pub const IP6_ADDR_LOOPBACK: Ipv6Address = Ipv6Address::new_from_u32(0,0,0,1);
+
 
 // TODO:
 // #define lwip_xchar(i)        ((char)((i) < 10 ? '0' + (i) : 'A' + (i) - 10))
