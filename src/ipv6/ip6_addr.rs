@@ -39,70 +39,161 @@
 
 use crate::errors::{LwipError, LwipErrorCode};
 
-#[derive(Default,Debug,Clone, PartialEq)]
-pub struct Ipv6Address {
-    pub raw: [u8;16],
-    pub zone: u8,
+pub const IP6_MULTICAST_SCOPE_RESERVED: u32 = 0;
+pub const IP6_MULTICAST_SCOPE_RESERVED0: u32 = 0;
+pub const IP6_MULTICAST_SCOPE_INTERFACE_LOCAL: u32 = 1;
+pub const IP6_MULTICAST_SCOPE_LINK_LOCAL: u32 = 2;
+pub const IP6_MULTICAST_SCOPE_RESERVED3: u32 = 3;
+pub const IP6_MULTICAST_SCOPE_ADMIN_LOCAL: u32 = 4;
+pub const IP6_MULTICAST_SCOPE_SITE_LOCAL: u32 = 5;
+pub const IP6_MULTICAST_SCOPE_ORG_LOCAL: u32 = 8;
+pub const IP6_MULTICAST_SCOPE_GLOBAL: u32 = 0xe;
+pub const IP6_MULTICAST_SCOPE_RESERVEDF: u32 = 0xf;
+
+
+pub enum Ipv6AddressState {
+    Invalid = 0,
+    Tentative = 8,
+    Tentative1 = 9,
+    Tentative2 = 0xa,
+    Tentative3 = 0xb,
+    Tentative4 = 0xc,
+    Tentative5 = 0xd,
+    Tentative6 = 0xe,
+    Tentative7 = 0xf,
+    ValidDeprecated = 0x10,
+    Preferred = 0x30,
+    Duplicated = 0x40,
+    TenativeCountMask = 7,
 }
 
-/** Set an IPv6 partial address given by byte-parts */
-// #define IP6_ADDR_PART(ip6addr, index, a,b,c,d) \
-//   (ip6addr)->addr[index] = PP_HTONL(LWIP_MAKEU32(a,b,c,d))
+pub const IP6_ADDR_LIFE_STATIC: u32 = 0;
+pub const IP6_ADDR_LIFE_INFINITE: u32 = 0xffffffff;
+
+
+
+
+#[repr(C)]
+pub union Ipv6AddressU {
+    pub u8_addr: [u8;16],
+    pub u16_addr: [u16;8],
+    pub u32_addr: [u32;4],
+}
+
+#[derive(Default,Debug,Clone, PartialEq)]
+pub struct Ipv6Address {
+    // pub raw: [u8;16],
+    pub u: Ipv6AddressU,
+    pub zone: u8,
+}
 
 impl Ipv6Address {
     pub fn new() -> Self {
         Self {
-            raw: [0;16],
+            u: Ipv6AddressU{u32_addr: [0;4]},
             zone: 0,
         }
     }
 
     pub fn from_u32(a: u32, b: u32, c: u32, d: u32) -> Self {
-        let a_bytes: [u8;4] = a.to_ne_bytes();
-        let b_bytes: [u8;4] = b.to_ne_bytes();
-        let c_bytes: [u8;4] = c.to_ne_bytes();
-        let d_bytes: [u8;4] = d.to_ne_bytes();
         Self {
-            raw: [a_bytes[0],a_bytes[1],a_bytes[2],a_bytes[3],b_bytes[0],b_bytes[1],b_bytes[2],b_bytes[3],c_bytes[0],c_bytes[1],c_bytes[2],c_bytes[3],d_bytes[0],d_bytes[1],d_bytes[2],d_bytes[3]],
+            u: Ipv6AddressU{u32_addr: [a, b, c, d]},
             zone: 0
         }
     }
 
-    fn get_u32_chunk(&self, index: usize) -> Result< u32, LwipError> {
-        if index + 1 > 4 {
-            return Err(LwipError::new(LwipErrorCode::InvalidArgument, "index must be <= 3"));
+    pub fn from_u16(a: u16, b: u16, c:u16, d:u16, e: u16, f: u16, g: u16, h: u16) -> Self {
+        Self {
+            u: Ipv6AddressU{u16_addr: [a,b,c,d,e,f,g,h]},
+            zone: 0,
         }
-        let byte_index = index * 4;
-        let mut bytes: [u8;4] = [self.raw[byte_index], self.raw[byte_index+1], self.raw[byte_index+2], self.raw[byte_index+3]];
-        Ok(u32::from_ne_bytes(bytes))
     }
-
     pub fn get_u32_chunk_0(&self) -> u32 {
-        self.get_u32_chunk(0).unwrap()
+        let x = unsafe {
+            self.u.u32_addr[0]
+        };
+        x
     }
 
     pub fn get_u32_chunk_1(&self) -> u32 {
-        self.get_u32_chunk(1).unwrap()
+        let x = unsafe {
+            self.u.u32_addr[1]
+        };
+        x
     }
 
     pub fn get_u32_chunk_2(&self) -> u32 {
-        self.get_u32_chunk(2).unwrap()
+        let x = unsafe {
+            self.u.u32_addr[2]
+        };
+        x
     }
 
     pub fn get_u32_chunk_3(&self) -> u32 {
-        self.get_u32_chunk(3).unwrap()
+        let x = unsafe {
+            self.u.u32_addr[3]
+        };
+        x
     }
 
-    pub fn get_u16_chunk(&self, index: usize) -> Result<u16, LwipError> {
-        if index + 1 > 15 {
-            return Err(LwipError::new(LwipErrorCode::InvalidArgument, "index must be <= 15"));
-        }
-        let result: [u8;2] = [self.raw[index], self.raw[index+1]];
-        Ok(u16::from_ne_bytes(result))
+    pub fn get_u16_chunk_0(&self) -> u16 {
+        let x = unsafe {
+            self.u.u16_addr[0]
+        };
+        x
+    }
+
+    pub fn get_u16_chunk_1(&self) -> u16 {
+        let x = unsafe {
+            self.u.u16_addr[1]
+        };
+        x
+    }
+
+    pub fn get_u16_chunk_2(&self) -> u16 {
+        let x = unsafe {
+            self.u.u16_addr[2]
+        };
+        x
+    }
+
+    pub fn get_u16_chunk_3(&self) -> u16 {
+        let x = unsafe {
+            self.u.u16_addr[3]
+        };
+        x
+    }
+
+    pub fn get_u16_chunk_4(&self) -> u16 {
+        let x = unsafe {
+            self.u.u16_addr[4]
+        };
+        x
+    }
+
+    pub fn get_u16_chunk_5(&self) -> u16 {
+        let x = unsafe {
+            self.u.u16_addr[5]
+        };
+        x
+    }
+
+    pub fn get_u16_chunk_6(&self) -> u16 {
+        let x = unsafe {
+            self.u.u16_addr[6]
+        };
+        x
+    }
+
+    pub fn get_u16_chunk_17(&self) -> u16 {
+        let x = unsafe {
+            self.u.u16_addr[7]
+        };
+        x
     }
 
     pub fn zero(&mut self) {
-        self.raw = [0;u16];
+        self.u.u32_addr = [0,0,0,0];
         self.zone = 0;
     }
 
@@ -117,8 +208,8 @@ impl Ipv6Address {
     pub fn net_eq_zoneless(&self, b: &Self) -> bool {
        let a_0 = self.get_u32_chunk_0();
         let b_0 = b.get_u32_chunk_0();
-        let a_1 = self.get_u32_chunk(1).unwrap();
-        let b_1 = self.get_u32_chunk(1).unwrap();
+        let a_1 = self.get_u32_chunk_1();
+        let b_1 = b.get_u32_chunk_chunk_1();
         a_0 == b_0 && a_1 == b_1
     }
 
@@ -127,10 +218,10 @@ impl Ipv6Address {
     }
 
     pub fn nethost_eq(&self, b: &Self) -> bool {
-        let a_2 = self.get_u32_chunk(2).unwrap();
-        let a_3 = self.get_u32_chunk(3).unwrap();
-        let b_2 = self.get_u32_chunk(2).unwrap();
-        let b_3 = self.get_u32_chunk(3).unwrap();
+        let a_2 = self.get_u32_chunk_2();
+        let a_3 = self.get_u32_chunk_3();
+        let b_2 = b.get_u32_chunk_2();
+        let b_3 = b.get_u32_chunk_3();
         a_2 == b_2 && a_3 == b_3
     }
 
@@ -143,7 +234,7 @@ impl Ipv6Address {
     }
 
     pub fn get_subnet_id(&self) -> u32 {
-        self.get_u32_chunk(2).unwrap() & 0x0000ffff
+        self.get_u32_chunk_2() & 0x0000ffff
     }
 
     pub fn is_any(&self) -> bool {
@@ -155,43 +246,147 @@ impl Ipv6Address {
     }
 
     pub fn is_global(&self) -> bool {
-        let a_0 = self.get_u32_chunk(0).unwrap();
+        let a_0 = self.get_u32_chunk_0();
         a_0 & 0xe0000000 == 0x20000000
     }
 
     pub fn is_link_local(&self) -> bool {
-         let a_0 = self.get_u32_chunk(0).unwrap();
+         let a_0 = self.get_u32_chunk_0();
         a_0 & 0xffc00000 == 0xfe800000
     }
 
     pub fn is_site_local(&self) -> bool {
-        let a_0 = self.get_u32_chunk(0).unwrap();
+        let a_0 = self.get_u32_chunk_0();
         a_0 & 0xffc00000 == 0xfec00000
     }
 
     pub fn is_unique_local(&self) -> bool {
-        let a_0 = self.get_u32_chunk(0).unwrap();
+        let a_0 = self.get_u32_chunk_0();
         a_0 & 0xfe000000 == 0xfc000000
     }
 
     pub fn is_ipv4_mapped_ipv6(&self) -> bool {
-        let a_0 = self.get_u32_chunk(0).unwrap();
-        let a_1 = self.get_u32_chunk(1).unwrap();
-        let a_2 = self.get_u32_chunk(2).unwrap();
+        let a_0 = self.get_u32_chunk_0();
+        let a_1 = self.get_u32_chunk_1();
+        let a_2 = self.get_u32_chunk_2();
         a_0 == 0 && a_1 == 0 && a_2 == 0x0000FFFF
     }
 
     pub fn is_ipv4_compatible(&self) -> bool {
-        let a_0 = self.get_u32_chunk(0).unwrap();
-        let a_1 = self.get_u32_chunk(1).unwrap();
-        let a_2 = self.get_u32_chunk(2).unwrap();
-        let a_3 = self.get_u32_chunk(3).unwrap();
+        let a_0 = self.get_u32_chunk_0();
+        let a_1 = self.get_u32_chunk_1();
+        let a_2 = self.get_u32_chunk_2();
+        let a_3 = self.get_u32_chunk_3();
         a_0 == 0 && a_1 == 0 && a_2 == 0 && a_3 > 1
     }
 
     pub fn is_multicast(&self) -> bool {
-            let a_0 = self.get_u32_chunk(0).unwrap();
+            let a_0 = self.get_u32_chunk_0();
         a_0 & 0xff000000 == 0xff000000
+    }
+
+    pub fn get_multicast_transient_flag(&self) -> u32 {
+        self.get_u32_chunk_0() & 0x00100000
+    }
+
+    pub fn get_multicast_prefix_flag(&self) -> u32 {
+        self.get_u32_chunk_0() & 0x00200000
+    }
+
+    pub fn get_multicast_rendezvous_flag(&self) -> u32 {
+        self.get_u32_chunk_0() & 00400000
+    }
+
+    pub fn get_multicast_scope(&self) -> u32 {
+        (self.get_u32_chunk_0() >> 16) & 0xf
+    }
+
+    pub fn is_multicast_iflocal(&self) -> bool {
+        (self.get_u32_chunk_0() & 0xff8f0000) == 0xff010000
+    }
+
+    pub fn is_multicast_linklocal(&self) -> bool {
+        (self.get_u32_chunk_0() & 0xff8f0000) == 0xff020000
+    }
+
+    pub fn is_multicast_adminlocal(&self) -> bool {
+        (self.get_u32_chunk_0() & 0xff8f0000) == 0xff040000
+    }
+
+    pub fn is_multicast_sitelocal(&self) -> bool {
+        (self.get_u32_chunk_0() & 0xff8f0000) == 0xff050000
+    }
+
+    pub fn is_multicast_orglocal(&self) -> bool {
+        (self.get_u32_chunk_0() & 0xff8f0000) == 0xff080000
+    }
+
+    pub fn is_multicast_global(&self) -> bool {
+        (self.get_u32_chunk_0() & 0xff8f0000) == 0xff0e0000
+    }
+
+    pub fn is_all_nodes_iflocal(&self) -> bool {
+        (self.get_u32_chunk_0() == 0xff010000) &&
+            (self.get_u32_chunk_1() == 0) &&
+            (self.get_u32_chunk_2() == 0) &&
+            (self.get_u32_chunk_3() == 0x00000001)
+    }
+
+    pub fn is_all_nodes_link_local(&self) -> bool {
+        (self.get_u32_chunk_0() == 0xff020000) &&
+            (self.get_u32_chunk_1() == 0) &&
+            (self.get_u32_chunk_2() == 0) &&
+            (self.get_u32_chunk_3() == 0x00000001)
+    }
+
+    pub fn set_all_nodes_link_local(&mut self) {
+        self.u.u32_addr[0] = 0xff020000;
+        self.u.u32_addr[1] = 0;
+        self.u.u32_addr[2] = 0;
+        self.u.u32_addr[3] = 1;
+        self.zone = 0;
+    }
+
+    pub fn is_all_routers_link_local(&self) -> bool {
+        let x = unsafe {
+            self.u.u32_addr[0] == 0xff020000 && self.u.u32_addr[1] == 0 && self.u.u32_addr[2] == 0 && self.u.u32_addr[3] == 0x00000002
+        };
+        x
+    }
+
+    pub fn set_all_routers_link_local(&mut self) {
+        self.u.u32_addr[0] = 0xff020000;
+        self.u.u32_addr[1] = 0;
+        self.u.u32_addr[2] = 0;
+        self.u.u32_addr[3] = 2;
+        self.zone = 0;
+    }
+
+    pub fn is_solicited_node(&self) -> bool {
+        let x = unsafe {
+            self.u.u32_addr[0] == 0xff020000 &&
+                self.u.u32_addr[2] == 0x00000001 &&
+                self.u.u32_addr[3] & 0xff000000 == 0xff000000
+        };
+        x
+    }
+
+    pub fn set_solicited_node(&mut self, if_id: u32) {
+        self.u.u32_addr[0] = 0xff020000;
+        self.u.u32_addr[1] = 0;
+        self.u.u32_addr[2] = 1;
+        self.u.u32_addr[3] = 0xff000000 | if_id;
+        self.zone = 0;
+    }
+
+    pub fn solicited_nodes_eq(&self, b: &Self) -> bool {
+        let x = unsafe {
+            self.u.u32_addr[0] == 0xff020000 &&
+                self.u.u32_addr[1] == 0 &&
+                self.u.u32_addr[2] == 1 &&
+                self.u.u32_addr[3] == 0xff000000 | b.u.u32_addr[3]
+        };
+        x
     }
 }
 

@@ -1,43 +1,46 @@
+use crate::ipv6::ip6_addr::Ipv6Address;
+use crate::network_interface::NetworkInterface;
+
 /**
- * @file
- *
- * IPv6 layer.
- */
+ /// *@file
+ /// *
+ /// *IPv6 layer.
+ /// */
 
 /*
- * Copyright (c) 2010 Inico Technologies Ltd.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- *
- * This file is part of the lwIP TCP/IP stack.
- *
- * Author: Ivan Delamer <delamer@inicotech.com>
- *
- *
- * Please coordinate changes and requests with Ivan Delamer
- * <delamer@inicotech.com>
- */
+ /// *Copyright (c) 2010 Inico Technologies Ltd.
+ /// *All rights reserved.
+ /// *
+ /// *Redistribution and use in source and binary forms, with or without modification,
+ /// *are permitted provided that the following conditions are met:
+ /// *
+ /// *1. Redistributions of source code must retain the above copyright notice,
+ /// *   this list of conditions and the following disclaimer.
+ /// *2. Redistributions in binary form must reproduce the above copyright notice,
+ /// *   this list of conditions and the following disclaimer in the documentation
+ /// *   and/or other materials provided with the distribution.
+ /// *3. The name of the author may not be used to endorse or promote products
+ /// *   derived from this software without specific prior written permission.
+ /// *
+ /// *THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ /// *WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ /// *MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ /// *SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ /// *EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ /// *OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ /// *INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ /// *CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ /// *IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+ /// *OF SUCH DAMAGE.
+ /// *
+ /// *This file is part of the lwIP TCP/IP stack.
+ /// *
+ /// *Author: Ivan Delamer <delamer@inicotech.com>
+ /// *
+ /// *
+ /// *Please coordinate changes and requests with Ivan Delamer
+ /// *<delamer@inicotech.com>
+ /// */
 
 
 
@@ -60,225 +63,210 @@
 
 
 
-#ifdef LWIP_HOOK_FILENAME
 
-// #endif
 
-/**
- * Finds the appropriate network interface for a given IPv6 address. It tries to select
- * a netif following a sequence of heuristics:
- * 1) if there is only 1 netif, return it
- * 2) if the destination is a zoned address, match its zone to a netif
- * 3) if the either the source or destination address is a scoped address,
- *    match the source address's zone (if set) or address (if not) to a netif
- * 4) tries to match the destination subnet to a configured address
- * 5) tries to find a router-announced route
- * 6) tries to match the (unscoped) source address to the netif
- * 7) returns the default netif, if configured
- *
- * Note that each of the two given addresses may or may not be properly zoned.
- *
- * @param src the source IPv6 address, if known
- * @param dest the destination IPv6 address for which to find the route
- * @return the netif on which to send to reach dest
- */
-struct netif *
-ip6_route(const ip6_addr_t *src, const ip6_addr_t *dest)
+/// /**
+ /// *Finds the appropriate network interface for a given IPv6 address. It tries to select
+ /// *a netif following a sequence of heuristics:
+ /// *1) if there is only 1 netif, return it
+ /// *2) if the destination is a zoned address, match its zone to a netif
+ /// *3) if the either the source or destination address is a scoped address,
+ /// *   match the source address's zone (if set) or address (if not) to a netif
+ /// *4) tries to match the destination subnet to a configured address
+ /// *5) tries to find a router-announced route
+ /// *6) tries to match the (unscoped) source address to the netif
+ /// *7) returns the default netif, if configured
+ /// *
+ /// *Note that each of the two given addresses may or may not be properly zoned.
+ /// *
+ /// *@param src the source IPv6 address, if known
+ /// *@param dest the destination IPv6 address for which to find the route
+ /// *@return the netif on which to send to reach dest
+ /// */
+pub fn ip6_route(netif_list: NetworkInterfaceList, netif: &mut NetworkInterface, src: &Ipv6Address, dest: &Ipv6Address) -> NetworkInterface
 {
-// #if LWIP_SINGLE_NETIF
-  LWIP_UNUSED_ARG(src);
-  LWIP_UNUSED_ARG(dest);
-#else /* LWIP_SINGLE_NETIF */
-  struct netif *netif;
-  s8_t i;
-
-  // LWIP_ASSERT_CORE_LOCKED()
 
   /* If single netif configuration, fast return. */
-  if ((netif_list != NULL) && ( netif_list.next == NULL)) {
-    if (!netif_is_up(netif_list) || !netif_is_link_up(netif_list) ||
-        (ip6_addr_has_zone(dest) && !ip6_addr_test_zone(dest, netif_list))) {
-      return NULL;
+
+    if ((netif_list != NULL) && (netif_list.next == NULL)) {
+        if (!netif_is_up(netif_list) || !netif_is_link_up(netif_list) || (ip6_addr_has_zone(dest) && !ip6_addr_test_zone(dest, netif_list))) {
+            return NULL;
+        }
+        return netif_list;
     }
-    return netif_list;
-  }
 
 // #if LWIP_IPV6_SCOPES
   /* Special processing for zoned destination addresses. This includes link-
-   * local unicast addresses and interface/link-local multicast addresses. Use
-   * the zone to find a matching netif. If the address is not zoned, then there
-   * is technically no "wrong" netif to choose, and we leave routing to other
-   * rules; in most cases this should be the scoped-source rule below. */
-  if (ip6_addr_has_zone(dest)) {
-    IP6_ADDR_ZONECHECK(dest);
-    /* Find a netif based on the zone. For custom mappings, one zone may map
-     * to multiple netifs, so find one that can actually send a packet. */
-    NETIF_FOREACH(netif) {
-      if (ip6_addr_test_zone(dest, netif) &&
-          netif_is_up(netif) && netif_is_link_up(netif)) {
-        return netif;
-      }
-    }
+   /// *local unicast addresses and interface/link-local multicast addresses. Use
+   /// *the zone to find a matching netif. If the address is not zoned, then there
+   /// *is technically no "wrong" netif to choose, and we leave routing to other
+   /// *rules; in most cases this should be the scoped-source rule below. */
+    if (ip6_addr_has_zone(dest)) {
+        IP6_ADDR_ZONECHECK(dest);
+        /* Find a netif based on the zone. For custom mappings, one zone may map
+         /// *to multiple netifs, so find one that can actually send a packet. */
+        NETIF_FOREACH(netif)
+        {
+            if (ip6_addr_test_zone(dest, netif) && netif_is_up(netif) && netif_is_link_up(netif)) {
+                return netif;
+            }
+        }
     /* No matching netif found. Do no try to route to a different netif,
-     * as that would be a zone violation, resulting in any packets sent to
-     * that netif being dropped on output. */
+     /// *as that would be a zone violation, resulting in any packets sent to
+     /// *that netif being dropped on output. */
     return NULL;
   }
 // #endif /* LWIP_IPV6_SCOPES */
 
   /* Special processing for scoped source and destination addresses. If we get
-   * here, the destination address does not have a zone, so either way we need
-   * to look at the source address, which may or may not have a zone. If it
-   * does, the zone is restrictive: there is (typically) only one matching
-   * netif for it, and we should avoid routing to any other netif as that would
-   * result in guaranteed zone violations. For scoped source addresses that do
-   * not have a zone, use (only) a netif that has that source address locally
-   * assigned. This case also applies to the loopback source address, which has
-   * an implied link-local scope. If only the destination address is scoped
-   * (but, again, not zoned), we still want to use only the source address to
-   * determine its zone because that's most likely what the user/application
-   * wants, regardless of whether the source address is scoped. Finally, some
-   * of this story also applies if scoping is disabled altogether. */
+   /// *here, the destination address does not have a zone, so either way we need
+   /// *to look at the source address, which may or may not have a zone. If it
+   /// *does, the zone is restrictive: there is (typically) only one matching
+   /// *netif for it, and we should avoid routing to any other netif as that would
+   /// *result in guaranteed zone violations. For scoped source addresses that do
+   /// *not have a zone, use (only) a netif that has that source address locally
+   /// *assigned. This case also applies to the loopback source address, which has
+   /// *an implied link-local scope. If only the destination address is scoped
+   /// *(but, again, not zoned), we still want to use only the source address to
+   /// *determine its zone because that's most likely what the user/application
+   /// *wants, regardless of whether the source address is scoped. Finally, some
+   /// *of this story also applies if scoping is disabled altogether. */
 // #if LWIP_IPV6_SCOPES
-  if (ip6_addr_has_scope(dest, IP6_UNKNOWN) ||
-      ip6_addr_has_scope(src, IP6_UNICAST) ||
-#else /* LWIP_IPV6_SCOPES */
-  if (ip6_addr_islinklocal(dest) || ip6_addr_ismulticast_iflocal(dest) ||
-      ip6_addr_ismulticast_linklocal(dest) || ip6_addr_islinklocal(src) ||
+    if (ip6_addr_has_scope(dest, IP6_UNKNOWN) || ip6_addr_has_scope(src, IP6_UNICAST) || # else /* LWIP_IPV6_SCOPES */
+    if (ip6_addr_islinklocal(dest) || ip6_addr_ismulticast_iflocal(dest) || ip6_addr_ismulticast_linklocal(dest) || ip6_addr_islinklocal(src) ||
 // #endif /* LWIP_IPV6_SCOPES */
-      ip6_addr_isloopback(src)) {
+        ip6_addr_isloopback(src)) {
 // #if LWIP_IPV6_SCOPES
-    if (ip6_addr_has_zone(src)) {
-      /* Find a netif matching the source zone (relatively cheap). */
-      NETIF_FOREACH(netif) {
-        if (netif_is_up(netif) && netif_is_link_up(netif) &&
-            ip6_addr_test_zone(src, netif)) {
-          return netif;
+        if (ip6_addr_has_zone(src)) {
+            /* Find a netif matching the source zone (relatively cheap). */
+            NETIF_FOREACH(netif)
+            {
+                if (netif_is_up(netif) && netif_is_link_up(netif) && ip6_addr_test_zone(src, netif)) {
+                    return netif;
+                }
+            }
+        } else
+// #endif /* LWIP_IPV6_SCOPES */ {
+            /* Find a netif matching the source address (relatively expensive). */
+            NETIF_FOREACH(netif)
+            {
+                if (!netif_is_up(netif) || !netif_is_link_up(netif)) {
+                    continue;
+                }
+                for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+ +) {
+                    if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i)) && ip6_addr_zoneless_eq(src, netif_ip6_addr(netif, i))) {
+                        return netif;
+                    }
+                }
+            }
         }
-      }
-    } else
-// #endif /* LWIP_IPV6_SCOPES */
-    {
-      /* Find a netif matching the source address (relatively expensive). */
-      NETIF_FOREACH(netif) {
-        if (!netif_is_up(netif) || !netif_is_link_up(netif)) {
-          continue;
-        }
-        for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
-          if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i)) &&
-              ip6_addr_zoneless_eq(src, netif_ip6_addr(netif, i))) {
-            return netif;
-          }
-        }
-      }
+        /* Again, do not use any other netif in this case, as that could result in
+         /// *zone boundary violations. */
+        return NULL;
     }
-    /* Again, do not use any other netif in this case, as that could result in
-     * zone boundary violations. */
-    return NULL;
-  }
 
-  /* We come here only if neither source nor destination is scoped. */
-  IP6_ADDR_ZONECHECK(src);
+    /* We come here only if neither source nor destination is scoped. */
+    IP6_ADDR_ZONECHECK(src);
 
-#ifdef LWIP_HOOK_IP6_ROUTE
-  netif = LWIP_HOOK_IP6_ROUTE(src, dest);
-  if (netif != NULL) {
-    return netif;
-  }
+    # ifdef
+    LWIP_HOOK_IP6_ROUTE
+    netif = LWIP_HOOK_IP6_ROUTE(src, dest);
+    if (netif != NULL) {
+        return netif;
+    }
 // #endif
 
-  /* See if the destination subnet matches a configured address. In accordance
-   * with RFC 5942, dynamically configured addresses do not have an implied
-   * local subnet, and thus should be considered /128 assignments. However, as
-   * such, the destination address may still match a local address, and so we
-   * still need to check for exact matches here. By (lwIP) policy, statically
-   * configured addresses do always have an implied local /64 subnet. */
-  NETIF_FOREACH(netif) {
-    if (!netif_is_up(netif) || !netif_is_link_up(netif)) {
-      continue;
-    }
-    for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
-      if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i)) &&
-          ip6_addr_net_eq(dest, netif_ip6_addr(netif, i)) &&
-          (netif_ip6_addr_isstatic(netif, i) ||
-          ip6_addr_nethost_eq(dest, netif_ip6_addr(netif, i)))) {
-        return netif;
-      }
-    }
-  }
-
-  /* Get the netif for a suitable router-announced route. */
-  netif = nd6_find_route(dest);
-  if (netif != NULL) {
-    return netif;
-  }
-
-  /* Try with the netif that matches the source address. Given the earlier rule
-   * for scoped source addresses, this applies to unscoped addresses only. */
-  if (!ip6_addr_isany(src)) {
-    NETIF_FOREACH(netif) {
-      if (!netif_is_up(netif) || !netif_is_link_up(netif)) {
-        continue;
-      }
-      for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
-        if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i)) &&
-            ip6_addr_eq(src, netif_ip6_addr(netif, i))) {
-          return netif;
+    /* See if the destination subnet matches a configured address. In accordance
+     /// *with RFC 5942, dynamically configured addresses do not have an implied
+     /// *local subnet, and thus should be considered /128 assignments. However, as
+     /// *such, the destination address may still match a local address, and so we
+     /// *still need to check for exact matches here. By (lwIP) policy, statically
+     /// *configured addresses do always have an implied local /64 subnet. */
+    NETIF_FOREACH(netif)
+    {
+        if (!netif_is_up(netif) || !netif_is_link_up(netif)) {
+            continue;
         }
-      }
+        for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+ +) {
+            if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i)) && ip6_addr_net_eq(dest, netif_ip6_addr(netif, i)) && (netif_ip6_addr_isstatic(netif, i) || ip6_addr_nethost_eq(dest, netif_ip6_addr(netif, i)))) {
+                return netif;
+            }
+        }
     }
-  }
+
+    /* Get the netif for a suitable router-announced route. */
+    netif = nd6_find_route(dest);
+    if (netif != NULL) {
+        return netif;
+    }
+
+    /* Try with the netif that matches the source address. Given the earlier rule
+     /// *for scoped source addresses, this applies to unscoped addresses only. */
+    if (!ip6_addr_isany(src)) {
+        NETIF_FOREACH(netif)
+        {
+            if (!netif_is_up(netif) || !netif_is_link_up(netif)) {
+                continue;
+            }
+            for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i+ +) {
+                if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i)) && ip6_addr_eq(src, netif_ip6_addr(netif, i))) {
+                    return netif;
+                }
+            }
+        }
+    }
 
 // #if LWIP_NETIF_LOOPBACK && !LWIP_HAVE_LOOPIF
-  /* loopif is disabled, loopback traffic is passed through any netif */
-  if (ip6_addr_isloopback(dest)) {
-    /* don't check for link on loopback traffic */
-    if (netif_default != NULL && netif_is_up(netif_default)) {
-      return netif_default;
+    /* loopif is disabled, loopback traffic is passed through any netif */
+    if (ip6_addr_isloopback(dest)) {
+        /* don't check for link on loopback traffic */
+        if (netif_default != NULL && netif_is_up(netif_default)) {
+            return netif_default;
+        }
+        /* default netif is not up, just use any netif for loopback traffic */
+        NETIF_FOREACH(netif)
+        {
+            if (netif_is_up(netif)) {
+                return netif;
+            }
+        }
+        return NULL;
     }
-    /* default netif is not up, just use any netif for loopback traffic */
-    NETIF_FOREACH(netif) {
-      if (netif_is_up(netif)) {
-        return netif;
-      }
-    }
-    return NULL;
-  }
 // #endif /* LWIP_NETIF_LOOPBACK && !LWIP_HAVE_LOOPIF */
 // #endif /* !LWIP_SINGLE_NETIF */
 
-  /* no matching netif found, use default netif, if up */
-  if ((netif_default == NULL) || !netif_is_up(netif_default) || !netif_is_link_up(netif_default)) {
-    return NULL;
-  }
-  return netif_default;
+    /* no matching netif found, use default netif, if up */
+    if ((netif_default == NULL) || !netif_is_up(netif_default) || !netif_is_link_up(netif_default)) {
+        return NULL;
+    }
+    return netif_default;
 }
 
-/**
- * @ingroup ip6
- * Select the best IPv6 source address for a given destination IPv6 address.
- *
- * This implementation follows RFC 6724 Sec. 5 to the following extent:
- * - Rules 1, 2, 3: fully implemented
- * - Rules 4, 5, 5.5: not applicable
- * - Rule 6: not implemented
- * - Rule 7: not applicable
- * - Rule 8: limited to "prefer /64 subnet match over non-match"
- *
- * For Rule 2, we deliberately deviate from RFC 6724 Sec. 3.1 by considering
- * ULAs to be of smaller scope than global addresses, to avoid that a preferred
- * ULA is picked over a deprecated global address when given a global address
- * as destination, as that would likely result in broken two-way communication.
- *
- * As long as temporary addresses are not supported (as used in Rule 7), a
- * proper implementation of Rule 8 would obviate the need to implement Rule 6.
- *
- * @param netif the netif on which to send a packet
- * @param dest the destination we are trying to reach (possibly not properly
- *             zoned)
- * @return the most suitable source address to use, or NULL if no suitable
- *         source address is found
- */
+/// /**
+ /// *@ingroup ip6
+ /// *Select the best IPv6 source address for a given destination IPv6 address.
+ /// *
+ /// *This implementation follows RFC 6724 Sec. 5 to the following extent:
+ /// *- Rules 1, 2, 3: fully implemented
+ /// *- Rules 4, 5, 5.5: not applicable
+ /// *- Rule 6: not implemented
+ /// *- Rule 7: not applicable
+ /// *- Rule 8: limited to "prefer /64 subnet match over non-match"
+ /// *
+ /// *For Rule 2, we deliberately deviate from RFC 6724 Sec. 3.1 by considering
+ /// *ULAs to be of smaller scope than global addresses, to avoid that a preferred
+ /// *ULA is picked over a deprecated global address when given a global address
+ /// *as destination, as that would likely result in broken two-way communication.
+ /// *
+ /// *As long as temporary addresses are not supported (as used in Rule 7), a
+ /// *proper implementation of Rule 8 would obviate the need to implement Rule 6.
+ /// *
+ /// *@param netif the netif on which to send a packet
+ /// *@param dest the destination we are trying to reach (possibly not properly
+ /// *            zoned)
+ /// *@return the most suitable source address to use, or NULL if no suitable
+ /// *        source address is found
+ /// */
 const ip_addr_t *
 ip6_select_source_address(struct netif *netif, const ip6_addr_t *dest)
 {
@@ -291,7 +279,7 @@ ip6_select_source_address(struct netif *netif, const ip6_addr_t *dest)
   u8_t best_bits = 0;
 
   /* Start by determining the scope of the given destination address. These
-   * tests are hopefully (roughly) in order of likeliness to match. */
+   /// *tests are hopefully (roughly) in order of likeliness to match. */
   if (ip6_addr_isglobal(dest)) {
     dest_scope = IP6_MULTICAST_SCOPE_GLOBAL;
   } else if (ip6_addr_islinklocal(dest) || ip6_addr_isloopback(dest)) {
@@ -331,7 +319,7 @@ ip6_select_source_address(struct netif *netif, const ip6_addr_t *dest)
     cand_pref = ip6_addr_ispreferred(netif_ip6_addr_state(netif, i));
     /* @todo compute the actual common bits, for longest matching prefix. */
     /* We cannot count on the destination address having a proper zone
-     * assignment, so do not compare zones in this case. */
+     /// *assignment, so do not compare zones in this case. */
     cand_bits = ip6_addr_net_zoneless_eq(cand_addr, dest); /* just 1 or 0 for now */
     if (cand_bits && ip6_addr_nethost_eq(cand_addr, dest)) {
       return netif_ip_addr6(netif, i); /* Rule 1 */
@@ -354,14 +342,14 @@ ip6_select_source_address(struct netif *netif, const ip6_addr_t *dest)
 
 // #if LWIP_IPV6_FORWARD
 /**
- * Forwards an IPv6 packet. It finds an appropriate route for the
- * packet, decrements the HL value of the packet, and outputs
- * the packet on the appropriate interface.
- *
- * @param p the packet to forward ( p.payload points to IP header)
- * @param iphdr the IPv6 header of the input packet
- * @param inp the netif on which this packet was received
- */
+ /// *Forwards an IPv6 packet. It finds an appropriate route for the
+ /// *packet, decrements the HL value of the packet, and outputs
+ /// *the packet on the appropriate interface.
+ /// *
+ /// *@param p the packet to forward ( p.payload points to IP header)
+ /// *@param iphdr the IPv6 header of the input packet
+ /// *@param inp the netif on which this packet was received
+ /// */
 static void
 ip6_forward(struct pbuf *p, struct ip6_hdr *iphdr, struct netif *inp)
 {
@@ -400,9 +388,9 @@ ip6_forward(struct pbuf *p, struct ip6_hdr *iphdr, struct netif *inp)
   }
 // #if LWIP_IPV6_SCOPES
   /* Do not forward packets with a zoned (e.g., link-local) source address
-   * outside of their zone. We determined the zone a bit earlier, so we know
-   * that the address is properly zoned here, so we can safely use has_zone.
-   * Also skip packets with a loopback source address (link-local implied). */
+   /// *outside of their zone. We determined the zone a bit earlier, so we know
+   /// *that the address is properly zoned here, so we can safely use has_zone.
+   /// *Also skip packets with a loopback source address (link-local implied). */
   if ((ip6_addr_has_zone(ip6_current_src_addr()) &&
       !ip6_addr_test_zone(ip6_current_src_addr(), netif)) ||
       ip6_addr_isloopback(ip6_current_src_addr())) {
@@ -413,7 +401,7 @@ ip6_forward(struct pbuf *p, struct ip6_hdr *iphdr, struct netif *inp)
   }
 // #endif /* LWIP_IPV6_SCOPES */
   /* Do not forward packets onto the same network interface on which
-   * they arrived. */
+   /// *they arrived. */
   if (netif == inp) {
     LWIP_DEBUGF(IP6_DEBUG, ("ip6_forward: not bouncing packets back on incoming interface.\n"));
     IP6_STATS_INC(ip6.rterr);
@@ -464,7 +452,7 @@ ip6_forward(struct pbuf *p, struct ip6_hdr *iphdr, struct netif *inp)
 }
 // #endif /* LWIP_IPV6_FORWARD */
 
-/** Return true if the current input packet should be accepted on this netif */
+/// /** Return true if the current input packet should be accepted on this netif */
 static int
 ip6_input_accept(struct netif *netif)
 {
@@ -473,8 +461,8 @@ ip6_input_accept(struct netif *netif)
     i: u8;
     /* unicast to this interface address? address configured? */
     /* If custom scopes are used, the destination zone will be tested as
-      * part of the local-address comparison, but we need to test the source
-      * scope as well (e.g., is this interface on the same link?). */
+      /// *part of the local-address comparison, but we need to test the source
+      /// *scope as well (e.g., is this interface on the same link?). */
     for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
       if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i)) &&
           ip6_addr_eq(ip6_current_dest_addr(), netif_ip6_addr(netif, i))
@@ -491,20 +479,20 @@ ip6_input_accept(struct netif *netif)
   return 0;
 }
 
-/**
- * This function is called by the network interface device driver when
- * an IPv6 packet is received. The function does the basic checks of the
- * IP header such as packet size being at least larger than the header
- * size etc. If the packet was not destined for us, the packet is
- * forwarded (using ip6_forward).
- *
- * Finally, the packet is sent to the upper layer protocol input function.
- *
- * @param p the received IPv6 packet ( p.payload points to IPv6 header)
- * @param inp the netif on which this packet was received
- * @return ERR_OK if the packet was processed (could return ERR_* if it wasn't
- *         processed, but currently always returns ERR_OK)
- */
+/// /**
+ /// *This function is called by the network interface device driver when
+ /// *an IPv6 packet is received. The function does the basic checks of the
+ /// *IP header such as packet size being at least larger than the header
+ /// *size etc. If the packet was not destined for us, the packet is
+ /// *forwarded (using ip6_forward).
+ /// *
+ /// *Finally, the packet is sent to the upper layer protocol input function.
+ /// *
+ /// *@param p the received IPv6 packet ( p.payload points to IPv6 header)
+ /// *@param inp the netif on which this packet was received
+ /// *@return ERR_OK if the packet was processed (could return ERR_* if it wasn't
+ /// *        processed, but currently always returns ERR_OK)
+ /// */
 err_t
 ip6_input(struct pbuf *p, struct netif *inp)
 {
@@ -562,7 +550,7 @@ ip6_input(struct pbuf *p, struct netif *inp)
   }
 
   /* Trim pbuf. This should have been done at the netif layer,
-   * but we'll do it anyway just to be sure that its done. */
+   /// *but we'll do it anyway just to be sure that its done. */
   pbuf_realloc(p, (u16_t)(IP6_HLEN + IP6H_PLEN(ip6hdr)));
 
   /* copy IP addresses to aligned ip6_addr_t */
@@ -570,7 +558,7 @@ ip6_input(struct pbuf *p, struct netif *inp)
   ip_addr_copy_from_ip6_packed(ip_data.current_iphdr_src,  ip6hdr.src);
 
   /* Don't accept virtual IPv4 mapped IPv6 addresses.
-   * Don't accept multicast source addresses. */
+   /// *Don't accept multicast source addresses. */
   if (ip6_addr_isipv4mappedipv6(ip_2_ip6(&ip_data.current_iphdr_dest)) ||
      ip6_addr_isipv4mappedipv6(ip_2_ip6(&ip_data.current_iphdr_src)) ||
      ip6_addr_ismulticast(ip_2_ip6(&ip_data.current_iphdr_src))) {
@@ -607,7 +595,7 @@ ip6_input(struct pbuf *p, struct netif *inp)
     else if (ip6_addr_issolicitednode(ip6_current_dest_addr())) {
       i: u8;
       /* Filter solicited node packets when MLD is not enabled
-       * (for Neighbor discovery). */
+       /// *(for Neighbor discovery). */
       netif = NULL;
       for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
         if (ip6_addr_isvalid(netif_ip6_addr_state(inp, i)) &&
@@ -632,8 +620,8 @@ ip6_input(struct pbuf *p, struct netif *inp)
       netif = NULL;
 #if !IPV6_CUSTOM_SCOPES
       /* Shortcut: stop looking for other interfaces if either the source or
-        * the destination has a scope constrained to this interface. Custom
-        * scopes may break the 1:1 link/interface mapping, however. */
+        /// *the destination has a scope constrained to this interface. Custom
+        /// *scopes may break the 1:1 link/interface mapping, however. */
       if (ip6_addr_islinklocal(ip6_current_dest_addr()) ||
           ip6_addr_islinklocal(ip6_current_src_addr())) {
         goto netif_found;
@@ -641,11 +629,11 @@ ip6_input(struct pbuf *p, struct netif *inp)
 // #endif /* !IPV6_CUSTOM_SCOPES */
 #if !LWIP_NETIF_LOOPBACK || LWIP_HAVE_LOOPIF
       /* The loopback address is to be considered link-local. Packets to it
-        * should be dropped on other interfaces, as per RFC 4291 Sec. 2.5.3.
-        * Its implied scope means packets *from* the loopback address should
-        * not be accepted on other interfaces, either. These requirements
-        * cannot be implemented in the case that loopback traffic is sent
-        * across a non-loopback interface, however. */
+        /// *should be dropped on other interfaces, as per RFC 4291 Sec. 2.5.3.
+        /// *Its implied scope means packets *from* the loopback address should
+        /// *not be accepted on other interfaces, either. These requirements
+        /// *cannot be implemented in the case that loopback traffic is sent
+        /// *across a non-loopback interface, however. */
       if (ip6_addr_isloopback(ip6_current_dest_addr()) ||
           ip6_addr_isloopback(ip6_current_src_addr())) {
         goto netif_found;
@@ -1012,7 +1000,7 @@ netif_found:
         }
 
         /* Returned p point to IPv6 header.
-         * Update all our variables and pointers and continue. */
+         /// *Update all our variables and pointers and continue. */
         ip6hdr = (struct ip6_hdr *) p.payload;
         nexth = &IP6H_NEXTH(ip6hdr);
         hlen = hlen_tot = IP6_HLEN;
@@ -1119,32 +1107,32 @@ ip6_input_cleanup:
 }
 
 
-/**
- * Sends an IPv6 packet on a network interface. This function constructs
- * the IPv6 header. If the source IPv6 address is NULL, the IPv6 "ANY" address is
- * used as source (usually during network startup). If the source IPv6 address it
- * IP6_ADDR_ANY, the most appropriate IPv6 address of the outgoing network
- * interface is filled in as source address. If the destination IPv6 address is
- * LWIP_IP_HDRINCL, p is assumed to already include an IPv6 header and
- *  p.payload points to it instead of the data.
- *
- * @param p the packet to send ( p.payload points to the data, e.g. next
+/// /**
+ /// *Sends an IPv6 packet on a network interface. This function constructs
+ /// *the IPv6 header. If the source IPv6 address is NULL, the IPv6 "ANY" address is
+ /// *used as source (usually during network startup). If the source IPv6 address it
+ /// *IP6_ADDR_ANY, the most appropriate IPv6 address of the outgoing network
+ /// *interface is filled in as source address. If the destination IPv6 address is
+ /// *LWIP_IP_HDRINCL, p is assumed to already include an IPv6 header and
+ /// * p.payload points to it instead of the data.
+ /// *
+ /// *@param p the packet to send ( p.payload points to the data, e.g. next
             protocol header; if dest == LWIP_IP_HDRINCL, p already includes an
             IPv6 header and  p.payload points to that IPv6 header)
- * @param src the source IPv6 address to send from (if src == IP6_ADDR_ANY, an
- *         IP address of the netif is selected and used as source address.
- *         if src == NULL, IP6_ADDR_ANY is used as source) (src is possibly not
- *         properly zoned)
- * @param dest the destination IPv6 address to send the packet to (possibly not
- *             properly zoned)
- * @param hl the Hop Limit value to be set in the IPv6 header
- * @param tc the Traffic Class value to be set in the IPv6 header
- * @param nexth the Next Header to be set in the IPv6 header
- * @param netif the netif on which to send this packet
- * @return ERR_OK if the packet was sent OK
- *         ERR_BUF if p doesn't have enough space for IPv6/LINK headers
- *         returns errors returned by  netif.output_ip6
- */
+ /// *@param src the source IPv6 address to send from (if src == IP6_ADDR_ANY, an
+ /// *        IP address of the netif is selected and used as source address.
+ /// *        if src == NULL, IP6_ADDR_ANY is used as source) (src is possibly not
+ /// *        properly zoned)
+ /// *@param dest the destination IPv6 address to send the packet to (possibly not
+ /// *            properly zoned)
+ /// *@param hl the Hop Limit value to be set in the IPv6 header
+ /// *@param tc the Traffic Class value to be set in the IPv6 header
+ /// *@param nexth the Next Header to be set in the IPv6 header
+ /// *@param netif the netif on which to send this packet
+ /// *@return ERR_OK if the packet was sent OK
+ /// *        ERR_BUF if p doesn't have enough space for IPv6/LINK headers
+ /// *        returns errors returned by  netif.output_ip6
+ /// */
 err_t
 ip6_output_if(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
              u8_t hl, u8_t tc,
@@ -1165,10 +1153,10 @@ ip6_output_if(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
   return ip6_output_if_src(p, src_used, dest, hl, tc, nexth, netif);
 }
 
-/**
- * Same as ip6_output_if() but 'src' address is not replaced by netif address
- * when it is 'any'.
- */
+/// /**
+ /// *Same as ip6_output_if() but 'src' address is not replaced by netif address
+ /// *when it is 'any'.
+ /// */
 err_t
 ip6_output_if_src(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
              u8_t hl, u8_t tc,
@@ -1184,11 +1172,11 @@ ip6_output_if_src(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
   if (dest != LWIP_IP_HDRINCL) {
 // #if LWIP_IPV6_SCOPES
     /* If the destination address is scoped but lacks a zone, add a zone now,
-     * based on the outgoing interface. The lower layers (e.g., nd6) absolutely
-     * require addresses to be properly zoned for correctness. In some cases,
-     * earlier attempts will have been made to add a zone to the destination,
-     * but this function is the only one that is called in all (other) cases,
-     * so we must do this here. */
+     /// *based on the outgoing interface. The lower layers (e.g., nd6) absolutely
+     /// *require addresses to be properly zoned for correctness. In some cases,
+     /// *earlier attempts will have been made to add a zone to the destination,
+     /// *but this function is the only one that is called in all (other) cases,
+     /// *so we must do this here. */
     if (ip6_addr_lacks_zone(dest, IP6_UNKNOWN)) {
       ip6_addr_copy(dest_addr, *dest);
       ip6_addr_assign_zone(&dest_addr, IP6_UNKNOWN, netif);
@@ -1269,24 +1257,22 @@ ip6_output_if_src(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
   return  netif.output_ip6(netif, p, dest);
 }
 
-/**
- * Simple interface to ip6_output_if. It finds the outgoing network
- * interface and calls upon ip6_output_if to do the actual work.
- *
- * @param p the packet to send ( p.payload points to the data, e.g. next
-            protocol header; if dest == LWIP_IP_HDRINCL, p already includes an
-            IPv6 header and  p.payload points to that IPv6 header)
- * @param src the source IPv6 address to send from (if src == IP6_ADDR_ANY, an
- *         IP address of the netif is selected and used as source address.
- *         if src == NULL, IP6_ADDR_ANY is used as source)
- * @param dest the destination IPv6 address to send the packet to
- * @param hl the Hop Limit value to be set in the IPv6 header
- * @param tc the Traffic Class value to be set in the IPv6 header
- * @param nexth the Next Header to be set in the IPv6 header
- *
- * @return ERR_RTE if no route is found
- *         see ip_output_if() for more return values
- */
+/// /** 
+/// * Simple interface to ip6_output_if. It finds the outgoing network 
+/// * interface and calls upon ip6_output_if to do the actual work. 
+/// * 
+/// * @param p the packet to send ( p.payload points to the data, e.g. next protocol header; if dest == LWIP_IP_HDRINCL, p already includes an IPv6 header and  p.payload points to that IPv6 header)
+/// * @param src the source IPv6 address to send from (if src == IP6_ADDR_ANY, an 
+/// *         IP address of the netif is selected and used as source address.
+/// *         if src == NULL, IP6_ADDR_ANY is used as source)
+/// * @param dest the destination IPv6 address to send the packet to
+/// * @param hl the Hop Limit value to be set in the IPv6 header
+/// * @param tc the Traffic Class value to be set in the IPv6 header
+/// * @param nexth the Next Header to be set in the IPv6 header
+/// *
+/// * @return ERR_RTE if no route is found
+/// *         see ip_output_if() for more return values
+/// */
 err_t
 ip6_output(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
           u8_t hl, u8_t tc, u8_t nexth)
@@ -1328,24 +1314,24 @@ ip6_output(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
 
 // #if LWIP_NETIF_USE_HINTS
 /** Like ip6_output, but takes and addr_hint pointer that is passed on to  netif.addr_hint
- *  before calling ip6_output_if.
- *
- * @param p the packet to send ( p.payload points to the data, e.g. next
+ /// * before calling ip6_output_if.
+ /// *
+ /// *@param p the packet to send ( p.payload points to the data, e.g. next
             protocol header; if dest == LWIP_IP_HDRINCL, p already includes an
             IPv6 header and  p.payload points to that IPv6 header)
- * @param src the source IPv6 address to send from (if src == IP6_ADDR_ANY, an
- *         IP address of the netif is selected and used as source address.
- *         if src == NULL, IP6_ADDR_ANY is used as source)
- * @param dest the destination IPv6 address to send the packet to
- * @param hl the Hop Limit value to be set in the IPv6 header
- * @param tc the Traffic Class value to be set in the IPv6 header
- * @param nexth the Next Header to be set in the IPv6 header
- * @param netif_hint netif output hint pointer set to  netif.hint before
- *        calling ip_output_if()
- *
- * @return ERR_RTE if no route is found
- *         see ip_output_if() for more return values
- */
+ /// *@param src the source IPv6 address to send from (if src == IP6_ADDR_ANY, an
+ /// *        IP address of the netif is selected and used as source address.
+ /// *        if src == NULL, IP6_ADDR_ANY is used as source)
+ /// *@param dest the destination IPv6 address to send the packet to
+ /// *@param hl the Hop Limit value to be set in the IPv6 header
+ /// *@param tc the Traffic Class value to be set in the IPv6 header
+ /// *@param nexth the Next Header to be set in the IPv6 header
+ /// *@param netif_hint netif output hint pointer set to  netif.hint before
+ /// *       calling ip_output_if()
+ /// *
+ /// *@return ERR_RTE if no route is found
+ /// *        see ip_output_if() for more return values
+ /// */
 err_t
 ip6_output_hinted(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
           u8_t hl, u8_t tc, u8_t nexth, struct netif_hint *netif_hint)
@@ -1392,15 +1378,15 @@ ip6_output_hinted(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
 
 // #if LWIP_IPV6_MLD
 /**
- * Add a hop-by-hop options header with a router alert option and padding.
- *
- * Used by MLD when sending a Multicast listener report/done message.
- *
- * @param p the packet to which we will prepend the options header
- * @param nexth the next header protocol number (e.g. IP6_NEXTH_ICMP6)
- * @param value the value of the router alert option data (e.g. IP6_ROUTER_ALERT_VALUE_MLD)
- * @return ERR_OK if hop-by-hop header was added, ERR_* otherwise
- */
+ /// *Add a hop-by-hop options header with a router alert option and padding.
+ /// *
+ /// *Used by MLD when sending a Multicast listener report/done message.
+ /// *
+ /// *@param p the packet to which we will prepend the options header
+ /// *@param nexth the next header protocol number (e.g. IP6_NEXTH_ICMP6)
+ /// *@param value the value of the router alert option data (e.g. IP6_ROUTER_ALERT_VALUE_MLD)
+ /// *@return ERR_OK if hop-by-hop header was added, ERR_* otherwise
+ /// */
 err_t
 ip6_options_add_hbh_ra(struct pbuf *p, u8_t nexth, u8_t value)
 {
@@ -1447,8 +1433,8 @@ ip6_options_add_hbh_ra(struct pbuf *p, u8_t nexth, u8_t value)
 
 // #if IP6_DEBUG
 /* Print an IPv6 header by using LWIP_DEBUGF
- * @param p an IPv6 packet,  p.payload pointing to the IPv6 header
- */
+ /// *@param p an IPv6 packet,  p.payload pointing to the IPv6 header
+ /// */
 void
 ip6_debug_print(struct pbuf *p)
 {

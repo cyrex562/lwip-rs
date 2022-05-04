@@ -4,6 +4,7 @@ use crate::errors::{LwipError, LwipErrorCode};
 use crate::errors::LwipErrorCode::{InvalidArgument, NotSet};
 use crate::ip::ip_input;
 use crate::ip_address::{IpAddress, IPV4_ADDR_ANY};
+use crate::ipv6::ip6_addr::Ipv6Address;
 use crate::mac_address::MacAddress;
 use crate::netif_hint::NetifHint;
 use crate::packet_buffer::PacketBuffer;
@@ -252,8 +253,8 @@ pub const NETIF_ADDR_IDX_MAX: u32 = 0x7FFF;
  /* LWIP_NETIF_HWADDRHINT || LWIP_VLAN_PCP*/
 
 #[derive(Debug, Clone, Default)]
-pub struct NetifIp6AddressPair {
-    address: IpAddress,
+pub struct NetifIp6AddressContext {
+    address: Ipv6Address,
     state: u8,
     valid_life: u32,
     preferred_life: u32,
@@ -278,7 +279,7 @@ pub struct NetworkInterface {
     ip4_address_config: NetifIpv4NetInfo,
     // /* LWIP_IPV4 */
     //  /** Array of IPv6 addresses for this netif. */
-    ip6_addresses: Vec<NetifIp6AddressPair>,
+    ip6_addresses: Vec<NetifIp6AddressContext>,
     // ip6_addr: [IpAddress;LWIP_IPV6_NUM_ADDRESSES],
     // /** The state of each IPv6 address (Tentative, Preferred, etc).
     //  * @see ip6_addr.h */
