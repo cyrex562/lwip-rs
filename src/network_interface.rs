@@ -266,6 +266,38 @@ pub struct NetifIpv4NetInfo {
     gateway: IpAddress, // TODO: should this be handled separately in some sort of routing?
 }
 
+#[derive(Debug,Clone,Defautl)]
+pub struct NetworkInterfaceOps {
+    /// This function is called by the network device driver to pass a packet up the
+    /// TCP/IP stack.
+    input: Option<netif_input_fn>,
+
+    /// This function is called by the IP module when it wants to send a packet on the
+    /// interface. This function typically first resolves the hardware address, then
+    /// sends the packet. For ethernet physical layer, this is usually etharp_output()
+    output: Option<netif_output_fn>,
+
+    /// This function is called by ethernet_output() when it wants to send a packet on
+    /// the interface. This function outputs the pbuf as-is on the link medium.
+    linkoutput: Option<netif_linkoutput_fn>,
+
+    /// This function is called by the IPv6 module when it wants to send a packet on the
+    /// interface. This function typically first resolves the hardware address, then
+    /// sends the packet. For ethernet physical layer, this is usually ethip6_output()
+    output_ip6: Option<netif_output_ip6_fn>,
+
+    /// IP_NETIF_STATUS_CALLBACK This function is called when the netif state is set to up
+    /// or down
+    status_callback: Option<netif_status_callback_fn>,
+
+    /// IP_NETIF_LINK_CALLBACK This function is called when the netif link is set to up or
+    /// down
+    link_callback: Option<netif_status_callback_fn>,
+
+    /// IP_NETIF_REMOVE_CALLBACK This function is called when the netif has been removed
+    remove_callback: Option<netif_status_callback_fn>,
+}
+
 /** Generic data structure used for all lwIP network interfaces.
  *  The following fields should be filled in by the initialization
  *  function for the device driver: hwaddr_len, hwaddr[], mtu, flags */
@@ -276,10 +308,10 @@ pub struct NetworkInterface {
     next_netif_id: u32,
     netif_id: u32,
     // /** IP address configuration in network byte order */
-    ip4_address_config: NetifIpv4NetInfo,
+    // ip4_address_config: NetifIpv4NetInfo,
     // /* LWIP_IPV4 */
     //  /** Array of IPv6 addresses for this netif. */
-    ip6_addresses: Vec<NetifIp6AddressContext>,
+    // ip6_addresses: Vec<NetifIp6AddressContext>,
     // ip6_addr: [IpAddress;LWIP_IPV6_NUM_ADDRESSES],
     // /** The state of each IPv6 address (Tentative, Preferred, etc).
     //  * @see ip6_addr.h */
@@ -289,40 +321,9 @@ pub struct NetworkInterface {
     //  * indicates the address is static and has no lifetimes. */
     /* LWIP_IPV6_ADDRESS_LIFETIMES */
     /* LWIP_IPV6 */
-// This function is called by the network device driver
-//    *  to pass a packet up the TCP/IP stack. */
-    input: netif_input_fn,
 
-    // /** This function is called by the IP module when it wants
-    //  *  to send a packet on the interface. This function typically
-    //  *  first resolves the hardware address, then sends the packet.
-    //  *  For ethernet physical layer, this is usually etharp_output() */
-    output: netif_output_fn,
-    /* LWIP_IPV4 */
-    // This function is called by ethernet_output() when it wants
-//    *  to send a packet on the interface. This function outputs
-//    *  the pbuf as-is on the link medium. */
-    linkoutput: netif_linkoutput_fn,
+    ops: NetworkInterfaceOps,
 
-    /** This function is called by the IPv6 module when it wants
-      *  to send a packet on the interface. This function typically
-      *  first resolves the hardware address, then sends the packet.
-      *  For ethernet physical layer, this is usually ethip6_output() */
-    output_ip6: netif_output_ip6_fn,
-    /* LWIP_IPV6 */
-    // IP_NETIF_STATUS_CALLBACK
-    /** This function is called when the netif state is set to up or down
-     */
-    status_callback: Option<netif_status_callback_fn>,
-    /* LWIP_NETIF_STATUS_CALLBACK */
-    // IP_NETIF_LINK_CALLBACK
-    /** This function is called when the netif link is set to up or down
-     */
-    link_callback: netif_status_callback_fn,
-    /* LWIP_NETIF_LINK_CALLBACK */
-    // IP_NETIF_REMOVE_CALLBACK
-    /** This function is called when the netif has been removed */
-    remove_callback: netif_status_callback_fn,
     /* LWIP_NETIF_REMOVE_CALLBACK */
     // This field can be set by the device driver and could point
 //    *  to state information for the device. */

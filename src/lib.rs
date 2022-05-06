@@ -21,3 +21,5 @@ pub mod common;
 pub mod ipv4;
 pub mod ipv6;
 pub mod netif_list;
+pub mod hosts;
+pub mod routing;
