@@ -1,9 +1,4 @@
 pub mod errors;
-
-pub mod netif_h;
-pub mod ip_h;
-pub mod netif_hint;
-pub mod ip6_h;
 pub mod network_buffer;
 pub mod utils;
 pub mod acd;
@@ -12,14 +7,14 @@ pub mod packet_buffer;
 pub mod debug;
 pub mod config_h;
 pub mod ip_address;
-pub mod network_interface;
 pub mod mac_address;
-pub mod netif_ops;
 pub mod zigbee_encap_proto;
 pub mod ethernet;
 pub mod common;
 pub mod ipv4;
 pub mod ipv6;
-pub mod netif_list;
 pub mod hosts;
+pub mod mac_filter;
+pub mod queue;
+pub mod netif;
 pub mod routing;

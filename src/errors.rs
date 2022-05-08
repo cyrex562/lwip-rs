@@ -43,6 +43,8 @@ pub enum LwipErrorCode {
     NotSet,
     Unknown,
     InvalidArgument,
+    InvalidData,
+    InvalidOperation,
 }
 
 impl fmt::Display for LwipErrorCode {

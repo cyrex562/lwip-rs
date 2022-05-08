@@ -2,9 +2,14 @@ use crate::errors::{LwipError, LwipErrorCode};
 use crate::errors::LwipErrorCode::{InvalidArgument, NotSet};
 use crate::ip::ip_input;
 use crate::ip_address::{IpAddress, IPV4_ADDR_ANY};
+use crate::netif::network_interface::NetworkInterface;
 use crate::network_interface;
 use crate::network_interface::{LWIP_NSC_IPV4_ADDRESS_CHANGED, LWIP_NSC_IPV4_GATEWAY_CHANGED, LWIP_NSC_IPV4_NETMASK_CHANGED, LWIP_NSC_IPV4_SETTINGS_CHANGED, LWIP_NSC_LINK_CHANGED, LWIP_NSC_NETIF_ADDED, LWIP_NSC_NETIF_REMOVED, LWIP_NSC_NONE, LWIP_NSC_STATUS_CHANGED, NETIF_CHECKSUM_DISABLE_ALL, NETIF_CHECKSUM_ENABLE_ALL, NETIF_FLAG_IGMP, NETIF_REPORT_TYPE_IPV4, NETIF_REPORT_TYPE_IPV6, NetifExtCallbackArgs, NetworkInterface};
 use crate::packet_buffer::PacketBuffer;
+
+
+
+
 
 /// Forwards a received packet for input processing with ethernet_input() or ip_input()
 /// depending on netif flags. Don't call directly, pass to netif_add() and call

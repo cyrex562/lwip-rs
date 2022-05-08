@@ -1,109 +1,15 @@
-/**
- * @file
- * This is the IPv4 packet segmentation and reassembly implementation.
- *
- */
-
-/*
- * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- *
- * This file is part of the lwIP TCP/IP stack.
- *
- * Author: Jani Monoses <jani@iv.ro>
- *         Simon Goldschmidt
- * original reassembly code by Adam Dunkels <adam@sics.se>
- *
- */
 
 
 
-// #if LWIP_IPV4
+pub struct Ipv4ReassHelper {
+    next_pbuf: PacketBuffer,
+    start: u16,
+    end: u16
+}
 
-
-
-
-
-
-
-
-
-
-// #if IP_REASSEMBLY
-/**
- * The IP reassembly code currently has the following limitations:
- * - IP header options are not supported
- * - fragments must not overlap (e.g. due to different routes),
- *   currently, overlapping or duplicate fragments are thrown away
- *   if IP_REASS_CHECK_OVERLAP=1 (the default)!
- *
- * @todo: work with IP header options
- */
-
-/** Setting this to 0, you can turn off checking the fragments for overlapping
- * regions. The code gets a little smaller. Only use this if you know that
- * overlapping won't occur on your network! */
-#ifndef IP_REASS_CHECK_OVERLAP
-#define IP_REASS_CHECK_OVERLAP 1
-// #endif /* IP_REASS_CHECK_OVERLAP */
-
-/** Set to 0 to prevent freeing the oldest datagram when the reassembly buffer is
- * full (IP_REASS_MAX_PBUFS pbufs are enqueued). The code gets a little smaller.
- * Datagrams will be freed by timeout only. Especially useful when MEMP_NUM_REASSDATA
- * is set to 1, so one datagram can be reassembled at a time, only. */
-#ifndef IP_REASS_FREE_OLDEST
-#define IP_REASS_FREE_OLDEST 1
-// #endif /* IP_REASS_FREE_OLDEST */
-
-#define IP_REASS_FLAG_LASTFRAG 0x01
-
-#define IP_REASS_VALIDATE_TELEGRAM_FINISHED  1
-#define IP_REASS_VALIDATE_PBUF_QUEUED        0
-#define IP_REASS_VALIDATE_PBUF_DROPPED       -1
-
-/** This is a helper struct which holds the starting
- * offset and the ending offset of this fragment to
- * easily chain the fragments.
- * It has the same packing requirements as the IP header, since it replaces
- * the IP header in memory in incoming fragments (after copying it) to keep
- * track of the various fragments. (-> If the IP header doesn't need packing,
- * this struct doesn't need packing, too.)
- */
-#ifdef PACK_STRUCT_USE_INCLUDES
-#  include "arch/bpstruct.h"
-// #endif
-
-struct ip_reass_helper {
-  PACK_STRUCT_FIELD(struct pbuf *next_pbuf);
-  PACK_STRUCT_FIELD(u16_t start);
-  PACK_STRUCT_FIELD(u16_t end);
-} PACK_STRUCT_STRUCT;
-
-#ifdef PACK_STRUCT_USE_INCLUDES
-#  include "arch/epstruct.h"
-// #endif
+pub fn ipv4_addresses_and_id_match(hdr1: &Ipv4Header, hdr2: &Ipv4Header) {
+    hdr1.
+}
 
 #define IP_ADDRESSES_AND_ID_MATCH(iphdrA, iphdrB)  \
   (ip4_addr_eq(&(iphdrA)->src, &(iphdrB)->src) && \
