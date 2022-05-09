@@ -175,9 +175,15 @@ pub const PBUF_FLAG_TCP_FIN: u32 =   0x20;
 /** Main packet buffer struct */
 #[derive(Debug, Clone, Default)]
 pub struct PacketBuffer {
-  /** next pbuf in singly linked pbuf chain */
-  next: i32,
-  /** pointer to the actual data in the buffer */
+    /// pass the data immediately to the receiving application
+    pub push_flag: bool,
+  /// indicates this is custom pbuf
+  pub custom_flag: bool,
+  /// indiciates this pbuf is a UDP multicast packet to be looped back
+  pub udp_mcast_loop_flag: bool,
+  /// indicates this pbuf was received as a link-level broadcast
+  pub ll_bcast_flag: bool,
+  /// pointer to the actual data in the buffer/
   payload: Vec<u8>,
 
   /**

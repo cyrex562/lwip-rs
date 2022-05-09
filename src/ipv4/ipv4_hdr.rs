@@ -1,3 +1,5 @@
+use crate::packet_buffer::PacketBuffer;
+
 pub const IPV4_RES_FRAG_FLAG: u16 = 0x8000;
 pub const IPV4_DONT_FRAG_FLAG: u16 = 0x4000;
 pub const IPV4_MORE_FRAG_FLAG: u16 = 0x2000;
@@ -54,5 +56,12 @@ impl Ipv4Header {
 
     pub fn set_v_hl(&mut self, v: u8, hl: u8) {
         self.v_hl = (v << 4) | hl
+    }
+
+}
+
+impl From<PacketBuffer> for Ipv4Header {
+    fn from(pkt_buf: &PacketBuffer) -> Self {
+
     }
 }
