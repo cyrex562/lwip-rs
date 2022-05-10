@@ -94,7 +94,7 @@
 // #endif
 
 /** DHCP_CREATE_RAND_XID: if this is set to 1, the xid is created using
- * LWIP_RAND() (this overrides DHCP_GLOBAL_XID)
+ * lwip_rand() (this overrides DHCP_GLOBAL_XID)
  */
 #ifndef DHCP_CREATE_RAND_XID
 #define DHCP_CREATE_RAND_XID        1
@@ -1869,11 +1869,11 @@ dhcp_create_msg(struct netif *netif, struct dhcp *dhcp, u8_t message_type, u16_t
    *  with a packet analyser). We simply increment for each new request.
    *  Predefine DHCP_GLOBAL_XID to a better value or a function call to generate one
    *  at runtime, any supporting function prototypes can be defined in DHCP_GLOBAL_XID_HEADER */
-// #if DHCP_CREATE_RAND_XID && defined(LWIP_RAND)
+// #if DHCP_CREATE_RAND_XID && defined(lwip_rand)
   static u32_t xid;
-#else /* DHCP_CREATE_RAND_XID && defined(LWIP_RAND) */
+#else /* DHCP_CREATE_RAND_XID && defined(lwip_rand) */
   static u32_t xid = 0xABCD0000;
-// #endif /* DHCP_CREATE_RAND_XID && defined(LWIP_RAND) */
+// #endif /* DHCP_CREATE_RAND_XID && defined(lwip_rand) */
 #else
   if (!xid_initialised) {
     xid = DHCP_GLOBAL_XID;
@@ -1895,11 +1895,11 @@ dhcp_create_msg(struct netif *netif, struct dhcp *dhcp, u8_t message_type, u16_t
   if ((message_type != DHCP_REQUEST) || ( dhcp.state == DHCP_STATE_REBOOTING)) {
     /* reuse transaction identifier in retransmissions */
     if ( dhcp.tries == 0) {
-// #if DHCP_CREATE_RAND_XID && defined(LWIP_RAND)
+// #if DHCP_CREATE_RAND_XID && defined(lwip_rand)
       xid = LWIP_RAND();
-#else /* DHCP_CREATE_RAND_XID && defined(LWIP_RAND) */
+#else /* DHCP_CREATE_RAND_XID && defined(lwip_rand) */
       xid++;
-// #endif /* DHCP_CREATE_RAND_XID && defined(LWIP_RAND) */
+// #endif /* DHCP_CREATE_RAND_XID && defined(lwip_rand) */
     }
      dhcp.xid = xid;
   }

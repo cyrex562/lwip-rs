@@ -22,7 +22,7 @@
 // #include "lwip/tcpip.h"
 
 
-/* This function is used for LWIP_RAND by some ports... */
+/* This function is used for lwip_rand by some ports... */
 unsigned int
 lwip_port_rand()
 {

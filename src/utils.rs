@@ -31,7 +31,7 @@ use rand::Rng;
  */
 
 
-pub fn LWIP_RAND() -> u32 {
+pub fn lwip_rand() -> u64 {
     rng.gen()
 }
 

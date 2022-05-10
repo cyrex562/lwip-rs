@@ -112,14 +112,14 @@ static void magic_churnrand(char *rand_data, u32_t rand_len) {
       u32_t jiffies;
 #ifdef LWIP_RAND
       u32_t rand;
-// #endif /* LWIP_RAND */
+// #endif /* lwip_rand */
     } sys_data;
     /* Load sys_data fields here. */
     magic_randomseed += sys_jiffies();
     sys_data.jiffies = magic_randomseed;
 #ifdef LWIP_RAND
     sys_data.rand = LWIP_RAND();
-// #endif /* LWIP_RAND */
+// #endif /* lwip_rand */
     lwip_md5_update(&md5_ctx, (u_char *)&sys_data, sizeof(sys_data));
   }
   lwip_md5_finish(&md5_ctx, (u_char *)magic_randpool);
@@ -193,7 +193,7 @@ u32_t magic() {
 
 #ifndef LWIP_RAND
 static int  magic_randomized;       /* Set when truly randomized. */
-// #endif /* LWIP_RAND */
+// #endif /* lwip_rand */
 static u32_t magic_randomseed;      /* Seed used for random number generation. */
 
 /*
@@ -207,7 +207,7 @@ static u32_t magic_randomseed;      /* Seed used for random number generation. *
  * after each boot.  Thus we call it again on the first
  * random event.
  *
- * If LWIP_RAND if available, we do not call srand() as we are
+ * If lwip_rand if available, we do not call srand() as we are
  * not going to call rand().
  */
 void magic_init() {
@@ -215,7 +215,7 @@ void magic_init() {
 #ifndef LWIP_RAND
   /* Initialize the random number generator. */
   srand((unsigned)magic_randomseed);
-// #endif /* LWIP_RAND */
+// #endif /* lwip_rand */
 }
 
 /*
@@ -233,7 +233,7 @@ void magic_randomize() {
     /* The initialization function also updates the seed. */
     return;
   }
-// #endif /* LWIP_RAND */
+// #endif /* lwip_rand */
   magic_randomseed += sys_jiffies();
 }
 
@@ -247,7 +247,7 @@ void magic_randomize() {
  * operator or network events in which case it will be pseudo random
  * seeded by srand().
  *
- * Alternatively, use LWIP_RAND if available, but we do not assume
+ * Alternatively, use lwip_rand if available, but we do not assume
  * it is returning 32 bits of random data because it is probably
  * going to be defined to directly return the rand() value. For
  * example, LCP magic numbers are 32-bit random values.
@@ -255,9 +255,9 @@ void magic_randomize() {
 u32_t magic() {
 #ifdef LWIP_RAND
   return (LWIP_RAND() << 16) + LWIP_RAND() + magic_randomseed;
-#else /* LWIP_RAND */
+#else /* lwip_rand */
   return ((u32_t)rand() << 16) + (u32_t)rand() + magic_randomseed;
-// #endif /* LWIP_RAND */
+// #endif /* lwip_rand */
 }
 
 /*

@@ -6,3 +6,4 @@ pub mod ipv4_hdr;
 pub mod ipv4_frag;
 pub mod ipv4_multicast;
 pub mod ipv4_routing;
+pub mod ipv4_acd;

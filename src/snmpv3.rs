@@ -96,7 +96,7 @@ snmpv3_get_engine_time_internal()
 /* This function ignores the byte order suggestion in RFC3414
  * since it simply doesn't influence the effectiveness of an IV.
  *
- * Implementing RFC3826 priv param algorithm if LWIP_RAND is available.
+ * Implementing RFC3826 priv param algorithm if lwip_rand is available.
  *
  * @todo: This is a potential thread safety issue.
  */

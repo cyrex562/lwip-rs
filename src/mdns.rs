@@ -84,7 +84,7 @@
 #error "If you want to use MDNS, you have to define LWIP_UDP=1 in your lwipopts.h"
 // #endif
 #ifndef LWIP_RAND
-#error "If you want to use MDNS, you have to define LWIP_RAND=(random function) in your lwipopts.h"
+#error "If you want to use MDNS, you have to define lwip_rand=(random function) in your lwipopts.h"
 // #endif
 
 // #if LWIP_IPV4

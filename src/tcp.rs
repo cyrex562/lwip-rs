@@ -202,7 +202,7 @@ tcp_init()
 {
 #ifdef LWIP_RAND
   tcp_port = TCP_ENSURE_LOCAL_PORT_RANGE(LWIP_RAND());
-// #endif /* LWIP_RAND */
+// #endif /* lwip_rand */
 }
 
 /** Free a tcp pcb */

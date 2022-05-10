@@ -693,10 +693,10 @@ igmp_start_timer(struct igmp_group *group, u8_t max_time)
 {
 #ifdef LWIP_RAND
    group.timer = (u16_t)(max_time > 2 ? (LWIP_RAND() % max_time) : 1);
-#else /* LWIP_RAND */
+#else /* lwip_rand */
   /* ATTENTION: use this only if absolutely necessary! */
    group.timer = max_time / 2;
-// #endif /* LWIP_RAND */
+// #endif /* lwip_rand */
 
   if ( group.timer == 0) {
      group.timer = 1;

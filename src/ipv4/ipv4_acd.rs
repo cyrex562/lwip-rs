@@ -1,6 +1,7 @@
-use std::net::Ipv4Addr;
-
+use std::collections::HashMap;
 use log::{debug, warn};
+use crate::ipv4::ipv4_address::Ipv4Address;
+
 ///
 /// @file
 ///
@@ -32,61 +33,27 @@ use log::{debug, warn};
 ///   No extra's needed.
 ////
 
-/*
-///
-/// Copyright (c) 2007 Dominik Spies <kontakt@dspies.de>
-/// Copyright (c) 2018 Jasper Verschueren <jasper.verschueren@apart-audio.com>
-/// All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without modification,
-/// are permitted provided that the following conditions are met:
-///
-/// 1. Redistributions of source code must retain the above copyright notice,
-///    this list of conditions and the following disclaimer.
-/// 2. Redistributions in binary form must reproduce the above copyright notice,
-///    this list of conditions and the following disclaimer in the documentation
-///    and/or other materials provided with the distribution.
-/// 3. The name of the author may not be used to endorse or promote products
-///    derived from this software without specific prior written permission.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
-/// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-/// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-/// SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-/// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
-/// OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-/// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-/// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-/// IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
-/// OF SUCH DAMAGE.
-///
-/// Author: Jasper Verschueren <jasper.verschueren@apart-audio.com>
-/// Author: Dominik Spies <kontakt@dspies.de>
-////
 
 use crate::mac_address::MacAddress;
-use crate::utils::LWIP_RAND;
+use crate::utils::lwip_rand;
 use rnd::Rng;
 use crate::acd::AcdState::ProbeWait;
 use crate::errors::{LwipError, LwipErrorCode};
 use crate::ip_address::IpAddress;
+use crate::netif::network_interface::NetworkInterface;
 use crate::network_interface::NetworkInterface;
 
-/* don't build if not configured for use in lwipopts.h */
-
-
-
 /* RFC 5227 and RFC 3927 Constants */
-pub const PROBE_WAIT: usize = 1; /* second  (initial random delay)                    */
-pub const PROBE_MIN: usize = 1; /* second  (minimum delay till repeated probe)       */
-pub const PROBE_MAX: usize = 2; /* seconds (maximum delay till repeated probe)       */
-pub const PROBE_NUM: usize = 3; /*         (number of probe packets)                 */
-pub const ANNOUNCE_NUM: usize = 2; /*         (number of announcement packets)          */
-pub const ANNOUNCE_INTERVAL: usize = 2; /* seconds (time between announcement packets)       */
-pub const ANNOUNCE_WAIT: usize = 2; /* seconds (delay before announcing)                 */
-pub const MAX_CONFLICTS: usize = 10; /*         (max conflicts before rate limiting)      */
-pub const RATE_LIMIT_INTERVAL: usize = 60; /* seconds (delay between successive attempts)       */
-pub const DEFEND_INTERVAL: usize = 10; /* seconds (minimum interval between defensive ARPs) */
+pub const PROBE_WAIT: i64 = 1; /* second  (initial random delay)                    */
+pub const PROBE_MIN: i64 = 1; /* second  (minimum delay till repeated probe)       */
+pub const PROBE_MAX: i64 = 2; /* seconds (maximum delay till repeated probe)       */
+pub const PROBE_NUM: i64 = 3; /*         (number of probe packets)                 */
+pub const ANNOUNCE_NUM: i64 = 2; /*         (number of announcement packets)          */
+pub const ANNOUNCE_INTERVAL: i64 = 2; /* seconds (time between announcement packets)       */
+pub const ANNOUNCE_WAIT: i64 = 2; /* seconds (delay before announcing)                 */
+pub const MAX_CONFLICTS: i64 = 10; /*         (max conflicts before rate limiting)      */
+pub const RATE_LIMIT_INTERVAL: i64 = 60; /* seconds (delay between successive attempts)       */
+pub const DEFEND_INTERVAL: i64 = 10; /* seconds (minimum interval between defensive ARPs) */
 
 /* ACD states */
 #[derive(Debug,Clone)]
@@ -119,166 +86,127 @@ pub enum AcdCallbackResult {
     AcdDecline           /* Decline the received IP address (rate limiting)*/
 }
 
-
-
-// /**
-//  * Callback function: Handle conflict information from ACD module
-//  *
-//  * @param netif   network interface to handle conflict information on
-//  * @param state   acd_callback_enum_t
-//  */
-// typedef void (*acd_conflict_callback_t)(netif: &mut NetworkInterface, acd_callback_enum_t state);
-type acd_conflict_callback = fn(netif: &NetworkInterface, state: AcdCallbackResult);
-
-/// ACD state information per netif */
-#[derive(Debug, Default, Clone, PartialEq)]
-pub struct AcdStateInfo {
-    /** next acd module */
-    // struct acd *next;
-    next_id: u32,
-    /** the currently selected, probed, announced or used IP-Address */
-    ipaddr: IpAddress,
-    /** current ACD state machine state */
-    state: AcdState,
-    /** sent number of probes or announces, dependent on state */
-    sent_num: usize,
-    /** ticks to wait, tick is ACD_TMR_INTERVAL long */
-    ticks_to_wait: u32,
-    /** ticks until a conflict can again be solved by defending */
-    lastconflict: u8,
-    /** total number of probed/used IP-Addresses that resulted in a conflict */
-    num_conflicts: usize,
-    /** callback function -> let's the acd user know if the address is good or
-         if a conflict is detected */
-    callback: acd_conflict_callback,
-}
-
-impl AcdStateInfo {
-    pub fn new() -> Self {
-        Default::default()
-    }
-}
-
-
 // ACD Timing
 // ACD_TMR_INTERVAL msecs, I recommend a value of 100.
 // The value must divide 1000 with a remainder almost 0. Possible values are
 // 1000, 500, 333, 250, 200, 166, 142, 125, 111, 100 ....
 //
-pub const ACD_TMR_INTERVAL: u32 = 100; 
+pub const ACD_TMR_INTERVAL: i64 = 100;
 
+pub const ACD_TICKS_PER_SECOND: i64 =  (1000 / ACD_TMR_INTERVAL);
 
+/// Handle conflict informatino from ACD module
+type AcdConflictCallback = fn(netif: &NetworkInterface, state: AcdCallbackResult);
 
-
-// #define ACD_FOREACH(acd, acd_list) for ((acd) = acd_list; (acd) != NULL; (acd) = (acd)->next)
-
-pub const ACD_TICKS_PER_SECOND: u32 =  (1000 / ACD_TMR_INTERVAL);
-
-// pub fn LWIP_ACD_RAND(netif: NetworkInterface, acd: Acd) -> u32 {
-//     utils::LWIP_RAND()
-// }
-
-
-
-
-// #define ACD_RANDOM_PROBE_WAIT(netif, acd) (LWIP_ACD_RAND(netif, acd) % \
-//                                     (PROBE_WAIT * ACD_TICKS_PER_SECOND))
-pub fn ACD_RANDOM_PROBE_WAIT(netif: &NetworkInterface, acd: Acd) -> u32 {
-    LWIP_RAND() % (PROBE_WAIT * ACD_TICKS_PER_SECOND)
+/// ACD state information per netif
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct AcdContext {
+    /// the currently selected, probed, announced or used IP-Address
+   pub  addr: Ipv4Address,
+    /// current ACD state machine state
+    pub state: AcdState,
+    /// sent number of probes or announces, dependent on state
+    pub sent_num: i64,
+    /// ticks to wait, tick is ACD_TMR_INTERVAL long
+    pub ticks_to_wait: i64,
+    /// ticks until a conflict can again be solved by defending
+    pub last_conflict: i64,
+    /// total number of probed/used IP-Addresses that resulted in a conflict
+    pub num_conflicts: i64,
+    /// callback function -> let's the acd user know if the address is good or if a conflict is detected
+    pub callback: AcdConflictCallback,
+    /// id of the associated network interface
+    pub netif_id: i64,
 }
 
-
-// #define ACD_RANDOM_PROBE_INTERVAL(netif, acd) ((LWIP_ACD_RAND(netif, acd) % \
-//                                     ((PROBE_MAX - PROBE_MIN) * ACD_TICKS_PER_SECOND)) + \
-//                                     (PROBE_MIN * ACD_TICKS_PER_SECOND ))
-pub fn ACD_RANDOM_PROBE_INTERVAL(netif: &NetworkInterface, acd: ACD) -> u32 {
-    LWIP_RAND() &  (((PROBE_MAX - PROBE_MIN) * ACD_TICKS_PER_SECOND) + (PROBE_MIN * ACD_TICKS_PER_SECOND ))
+impl AcdContext {
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 
-/* Function definitions */
-// static void acd_restart(netif: &mut NetworkInterface, acd: &mut AcdStateInfo);
-// static void acd_handle_arp_conflict(netif: &mut NetworkInterface, acd: &mut AcdStateInfo);
-// static void acd_put_in_passive_mode(netif: &mut NetworkInterface, acd: &mut AcdStateInfo);
+pub struct AcdTable {
+    pub table: HashMap<i64, Vec<AcdContext>>
+}
 
-
-pub fn acd_add_to_list(netif: &mut NetworkInterface, acd: &mut AcdContext,
-                       callback: acd_conflict_callback) -> Result<(), LwipError> {
-    let acd2: AcdStateInfo = AcdStateInfo::new();
-    /* Set callback */
-    // LWIP_ASSERT_CORE_LOCKED()
-    // LWIP_ASSERT("acd_conflict_callback != NULL", acd_conflict_callback != NULL);
-    acd.acd_conflict_callback = callback;
-
-    /* Check if the acd struct is already added */
-    for acd2 in netif.acd_list {
-        if acd2 == acd {
-            debug!("acd already added to list");
-            return Err(LwipError::new(LwipErrorCode::InvalidArgument, "acd already exists in list"));
+impl AcdTable {
+    pub fn new() -> Self {
+        Self {
+            table: HashMap::new(),
         }
     }
 
-    return ERR_OK;
-}
-
-
-pub fn acd_remove_from_list(netif: &mut NetworkInterface, acd: &mut AcdStateInfo) -> Result<(), LwipError> {
-    let mut item_in_list = false;
-    let mut idx = 0usize;
-    for acd2 in netif.acd_list {
-        if acd2 == acd {
-            item_in_list = true;
-            break;
+    pub fn get_acds_for_netif_id(&mut self, netif_id: i64) -> Result<&mut Vec<AcdContext>, LwipError> {
+        if self.table.contains_key(&netif_id) {
+            let list = self.table.get_mut(&netif_id).unwrap();
+            Ok(list)
+        } else {
+            Err(LwipError::new(LwipError::NotFound, "list of Acd Contexts not found for specified netif id {}".format(netif_id)))
         }
-        idx += 1;
     }
-    if item_in_list {
-        netif.acd_list.remove(idx);
-        Ok(())
+
+    pub fn add_acd_to_table(&mut self, netif_id: i64, ctx: AcdContext) -> Result<(), LwipError> {
+        if self.table.contains_key(&netif_id) {
+            let list = self.table.get_mut(&netif_id).unwrap();
+            list.push(ctx);
+            Ok(())
+        } else {
+            self.table.insert(netif_id, vec![ctx])
+        }
     }
-    Err(LwipError::new(LwipErrorCode::InvalidArgument, "acd not in netif acd list"))
 }
 
-pub fn acd_start_client(netif: &mut NetworkInterface, acd: &mut AcdStateInfo, addr: &IpAddress) -> Result<(), LwipError> {
+pub fn acd_random_probe_wait() -> i64 {
+    lwip_rand() as i64 % (PROBE_WAIT * ACD_TICKS_PER_SECOND)
+}
+
+pub fn acd_random_probe_interval() -> i64 {
+    lwip_rand() as i64 &  (((PROBE_MAX - PROBE_MIN) * ACD_TICKS_PER_SECOND) + (PROBE_MIN * ACD_TICKS_PER_SECOND ))
+}
+
+pub fn acd_start_client(acd: &mut AcdContext, addr: &Ipv4Address) -> Result<(), LwipError> {
     acd.sent_num = 0;
-    acd.lastconflict = 0;
-    acd.ipaddr = addr.clone();
+    acd.last_conflict = 0;
+    acd.addr = addr.clone();
     acd.state = AcdState::ProbeWait;
-    acd.ticks_to_wait = ACD_RANDOM_PROBE_WAIT(netif, acd);
-
+    acd.ticks_to_wait = acd_random_probe_wait();
     Ok(())
 }
 
 
-pub fn acd_stop_client(acd: &mut AcdStateInfo) -> Result<(), LwipError> {
+pub fn acd_stop_client(acd: &mut AcdContext) -> Result<(), LwipError> {
     acd.state = AcdState::Off;
     Ok(())
 }
 
 
-pub fn acd_network_changed_link_down(netif: &mut NetworkInterface)
+pub fn acd_network_changed_link_down(netif_id: i64, table: &mut AcdTable) -> Result<(), LwipError>
 {
-    for acd in netif.acd_list.iter_mut() {
-        acd_stop_client(acd);
+    let result = table.get_acds_for_netif_id(netif_id);
+    match result {
+        Ok(list) => {
+            list.iter_mut().map(|x| {acd_stop_client(x)});
+            Ok(())
+        },
+        Err(e) => {
+            Err(LwipError::new(LwipErrorCode::OperationFailed, "failed to get acd list for netif id: {}".format(e.to_string())))
+        }
     }
-
 }
 
 ///
 /// Has to be called in loop every ACD_TMR_INTERVAL milliseconds
 ////
-pub fn acd_tmr(netif_list: &mut Vec<NetworkInterface>) {
-    for netif in netif_list.iter_mut() {
-        for acd in netif.acd_list.iter_mut() {
-            if acd.lastconflict > 0 {
-                acd.lastconflict -= 1;
+pub fn acd_tmr(netif_id: i64, table: &mut AcdTable) -> Result<(), LwipError>{
+    for (_, list ) in table.table.iter_mut() {
+        for acd in list.iter_mut() {
+            if acd.last_conflict > 0 {
+                acd.last_conflict -= 1;
             }
-
-            debug!("acd state: {:?}, ttw: {}", &acd.state, &acd.ticks_to_wait);
-            if acd.ttw > 0 {
-                acd.ttw -= 1;
+            if acd.ticks_to_wait > 0 {
+                acd.ticks_to_wait -= 1;
             }
-
-            match &acd.state {
+            match acd.state {
                 AcdState::ProbeWait => {},
                 AcdState::Probing => {
                     if acd.ttw == 0 {
@@ -292,7 +220,7 @@ pub fn acd_tmr(netif_list: &mut Vec<NetworkInterface>) {
                             acd.sent_num = 0;
                             acd.ttw = (ANNOUNCE_WAIT * ACD_TICKS_PER_SECOND)
                         } else {
-                            acd.ttw = ACD_RANDOM_PROBE_INTERVAL(netif, acd);
+                            acd.ttw = acd_random_probe_interval();
                         }
                     }
                 },
@@ -329,9 +257,10 @@ pub fn acd_tmr(netif_list: &mut Vec<NetworkInterface>) {
             }
         }
     }
+    Ok(())
 }
 
-pub fn acd_restart(netif: &mut NetworkInterface, acd: &mut AcdStateInfo) {
+pub fn acd_restart(netif: &mut NetworkInterface, acd: &mut AcdContext) {
     /* increase conflict counter. */
     acd.num_conflicts += 1;
 
@@ -359,14 +288,13 @@ pub fn acd_restart(netif: &mut NetworkInterface, acd: &mut AcdStateInfo) {
 /// @param netif network interface to use for acd processing
 /// @param hdr   Incoming ARP packet
 ////
-pub fn acd_arp_reply(netif: &mut NetworkInterface, hdr: &mut etharp_hdr)
+pub fn acd_arp_reply(acd_list: &mut Vec<AcdContext>, netif: &mut NetworkInterface, hdr: &mut etharp_hdr) -> Result<(), LwipError>
 {
-  let mut acd: AcdStateInfo;
+  let mut acd: AcdContext;
   let mut sipaddr: Ipv4Addr;
   let mut dipaddr: Ipv4Addr;
-  let mut netifaddr: MacAddress;
+  let mut netifaddr: MacAddress = netif.mac_addresses.get(0)?.clone();
 
-  netifaddr.address = netif.mac_address;
 
   /* Copy struct ip4_addr_wordaligned to aligned ip4_addr, to support
    * compilers without structure packing (not using structure copy which
@@ -423,7 +351,7 @@ pub fn acd_arp_reply(netif: &mut NetworkInterface, hdr: &mut etharp_hdr)
 /// since we cannot have the acd module announcing or restarting. This
 /// situation occurs for the LL acd module when a routable address is used on
 ///     the netif but the LL address is still open in the background
-pub fn acd_handle_arp_conflict(netif: &mut NetworkInterface, acd: &mut AcdStateInfo)
+pub fn acd_handle_arp_conflict(netif: &mut NetworkInterface, acd: &mut AcdContext)
 {
   if ( acd.state == ACD_STATE_PASSIVE_ONGOING) {
     // Immediately back off on a conflict
@@ -432,7 +360,7 @@ pub fn acd_handle_arp_conflict(netif: &mut NetworkInterface, acd: &mut AcdStateI
      acd.acd_conflict_callback(netif, ACD_DECLINE);
   }
   else {
-    if ( acd.lastconflict > 0) {
+    if ( acd.last_conflict > 0) {
       // retreat, there was a conflicting ARP in the last DEFEND_INTERVAL seconds
       debug!("conflict withing DEFEND INTERVAL: retreating");
 
@@ -442,13 +370,13 @@ pub fn acd_handle_arp_conflict(netif: &mut NetworkInterface, acd: &mut AcdStateI
     } else {
      debug!("we are defending, send ARP Announce");
       etharp_acd_announce(netif, & acd.ipaddr);
-       acd.lastconflict = DEFEND_INTERVAL * ACD_TICKS_PER_SECOND;
+       acd.last_conflict = DEFEND_INTERVAL * ACD_TICKS_PER_SECOND;
     }
   }
 }
 
 /// Put the acd module in passive ongoing conflict detection.
-pub fn acd_put_in_passive_mode(netif: &mut NetworkInterface, acd: &mut AcdStateInfo)
+pub fn acd_put_in_passive_mode(netif: &mut NetworkInterface, acd: &mut AcdContext)
 {
   match acd.state {
     AcdState::Off | AcdState::PassiveOngoing => {}

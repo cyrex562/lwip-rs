@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 use std::time::SystemTime;
+use chrono::prelude::*;
+use std::time::UNIX_EPOCH;
 use log::debug;
-use crate::acd::AcdStateInfo;
+use crate::common::packet_buffer::PacketBuffer;
+use crate::ipv4_acd::AcdStateInfo;
 use crate::errors::{LwipError, LwipErrorCode};
 use crate::errors::LwipErrorCode::{InvalidArgument, NotSet};
 use crate::ip::ip_input;
@@ -14,18 +17,17 @@ use crate::netif_hint::NetifHint;
 use crate::packet_buffer::PacketBuffer;
 use crate::queue::Queue;
 
-pub const NETIF_REPORT_TYPE_IPV4: u8 =  0x01;
-pub const NETIF_REPORT_TYPE_IPV6: u8 =  0x02;
+pub const NETIF_REPORT_TYPE_IPV4: u8 = 0x01;
+pub const NETIF_REPORT_TYPE_IPV6: u8 = 0x02;
 
-pub enum LwipInternalNetifClientDataIndex
-{
+pub enum LwipInternalNetifClientDataIndex {
     LwipNetifClientDataIndexDhcp,
     LwipNetifClientDataIndexAutoip,
     LwipNetifClientDataIndexAcd,
     LwipNetifClientDataIndexIgmp,
     LwipNetifClientDataIndexDhcp6,
     LwipNetifClientDataIndexMld6,
-    PNetifClientDataIndexMax
+    PNetifClientDataIndexMax,
 }
 
 pub const NETIF_CHECKSUM_GEN_IP: u32 = 0x0001;
@@ -58,7 +60,7 @@ pub struct NetifIpv4AddressContext {
 pub enum NetworkInterfaceType {
     /// Ethernet device that may or may not process ARP or other traffic, such as PPPoE
     Ethernet,
-    ///
+    NotSet,
 }
 
 pub struct NetifIgmpMacFilter {
@@ -74,8 +76,7 @@ pub struct NetifMldMacFilter {
 /// Generic data structure used for all lwIP network interfaces.
 #[derive(Debug, Clone, Default)]
 pub struct NetworkInterface {
-    pub next_netif_id: i32,
-    pub netif_id: i32,
+    pub netif_id: i64,
     /// a list of assigned MAC addresses
     pub mac_addresses: Vec<MacAddress>,
     /// a list of assigned IPv4 addresses
@@ -97,35 +98,62 @@ pub struct NetworkInterface {
     /// speed of link in bits per sec
     pub link_speed: i64,
     /// timestamp at last change made (up/down)
-    pub last_state_change_ts: SystemTime,
+    pub last_state_change_ts: Option<DateTime<UTC>>,
     /// a table of mac filters
-    igmp_mac_filters: HashMap<u32, NetifIgmpMacFilter>,
+    pub igmp_mac_filters: HashMap<u32, NetifIgmpMacFilter>,
     /// a table of MLD MAC filters
-    mld_mac_filters: HashMap<u32, NetifMldMacFilter>,
-    /// a vector of received packets
-    pub rx_buffer: Vec<PacketBuffer>,
+    pub mld_mac_filters: HashMap<u32, NetifMldMacFilter>,
     /// packets to transmit
-    tx_queue: Queue<PacketBuffer>,
+    pub tx_queue: Queue<PacketBuffer>,
     /// received packets
-    rx_queue: Queue<PacketBuffer>,
+    pub rx_queue: Queue<PacketBuffer>,
     /// Used if the original scheduling failed.
-    reschedule_poll: bool,
+    pub reschedule_poll: bool,
     /// whether the link is enabled and can process traffic
-    up: bool,
+    pub up: bool,
     /// active link
-    link_up: bool,
+    pub link_up: bool,
     /// whether or not the device processes arp packets
-    etharp: bool,
+    pub etharp: bool,
     /// whether or not the device processes IGMP packets
-    igmp: bool,
+    pub igmp: bool,
     /// whether or not the device has broadcast capability
-    broadcast: bool,
+    pub broadcast: bool,
     /// whether or not the device has MLD6 capability
-    mld6: bool,
+    pub mld6: bool,
 }
 
 impl NetworkInterface {
-    pub fn low_level_init(&mut self, hwaddr: &MacAddress, mtu: u16, ) {
+    pub fn new() -> Self {
+        let dt = Utc::now();
+        Self {
+            netif_id: dt.timestamp_millis(),
+            mac_addresses: Vec::new(),
+            ip4_addresses: Vec::new(),
+            ip6_addresses: Vec::new(),
+            interface_type: NetworkInterfaceType::NotSet,
+            mtu: 1500,
+            name: "".to_string(),
+            ip6_autoconfig_enabled: false,
+            rtr_sol_cnt: 0,
+            link_type: 0,
+            link_speed: -1,
+            last_state_change_ts: None,
+            igmp_mac_filters: HashMap::new(),
+            mld_mac_filters: HashMap::new(),
+            tx_queue: Queue::new(),
+            rx_queue: Queue::new(),
+            reschedule_poll: false,
+            up: false,
+            link_up: false,
+            etharp: false,
+            igmp: false,
+            broadcast: false,
+            mld6: false,
+        }
+    }
+
+    pub fn low_level_init(&mut self, hwaddr: &MacAddress, mtu: u16) {
         self.mac_address = hwaddr.clone();
         self.mtu = mtu;
         self.broadcast = true;
@@ -202,7 +230,7 @@ pub enum LwipNetifStateChange {
 }
 
 
-#[derive(Clone,Debug,Default)]
+#[derive(Clone, Debug, Default)]
 pub struct NetifExtCallbackArgs {
     state: u8,
     old_address: IpAddress,
@@ -221,9 +249,8 @@ impl NetifExtCallbackArgs {
 
 type NetifExtCallbackFn = fn(netif: &mut NetworkInterface, reason: u16, args: &NetifExtCallbackArgs);
 
-pub struct NetifExtCallback
-{
-   callback_fn: NetifExtCallbackFn,
+pub struct NetifExtCallback {
+    callback_fn: NetifExtCallbackFn,
     next: u32,
 }
 

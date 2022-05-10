@@ -88,7 +88,7 @@ udp_init()
 {
 #ifdef LWIP_RAND
   udp_port = UDP_ENSURE_LOCAL_PORT_RANGE(LWIP_RAND());
-// #endif /* LWIP_RAND */
+// #endif /* lwip_rand */
 }
 
 /**

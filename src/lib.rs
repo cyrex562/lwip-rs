@@ -18,3 +18,4 @@ pub mod mac_filter;
 pub mod queue;
 pub mod netif;
 pub mod routing;
+pub mod arp;
