@@ -20,6 +20,12 @@ impl Ipv4Address {
         }
     }
 
+    pub fn from_vec(raw: &Vec<u8>, offset: usize) -> Self {
+        Self {
+            u: Ipv4AddressU { u8_addr: [raw[0+offset],raw[1+offset],raw[2+offset],raw[3+offset]]}
+        }
+    }
+
     pub fn from_octets(a: u8, b: u8, c: u8, d: u8) -> Self {
         Self {
             u: Ipv4AddressU {u8_addr: [a,b,c,d]}
@@ -120,7 +126,7 @@ pub fn ipv4_addr_is_loopback(addr: &Ipv4Address) -> bool {
     addr.u.u32_addr & IPV4_CLASS_A_NET ==( IPV4_LOOPBACK_NET << 24)
 }
 
-pub fn ipv4_get_network(host: &Ipv4Address, netmask: Ipv4Address) -> Ipv4Address {
+pub fn ipv4_get_network(host: &Ipv4Address, netmask: &Ipv4Address) -> Ipv4Address {
     Ipv4Address::from_u32(host.u.u32_addr & netmask.u.u32_addr)
 }
 
@@ -132,13 +138,15 @@ pub fn ipv4_addr_is_any(addr: &Ipv4Address) -> bool {
     addr.u.u32 == 0
 }
 
-pub fn ipv4_addr_is_mcast(addr: &Ipv4Address) -> bool {
+pub fn ipv4_addr_is_multicast(addr: &Ipv4Address) -> bool {
     addr.u.u32 & 0xf0000000 == 0xe0000000
 }
 
 pub fn ipv4_addr_is_link_local(addr: &Ipv4Address) -> bool {
     addr.u.u32 & 0xffff0000 == 0xa9fe0000
 }
+
+
 
 pub const IPV4_ADDR_ANY: Ipv4Address = Ipv4Address::from_octets(0,0,0,0);
 pub const IPV4_ADDR_BCAST: Ipv4Address = Ipv4Address::from_octets(255, 255, 255, 255);

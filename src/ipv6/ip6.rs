@@ -317,7 +317,7 @@ ip6_select_source_address(struct netif *netif, const ip6_addr_t *dest)
       cand_scope = IP6_MULTICAST_SCOPE_RESERVEDF;
     }
     cand_pref = ip6_addr_ispreferred(netif_ip6_addr_state(netif, i));
-    /* @todo compute the actual common bits, for longest matching prefix. */
+    /* @todo compute the actual core bits, for longest matching prefix. */
     /* We cannot count on the destination address having a proper zone
      /// *assignment, so do not compare zones in this case. */
     cand_bits = ip6_addr_net_zoneless_eq(cand_addr, dest); /* just 1 or 0 for now */

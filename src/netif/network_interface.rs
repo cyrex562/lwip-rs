@@ -3,13 +3,15 @@ use std::time::SystemTime;
 use chrono::prelude::*;
 use std::time::UNIX_EPOCH;
 use log::debug;
-use crate::common::packet_buffer::PacketBuffer;
+use crate::core::mac_address::MacAddress;
+use crate::core::packet_buffer::PacketBuffer;
 use crate::ipv4_acd::AcdStateInfo;
 use crate::errors::{LwipError, LwipErrorCode};
 use crate::errors::LwipErrorCode::{InvalidArgument, NotSet};
 use crate::ip::ip_input;
 use crate::ip_address::{IpAddress, IPV4_ADDR_ANY};
 use crate::ipv4::ipv4_address::Ipv4Address;
+use crate::ipv4::ipv4_network::Ipv4Network;
 use crate::ipv6::ip6_addr::Ipv6Address;
 use crate::mac_address::MacAddress;
 use crate::mac_filter::MacFilterOps;
@@ -76,13 +78,13 @@ pub struct NetifMldMacFilter {
 /// Generic data structure used for all lwIP network interfaces.
 #[derive(Debug, Clone, Default)]
 pub struct NetworkInterface {
-    pub netif_id: i64,
+    pub id: i64,
     /// a list of assigned MAC addresses
-    pub mac_addresses: Vec<MacAddress>,
+    pub mac_address: MacAddress,
     /// a list of assigned IPv4 addresses
-    pub ip4_addresses: Vec<Ipv4Address>,
+    pub ipv4_nets: Vec<Ipv4Network>,
     /// a list of assigned IPv6 addresses
-    pub ip6_addresses: Vec<NetifIpv6AddressContext>,
+    pub ipv6_nets: Vec<NetifIpv6AddressContext>,
     /// the type of network interface
     pub interface_type: NetworkInterfaceType,
     /// MTU
@@ -127,10 +129,10 @@ impl NetworkInterface {
     pub fn new() -> Self {
         let dt = Utc::now();
         Self {
-            netif_id: dt.timestamp_millis(),
+            id: dt.timestamp_millis(),
             mac_addresses: Vec::new(),
-            ip4_addresses: Vec::new(),
-            ip6_addresses: Vec::new(),
+            ipv4_nets: Vec::new(),
+            ipv6_nets: Vec::new(),
             interface_type: NetworkInterfaceType::NotSet,
             mtu: 1500,
             name: "".to_string(),
@@ -209,8 +211,8 @@ impl NetworkInterface {
         todo!()
     }
 
-    pub fn ipv4_addr_in(&self, addr: &Ipv4Address) -> bool {
-        todo!()
+    pub fn has_ip4_addr(&self, addr: &Ipv4Network) -> bool {
+        self.ipv4_nets.contains(addr)
     }
 }
 

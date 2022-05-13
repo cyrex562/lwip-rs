@@ -1,8 +1,9 @@
-use crate::ipv4::ipv4_address::Ipv4Address;
+use crate::ipv4::ipv4_address::{ipv4_get_network, Ipv4Address};
 
 #[derive(Debug,Default,Clone,PartialEq)]
 pub struct Ipv4Network {
-    pub network_id: Ipv4Address,
+    pub network_address: Ipv4Address,
+    pub local_address: Ipv4Address,
     pub netmask: Ipv4Address,
     pub broadcast_addr: Ipv4Address,
 }
@@ -13,9 +14,13 @@ impl Ipv4Network {
             ..Default()
         }
     }
-    pub fn is_broadcast(&self, addr: &Ipv4Address) -> bool {
-        todo!()
-        // check if address is on the same net
-        // check if the host id of the address is all 1's
+
+    pub fn addr_in_net(&self, tgt_addr: &Ipv4Address) -> bool {
+        let tgt_addr_net = ipv4_get_network(tgt_addr, &self.netmask);
+        tgt_addr_net == self.network_address
     }
+}
+
+pub fn ipv4_addr_is_broadcast(addr: &Ip4Address, net: &Ipv4Network) -> bool {
+    todo!()
 }

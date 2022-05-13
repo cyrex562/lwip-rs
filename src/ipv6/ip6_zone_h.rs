@@ -210,7 +210,7 @@ pub const IPV6_CUSTOM_SCOPES: u32 = 0; /* !IPV6_CUSTOM_SCOPES */
  * of both of those scopes always equals the index of the network interface.
  * As such, there is always only one matching netif for a specific zone index,
  * but all call sites of this macro currently support multiple matching netifs
- * as well (at no additional expense in the common case).
+ * as well (at no additional expense in the core case).
  *
  * @param ip6addr the IPv6 address (const).
  * @param netif the network interface (const).
