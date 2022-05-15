@@ -42,6 +42,7 @@ use std::fmt::Formatter;
 pub enum LwipErrorCode {
     NotSet,
     InvalidArgument,
+    InvalidState,
     InvalidData,
     InvalidOperation,
     NotFound,
@@ -61,6 +62,7 @@ impl fmt::Display for LwipErrorCode {
             LwipErrorCode::NotFound => write!(f, "not found"),
             LwipErrorCode::OperationFailed => write!(f, "operation failed"),
             LwipErrorCode::GeneralError => write!(f, "general error"),
+            LwipErrorCode::InvalidState => write!(f, "invalid state"),
         }
     }
 }

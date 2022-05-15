@@ -1,5 +1,5 @@
 use crate::arp::arp_table::ArpTable;
-use crate::netif::network_interface::NetworkInterface;
+use crate::netif::netif::NetworkInterface;
 
 #[derive(Debug,Clone,Default)]
 pub struct LwipContext {

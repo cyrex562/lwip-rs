@@ -3,6 +3,7 @@ use std::time::SystemTime;
 use chrono::prelude::*;
 use std::time::UNIX_EPOCH;
 use log::debug;
+use crate::core::errors::LwipError;
 use crate::core::mac_address::MacAddress;
 use crate::core::packet_buffer::PacketBuffer;
 use crate::ipv4_acd::AcdStateInfo;
@@ -13,6 +14,7 @@ use crate::ip_address::{IpAddress, IPV4_ADDR_ANY};
 use crate::ipv4::ipv4_address::Ipv4Address;
 use crate::ipv4::ipv4_network::Ipv4Network;
 use crate::ipv6::ip6_addr::Ipv6Address;
+use crate::low_lvl_if::defines::LowerLevelInterfaceType;
 use crate::mac_address::MacAddress;
 use crate::mac_filter::MacFilterOps;
 use crate::netif_hint::NetifHint;
@@ -86,7 +88,7 @@ pub struct NetworkInterface {
     /// a list of assigned IPv6 addresses
     pub ipv6_nets: Vec<NetifIpv6AddressContext>,
     /// the type of network interface
-    pub interface_type: NetworkInterfaceType,
+    pub if_type: NetworkInterfaceType,
     /// MTU
     pub mtu: u16,
     /// name of the interface
@@ -106,9 +108,9 @@ pub struct NetworkInterface {
     /// a table of MLD MAC filters
     pub mld_mac_filters: HashMap<u32, NetifMldMacFilter>,
     /// packets to transmit
-    pub tx_queue: Queue<PacketBuffer>,
+    pub tx_buffer: Vec<PacketBuffer>,
     /// received packets
-    pub rx_queue: Queue<PacketBuffer>,
+    pub rx_buffer: Vec<PacketBuffer>,
     /// Used if the original scheduling failed.
     pub reschedule_poll: bool,
     /// whether the link is enabled and can process traffic
@@ -123,6 +125,10 @@ pub struct NetworkInterface {
     pub broadcast: bool,
     /// whether or not the device has MLD6 capability
     pub mld6: bool,
+    /// lower level interface type for receiving
+    pub ll_recv_type: LowerLevelInterfaceType,
+    // lower level interface type for sending
+    pub ll_send_type: LowerLevelInterfaceType,
 }
 
 impl NetworkInterface {
@@ -130,10 +136,10 @@ impl NetworkInterface {
         let dt = Utc::now();
         Self {
             id: dt.timestamp_millis(),
-            mac_addresses: Vec::new(),
+            mac_address: MacAddress::new(),
             ipv4_nets: Vec::new(),
             ipv6_nets: Vec::new(),
-            interface_type: NetworkInterfaceType::NotSet,
+            if_type: NetworkInterfaceType::NotSet,
             mtu: 1500,
             name: "".to_string(),
             ip6_autoconfig_enabled: false,
@@ -143,8 +149,8 @@ impl NetworkInterface {
             last_state_change_ts: None,
             igmp_mac_filters: HashMap::new(),
             mld_mac_filters: HashMap::new(),
-            tx_queue: Queue::new(),
-            rx_queue: Queue::new(),
+            tx_buffer: Vec::new(),
+            rx_buffer: Vec::new(),
             reschedule_poll: false,
             up: false,
             link_up: false,
@@ -152,30 +158,30 @@ impl NetworkInterface {
             igmp: false,
             broadcast: false,
             mld6: false,
+            ll_recv_url: String,
+            ll_send_url: String,
         }
     }
 
-    pub fn low_level_init(&mut self, hwaddr: &MacAddress, mtu: u16) {
+    pub fn init(&mut self, hwaddr: &MacAddress, mtu: u16) -> Result<(), LwipError>{
         self.mac_address = hwaddr.clone();
         self.mtu = mtu;
         self.broadcast = true;
         self.etharp = true;
         self.link_up = true;
         // TODO: if the MLD Mac Filter is set, add a filter?
-    }
-
-    pub fn init(&mut self) -> Result<(), LwipError> {
-        todo!();
         Ok(())
     }
 
+    pub fn ll_recv(&mut self)
+
     pub fn input(&mut self) -> Result<PacketBuffer, LwipError> {
-        let p = self.rx_queue.pop();
+        let p = self.rx_buffer.pop();
         Ok(p)
     }
 
     pub fn output(&mut self, p: &PacketBuffer) -> Result<(), LwipError> {
-        self.tx_queue.push(p);
+        self.tx_buffer.push(p);
         Ok(())
     }
 

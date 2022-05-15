@@ -2,13 +2,13 @@ use std::mem::size_of;
 use crate::arp::arp_defines::ARP_OP_CODE_REPLY;
 use crate::arp::arp_hdr::ArpMessage;
 use crate::arp::arp_table::{ARP_AGE_REREQUEST_USED_BROADCAST, ARP_AGE_REREQUEST_USED_UNICAST, ArpState, ArpTable};
-use crate::core::lwip_context::LwipContext;
+use crate::core::context::LwipContext;
 use crate::core::packet_buffer::{PacketBuffer, PayloadMapEntry, PayloadType};
 use crate::errors::{LwipError, LwipErrorCode};
 use crate::ethernet::ether_type::{ETHERTYPE_ARP, ETHERTYPE_IPV4};
 use crate::ethernet::hdr::EthernetHeader;
 use crate::ipv4::ipv4_address::Ipv4Address;
-use crate::netif::network_interface::NetworkInterface;
+use crate::netif::netif::NetworkInterface;
 use crate::routing::routing_table::RoutingTableEntryType::MacAddress;
 use crate::core::mac_address::MacAddress;
 

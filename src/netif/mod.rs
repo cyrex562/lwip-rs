@@ -1,4 +1,5 @@
-pub mod netif_list;
-pub mod netifapi;
-pub mod network_interface;
+pub mod list;
+pub mod api;
+pub mod netif;
 pub mod ops;
+pub mod defines;

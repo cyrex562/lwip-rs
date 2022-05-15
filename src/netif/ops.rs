@@ -1,51 +1,43 @@
-use crate::errors::{LwipError, LwipErrorCode};
+use crate::core::context::LwipContext;
+use crate::core::errors::{ LwipError, LwipErrorCode};
+use crate::core::packet_buffer::PacketBuffer;
 use crate::errors::LwipErrorCode::{InvalidArgument, NotSet};
 use crate::ip::ip_input;
 use crate::ip_address::{IpAddress, IPV4_ADDR_ANY};
-use crate::netif::network_interface::NetworkInterface;
+use crate::netif::netif::{NetworkInterface, NetworkInterfaceType};
 use crate::network_interface;
 use crate::network_interface::{LWIP_NSC_IPV4_ADDRESS_CHANGED, LWIP_NSC_IPV4_GATEWAY_CHANGED, LWIP_NSC_IPV4_NETMASK_CHANGED, LWIP_NSC_IPV4_SETTINGS_CHANGED, LWIP_NSC_LINK_CHANGED, LWIP_NSC_NETIF_ADDED, LWIP_NSC_NETIF_REMOVED, LWIP_NSC_NONE, LWIP_NSC_STATUS_CHANGED, NETIF_CHECKSUM_DISABLE_ALL, NETIF_CHECKSUM_ENABLE_ALL, NETIF_FLAG_IGMP, NETIF_REPORT_TYPE_IPV4, NETIF_REPORT_TYPE_IPV6, NetifExtCallbackArgs, NetworkInterface};
 use crate::packet_buffer::PacketBuffer;
 
+/// Gets a packet from the lower layer, e.g. PCAP, file, socket, driver, etc.
+pub fn netif_ll_recv(ctx: &mut LwipContext, netif: &mut NetworkInterface) -> Result<(), LwipError> {
+    let mut pkt = PacketBuffer::new();
+    // todo: read from lower layer
+    netif.rx_buffer.push(pkt);
+    Ok(())
+}
 
+/// Pops a packet from the transmit buffer and sends it using the lower layer interface
+pub fn netif_ll_send(ctx: &mut LwipContext, netif: &mut NetworkInterface) -> Result<(), LwipError> {
+    
+}
 
 
 
 /// Forwards a received packet for input processing with ethernet_input() or ip_input()
 /// depending on netif flags. Don't call directly, pass to netif_add() and call
 ///  netif.input(). Only works if the netif driver correctly sets NETIF_FLAG_ETHARP and/or
-/// NETIF_FLAG_ETHERNET flag!
-pub fn netif_input(packet: &mut PacketBuffer, in_netif: &mut NetworkInterface) -> Result<(), LwipError> {
-    // LWIP_ASSERT_CORE_LOCKED()
-
-    // LWIP_ASSERT("netif_input: invalid pbuf", p != NULL);
-    // LWIP_ASSERT("netif_input: invalid netif", inp != NULL);
-    if in_netif.etharp && in_netif.ethernet {
-        return ethernet_input(packet, in_netif);
-    } else{
-        return ip_input(packet, in_netif);
+pub fn netif_recv(ctx: &mut LwipContext,
+                  netif: &mut NetworkInterface,
+                  pkt: &mut PacketBuffer) -> Result<(), LwipError> {
+    return match netif.if_type {
+        NetworkInterfaceType::Ethernet => {
+            ether_recv(ctx, netif, pkt)
+        }
+        NetworkInterfaceType::NotSet => {
+            Err(LwipError::new(LwipErroCode::InvalidState, "interface type not set"))
+        }
     }
-}
-
-pub fn netif_init() {
-
-// #define LOOPIF_ADDRINIT &loop_ipaddr, &loop_netmask, &loop_gw,
-//   ip4_addr_t loop_ipaddr, loop_netmask, loop_gw;
-//   IP4_ADDR(&loop_gw, 127, 0, 0, 1);
-//   IP4_ADDR(&loop_ipaddr, 127, 0, 0, 1);
-//   IP4_ADDR(&loop_netmask, 255, 0, 0, 0);
-
-// #if NO_SYS
-    netif_add(&loop_netif, LOOPIF_ADDRINIT, NULL, netif_loopif_init, ip_input);
-// #else  /* NO_SYS */
-    netif_add(&loop_netif, LOOPIF_ADDRINIT, NULL, netif_loopif_init, tcpip_input);
-// #endif /* NO_SYS */
-
-    IP_ADDR6_HOST(loop_netif.ip6_addr, 0, 0, 0, 0x00000001);
-    loop_netif.ip6_addr_state[0] = IP6_ADDR_VALID;
-
-    netif_set_link_up(&loop_netif);
-    netif_set_up(&loop_netif);
 }
 
 /// Initialize a lwip network interface structure for a loopback interface
@@ -55,11 +47,10 @@ pub fn netif_init() {
 /// # Arguments
 /// * netif - the lwip network interface structure for this loopif
 ///
-pub fn netif_loopif_init(netif: &mut NetworkInterface, if_name: &String) -> Result<(), LwipError> {
-    MIB2_INIT_NETIF(netif, snmp_ifType_softwareLoopback, 0);
+pub fn netif_init_loopback(ctx: &mut LwipContext, netif: &mut NetworkInterface, if_name: &String) -> Result<(), LwipError> {
     netif.name = if_name.clone();
-    netif.output = netif_loop_output_ipv4;
-    netif.output_ip6 = netif_loop_output_ipv6;
+    netif.output = loopback_send();
+    netif.input = loopback_recv();
 
     netif_set_flags(netif, NETIF_FLAG_IGMP);
 

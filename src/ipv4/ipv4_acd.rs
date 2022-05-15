@@ -40,7 +40,7 @@ use rnd::Rng;
 use crate::acd::AcdState::ProbeWait;
 use crate::errors::{LwipError, LwipErrorCode};
 use crate::ip_address::IpAddress;
-use crate::netif::network_interface::NetworkInterface;
+use crate::netif::netif::NetworkInterface;
 use crate::network_interface::NetworkInterface;
 
 /* RFC 5227 and RFC 3927 Constants */

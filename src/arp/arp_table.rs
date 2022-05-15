@@ -1,4 +1,4 @@
-use crate::core::lwip_context::LwipContext;
+use crate::core::context::LwipContext;
 use crate::core::mac_address::MacAddress;
 use crate::errors::{LwipError, LwipErrorCode};
 use crate::ipv4::ipv4_address::{ipv4_addr_is_any, Ipv4Address};

@@ -5,6 +5,7 @@ mod defines;
 pub mod ether_type;
 pub mod vlan;
 pub mod hdr;
+pub mod ops;
 
 use std::mem::size_of;
 use crate::core::mac_address::MacAddress;

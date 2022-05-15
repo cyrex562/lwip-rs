@@ -1,7 +1,7 @@
 use crate::errors::{LwipError, LwipErrorCode};
 use crate::ipv4::ipv4_address::{ipv4_addr_is_link_local, Ipv4Address};
 use crate::ipv4::ipv4_hdr::{IPV4_DONT_FRAG_FLAG, Ipv4Header};
-use crate::netif::network_interface::NetworkInterface;
+use crate::netif::netif::NetworkInterface;
 use crate::packet_buffer::PacketBuffer;
 
 /// check routing stuff to see if a source-based routing policy exists and spit out the appropriate network interface on which to transmit the packet
