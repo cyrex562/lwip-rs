@@ -63,8 +63,11 @@ pub struct NetifIpv4AddressContext {
 
 pub enum NetworkInterfaceType {
     /// Ethernet device that may or may not process ARP or other traffic, such as PPPoE
-    Ethernet,
     NotSet,
+    File,
+    Pcap,
+    Serial,
+    Socket,
 }
 
 pub struct NetifIgmpMacFilter {
@@ -125,10 +128,14 @@ pub struct NetworkInterface {
     pub broadcast: bool,
     /// whether or not the device has MLD6 capability
     pub mld6: bool,
-    /// lower level interface type for receiving
-    pub ll_recv_type: LowerLevelInterfaceType,
-    // lower level interface type for sending
-    pub ll_send_type: LowerLevelInterfaceType,
+    /// poll function to call to get a packet from the lower-level interface and put it in the receive queue. this should be called by a thread managing interfaces in a polling loop.
+    pub recv_fn: fn() -> Result<(), LwipError>,
+    /// poll function to call to get a packet from the transmit queue and send it via the lower-level interface. this should be called by a thread managing inteerfaces in a polling loop.
+    pub send_fn: fn() -> Result<(), LwipError>,
+    /// function called by a higher-level interface to put a packet onto the transmit queue
+    pub push_tx: fn() -> Result<(), LwipError>,
+    /// function called by a higher-level interface to pull a packet from the receive queue
+    pub pop_rx: fn() -> Result<(), LwipError>,
 }
 
 impl NetworkInterface {
@@ -158,8 +165,8 @@ impl NetworkInterface {
             igmp: false,
             broadcast: false,
             mld6: false,
-            ll_recv_url: String,
-            ll_send_url: String,
+            ll_recv_type: LowerLevelInterfaceType::NotSet,
+            ll_send_type: LowerLevelInterfaceType::NotSet
         }
     }
 
