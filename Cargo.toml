@@ -11,6 +11,7 @@ log = "0.4.14"
 des = "0.7.0"
 cipher = "0.3.0"
 rand = "0.8"
+socket2 = "0.4.4"
 
 [lib]
 name = "lib_lwip_rs"
