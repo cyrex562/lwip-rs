@@ -1,27 +1,4 @@
-use std::io::empty;
 use crate::core::context::LwipContext;
-
-pub const MAX_TIMEOUT: u32 = 0x7fffffff;
-pub const SLEEP_TIME_INFINITE: u32 = 0xffffffff;
-
-pub type SysTimeoutHanlder = fn(&mut LwipContext, arg: &mut Vec<u8>);
-
-#[derive(Debug,Clone,Default)]
-pub struct SysTimeo {
-    pub time: u64,
-    pub h: SysTimeoutHanlder,
-    pub arg: Vec<u8>,
-    pub handler_name: String,
-}
-
-#[derive(Debug,Clone,Default)]
-pub struct LwipCyclicHandler {
-    pub interval_ms: u32,
-    pub handler: LwipCyclicTimerHandler,
-    pub handler_name: String
-}
-
-
 
 /// Timer callback function that calls tcp_tmr and reschedules itself
 pub fn tcpip_tcp_timer(ctx: &mut LwipContext, tcp_active_pcbs: &mut Vec<TcpPcb>, tcp_tw_pcbs: &mut Vec<TcpPcb>) {
