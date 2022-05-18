@@ -1,115 +1,30 @@
-/**
- * @file
- * lwIP iPerf server implementation
- */
+pub const LWIP_IPERF_TCP_MAX_IDLE_SEC: u64 = 10u64;
 
-/**
- * @defgroup iperf Iperf server
- * @ingroup apps
- *
- * This is a simple performance measuring client/server to check your bandwidth using
- * iPerf2 on a PC as server/client.
- * It is currently a minimal implementation providing a TCP client/server only.
- *
- * @todo:
- * - implement UDP mode
- * - protect combined sessions handling (via 'related_master_state') against reallocation
- *   (this is a pointer address, currently, so if the same memory is allocated again,
- *    session pairs (tx/rx) can be confused on reallocation)
- */
+#[derive(Debug,Clone,Default)]
+pub struct IperfSettings {
+    pub flags: u32,
+    pub num_threads: u32,
+    pub remote_port: u16,
+    pub buffer_len: u32,
+    pub win_band: u32,
+    pub amount: u32,
+}
 
-/*
- * Copyright (c) 2014 Simon Goldschmidt
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- *
- * This file is part of the lwIP TCP/IP stack.
- *
- * Author: Simon Goldschmidt
- */
+pub struct IperfStateBase {
+    pub id: u32
+    pub tcp: bool,
+    pub udp: bool,
+    pub client: bool,
+    pub server: bool,
+    pub master_state_id: u32,
+}
 
+pub struct IperfStateTcp {
+    pub base: IperfStateBase,
+    pub server_pcb: TcpPcb,
+    pub conn_pcb: TcpPcb,
 
-
-
-
-
-
-
-
-/* Currently, only TCP is implemented */
-// #if LWIP_TCP && LWIP_CALLBACK_API
-
-/** Specify the idle timeout (in seconds) after that the test fails */
-#ifndef LWIPERF_TCP_MAX_IDLE_SEC
-#define LWIPERF_TCP_MAX_IDLE_SEC    10U
-// #endif
-// #if LWIPERF_TCP_MAX_IDLE_SEC > 255
-#error LWIPERF_TCP_MAX_IDLE_SEC must fit into an u8_t
-// #endif
-
-/** Change this if you don't want to lwiperf to listen to any IP version */
-#ifndef LWIPERF_SERVER_IP_TYPE
-#define LWIPERF_SERVER_IP_TYPE      IPADDR_TYPE_ANY
-// #endif
-
-/* File internal memory allocation (struct lwiperf_*): this defaults to
-   the heap */
-#ifndef LWIPERF_ALLOC
-#define LWIPERF_ALLOC(type)         mem_malloc(sizeof(type))
-#define LWIPERF_FREE(type, item)    mem_free(item)
-// #endif
-
-/** If this is 1, check that received data has the correct format */
-#ifndef LWIPERF_CHECK_RX_DATA
-#define LWIPERF_CHECK_RX_DATA       0
-// #endif
-
-/** This is the Iperf settings struct sent from the client */
-typedef struct _lwiperf_settings {
-#define LWIPERF_FLAGS_ANSWER_TEST 0x80000000
-#define LWIPERF_FLAGS_ANSWER_NOW  0x00000001
-  u32_t flags;
-  u32_t num_threads; /* unused for now */
-  u32_t remote_port;
-  u32_t buffer_len; /* unused for now */
-  u32_t win_band; /* TCP window / UDP rate: unused for now */
-  u32_t amount; /* pos. value: bytes?; neg. values: time (unit is 10ms: 1/100 second) */
-} lwiperf_settings_t;
-
-/** Basic connection handle */
-struct _lwiperf_state_base;
-typedef struct _lwiperf_state_base lwiperf_state_base_t;
-struct _lwiperf_state_base {
-  /* linked list */
-  lwiperf_state_base_t *next;
-  /* 1=tcp, 0=udp */
-  tcp: u8;
-  /* 1=server, 0=client */
-  server: u8;
-  /* master state used to abort sessions (e.g. listener, main client) */
-  lwiperf_state_base_t *related_master_state;
-};
+}
 
 /** Connection handle for a TCP iperf session */
 typedef struct _lwiperf_state_tcp {

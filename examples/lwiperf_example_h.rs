@@ -33,10 +33,9 @@
 
 
 
-pub fn  lwiperf_example_init();
+void lwiperf_example_init();
 
 
-}
 
 
- //  LWIPERF_EXAMPLE_H 
+ /* LWIPERF_EXAMPLE_H */
