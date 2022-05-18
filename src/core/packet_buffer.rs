@@ -1,3 +1,4 @@
+use crate::core::errors::{LwipError, LwipErrorCode};
 use crate::debug::LWIP_DEBUGF;
 use crate::errors::{LwipError, LwipErrorCode};
 

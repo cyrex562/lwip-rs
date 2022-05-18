@@ -1,4 +1,5 @@
 use crate::arp::arp_table::ArpTable;
+use crate::core::timeouts::LwipCyclicHandler;
 use crate::netif::netif::NetworkInterface;
 
 #[derive(Default,Debug,Clone)]
@@ -155,7 +156,7 @@ pub struct Options {
     // doe arp check on offered DHCP address
     pub dhcp_does_arp_check: bool,
     //
-    pub dhcp_autoip_coop: bool
+    pub dhcp_autoip_coop: bool,
     //
     pub udp_lite: bool,
     //
@@ -190,6 +191,8 @@ pub struct Options {
     pub ipv6_dup_detect_attempts: bool,
     //
     pub tcp_oversize: bool,
+    //
+    pub tcp_timer_interval: i64,
 }
 
 impl Options {
@@ -292,6 +295,7 @@ impl Options {
             ipv6_frag_copyheader: true,
             ipv6_dup_detect_attempts: false,
             tcp_oversize: true,
+            tcp_timer_interval: 1000,
         }
     }
 }
@@ -302,6 +306,10 @@ pub struct LwipContext {
     pub netifs: Vec<NetworkInterface>,
     pub arp_table: ArpTable,
     pub options: Options,
+    pub tcpip_tcp_timer_active: bool,
+    pub tcp_active_pcbs: Vec<TcpPcb>,
+    pub tcp_tw_pcbs: Vec<TcpPcb>,
+    pub cyclic_timer_handlers: Vec<LwipCyclicHandler>,
 }
 
 impl LwipContext {
@@ -310,6 +318,10 @@ impl LwipContext {
             netifs: Vec::new(),
             arp_table: ArpTable::new(),
             options: Options::new(),
+            tcpip_tcp_timer_active: false,
+            tcp_active_pcbs: vec![],
+            tcp_tw_pcbs: vec![],
+
         }
     }
 }
