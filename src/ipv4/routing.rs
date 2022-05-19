@@ -1,6 +1,6 @@
 use crate::errors::{LwipError, LwipErrorCode};
-use crate::ipv4::ipv4_address::{ipv4_addr_is_link_local, Ipv4Address};
-use crate::ipv4::ipv4_hdr::{IPV4_DONT_FRAG_FLAG, Ipv4Header};
+use crate::ipv4::addr::{ip4_addr_is_link_local, Ipv4Address};
+use crate::ipv4::hdr::{IPV4_DONT_FRAG_FLAG, Ipv4Header};
 use crate::netif::netif::NetworkInterface;
 use crate::packet_buffer::PacketBuffer;
 
@@ -38,7 +38,7 @@ pub fn ipv4_forward(pkt: &mut PacketBuffer, ip_hdr: &mut Ipv4Header, rx_netif: &
     }
 
     // do not forward link-local addresses
-    if ipv4_addr_is_link_local(&dst_ip_addr) {
+    if ip4_addr_is_link_local(&dst_ip_addr) {
         return Err(LwipError::new(LwipErrorCode::InvalidData, "cant forward link layer packet"));
     }
 

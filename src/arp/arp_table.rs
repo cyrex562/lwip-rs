@@ -1,8 +1,8 @@
 use crate::core::context::LwipContext;
 use crate::core::mac_address::MacAddress;
 use crate::errors::{LwipError, LwipErrorCode};
-use crate::ipv4::ipv4_address::{ipv4_addr_is_any, Ipv4Address};
-use crate::ipv4::ipv4_network::{ipv4_addr_is_broadcast, Ipv4Network};
+use crate::ipv4::addr::{ip4_addr_is_any, Ipv4Address};
+use crate::ipv4::net::{ipv4_addr_is_broadcast, Ipv4Network};
 use crate::mac_address::MacAddress;
 
 pub const ARP_AGE_REREQUEST_USED_UNICAST: i64 = ARP_MAXAGE - 30;
@@ -127,7 +127,7 @@ impl ArpTable {
             }
         }
 
-        if ipv4_addr_is_any(ip4_addr) ||is_broadcast || ip4v4_addr_is_multicast(ip4_addr) {
+        if ip4_addr_is_any(ip4_addr) ||is_broadcast || ip4v4_addr_is_multicast(ip4_addr) {
             return Err(LwipError::new(LwipErrorCode::InvalidArgument, "cannot add non-unicast address to arp table: {}".format(ip4_addr)));
         }
 

@@ -1,3 +1,4 @@
+use crate::core::packet_buffer::PacketBuffer;
 use crate::packet_buffer::PacketBuffer;
 
 pub const IPV4_RES_FRAG_FLAG: u16 = 0x8000;
@@ -60,8 +61,8 @@ impl Ipv4Header {
 
 }
 
-impl From<PacketBuffer> for Ipv4Header {
+impl From<&PacketBuffer> for Ipv4Header {
     fn from(pkt_buf: &PacketBuffer) -> Self {
-
+        todo!()
     }
 }

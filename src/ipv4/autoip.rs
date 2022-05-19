@@ -64,6 +64,35 @@
 
 
 
+/** AutoIP state information per netif */
+struct autoip
+{
+  /** the currently selected, probed, announced or used LL IP-Address */
+ llipaddr: ip4_addr_t;
+  /** current AutoIP state machine state */
+  state: u8;
+  /** total number of probed/used Link Local IP-Addresses */
+  tried_llipaddr: u8;
+  /** acd struct */
+  struct acd acd;
+};
+
+
+
+/* 169.254.0.0 */
+pub const AUTOIP_NET: u32 = 0xA9FE0000; /* 169.254.1.0 */
+#define AUTOIP_RANGE_START      (AUTOIP_NET | 0x0100)
+/* 169.254.254.255 */
+#define AUTOIP_RANGE_END        (AUTOIP_NET | 0xFEFF)
+
+/* AutoIP client states */
+typedef enum {
+  AUTOIP_STATE_OFF,
+  AUTOIP_STATE_CHECKING,
+  AUTOIP_STATE_BOUND
+} autoip_state_enum_t;
+
+
 
 
 

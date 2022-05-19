@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use log::{debug, warn};
-use crate::ipv4::ipv4_address::Ipv4Address;
+use crate::ipv4::addr::Ipv4Address;
 
 ///
 /// @file

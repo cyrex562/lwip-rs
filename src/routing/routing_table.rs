@@ -1,4 +1,4 @@
-use crate::ipv4::ipv4_address::Ipv4Address;
+use crate::ipv4::addr::Ipv4Address;
 use crate::ipv6::ip6_addr::Ipv6Address;
 use crate::mac_address::MacAddress;
 

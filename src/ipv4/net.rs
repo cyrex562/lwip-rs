@@ -1,4 +1,4 @@
-use crate::ipv4::ipv4_address::{ipv4_get_network, Ipv4Address};
+use crate::ipv4::addr::{ip4_get_network, Ipv4Address};
 
 #[derive(Debug,Default,Clone,PartialEq)]
 pub struct Ipv4Network {
@@ -16,7 +16,7 @@ impl Ipv4Network {
     }
 
     pub fn addr_in_net(&self, tgt_addr: &Ipv4Address) -> bool {
-        let tgt_addr_net = ipv4_get_network(tgt_addr, &self.netmask);
+        let tgt_addr_net = ip4_get_network(tgt_addr, &self.netmask);
         tgt_addr_net == self.network_address
     }
 }

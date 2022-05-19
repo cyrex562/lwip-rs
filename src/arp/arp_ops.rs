@@ -7,7 +7,7 @@ use crate::core::packet_buffer::{PacketBuffer, PayloadMapEntry, PayloadType};
 use crate::errors::{LwipError, LwipErrorCode};
 use crate::ethernet::ether_type::{ETHERTYPE_ARP, ETHERTYPE_IPV4};
 use crate::ethernet::hdr::EthernetHeader;
-use crate::ipv4::ipv4_address::Ipv4Address;
+use crate::ipv4::addr::Ipv4Address;
 use crate::netif::netif::NetworkInterface;
 use crate::routing::routing_table::RoutingTableEntryType::MacAddress;
 use crate::core::mac_address::MacAddress;

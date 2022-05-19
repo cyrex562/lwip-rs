@@ -1,5 +1,5 @@
 use crate::core::packet_buffer::PacketBuffer;
-use crate::ipv4::ipv4_address::Ipv4Address;
+use crate::ipv4::addr::Ipv4Address;
 use crate::ipv6::ip6_addr::Ipv6Address;
 
 /// Swap the bytes in an u16_t: much like lwip_htons() for little-endian

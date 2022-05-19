@@ -1,5 +1,15 @@
+use crate::core::context::LwipContext;
+use crate::core::errors::LwipErrorCode;
+use crate::core::packet_buffer::PacketBuffer;
+use crate::ipv4::addr::{ip4_addr_is_link_local, Ipv4Address};
+use crate::ipv4::hdr::Ipv4Header;
+use crate::LwipError;
+use crate::netif::netif::NetworkInterface;
 
-
+/// Check if forwarding is allowed; check if the packet is allowed to be forwarded (ACL); attempt to find a route for the packet; forwarwd the packet based on its properties and available routes
+pub fn ip4_can_forward(ctx: &mut LwipContext, src_netif: &mut NetworkInterface, pkt: &mut PacketBuffer) -> Result<bool, LwipError> {
+    todo!()
+}
 
 /**
  * Forwards an IP packet. It finds an appropriate route for the
@@ -10,57 +20,47 @@
  * @param iphdr the IP header of the input packet
  * @param inp the netif on which this packet was received
  */
-static void
-ip4_forward(struct pbuf *p, struct ip_hdr *iphdr, struct netif *inp)
+pub fn ip4_forward(ctx: &mut LwipContext, netif: &mut NetworkInterface, pkt: &mut PacketBuffer) -> Result<(), LwipError>
 {
-  struct netif *netif;
-
-  PERF_START;
-  LWIP_UNUSED_ARG(inp);
-
-  if (!ip4_canforward(p)) {
-    goto return_noroute;
-  }
-
-  /* RFC3927 2.7: do not forward link-local addresses */
-  if (ip4_addr_islinklocal(ip4_current_dest_addr())) {
-    LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: not forwarding LLA %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
-                           ip4_addr1_16(ip4_current_dest_addr()), ip4_addr2_16(ip4_current_dest_addr()),
-                           ip4_addr3_16(ip4_current_dest_addr()), ip4_addr4_16(ip4_current_dest_addr())));
-    goto return_noroute;
-  }
-
-  /* Find network interface where to forward this IP packet to. */
-  netif = ip4_route_src(ip4_current_src_addr(), ip4_current_dest_addr());
-  if (netif == NULL) {
-    LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: no forwarding route for %"U16_F".%"U16_F".%"U16_F".%"U16_F" found\n",
-                           ip4_addr1_16(ip4_current_dest_addr()), ip4_addr2_16(ip4_current_dest_addr()),
-                           ip4_addr3_16(ip4_current_dest_addr()), ip4_addr4_16(ip4_current_dest_addr())));
-    /* @todo: send ICMP_DUR_NET? */
-    goto return_noroute;
-  }
-#if !IP_FORWARD_ALLOW_TX_ON_RX_NETIF
-  /* Do not forward packets onto the same network interface on which
-   * they arrived. */
-  if (netif == inp) {
-    LWIP_DEBUGF(IP_DEBUG, ("ip4_forward: not bouncing packets back on incoming interface.\n"));
-    goto return_noroute;
-  }
-// #endif /* IP_FORWARD_ALLOW_TX_ON_RX_NETIF */
-
-  /* decrement TTL */
-  IPH_TTL_SET(iphdr, IPH_TTL(iphdr) - 1);
-  /* send ICMP if TTL == 0 */
-  if (IPH_TTL(iphdr) == 0) {
-    MIB2_STATS_INC(mib2.ipinhdrerrors);
-// #if LWIP_ICMP
-    /* Don't send ICMP messages in response to ICMP messages */
-    if (IPH_PROTO(iphdr) != IP_PROTO_ICMP) {
-      icmp_time_exceeded(p, ICMP_TE_TTL);
+    let mut hdr = Ipv4Header::from(pkt);
+    let dst_ip4_addr = Ipv4Address::from(hdr.dst_addr);
+    let src_ip4_addr = Ipv4Address::from(hdr.src_addr);
+    match ip4_can_forward(ctx, netif, pkt) {
+        Ok(can_forward) => {
+            if can_forward == false {
+                return Err(LwipError::new(LwipErrorCode::InvalidOperation, "cant forward packet"));
+            }
+        },
+        Err(e) => {
+            return Err(LwipError::new(LwipErrorCode::OperationFailed, "ip4 can forward check op failed {}".format(e)));
+        }
     }
-// #endif /* LWIP_ICMP */
-    return;
-  }
+
+    // RFC3927 2.7: do not forward link-local addresses
+    if ip4_addr_is_link_local(&dst_ip4_addr) {
+        return Err(LwipError::new(LwipErrorCode::InvalidOperation, "cant forward link local address: {}".format(&hdr)));
+    }
+
+    let dest_netif = match ip4_route_src(ctx, &src_ip4_addr, &dst_ip4_addr, netif) {
+        Ok(x) => x,
+        Err(e) => {
+             return Err(LwipError::new(LwipErrorCode::OperationFailed, "could not get destination netif for packet: {}, {}".format(e, &hdr)));
+        }
+    };
+
+    if (dest_netif == src_netif) && ctx.options.ip_forward_allow_tx_on_rx_netif {
+        return Err(LwipError::new(LwipErrorCode::InvalidOperation, "cant forward packet with destination interface that is the same as its source interface"));
+    }
+
+    hdr.ttl = hdr.ttl - 1;
+    if hdr.ttl == 0 {
+        if hdr.proto != IP_PROTO_ICMP {
+            icmp_ttl_exceeded(p, ICMP_TE_TTL)?;
+        } else {
+            return Err(LwipError::new(LwipErrorCode::InvalidOperation, "send ICMP time exceeded msg in response to an ICMP message"));
+        }
+    }
+    pkt.update_header(pkt, hdr)?;
 
   /* Incrementally update the IP checksum. */
   if (IPH_CHKSUM(iphdr) >= PP_HTONS(0xffff - 0x100)) {
@@ -189,8 +189,8 @@ ip4_input_accept(struct netif *netif)
  * @return ERR_OK if the packet was processed (could return ERR_* if it wasn't
  *         processed, but currently always returns ERR_OK)
  */
-err_t
-ip4_input(struct pbuf *p, struct netif *inp)
+/// Called by the network interface when an IPv4 packet is received. checks the IP  header. If packet not destined for the host, then the forwarding function is called. If the pacekt is for the host, then an upper-layer recv function is called.
+pub fn ip4_recv(ctx: &mut LwipContext, netif: &mut NetworkInterface, pkt: &mut PacketBuffer) -> Result<(), LwipError>
 {
   const struct ip_hdr *iphdr;
   struct netif *netif;

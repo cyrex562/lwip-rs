@@ -1,5 +1,5 @@
 use crate::errors::{LwipError, LwipErrorCode};
-use crate::ipv4::ipv4_hdr::Ipv4Header;
+use crate::ipv4::hdr::Ipv4Header;
 use crate::packet_buffer::PacketBuffer;
 
 /* The IP reassembly timer interval in milliseconds. */

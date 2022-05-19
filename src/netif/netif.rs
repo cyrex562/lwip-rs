@@ -17,8 +17,8 @@ use crate::errors::{LwipError, LwipErrorCode};
 use crate::errors::LwipErrorCode::{InvalidArgument, NotSet};
 use crate::ip::ip_input;
 use crate::ip_address::{IpAddress, IPV4_ADDR_ANY};
-use crate::ipv4::ipv4_address::Ipv4Address;
-use crate::ipv4::ipv4_network::Ipv4Network;
+use crate::ipv4::addr::Ipv4Address;
+use crate::ipv4::net::Ipv4Network;
 use crate::ipv6::ip6_addr::Ipv6Address;
 use crate::low_lvl_if::defines::LowerLevelInterfaceType;
 use crate::mac_address::MacAddress;
@@ -185,6 +185,8 @@ impl NetworkInterface {
         self.etharp = true;
         self.link_up = true;
         // TODO: if the MLD Mac Filter is set, add a filter?
+        //     ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
+        //      netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
         Ok(())
     }
 

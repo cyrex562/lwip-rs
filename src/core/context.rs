@@ -1,4 +1,5 @@
 use crate::arp::arp_table::ArpTable;
+use crate::core::hosts::HostsList;
 use crate::timers::timeouts::LwipCyclicHandler;
 use crate::netif::netif::NetworkInterface;
 use crate::timers::defines::LwipCyclicHandler;
@@ -311,6 +312,7 @@ pub struct LwipContext {
     pub tcp_active_pcbs: Vec<TcpPcb>,
     pub tcp_tw_pcbs: Vec<TcpPcb>,
     pub cyclic_timer_handlers: Vec<LwipCyclicHandler>,
+    pub hosts_table: HostsList,
 }
 
 impl LwipContext {
@@ -323,6 +325,7 @@ impl LwipContext {
             tcp_active_pcbs: vec![],
             tcp_tw_pcbs: vec![],
             cyclic_timer_handlers: vec![]
+            hosts_table: HostsList::new(),
         }
     }
 }

@@ -1,3 +1,4 @@
+pub const LWIP_IPV4_SRC_ROUTING: bool = true;
 pub const IPV4_CLASS_A_NET: u32 = 0xff000000;
 pub const IPV4_CLASS_A_NSHIFT: u32 = 24;
 pub const IPV4_CLASS_A_HOST: u32 = 0xffffffff & !IPV4_CLASS_A_NET;

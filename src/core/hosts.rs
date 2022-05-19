@@ -15,6 +15,15 @@ impl HostListEntry {
     }
 }
 
+#[derive(Default,Clone,Debug)]
 pub struct HostsList {
     pub hosts: Vec<HostListEntry>
+}
+
+impl HostsList {
+    pub fn new() -> Self {
+        Self {
+            hosts: vec![]
+        }
+    }
 }
