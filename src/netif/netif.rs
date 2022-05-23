@@ -5,7 +5,7 @@ use std::time::UNIX_EPOCH;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
-use log::debug;
+use log::{debug, info};
 use socket2::{Socket};
 use crate::core::context::LwipContext;
 use crate::core::errors::{LwipError, LwipErrorCode};
@@ -43,6 +43,13 @@ pub const NETIF_CHECKSUM_CHECK_ICMP: u32 = 0x0800;
 pub const NETIF_CHECKSUM_CHECK_ICMP6: u32 = 0x1000;
 pub const NETIF_CHECKSUM_ENABLE_ALL: u32 = 0xFFFF;
 pub const NETIF_CHECKSUM_DISABLE_ALL: u32 = 0x0000;
+
+#[derive(Debug,Clone)]
+pub enum NetifLinkType {
+    NotSet,
+    Ethernet,
+    Unknown,
+}
 
 #[derive(Debug, Clone, Default)]
 pub struct NetifIpv6AddressContext {
@@ -99,7 +106,7 @@ pub struct NetworkInterface {
     /// Number of Router Solicitation messages that remain to be sent.
     pub rtr_sol_cnt: u8,
     /// type of link
-    pub link_type: u8,
+    pub link_type: NetifLinkType,
     /// speed of link in bits per sec
     pub link_speed: i64,
     /// timestamp at last change made (up/down)
@@ -127,13 +134,6 @@ pub struct NetworkInterface {
     /// whether or not the device has MLD6 capability
     pub mld6: bool,
     /// poll function to call to get a packet from the lower-level interface and put it in the receive queue. this should be called by a thread managing interfaces in a polling loop.
-    pub recv_fn:  fn(&mut LwipContext, &mut NetworkInterface) -> Result<(), LwipError>,
-    /// poll function to call to get a packet from the transmit queue and send it via the lower-level interface. this should be called by a thread managing inteerfaces in a polling loop.
-    pub send_fn: fn(&mut LwipContext, &mut NetworkInterface) -> Result<(), LwipError>,
-    /// function called by a higher-level interface to put a packet onto the transmit queue
-    pub push_tx:  fn(&mut LwipContext, &mut NetworkInterface, &mut PacketBuffer) -> Result<(), LwipError>,
-    /// function called by a higher-level interface to pull a packet from the receive queue
-    pub pop_rx: fn(&mut LwipContext, &mut NetworkInterface) -> Result<PacketBuffer, LwipError>,
     pub tx_file: Option<File>,
     pub rx_file: Option<File>,
     pub tx_socket: Option<Socket>,
@@ -167,10 +167,6 @@ impl NetworkInterface {
             igmp: false,
             broadcast: false,
             mld6: false,
-            recv_fn: netif_dflt_recv_fn,
-            send_fn: netif_dflt_send_fn,
-            push_tx: netif_dflt_push_tx_fn,
-            pop_rx: netif_dflt_pop_rx_fn,
             tx_file: None,
             rx_file: None,
             tx_socket: None,
@@ -178,7 +174,7 @@ impl NetworkInterface {
         }
     }
 
-    pub fn init(&mut self, hwaddr: &MacAddress, mtu: u16) -> Result<(), LwipError>{
+    pub fn init(&mut self, hwaddr: &MacAddress, mtu: u16) -> Result<(), LwipError> {
         self.mac_address = hwaddr.clone();
         self.mtu = mtu;
         self.broadcast = true;
@@ -189,6 +185,66 @@ impl NetworkInterface {
         //      netif.mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
         Ok(())
     }
+
+    pub fn get_rx_pkt(&mut self) -> Result<(), LwipError> {
+        // Grab a packet from the lower-level interface and put into the rx queue
+        match self.if_type {
+            NetworkInterfaceType::NotSet => {
+                return Err(LwipError::new(LwipErrorCode::InvalidOperation, "network interface type not set"));
+            }
+            NetworkInterfaceType::File => {
+                // read from file and put into rx queue
+                let mut pkt = PacketBuffer::new();
+                match &netif.rx_file {
+                    Some(mut fd) => fd.read(pkt.payload.as_mut_slice())?,
+                    None() => return Err(LwipError::new(LwipErrorCode::InvalidOperation, "rx file not configured for netif"))
+                }
+                if pkt.payload.len() > 0 {
+                    netif.rx_buffer.push(pkt);
+                }
+            }
+            NetworkInterfaceType::Pcap => {
+                // read fiel from pcap handle and put into rx queue
+                todo!()
+            }
+            NetworkInterfaceType::Serial => {
+                // read bytes from serial bus and put into rx queue
+            }
+            NetworkInterfaceType::Socket => {
+                // read bytes from socket and put into rx queue
+            }
+            NetworkInterfaceType::Null => {
+                info!("doing nothing for the null type interface")
+            }
+        }
+        Ok(())
+    }
+
+    pub fn put_tx_packet(&mut self) -> Result<(), LwipError> {
+        // pops a packet from the tx queue and writes it out to the low level interface
+        todo!()
+    }
+
+    pub fn process_rx_packet(&mut self, ctx: &mut LwipContext) -> Result<(), LwipError> {
+        // pop a packet from the rx queue and process each layer of the packet.
+        let mut pkt = self.rx_buffer.pop().ok_or(LwipError::new(LwipErrorCode::InvalidOperation, "receive queue empty"))?;
+        match self.link_type {
+            NetifLinkType::Ethernet => {
+                let eth_hdr = eth_process_header()
+            },
+            NetifLinkType::NotSet => {
+                Err(LwipError::new(LwipErrorCode::InvalidState, "Netif link type not set"))
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+
+    pub fn process_tx_packet(&mut self) -> Result<(), LwipError> {
+        // before being pushed to the tx queue, prepares packet for transmission
+        todo!()
+    }
+
 
     pub fn add_igmp_mac_filter(&mut self, grp: &IgmpGroup, action: MacFilterAction) -> Result<(), LwipError> {
         todo!()
@@ -265,85 +321,4 @@ type NetifExtCallbackFn = fn(netif: &mut NetworkInterface, reason: u16, args: &N
 pub struct NetifExtCallback {
     callback_fn: NetifExtCallbackFn,
     next: u32,
-}
-
-pub fn netif_dflt_send_fn(ctx: &mut LwipContext, netif: &mut NetworkInterface) -> Result<(), LwipError> {
-    let pkt = netif.tx_buffer.pop();
-    return if pkt.is_some() {
-        let pkt_u = pkt.unwrap();
-        match netif.if_type {
-            NetworkInterfaceType::NotSet => {
-                // do nothing
-            }
-            NetworkInterfaceType::File => {
-                match &netif.tx_file {
-                    Some(mut x) => x.write(&pkt_u.payload)?,
-                    None() => return Err(LwipError::new(LwipErrorCode::InvalidOperation, "tx file not configured for netif"))
-                }
-            }
-            NetworkInterfaceType::Pcap => {
-                todo!()
-            }
-            NetworkInterfaceType::Serial => {
-                todo!()
-            }
-            NetworkInterfaceType::Socket => {
-                match &netif.tx_socket {
-                    Some(mut sock) => sock.send(&pkt_u.payload)?,
-                    None() => return Err(LwipError::new(LwipErrorCode::InvalidOperation, "tx socket not configured for netif"))
-                }
-            }
-            NetworkInterfaceType::Null => {
-                // do nothing
-            }
-        }
-        Ok(())
-    } else {
-        Err(LwipError::new(LwipErrorCode::InvalidOperation, "network interface send buffer is empty"))
-    }
-}
-
-pub fn netif_dflt_recv_fn(ctx: &mut LwipContext, netif: &mut NetworkInterface) -> Result<(), LwipError> {
-    match netif.if_type {
-        NetworkInterfaceType::NotSet => {
-            // do nothing
-        }
-        NetworkInterfaceType::File => {
-            let mut pkt = PacketBuffer::new();
-            match &netif.rx_file {
-                Some(mut fd) => fd.read(pkt.payload.as_mut_slice())?,
-                None() => return Err(LwipError::new(LwipErrorCode::InvalidOperation, "rx file not configured for netif"))
-            }
-            if pkt.payload.len() > 0 {
-                netif.rx_buffer.push(pkt);
-            }
-        }
-        NetworkInterfaceType::Pcap => {
-            todo!()
-        }
-        NetworkInterfaceType::Serial => {
-            todo!()
-        }
-        NetworkInterfaceType::Socket => {
-            todo!()
-        }
-        NetworkInterfaceType::Null => {
-            // do nothing
-        }
-    }
-    Ok(())
-}
-
-
-pub fn netif_dflt_push_tx_fn(ctx: &mut LwipContext, netif: &mut NetworkInterface, pkt: &mut PacketBuffer) -> Result<(), LwipError> {
-    netif.tx_buffer.push(pkt.to_owned())?;
-    Ok(())
-}
-
-pub fn netif_dflt_pop_rx_fn(ctx: &mut LwipContext, netif: &mut NetworkInterface) -> Result<PacketBuffer, LwipError> {
-    let packet_buffer = netif.rx_buffer.pop();
-    match packet_buffer {
-        Some(pb) => Ok(pb),
-        None() => Err(LwipError::new(LwipErrorCode::InvalidOperation, "rx buffer of netif is empty"))
-    }
 }

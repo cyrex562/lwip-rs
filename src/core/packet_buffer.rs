@@ -107,6 +107,11 @@ impl PacketBuffer {
         }
     }
 
+    pub fn add_payload_map_entry(&mut self, offset: isize, length: isize, ptype: PayloadType ) -> Result<(), LwipError> {
+        let pme = PayloadMapEntry {offset, length, ptype};
+        self.payload_map.push(pme);
+        Ok(())
+    }
 
     pub fn cat(&mut self, pbuf_to_cat: &Self) {
         unimplemented!()

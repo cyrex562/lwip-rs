@@ -5,3 +5,8 @@ pub const ETH_PAD_SIZE: usize = 0;
 
 pub const IPv4_MULTICAST_MAC_ADDR_OUI: [u8;3] = [0x01,0x00,0x5e];
 pub const IPv6_MULTICAST_MAC_ADDR_OUI: [u8;3] = [0x33,0x33,0x00];
+
+pub const ETH_HDR_LEN_NO_VLAN: usize = 14;
+pub const ETH_HDR_LEN_VLAN: usize = 18;
+pub const ETH_HDR_LEN_STAG: usize = 22;
+
