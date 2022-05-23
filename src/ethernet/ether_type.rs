@@ -20,9 +20,9 @@ pub enum EtherType {
     MPLS_UPSTREAM_LABEL = 0x8848, // RFC5332 MPLS with upstream-assigned label
     PPPoE_Discovery = 0x8863, // RFC2516 RFC8822 PPPoE Discovery Stage
     PPPoE_Session = 0x8864, // RFC2561, RFC 8822 PPPoE Session Stage
-    IEEE_802_1_X = 0x888e, // IEEE 802.1X port-base network access control
+    IEEE_802_1_X = 0x888e, // IEEE 802.1X port-base network access control. EAPOL
     MACSEC = 0x88e5, // IEEE 802.1AE MAC Security
-    PBB_INST_TAG = 0x88e7, // Provider Backbone Bridgding (PBB) Instance Tag, IEEE 802.1Q-2014
+    PBB_INST_TAG = 0x88e7, // Provider Backbone Bridgding (PBB) Instance Tag (I-TAG), IEEE 802.1Q-2014
     MVRP = 0x88f5, // IEEE 802.1Q Multiple VLAN Registration Protocol
     MMRP = 0x88f6, // IEEE 802.1Q Multiple Multicast Registration Protocol (MMRP)
     IEEE_802_11_R = 0x8900, // IEEE 802.11r Fast Roaming Remote Request
@@ -52,10 +52,31 @@ pub enum EtherType {
     EoIB = 0x894a, // Ethernet over InfiniBand
     FCoE = 0x8906, // Fiber Channel over Ethernet
     BCN = 0x8904, // Backward Congestion Notification
-    
+    RTAG = 0xf1c1, // Redundancy Tag R-TAG, 802.1cb
+    CNM = 0x22e7, // Congestion Notification Message, IEEE 802.1Q
+    CN_TAG = 0x22e9, // Congestion Notification Tag, IEEE 802.1Q
+    DRCP = 0x8952, // Distributed Relay Control Protocol (DRCP) IEEE 802.1X
+    RSNA_PRE_AUTH = 0x88c7, // RSNA Preauth IEEE 802.11
+    SCSIoE = 0x889a, // SCSI over Ethernet, Data Storage Institute,
+    DCE = 0x8903, // DCE, Cisco
+    T_TAG = 0x8905, // Timestamp Tag, Cisco
+    VLC = 0xa8c8, // Virtual Link Control protocol, IEEE 1904 working group, IEEE  1904.2
+    MIS = 0x8917, // Media Independent Service protocol, IEEE 802.21
+    MPLS_ENCAP = 0xab37, // MPLS encapsulation https://datatracker.ietf.org/doc/draft-ietf-bier-mpls-encapsulation/
+    sFlow = 0xd672, // sFlow, InMon Corp
+    LWAAP = 0x9e65, // LTE-WLAN aggregation protocool, ETSI, 3GPP TS 36.300
+    GFP = 0x891f, // ITU-T Recommendation G.7041 Generic Framing Procedure, British Telecom,
+    Slow = 0x8809, // Slow protocols as defined in IEEE 802.3
+    BridgePortExt = 0x893f, // Bridge Port Extension E-TAG as in 802.1BR
+    MacStatus = 0x22e2, // MAC Status Protocol as in 802.1Q
+    CongestionIsolationMsg = 
     // 0x8861 MCAP Multicast Channel Allocation Protocol RFC7042
     // 0x0101 - 0x01FF, experimental
-
+    // 22EF Anagran, Inc This Ethertype will be used for FSA signalling - Q.Flowstatesig .
+    // 88e1, HomePlug Powerline Alliance, HomePlug Specification AV MME
+    // 88a2, Coraid, Inc, Advanced Techology Advancement (ATA)
+    // 88b7, OUI Extended EtherTYpe for publice use and vendor-specific protocols, IEEE 802.1
+    //
 }
 
 impl EtherType {
@@ -95,240 +116,11 @@ impl TryInto<u16> for EtherType {
 }
 
 
-// 8906                          Cisco Systems, Inc                           FCoE - Fibre Channel over Ethernet
-//                               170 W Tasman Drive
-//                               San Jose  CA  95134
-//                               US
-//
-//
-// 8904                          Cisco Systems, Inc                            BCN (Backward Congestion Notification) data frame tag
-//                               170 W Tasman Drive
-//                               San Jose  CA  95134
-//                               US
-//
 
-// 22F4                          IETF TRILL Working Group                     IS-IS (Intermediate System to Intermediate System) is a link state routing
-//                               c/o Internet Society                         protocol described in ISO/IEC 10589:2002 and IETF RFC 1195. For an example
-//                               Reston  VA  20190-5108                       of Layer 2 use, see
-//                               US                                           http://tools.ietf.org/id/draft-ietf-trill-rbridge-protocol-15.txt
-//                                                                            The
-//                                                                            final document can be found here: http://www.ietf.org/rfc/rfc6325.txt
-//
-//
-// 22EF                          Anagran, Inc                                 This Ethertype will be used for FSA signalling - Q.Flowstatesig .
-//                               580 North Pastoria Ave.
-//                               Sunnyvale  CA  94085
-//                               US
-//
-//
 
-// F1C1                          IEEE 802.1 Chair                             Redundancy tag (R-TAG) as defined in IEEE Std 802.1CB
-//                                c/o RAC Administrator , IEEE
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 22E7                          IEEE 802.1 Chair                             Congestion Notification Message (CNM) as defined in IEEE Std 802.1Q
-//                                c/o RAC Administrator , IEEE
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 22E9                          IEEE 802.1 Chair                             Congestion Notification Tag (CN-TAG) as defined in IEEE Std 802.1Q
-//                                c/o RAC Administrator , IEEE
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 888e                          IEEE 802.1 Chair                             Port Access Entity (PAE) for Ethernet Access Protocol (EAP) over LAN
-//                                c/o RAC Administrator , IEEE                (EAPOL) as defined in IEEE Std 802.1X
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 88a8                          IEEE 802.1 Chair                             Service VLAN Tag (S-TAG) or Backbone VLAN Tag (B-TAG) as defined in IEEE
-//                                c/o RAC Administrator , IEEE                Std 802.1Q
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 8952                          IEEE 802.1 Chair                             Distributed Relay Control Protocol (DRCP) as defined in IEEE Std 802.1AX
-//                                c/o RAC Administrator , IEEE
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 88e7                          IEEE 802.1 Working Group                     Backbone Service Instance Tag (I-TAG) as defined in IEEE Std 802.1Q
-//                               M/S P7903B12
-//                               Santa Clara  CA  95054
-//                               US
-//
-//
-// 88c7                          IEEE 802.11 Working Group                    RSNA Preauthentication as defined in IEEE Std 802.11
-//                               c/o RAC Administrator
-//                               Piscataway   NJ  08854
-//                               US
-//
-//
 
-// 0806                          Symbolics, Inc.                              Address Resolution Protocol - A. R. P.
-//                               243 Vassar Street
-//                               Cambridge    02139
-//                               US
-//
-//
-// 88e1                          HomePlug Powerline Alliance, Inc.            HomePlug Specification AV MME
-//                               2400 Camino Ramon, #375
-//                               San Ramon    94583
-//                               US
-//
-//
-// 88a2                          Coraid Inc.                                  Advanced Technology Advancement (ATA) Protocol
-//                               565 Research Dr.
-//                               Athens  GA  30605
-//                               US
-//
-//
-// 889a                          Data Storage Institute                       SCSI over Ethernet
-//                               DSI Building, 5 Engineering Drive 1
-//                               Kent Ridge Crescent  NUS  117608
-//                               SG
-//
-//
-// 8903                          Cisco Systems, Inc                           DCE
-//                               170 W Tasman Drive
-//                               San Jose  CA  95134
-//                               US
-//
-// 8905                          Cisco Systems, Inc                           T-Tag (Timestamp Tag)
-//                               170 W Tasman Drive                           This tag carries timestamp information as part of the
-//                               San Jose  CA  95134                          Ethernet frame.
-//                               US
-//
-//
 
-// A8C8                          IEEE 1904 Access Networks Working Group      The Virtual Link Control (VLC) protocol for Ethernet-based subscriber
-//                               445 Hoes Lane                                access networks. The VLC protocol is specified in IEEE Std. 1904.2. For
-//                               Piscataway  NJ  08854-4141                   more information, visit https://www.ieee1904.org/2
-//                               US
-//
 
-// 88b7                          IEEE 802.1 Chair                             OUI Extended EtherType as defined in IEEE Std 802. This EtherType value is
-//                                c/o RAC Administrator , IEEE                available for public use and for prototype and vendor-specific protocol
-//                               Piscataway  NJ  08554                        development.
-//                               US
-//
-//
-// 88e5                          IEEE 802.1 Working Group                     Media Access Control (MAC) Security tag as defined in IEEE Std 802.1AE
-//                               IEEE 802.1 Chair, c/o RAC Administrator IEEE
-//                               Piscataway  NJ  08854
-//                               US
-//
-
-// 8917                          IEEE 802.21 Working Group                    Media Independent Service (MIS) protocol as defined in IEEE Std 802.21
-//                               IEEE 802.21 Chair, c/o RAC Administrator IEEE
-//                               Piscataway  NJ  08854
-//                               US
-//
-//
-
-// AB37                          IETF Routing Area                            Please read draft-ietf-bier-mpls-encapsulation-12 at
-//                               5177 Brandin Court                           https://datatracker.ietf.org/doc/draft-ietf-bier-mpls-encapsulation/.
-//                               Fremont  CA  94538
-//                               US
-//
-
-// D672                          InMon Corp.                                  sFlow is is a multi-vendor measurement technology for sampling packets in
-//                               1 Sansome Street, FL35                       Ethernet devices.
-//                               San Francisco  CA  94104
-//                               US
-
-// 9E65                          ETSI                                         LTE-WLAN Aggregation Adaptation Protocol (LWAAP), used by LTE-WLAN
-//                               650 Route des lucioles                       Aggregation (LWA) as defined in 3GPP TS 36.300
-//                               Sophia antipolis    06921                    http://www.3gpp.org/DynaReport/36300.htm
-//                               FR
-//
-
-// 8847                          Cisco Systems                                8847: MPLS (multiprotocol label switching) label stack - unicast
-//                               1414 Massachusetts Ave.
-//                               Boxborough  MA  01719                        reference: RFC 3032
-//                               US                                            URL:
-//                                                                            <ftp://ftp.rfc-editor.org/in-notes/rfc3032.txt
-//
-//                                                                            8848: MPLS (multiprotocol
-//                                                                            label switching) label stack - multicast
-//                                                                             reference: RFC 3032
-//                                                                             URL:
-//                                                                            <ftp://ftp.rfc-editor.org/in-notes/rfc3032.txt
-//
-//
-// 8848                          Cisco Systems                                8847: MPLS (multiprotocol label switching) label stack - unicast
-//                               1414 Massachusetts Ave.
-//                               Boxborough  MA  01719                        reference: RFC 3032
-//                               US                                            URL:
-//                                                                            <ftp://ftp.rfc-editor.org/in-notes/rfc3032.txt
-//
-//                                                                            8848: MPLS (multiprotocol
-//                                                                            label switching) label stack - multicast
-//                                                                             reference: RFC 3032
-//                                                                             URL:
-//                                                                            <ftp://ftp.rfc-editor.org/in-notes/rfc3032.txt
-//
-
-// 893B                          IETF TRILL Working Group                     This EtherType is expected to be useful in a number of applications
-//                               c/o Internet Society                         but
-//                               Reston  VA  20190-5108                       this application is particularly motivated by standards use in
-//                               US                                           an
-//                                                                            extension to the IETF TRILL protocol standard. This EtherType
-//                                                                            provide
-//                                                                            a way to supply a 12-bit extension to the VLAN ID in a
-//                                                                            proceeding VLAN tag
-//                                                                            and space for an additional 3-bit priority value.
-//                                                                            See the Protocol
-//                                                                            description
-//                                                                            at
-//                                                                            http://www.pothole.com/~dee3/drafts/draft-eastlake-trill-rbridge-fine-labeling-02.txt,
-//                                                                            especially
-//                                                                            Section 2.3.
-//
-//
-
-// 891f                          British Telecommunications Plc.              ITU-T Recommendation G.7041 Generic Framing Procedure
-//                               81 Newgate Street                            (GFP)
-//                                 London  EC1A 7AJ
-//                               GB                                           http://www.itu.int/net/home/index.aspx
-//
-
-// 8809                          IEEE 802.3 Working Group                     Slow Protocols as defined in IEEE std 802.3
-//                               IEEE 802.3 Chair, c/o RAC Administrator, IEEE
-//                               Piscataway  NJ  08854
-//                               US
-//
-//
-// C9D1                          IEEE 802.1 Chair                             Legacy assignment (use 8870 instead) - LLC encapsulation as defined by IEEE
-//                                c/o RAC Administrator , IEEE                Std 802.1AC-2016.
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 893F                          IEEE 802.1 Chair                             Bridge Port Extension tag (E-TAG) as defined in IEEE Std 802.1BR
-//                                c/o RAC Administrator , IEEE
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 22E2                          IEEE 802.1 Chair                             MAC Status Protocol (MSP) as defined in IEEE Std 802.1Q
-//                                c/o RAC Administrator , IEEE
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 88f6                          IEEE 802.1 Chair                             Multiple MAC Registration Protocol (MMRP) as defined in IEEE Std 802.1Q
-//                                c/o RAC Administrator , IEEE
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
 // 89A2                          IEEE 802.1 Chair                             Congestion Isolation Message (CIM) as defined in IEEE 802.1Qcz amendment to
 //                                c/o RAC Administrator , IEEE                IEEE Std 802.1Q
 //                               Piscataway  NJ  08554
