@@ -69,14 +69,15 @@ pub enum EtherType {
     Slow = 0x8809, // Slow protocols as defined in IEEE 802.3
     BridgePortExt = 0x893f, // Bridge Port Extension E-TAG as in 802.1BR
     MacStatus = 0x22e2, // MAC Status Protocol as in 802.1Q
-    CongestionIsolationMsg = 
+    CongestionIsolationMsg = 0x89a2, // Congestion Isolation Message per 802.1qcz
+    ConnectivityFaultMgmt = 0x8902, // Connectivity Fault Management (CFM), 802.1q
+    RIST = 0xcce0, // Reliable Internet Stream Transport, Video Services Forum
     // 0x8861 MCAP Multicast Channel Allocation Protocol RFC7042
     // 0x0101 - 0x01FF, experimental
     // 22EF Anagran, Inc This Ethertype will be used for FSA signalling - Q.Flowstatesig .
     // 88e1, HomePlug Powerline Alliance, HomePlug Specification AV MME
     // 88a2, Coraid, Inc, Advanced Techology Advancement (ATA)
     // 88b7, OUI Extended EtherTYpe for publice use and vendor-specific protocols, IEEE 802.1
-    //
 }
 
 impl EtherType {
@@ -115,33 +116,3 @@ impl TryInto<u16> for EtherType {
     }
 }
 
-
-
-
-
-
-
-// 89A2                          IEEE 802.1 Chair                             Congestion Isolation Message (CIM) as defined in IEEE 802.1Qcz amendment to
-//                                c/o RAC Administrator , IEEE                IEEE Std 802.1Q
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 8902                          IEEE 802.1 Chair                             Connectivity Fault Management (CFM) Protocol Data Unit (PDU) Encapsulation
-//                                c/o RAC Administrator , IEEE                as defined in IEEE 802.1Q
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// 8100                          IEEE 802.1 Chair                             Customer VLAN Tag (C-TAG) as defined in IEEE Std 802.1Q
-//                                c/o RAC Administrator , IEEE
-//                               Piscataway  NJ  08554
-//                               US
-//
-//
-// CCE0                          Video Services Forum, Inc.                   Reliable Internet Stream Transport is an open source, open specification
-//                               208 84th Street 08242                        transport protocol designed for reliable transmission of video over lossy
-//                               Sea Isle City  NJ  08243                     networks (including the internet) with low latency and high quality.
-//                               US
-//
-//
