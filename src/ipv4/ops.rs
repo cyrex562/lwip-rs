@@ -10,6 +10,7 @@ use crate::netif::netif::NetworkInterface;
 pub fn ip4_process_rx(pkt: &mut PacketBuffer) -> Result<(), LwipError> {
     let ip4_hdr = Ipv4Header::from(pkt);
     let ip_proto = IpProto::from(ip4_hdr.proto);
+    // TODO: handle ip options if present
     match ip_proto {
         IpProto::HopOpt => {
             return Err(LwipError::new(LwipErrorCode::InvalidData, "Ipv6 HOP OPT not supported for IPv4"));

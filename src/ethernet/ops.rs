@@ -1,7 +1,7 @@
 use core::mem::size_of;
 use lib_lwip_rs::core::mac_address::MacAddress;
 use crate::core::context::LwipContext;
-use crate::core::errors::LwipError;
+use crate::core::errors::{LwipError, LwipErrorCode};
 use crate::core::mac_address::MacAddress;
 use crate::core::packet_buffer::PacketBuffer;
 use crate::ethernet::defines::ETH_HDR_LEN_NO_VLAN;
@@ -29,76 +29,84 @@ pub fn ether_process_rx(pkt: &mut PacketBuffer) -> Result<(), LwipError> {
     } else {
         let ether_type =  EtherType::try_from(eth_hdr.ether_type)?;
     match ether_type {
-        EtherType::NotSet => {}
-        EtherType::LengthFieldMax => {}
+        EtherType::NotSet => return Err(LwipError::new(LwipErrorCode::InvalidData, "ethertype field not set")),
         EtherType::IPv4 => {
-
+            todo!()
         }
-        EtherType::ARP => {}
-        EtherType::VLAN_C_TAG => {}
-        EtherType::VLAN_S_TAG => {}
-        EtherType::IPv6 => {}
-        EtherType::LLDP => {}
-        EtherType::TRILL => {}
-        EtherType::L2_IS_IS => {}
-        EtherType::RARP => {}
-        EtherType::PPP => {}
-        EtherType::MPLS => {}
-        EtherType::MPLS_UPSTREAM_LABEL => {}
-        EtherType::PPPoE_Discovery => {}
-        EtherType::PPPoE_Session => {}
-        EtherType::IEEE_802_1_X => {}
-        EtherType::MACSEC => {}
-        EtherType::PBB_INST_TAG => {}
-        EtherType::MVRP => {}
-        EtherType::MMRP => {}
-        EtherType::IEEE_802_11_R => {}
-        EtherType::TRILL_FGL => {}
-        EtherType::TRILL_BR => {}
-        EtherType::LOWPAN_ENCAP => {}
-        EtherType::GRE_X => {}
-        EtherType::HD_BASE_T_CMP => {}
-        EtherType::RDMAoE => {}
-        EtherType::IEEE_1722_2016 => {}
-        EtherType::MAC_Ctrl => {}
-        EtherType::LocalExperimental2 => {}
-        EtherType::SRP => {}
-        EtherType::ECP => {}
-        EtherType::MDCP => {}
-        EtherType::ROHC => {}
-        EtherType::IEEE_1588_1 => {}
-        EtherType::LocalExperimental1 => {}
-        EtherType::FlowFilteringTag => {}
-        EtherType::MIRP => {}
-        EtherType::IEEE_80211_MP => {}
-        EtherType::LLC_Encap => {}
-        EtherType::RoCE => {}
-        EtherType::MRP => {}
-        EtherType::IPX => {}
-        EtherType::IPX2 => {}
-        EtherType::EoIB => {}
-        EtherType::FCoE => {}
-        EtherType::BCN => {}
-        EtherType::RTAG => {}
-        EtherType::CNM => {}
-        EtherType::CN_TAG => {}
-        EtherType::DRCP => {}
-        EtherType::RSNA_PRE_AUTH => {}
-        EtherType::SCSIoE => {}
-        EtherType::DCE => {}
-        EtherType::T_TAG => {}
-        EtherType::VLC => {}
-        EtherType::MIS => {}
-        EtherType::MPLS_ENCAP => {}
-        EtherType::sFlow => {}
-        EtherType::LWAAP => {}
-        EtherType::GFP => {}
-        EtherType::Slow => {}
-        EtherType::BridgePortExt => {}
-        EtherType::MacStatus => {}
-        EtherType::CongestionIsolationMsg => {}
-        EtherType::ConnectivityFaultMgmt => {}
-        EtherType::RIST => {}
+        EtherType::ARP => {
+            todo!()
+        }
+        EtherType::VLAN_C_TAG => {
+            todo!()
+        }
+        EtherType::VLAN_S_TAG => unimplemented!(),
+        EtherType::IPv6 => {
+            todo!()
+        }
+        EtherType::LLDP => unimplemented!(),
+        EtherType::TRILL => unimplemented!(),
+        EtherType::L2_IS_IS => unimplemented!(),
+        EtherType::RARP => unimplemented!(),
+        EtherType::PPP => unimplemented!(),
+        EtherType::MPLS => unimplemented!(),
+        EtherType::MPLS_UPSTREAM_LABEL => unimplemented!(),
+        EtherType::PPPoE_Discovery => unimplemented!(),
+        EtherType::PPPoE_Session => unimplemented!(),
+        EtherType::IEEE_802_1_X => unimplemented!(),
+        EtherType::MACSEC => unimplemented!(),
+        EtherType::PBB_INST_TAG => unimplemented!(),
+        EtherType::MVRP => unimplemented!(),
+        EtherType::MMRP => unimplemented!(),
+        EtherType::IEEE_802_11_R => unimplemented!(),
+        EtherType::TRILL_FGL => unimplemented!(),
+        EtherType::TRILL_BR => unimplemented!(),
+        EtherType::LOWPAN_ENCAP => unimplemented!(),
+        EtherType::GRE_X => unimplemented!(),
+        EtherType::HD_BASE_T_CMP => unimplemented!(),
+        EtherType::RDMAoE => unimplemented!(),
+        EtherType::IEEE_1722_2016 => unimplemented!(),
+        EtherType::MAC_Ctrl => unimplemented!(),
+        EtherType::LocalExperimental2 => unimplemented!(),
+        EtherType::SRP => unimplemented!(),
+        EtherType::ECP => unimplemented!(),
+        EtherType::MDCP => unimplemented!(),
+        EtherType::ROHC => unimplemented!(),
+        EtherType::IEEE_1588_1 => unimplemented!(),
+        EtherType::LocalExperimental1 => unimplemented!(),
+        EtherType::FlowFilteringTag => unimplemented!(),
+        EtherType::MIRP => unimplemented!(),
+        EtherType::IEEE_80211_MP => unimplemented!(),
+        EtherType::LLC_Encap => unimplemented!(),
+        EtherType::RoCE => unimplemented!(),
+        EtherType::MRP => unimplemented!(),
+        EtherType::IPX => unimplemented!(),
+        EtherType::IPX2 => unimplemented!(),
+        EtherType::EoIB => unimplemented!(),
+        EtherType::FCoE => unimplemented!(),
+        EtherType::BCN => unimplemented!(),
+        EtherType::RTAG => unimplemented!(),
+        EtherType::CNM => unimplemented!(),
+        EtherType::CN_TAG => unimplemented!(),
+        EtherType::DRCP => unimplemented!(),
+        EtherType::RSNA_PRE_AUTH => unimplemented!(),
+        EtherType::SCSIoE => unimplemented!(),
+        EtherType::DCE => unimplemented!(),
+        EtherType::T_TAG => unimplemented!(),
+        EtherType::VLC => unimplemented!(),
+        EtherType::MIS => unimplemented!(),
+        EtherType::MPLS_ENCAP => unimplemented!(),
+        EtherType::sFlow => unimplemented!(),
+        EtherType::LWAAP => unimplemented!(),
+        EtherType::GFP => unimplemented!(),
+        EtherType::Slow => unimplemented!(),
+        EtherType::BridgePortExt => unimplemented!(),
+        EtherType::MacStatus => unimplemented!(),
+        EtherType::CongestionIsolationMsg => unimplemented!(),
+        EtherType::ConnectivityFaultMgmt => unimplemented!(),
+        EtherType::RIST => unimplemented!(),
+        _ => {
+            return Err(LwipError::new(LwipErrorCode::InvalidOperation, "unhandled EtherTYpe: {}".format()))
+        }
     }
     }
 
