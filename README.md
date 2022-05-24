@@ -7,6 +7,10 @@
 * An ip address/MAC address can only be assigned to one interface
 * 
 
+## Requirements:
+* For PCAP interface types, npcap or libpcap are required to be instsalled on the system
+  * NPCAP: [https://npcap.com/]
+
 ## TODO Items
 
 * TODO: when sending broadcast traffic via an interface, if the interface's broadcast flag is False, then do not send

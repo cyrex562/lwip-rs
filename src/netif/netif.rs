@@ -88,6 +88,7 @@ pub struct NetifMldMacFilter {
 /// Generic data structure used for all lwIP network interfaces.
 #[derive(Debug, Clone, Default)]
 pub struct NetworkInterface {
+    pub default: bool,
     pub id: i64,
     /// a list of assigned MAC addresses
     pub mac_address: MacAddress,
@@ -144,6 +145,7 @@ impl NetworkInterface {
     pub fn new() -> Self {
         let dt = Utc::now();
         Self {
+            default: false,
             id: dt.timestamp_millis(),
             mac_address: MacAddress::new(),
             ipv4_nets: Vec::new(),
@@ -186,7 +188,7 @@ impl NetworkInterface {
         Ok(())
     }
 
-    pub fn get_rx_pkt(&mut self) -> Result<(), LwipError> {
+    pub fn read_rx_pkt(&mut self) -> Result<(), LwipError> {
         // Grab a packet from the lower-level interface and put into the rx queue
         match self.if_type {
             NetworkInterfaceType::NotSet => {
@@ -220,12 +222,12 @@ impl NetworkInterface {
         Ok(())
     }
 
-    pub fn put_tx_packet(&mut self) -> Result<(), LwipError> {
+    pub fn write_tx_packet(&mut self) -> Result<(), LwipError> {
         // pops a packet from the tx queue and writes it out to the low level interface
         todo!()
     }
 
-    pub fn process_rx_packet(&mut self, ctx: &mut LwipContext) -> Result<(), LwipError> {
+    pub fn recv(&mut self, ctx: &mut LwipContext) -> Result<(), LwipError> {
         // pop a packet from the rx queue and process each layer of the packet.
         let mut pkt = self.rx_buffer.pop().ok_or(LwipError::new(LwipErrorCode::InvalidOperation, "receive queue empty"))?;
         match self.link_type {
@@ -240,7 +242,7 @@ impl NetworkInterface {
         Ok(())
     }
 
-    pub fn process_tx_packet(&mut self) -> Result<(), LwipError> {
+    pub fn send(&mut self) -> Result<(), LwipError> {
         // before being pushed to the tx queue, prepares packet for transmission
         todo!()
     }

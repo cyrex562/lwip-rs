@@ -324,7 +324,7 @@ impl LwipContext {
             tcpip_tcp_timer_active: false,
             tcp_active_pcbs: vec![],
             tcp_tw_pcbs: vec![],
-            cyclic_timer_handlers: vec![]
+            cyclic_timer_handlers: vec![],
             hosts_table: HostsList::new(),
         }
     }

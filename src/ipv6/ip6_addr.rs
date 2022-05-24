@@ -397,15 +397,15 @@ pub const IP6_ADDR_LOOPBACK: Ipv6Address = Ipv6Address::new_from_u32(0,0,0,1);
 // TODO:
 // #define lwip_xchar(i)        ((char)((i) < 10 ? '0' + (i) : 'A' + (i) - 10))
 
-/**
- * Check whether "cp" is a valid ascii representation
- * of an IPv6 address and convert to a binary address.
- * Returns 1 if the address is valid, 0 if not.
- *
- * @param cp IPv6 address in ascii representation (e.g. "FF01::1")
- * @param addr pointer to which to save the ip address in network order
- * @return 1 if cp could be converted to addr, 0 on failure
- */
+// /**
+//  * Check whether "cp" is a valid ascii representation
+//  * of an IPv6 address and convert to a binary address.
+//  * Returns 1 if the address is valid, 0 if not.
+//  *
+//  * @param cp IPv6 address in ascii representation (e.g. "FF01::1")
+//  * @param addr pointer to which to save the ip address in network order
+//  * @return 1 if cp could be converted to addr, 0 on failure
+//  */
 // int
 // ip6addr_aton(const char *cp, ip6_addr_t *addr)
 // {
@@ -544,14 +544,14 @@ pub const IP6_ADDR_LOOPBACK: Ipv6Address = Ipv6Address::new_from_u32(0,0,0,1);
 //   return 1;
 // }
 
-/**
- * Convert numeric IPv6 address into ASCII representation.
- * returns ptr to static buffer; not reentrant!
- *
- * @param addr ip6 address in network order to convert
- * @return pointer to a global static (!) buffer that holds the ASCII
- *         representation of addr
- */
+// /**
+//  * Convert numeric IPv6 address into ASCII representation.
+//  * returns ptr to static buffer; not reentrant!
+//  *
+//  * @param addr ip6 address in network order to convert
+//  * @return pointer to a global static (!) buffer that holds the ASCII
+//  *         representation of addr
+//  */
 // char *
 // ip6addr_ntoa(const ip6_addr_t *addr)
 // {
@@ -559,15 +559,15 @@ pub const IP6_ADDR_LOOPBACK: Ipv6Address = Ipv6Address::new_from_u32(0,0,0,1);
 //   return ip6addr_ntoa_r(addr, str, 40);
 // }
 
-/**
- * Same as ipaddr_ntoa, but reentrant since a user-supplied buffer is used.
- *
- * @param addr ip6 address in network order to convert
- * @param buf target buffer where the string is stored
- * @param buflen length of buf
- * @return either pointer to buf which now holds the ASCII
- *         representation of addr or NULL if buf was too small
- */
+// /**
+//  * Same as ipaddr_ntoa, but reentrant since a user-supplied buffer is used.
+//  *
+//  * @param addr ip6 address in network order to convert
+//  * @param buf target buffer where the string is stored
+//  * @param buflen length of buf
+//  * @return either pointer to buf which now holds the ASCII
+//  *         representation of addr or NULL if buf was too small
+//  */
 // char *
 // ip6addr_ntoa_r(const ip6_addr_t *addr, char *buf, int buflen)
 // {

@@ -399,36 +399,35 @@ pub fn acd_put_in_passive_mode(netif: &mut NetworkInterface, acd: &mut AcdContex
 /// @param old_addr  old ip address
 /// @param new_addr  new ip address
 ///
-pub fn acd_netif_ip_addr_changed(netif: &mut NetworkInterface, const ip_addr_t *old_addr,
-                          const ip_addr_t *new_addr)
+pub fn acd_netif_ip_addr_changed(netif: &mut NetworkInterface, old_addr: &Ipv4Address, new_addr: &Ipv4Address)
 {
-  let mut acd: &mut AcdStateInfo;
-
-  LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-    ("acd_netif_ip_addr_changed(): Address changed\n"));
-
-  LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-    ("acd_netif_ip_addr_changed(): old address = %s\n", ipaddr_ntoa(old_addr)));
-  LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-    ("acd_netif_ip_addr_changed(): new address = %s\n", ipaddr_ntoa(new_addr)));
-
-  /* If we change from ANY to an IP or from an IP to ANY we do nothing */
-  if (ip_addr_isany(old_addr) || ip_addr_isany(new_addr)) {
-    return;
-  }
-
-  ACD_FOREACH(acd,  netif.acd_list) {
-    /* Find ACD module of old address */
-    if(ip4_addr_eq(& acd.ipaddr, ip_2_ip4(old_addr))) {
-      /* Did we change from a LL address to a routable address? */
-      if (ip_addr_islinklocal(old_addr) && !ip_addr_islinklocal(new_addr)) {
-        LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
-          ("acd_netif_ip_addr_changed(): changed from LL to routable address\n"));
-        /* Put the module in passive conflict detection mode */
-        acd_put_in_passive_mode(netif, acd);
-      }
-    }
-  }
+  // let mut acd: &mut AcdStateInfo;
+  //
+  // LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+  //   ("acd_netif_ip_addr_changed(): Address changed\n"));
+  //
+  // LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+  //   ("acd_netif_ip_addr_changed(): old address = %s\n", ipaddr_ntoa(old_addr)));
+  // LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+  //   ("acd_netif_ip_addr_changed(): new address = %s\n", ipaddr_ntoa(new_addr)));
+  //
+  // /* If we change from ANY to an IP or from an IP to ANY we do nothing */
+  // if (ip_addr_isany(old_addr) || ip_addr_isany(new_addr)) {
+  //   return;
+  // }
+  //
+  // ACD_FOREACH(acd,  netif.acd_list) {
+  //   /* Find ACD module of old address */
+  //   if(ip4_addr_eq(& acd.ipaddr, ip_2_ip4(old_addr))) {
+  //     /* Did we change from a LL address to a routable address? */
+  //     if (ip_addr_islinklocal(old_addr) && !ip_addr_islinklocal(new_addr)) {
+  //       LWIP_DEBUGF(ACD_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE,
+  //         ("acd_netif_ip_addr_changed(): changed from LL to routable address\n"));
+  //       /* Put the module in passive conflict detection mode */
+  //       acd_put_in_passive_mode(netif, acd);
+  //     }
+  //   }
+  // }
 }
 
 // #endif /* LWIP_IPV4 && LWIP_ACD */
