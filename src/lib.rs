@@ -9,6 +9,7 @@ pub mod routing;
 pub mod arp;
 pub mod low_lvl_if;
 pub mod timers;
+pub mod ip;
 
 
 // TODO: set up init

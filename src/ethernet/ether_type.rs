@@ -5,7 +5,7 @@ use crate::LwipError;
 #[repr(C, u16)]
 pub enum EtherType {
     NotSet = 0,
-    LengthFieldMax = 0x05dc, // values under this are a length field for an 802.3/802.2 packet
+    LengthFieldMax = 0x05dc, // 1500 base 10; values LTE to this are a length field for an 802.3/802.2 packet
     IPv4 = 0x0800, // IPv4, RFC7042
     ARP = 0x0806, // ARP, RFC7042
     VLAN_C_TAG = 0x8100, // VLAN 802.1q customer tag
@@ -81,38 +81,32 @@ pub enum EtherType {
 }
 
 impl EtherType {
-    pub fn is_len_type(&self, raw_ether_type: u16) -> bool {
-        raw_ether_type <= self::ETHERTYP_LEN_FIELD_MAX
+}
+
+fn match_ether_type(a: u16) -> Result<EtherType,LwipError> {
+    for etype in EtherType::iter() {
+        if a == etype as u16 {
+            Ok(etype)
+        }
     }
+    Err(LwipError::new(LwipErrorCode::InvalidData, "no match for supplied raw ether type {:02x}".format(a)))
 }
 
 impl TryFrom<u16> for EtherType {
     type Error = LwipError;
 
     fn try_from(raw_ether_type: u16) -> Result<Self, Self::Error> {
-        match raw_ether_type {
-            x if x == EtherType::NotSet as u16 => Ok(EtherType::NotSet),
-            x if x <= EtherType::LengthFieldMax as u16 => Ok(EtherType::LengthFieldMax),
-            x if x == EtherType::IPv4 as u16 => Ok(EtherType::IPv4),
-            x if x == EtherType::IPv6 as u16 => Ok(EtherType::IPv6),
-            x if x == EtherType::ARP as u165 => Ok(EtherType::ARP),
-            _ => Err(LwipError::new(LwipErrorCode::InvalidData, "invalid/unsupported raw ether type {:02x}".format(raw_ether_type)))
-        }
+        match_ether_type(raw_ether_type)
     }
 }
 
-impl TryInto<u16> for EtherType {
+impl TryFrom<&[u8]> for EtherType {
     type Error = LwipError;
 
-    fn try_into(self) -> Result<u16, Self::Error> {
-        match EtherType {
-            EtherType::NotSet => Ok(0),
-            EtherType::LengthFieldMax => Ok(EtherType::LengthFieldMax as u16),
-            EtherType::IPv4 => Ok(EtherType::IPv4 as u16),
-            EtherType::IPv6 => Ok(EtherType::IPv6 as u16),
-            EtherType::ARP => Ok(EtherType::ARP as u16),
-            _ => Err(LwipError::new(LwipErrorCode::InvalidData, "invalid/unsupported ethertype for conversion to u16: {}".format(EtherType)))
-        }
+    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
+        let raw_ether_type = u16::from_ne_bytes([value[0],value[1]]);
+        match_ether_type(raw_ether_type)
     }
 }
+
 

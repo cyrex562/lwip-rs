@@ -8,3 +8,4 @@ pub mod acd;
 pub mod defines;
 pub mod ops;
 pub mod autoip;
+pub mod options;

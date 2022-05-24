@@ -1,4 +1,4 @@
-#[derive(Default,Debug,Clone)]
+#[derive(Default,Debug,Clone, PartialEq)]
 pub struct MacAddress {
     addr: [u8; 6],
 }
@@ -9,21 +9,21 @@ impl MacAddress {
             addr: [0;6]
         }
     }
-    pub fn from_octets(a: u8, b: u8, c: u8, d: u8, e: u8, f: u8) -> Self {
+}
+
+impl From<&[u8]> for MacAddress {
+    fn from(a: &[u8]) -> Self {
         Self {
-            addr: [a, b, c, d, e, f],
-        }
-    }
-    pub fn from_vec(raw: &Vec<u8>, offset: usize) -> Self {
-        Self {
-            addr: [raw[0+offset], raw[1+offset], raw[2+offset], raw[3+offset], raw[4+offset], raw[5+offset]]
+            addr: [a[0],a[1],a[2],a[3],a[4],a[5]]
         }
     }
 }
 
-
-impl PartialEq for MacAddress {
-    fn eq(&self, other: &Self) -> bool {
-        self.addr == other.addr
+impl From <[u8;6]> for MacAddress {
+    fn from(a: [u8; 6]) -> Self {
+        Self {
+            addr: [a[0],a[1],a[2],a[3],a[4],a[5]]
+        }
     }
 }
+

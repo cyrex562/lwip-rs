@@ -87,3 +87,4 @@ impl fmt::Display for LwipError {
         write!(f, "code: {}, message: {}", self.code, self.message)
     }
 }
+

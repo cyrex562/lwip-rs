@@ -49,6 +49,12 @@ pub enum PayloadType {
     Other,
     Unknown,
     NotSet,
+    Ethernet,
+    IPv4,
+    ARP,
+    IPv6,
+    LLDP,
+    
 }
 
 #[derive(Debug,Clone,Default)]
