@@ -21,3 +21,18 @@
 * TODO: support Netgear Switch Discovery Protocol (NSDP)
 * TODO: support Dynamic Trunking Protocol
 * TODO: update checksums of layer 3+ packets
+
+## References
+
+[https://datatracker.ietf.org/doc/html/rfc7126]
+[https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml]
+[https://datatracker.ietf.org/doc/html/rfc6192]
+[https://en.wikipedia.org/wiki/IPv4]
+[https://en.wikipedia.org/wiki/Multicast_address]
+[https://en.wikipedia.org/wiki/MAC_address]
+[https://en.wikipedia.org/wiki/Link-state_routing_protocol]
+[https://en.wikipedia.org/wiki/IEEE_802.1aq]
+[https://en.wikipedia.org/wiki/Ethernet_frame]
+[https://en.wikipedia.org/wiki/IEEE_802.1Q]
+[https://www.ieee802.org/1/pages/802.1ca.html]
+[https://en.wikipedia.org/wiki/Multilayer_switch]/

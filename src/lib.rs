@@ -10,6 +10,7 @@ pub mod arp;
 pub mod low_lvl_if;
 pub mod timers;
 pub mod ip;
+pub mod igmp;
 
 
 // TODO: set up init

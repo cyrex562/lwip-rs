@@ -1,2 +1,2 @@
 [env]
-LIBPCAP_LIBDIR="C:\\Windows\\System32\\Npcap"
+#LIBPCAP_LIBDIR="C:\\Windows\\System32\\Npcap"

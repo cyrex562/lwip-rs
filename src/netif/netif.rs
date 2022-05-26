@@ -1,31 +1,20 @@
 use std::collections::HashMap;
-use std::time::SystemTime;
+
 use chrono::prelude::*;
-use std::time::UNIX_EPOCH;
+
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::Path;
+
 use log::{debug, info};
 use socket2::{Socket};
 use crate::core::context::LwipContext;
 use crate::core::errors::{LwipError, LwipErrorCode};
-use crate::core::errors::LwipErrorCode::InvalidOperation;
+
 use crate::core::mac_address::MacAddress;
 use crate::core::packet_buffer::PacketBuffer;
-use crate::ipv4_acd::AcdStateInfo;
-use crate::errors::{LwipError, LwipErrorCode};
-use crate::errors::LwipErrorCode::{InvalidArgument, NotSet};
-use crate::ip::ip_input;
-use crate::ip_address::{IpAddress, IPV4_ADDR_ANY};
 use crate::ipv4::addr::Ipv4Address;
 use crate::ipv4::net::Ipv4Network;
 use crate::ipv6::ip6_addr::Ipv6Address;
-use crate::low_lvl_if::defines::LowerLevelInterfaceType;
-use crate::mac_address::MacAddress;
-use crate::mac_filter::MacFilterOps;
-use crate::netif_hint::NetifHint;
-use crate::packet_buffer::PacketBuffer;
-use crate::queue::Queue;
 
 
 pub const NETIF_REPORT_TYPE_IPV4: u8 = 0x01;
@@ -44,7 +33,7 @@ pub const NETIF_CHECKSUM_CHECK_ICMP6: u32 = 0x1000;
 pub const NETIF_CHECKSUM_ENABLE_ALL: u32 = 0xFFFF;
 pub const NETIF_CHECKSUM_DISABLE_ALL: u32 = 0x0000;
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 pub enum NetifLinkType {
     NotSet,
     Ethernet,
@@ -232,8 +221,8 @@ impl NetworkInterface {
         let mut pkt = self.rx_buffer.pop().ok_or(LwipError::new(LwipErrorCode::InvalidOperation, "receive queue empty"))?;
         match self.link_type {
             NetifLinkType::Ethernet => {
-                let eth_hdr = eth_process_header()
-            },
+                // let eth_hdr = eth_process_header()
+            }
             NetifLinkType::NotSet => {
                 Err(LwipError::new(LwipErrorCode::InvalidState, "Netif link type not set"))
             }
@@ -283,6 +272,8 @@ impl NetworkInterface {
     pub fn has_ip4_addr(&self, addr: &Ipv4Network) -> bool {
         self.ipv4_nets.contains(addr)
     }
+
+    pub fn has_ip4_addr2(&self, addr: &Ipv4Address) -> bool { todo!() }
 }
 
 pub enum LwipNetifStateChange {
