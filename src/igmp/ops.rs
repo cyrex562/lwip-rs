@@ -608,84 +608,88 @@ pub fn igmp_leavegroup(if_addr: &Ipv4Address, group_addr: &Ipv4Address) -> Resul
 // @param groupaddr the ip address of the group which to leave
 // @return ERR_OK if group was left on the netif, an err_t otherwise
 ///
-err_t
-igmp_leavegroup_netif(struct netif *netif, const ip4_addr_t *groupaddr)
+// err_t
+// igmp_leavegroup_netif(struct netif *netif, const ip4_addr_t *groupaddr)
+pub fn igmp_leave_group_netif(netif: &mut NetworkInterface, group_addr: &Ipv4Address)
 {
-  struct igmp_group *group;
-
-  // LWIP_ASSERT_CORE_LOCKED()
-
-  /* make sure it is multicast address */
-  LWIP_ERROR("igmp_leavegroup_netif: attempt to leave non-multicast address", ip4_addr_ismulticast(groupaddr), return ERR_VAL;);
-  LWIP_ERROR("igmp_leavegroup_netif: attempt to leave allsystems address", (!ip4_addr_eq(groupaddr, &allsystems)), return ERR_VAL;);
-
-  /* make sure it is an igmp-enabled netif */
-  LWIP_ERROR("igmp_leavegroup_netif: attempt to leave on non-IGMP netif",  netif.flags & NETIF_FLAG_IGMP, return ERR_VAL;);
-
-  /* find group */
-  group = igmp_lookfor_group(netif, groupaddr);
-
-  if (group != NULL) {
-    /* Only send a leave if the flag is set according to the state diagram */
-    LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: Leaving group: "));
-    ip4_addr_debug_print(IGMP_DEBUG, groupaddr);
-    LWIP_DEBUGF(IGMP_DEBUG, ("\n"));
-
-    /* If there is no other use of the group */
-    if ( group.use <= 1) {
-      /* Remove the group from the list */
-      igmp_remove_group(netif, group);
-
-      /* If we are the last reporter for this group */
-      if ( group.last_reporter_flag) {
-        LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: sending leaving group\n"));
-        IGMP_STATS_INC(igmp.tx_leave);
-        igmp_send(netif, group, IGMP_LEAVE_GROUP);
-      }
-
-      /* Disable the group at the MAC level */
-      if ( netif.igmp_mac_filter != NULL) {
-        LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: igmp_mac_filter(DEL "));
-        ip4_addr_debug_print(IGMP_DEBUG, groupaddr);
-        LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", (void *)netif));
-         netif.igmp_mac_filter(netif, groupaddr, NETIF_DEL_MAC_FILTER);
-      }
-
-      /* Free group struct */
-      memp_free(MEMP_IGMP_GROUP, group);
-    } else {
-      /* Decrement group use */
-       group.use--;
-    }
-    return ERR_OK;
-  } else {
-    LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: not member of group\n"));
-    return ERR_VAL;
-  }
+  // struct igmp_group *group;
+  //
+  // // LWIP_ASSERT_CORE_LOCKED()
+  //
+  // /* make sure it is multicast address */
+  // LWIP_ERROR("igmp_leavegroup_netif: attempt to leave non-multicast address", ip4_addr_ismulticast(groupaddr), return ERR_VAL;);
+  // LWIP_ERROR("igmp_leavegroup_netif: attempt to leave allsystems address", (!ip4_addr_eq(groupaddr, &allsystems)), return ERR_VAL;);
+  //
+  // /* make sure it is an igmp-enabled netif */
+  // LWIP_ERROR("igmp_leavegroup_netif: attempt to leave on non-IGMP netif",  netif.flags & NETIF_FLAG_IGMP, return ERR_VAL;);
+  //
+  // /* find group */
+  // group = igmp_lookfor_group(netif, groupaddr);
+  //
+  // if (group != NULL) {
+  //   /* Only send a leave if the flag is set according to the state diagram */
+  //   LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: Leaving group: "));
+  //   ip4_addr_debug_print(IGMP_DEBUG, groupaddr);
+  //   LWIP_DEBUGF(IGMP_DEBUG, ("\n"));
+  //
+  //   /* If there is no other use of the group */
+  //   if ( group.use <= 1) {
+  //     /* Remove the group from the list */
+  //     igmp_remove_group(netif, group);
+  //
+  //     /* If we are the last reporter for this group */
+  //     if ( group.last_reporter_flag) {
+  //       LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: sending leaving group\n"));
+  //       IGMP_STATS_INC(igmp.tx_leave);
+  //       igmp_send(netif, group, IGMP_LEAVE_GROUP);
+  //     }
+  //
+  //     /* Disable the group at the MAC level */
+  //     if ( netif.igmp_mac_filter != NULL) {
+  //       LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: igmp_mac_filter(DEL "));
+  //       ip4_addr_debug_print(IGMP_DEBUG, groupaddr);
+  //       LWIP_DEBUGF(IGMP_DEBUG, (") on if %p\n", (void *)netif));
+  //        netif.igmp_mac_filter(netif, groupaddr, NETIF_DEL_MAC_FILTER);
+  //     }
+  //
+  //     /* Free group struct */
+  //     memp_free(MEMP_IGMP_GROUP, group);
+  //   } else {
+  //     /* Decrement group use */
+  //      group.use--;
+  //   }
+  //   return ERR_OK;
+  // } else {
+  //   LWIP_DEBUGF(IGMP_DEBUG, ("igmp_leavegroup_netif: not member of group\n"));
+  //   return ERR_VAL;
+  // }
+    todo!()
 }
 
 //
 // The igmp timer function (both for NO_SYS=1 and =0)
 // Should be called every IGMP_TMR_INTERVAL milliseconds (100 ms is default).
 ///
-void
-igmp_tmr()
+// void
+// igmp_tmr()
+pub fn igmp_tmr()
 {
-  struct netif *netif;
-
-  NETIF_FOREACH(netif) {
-    struct igmp_group *group = netif_igmp_data(netif);
-
-    while (group != NULL) {
-      if ( group.timer > 0) {
-         group.timer--;
-        if ( group.timer == 0) {
-          igmp_timeout(netif, group);
-        }
-      }
-      group =  group.next;
-    }
-  }
+  // struct netif *netif;
+  //
+  // NETIF_FOREACH(netif) {
+  //   struct igmp_group *group = netif_igmp_data(netif);
+  //
+  //   while (group != NULL) {
+  //     if ( group.timer > 0) {
+  //        group.timer--;
+  //       if ( group.timer == 0) {
+  //         igmp_timeout(netif, group);
+  //       }
+  //     }
+  //     group =  group.next;
+  //   }
+  // }
+    todo!()
 }
 
 //
@@ -693,45 +697,46 @@ igmp_tmr()
 // Sends a report for this group.
 //
 // @param group an igmp_group for which a timeout is reached
-///
-static void
-igmp_timeout(struct netif *netif, struct igmp_group *group)
-{
-  /* If the state is IGMP_GROUP_DELAYING_MEMBER then we send a report for this group
-     (unless it is the allsystems group) */
-  if (( group.group_state == IGMP_GROUP_DELAYING_MEMBER) &&
-      (!(ip4_addr_eq(&( group.group_address), &allsystems)))) {
-    LWIP_DEBUGF(IGMP_DEBUG, ("igmp_timeout: report membership for group with address "));
-    ip4_addr_debug_print_val(IGMP_DEBUG,  group.group_address);
-    LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", (void *)netif));
-
-     group.group_state = IGMP_GROUP_IDLE_MEMBER;
-
-    IGMP_STATS_INC(igmp.tx_report);
-    igmp_send(netif, group, IGMP_V2_MEMB_REPORT);
-  }
-}
-
 //
-// Start a timer for an igmp group
-//
-// @param group the igmp_group for which to start a timer
-// @param max_time the time in multiples of IGMP_TMR_INTERVAL (decrease with
-//        every call to igmp_tmr())
-///
-static void
-igmp_start_timer(struct igmp_group *group, u8_t max_time)
+// static void
+// igmp_timeout(struct netif *netif, struct igmp_group *group)
+pub fn igmp_timeout(netif: &mut NetworkInterface, group: &IgmpGroup)
 {
-#ifdef LWIP_RAND
-   group.timer = (u16_t)(max_time > 2 ? (LWIP_RAND() % max_time) : 1);
-#else /* lwip_rand */
-  /* ATTENTION: use this only if absolutely necessary! */
-   group.timer = max_time / 2;
-// #endif /* lwip_rand */
-
-  if ( group.timer == 0) {
-     group.timer = 1;
-  }
+//   /* If the state is IGMP_GROUP_DELAYING_MEMBER then we send a report for this group
+//      (unless it is the allsystems group) */
+//   if (( group.group_state == IGMP_GROUP_DELAYING_MEMBER) &&
+//       (!(ip4_addr_eq(&( group.group_address), &allsystems)))) {
+//     LWIP_DEBUGF(IGMP_DEBUG, ("igmp_timeout: report membership for group with address "));
+//     ip4_addr_debug_print_val(IGMP_DEBUG,  group.group_address);
+//     LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", (void *)netif));
+//
+//      group.group_state = IGMP_GROUP_IDLE_MEMBER;
+//
+//     IGMP_STATS_INC(igmp.tx_report);
+//     igmp_send(netif, group, IGMP_V2_MEMB_REPORT);
+//   }
+// }
+//
+// //
+// // Start a timer for an igmp group
+// //
+// // @param group the igmp_group for which to start a timer
+// // @param max_time the time in multiples of IGMP_TMR_INTERVAL (decrease with
+// //        every call to igmp_tmr())
+// ///
+// static void
+// igmp_start_timer(struct igmp_group *group, u8_t max_time)
+// {
+// #ifdef LWIP_RAND
+//    group.timer = (u16_t)(max_time > 2 ? (LWIP_RAND() % max_time) : 1);
+// #else /* lwip_rand */
+//   /* ATTENTION: use this only if absolutely necessary! */
+//    group.timer = max_time / 2;
+// // #endif /* lwip_rand */
+//
+//   if ( group.timer == 0) {
+//      group.timer = 1;
+//   }
 }
 
 //
@@ -740,15 +745,17 @@ igmp_start_timer(struct igmp_group *group, u8_t max_time)
 // @param group the igmp_group for which "delaying" membership report
 // @param maxresp query delay
 ///
-static void
-igmp_delaying_member(struct igmp_group *group, u8_t maxresp)
+// static void
+// igmp_delaying_member(struct igmp_group *group, u8_t maxresp)
+pub fn igmp_delyaing_member(group: &IgmpGroup, max_resp: u8)
 {
-  if (( group.group_state == IGMP_GROUP_IDLE_MEMBER) ||
-      (( group.group_state == IGMP_GROUP_DELAYING_MEMBER) &&
-       (( group.timer == 0) || (maxresp <  group.timer)))) {
-    igmp_start_timer(group, maxresp);
-     group.group_state = IGMP_GROUP_DELAYING_MEMBER;
-  }
+  // if (( group.group_state == IGMP_GROUP_IDLE_MEMBER) ||
+  //     (( group.group_state == IGMP_GROUP_DELAYING_MEMBER) &&
+  //      (( group.timer == 0) || (maxresp <  group.timer)))) {
+  //   igmp_start_timer(group, maxresp);
+  //    group.group_state = IGMP_GROUP_DELAYING_MEMBER;
+  // }
+    todo!()
 }
 
 
